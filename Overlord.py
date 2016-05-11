@@ -113,9 +113,9 @@ class App (ShowBase):
             i.detachNode()
         self.playerFaceupNodes = []
         self.fdPos = 0.0
-        for i in self.player.faceups:
+        for i in OverlordServer.getLocalPlayer().faceups:
             self.addFaceupCard(i)
-        for i in self.player.facedowns:
+        for i in OverlordServer.getLocalPlayer().facedowns:
             self.addFdCard(i)
 
     def addHandCard (self, card):
@@ -145,7 +145,7 @@ class App (ShowBase):
     def addFdCard (self, card):
         cm = CardMaker('face-down card')
         cardModel = self.render.attachNewNode(cm.generate())
-        path = self.playerIconPath + "/" + self.player.cardBack
+        path = self.playerIconPath + "/" + OverlordServer.getLocalPlayer().cardBack
         tex = loader.loadTexture(path)
         cardModel.setTexture(tex)
         cardModel.setPos(self.fdPos, 0, 1.1)
@@ -174,12 +174,13 @@ class App (ShowBase):
             return obj.getTag('card')
 
     def playCard (self, handCard):
-        self.player.play(self.playerHandNodes.index(handCard))
+        OverlordServer.getLocalPlayer().play(self.playerHandNodes.index(handCard))
         self.makeHand()
         self.makeBoard()
 
     def revealFacedown (self, card):
-        self.player.revealFacedown(self.playerFacedownNodes.index(card))
+        index = self.playerFacedownNodes.index(card)
+        OverlordServer.getLocalPlayer().revealFacedown(index)
         self.makeHand()
         self.makeBoard()
 
