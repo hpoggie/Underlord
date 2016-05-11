@@ -70,7 +70,7 @@ class App (ShowBase):
         self.handler = CollisionHandlerQueue()
 
         self.playerIconPath = OverlordServer.getLocalPlayer().iconPath
-        self.enemyIconPath = OverlordServer.getEnemyIconPath()
+        self.enemyIconPath = OverlordServer.getEnemyPlayer().iconPath
 
         self.endPhaseButton = DirectButton(
                 image="./concentric-crescents.png",
@@ -102,7 +102,7 @@ class App (ShowBase):
             i.detachNode()
             self.enemyHandPos = 0.0
         self.enemyHandNodes = []
-        for i in range(0, OverlordServer.getEnemyHandSize()):
+        for i in range(0, OverlordServer.getEnemyPlayer().getHandSize()):
             self.addEnemyHandCard()
 
     def makeBoard (self):
@@ -133,7 +133,7 @@ class App (ShowBase):
     def addEnemyHandCard (self):
         cm = CardMaker('enemy hand card')
         cardModel = self.render.attachNewNode(cm.generate())
-        path = self.enemyIconPath + "/" + OverlordServer.getEnemyCardBack()
+        path = self.enemyIconPath + "/" + OverlordServer.getEnemyPlayer().cardBack
         tex = loader.loadTexture(path)
         cardModel.setTexture(tex)
         cardModel.setPos(self.enemyHandPos, 0, 3.1)

@@ -112,11 +112,5 @@ def getPhase ():
 def getLocalPlayer ():
     return player1
 
-def getEnemyHandSize ():
-    return len(player2.hand)
-
-def getEnemyIconPath ():
-    return player2.iconPath
-
-def getEnemyCardBack ():
-    return player2.cardBack
+def getEnemyPlayer ():
+    return player2
