@@ -122,7 +122,6 @@ class App (ShowBase):
         cm = CardMaker(card.name)
         cardModel = self.render.attachNewNode(cm.generate())
         path = self.playerIconPath + "/" + card.image
-        #print "loading " +path
         tex = loader.loadTexture(path)
         cardModel.setTexture(tex)
         cardModel.setPos(self.handPos, 0, 0)
@@ -147,7 +146,6 @@ class App (ShowBase):
         cm = CardMaker('face-down card')
         cardModel = self.render.attachNewNode(cm.generate())
         path = self.playerIconPath + "/" + self.player.cardBack
-        #print "loading " +path
         tex = loader.loadTexture(path)
         cardModel.setTexture(tex)
         cardModel.setPos(self.fdPos, 0, 1.1)
@@ -176,7 +174,6 @@ class App (ShowBase):
             return obj.getTag('card')
 
     def playCard (self, handCard):
-        #self.player.play(handCard.getTag('card'))
         self.player.play(self.playerHandNodes.index(handCard))
         self.makeHand()
         self.makeBoard()
@@ -191,8 +188,6 @@ def endPhase ():
     base.makeHand()
     base.makeBoard()
     base.endPhaseLabel.text = OverlordServer.getPhase()
-    #base.endPhaseLabel.updateFrameStyle()
-    #print base.endPhaseLabel.text
 
 def endTurn ():
     OverlordServer.endTurn()
@@ -208,15 +203,8 @@ def logCameraTask (name):
     print base.camera.getPos()
     return Task.cont
 
-def testForMemoryLeaks ():
-    print "doing memory test..."
-    for i in range(0, 10000):
-        base.makeHand()
-    print "done"
-
 #app.taskMgr.add(logCameraTask, "LogCameraTask")
 
 app.camera.setPos(4, -15, 0.6)
 
-#testForMemoryLeaks()
 app.run()
