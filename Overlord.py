@@ -86,10 +86,10 @@ class App (ShowBase):
                 )
 
         print len(OverlordServer.getLocalPlayer().hand)
-        self.makePlayerHand()
+        self.makeHand()
         self.makeEnemyHand()
 
-    def makePlayerHand (self):
+    def makeHand (self):
         for i in self.playerHandNodes:
             i.detachNode()
             self.handPos = 0.0
