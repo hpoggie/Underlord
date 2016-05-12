@@ -42,11 +42,13 @@ class Player ():
             self.hand.append(self.deck.pop())
 
     def play (self, index):
-        if phase == Phase.play:
+        if not self.isActivePlayer():
+            raise IllegalMoveError("Can only play facedowns during your turn.")
+        elif phase != Phase.play:
+            raise IllegalMoveError("Can only play facedowns during play phase.")
+        else:
             card = self.hand.pop(index)
             self.facedowns.append(card)
-        else:
-            raise IllegalMoveError("Can only play facedowns during play phase.")
 
     def printHand (self):
         print "Hand:"
@@ -63,11 +65,16 @@ class Player ():
 
     def revealFacedown (self, index):
         global phase
-        if phase == Phase.reveal:
+        if not self.isActivePlayer():
+            raise IllegalMoveError("Can only reveal facedowns during your turn.")
+        elif phase != Phase.reveal:
+            raise IllegalMoveError("Can only reveal facedowns during reveal phase.")
+        else:
             card = self.facedowns.pop(index)
             self.faceups.append(card)
-        else:
-            raise IllegalMoveError("Can only reveal facedowns during reveal phase.")
+
+    def isActivePlayer (self):
+        return turn == Turn.p1 if self.name == "Player 1" else turn == Turn.p2
 
 player1 = Player("Player 1")
 player2 = Player("Player 2")
