@@ -21,6 +21,8 @@ turn = Turn.p1
 phase = Phase.reveal
 
 class Player ():
+    mana = 0
+
     def __init__ (self, name, faction=Templars):
         self.name = name
 
@@ -69,9 +71,12 @@ class Player ():
             raise IllegalMoveError("Can only reveal facedowns during your turn.")
         elif phase != Phase.reveal:
             raise IllegalMoveError("Can only reveal facedowns during reveal phase.")
+        elif self.mana < self.facedowns[index].cost:
+            raise IllegalMoveError("Not enough mana.")
         else:
             card = self.facedowns.pop(index)
             self.faceups.append(card)
+            self.mana -= card.cost
 
     def isActivePlayer (self):
         return turn == Turn.p1 if self.name == "Player 1" else turn == Turn.p2
@@ -87,6 +92,7 @@ def endTurn ():
     global turn, phase
     player = getActivePlayer()
     getActivePlayer().manaCap += 1
+    getActivePlayer().mana = getActivePlayer().manaCap
     print "player " +player.name +" mana cap is " +str(player.manaCap)
     turn = not turn
     phase = Phase.reveal
