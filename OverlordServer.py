@@ -1,3 +1,4 @@
+import rpyc
 from random import shuffle
 from Templars import Templars
 
@@ -81,49 +82,61 @@ class Player ():
     def isActivePlayer (self):
         return turn == Turn.p1 if self.name == "Player 1" else turn == Turn.p2
 
-player1 = Player("Player 1")
-player2 = Player("Player 2")
+class OverlordService (rpyc.Service):
+    player1 = Player("Player 1")
+    player2 = Player("Player 2")
 
-def getActivePlayer ():
-    global turn, player1, player2
-    return player1 if turn == Turn.p1 else player2
+    def on_connect (self):
+        print "A player has connected."
 
-def endTurn ():
-    global turn, phase
-    player = getActivePlayer()
-    getActivePlayer().manaCap += 1
-    getActivePlayer().mana = getActivePlayer().manaCap
-    print "player " +player.name +" mana cap is " +str(player.manaCap)
-    turn = not turn
-    phase = Phase.reveal
+    def on_disconnect (self):
+        print "A player has disconnected."
 
-def endPhase ():
-    global phase
-    phase += 1
+    def getActivePlayer ():
+        global turn, player1, player2
+        return player1 if turn == Turn.p1 else player2
 
-    if phase == Phase.draw:
-        getActivePlayer().drawCard()
-    elif phase == Phase.attack:
-        pass
-    elif phase == Phase.play:
-        pass
-    else:
-        endTurn()
+    def endTurn ():
+        global turn, phase
+        player = getActivePlayer()
+        getActivePlayer().manaCap += 1
+        getActivePlayer().mana = getActivePlayer().manaCap
+        print "player " +player.name +" mana cap is " +str(player.manaCap)
+        turn = not turn
+        phase = Phase.reveal
 
-def getPhase ():
-    if phase == Phase.reveal:
-        return "Reveal"
-    elif phase == Phase.draw:
-        return "Draw"
-    elif phase == Phase.attack:
-        return "Attack"
-    elif phase == Phase.play:
-        return "Play"
-    else:
-        return "Unknown phase %d" % phase
+    def endPhase ():
+        global phase
+        phase += 1
 
-def getLocalPlayer ():
-    return player1
+        if phase == Phase.draw:
+            getActivePlayer().drawCard()
+        elif phase == Phase.attack:
+            pass
+        elif phase == Phase.play:
+            pass
+        else:
+            endTurn()
 
-def getEnemyPlayer ():
-    return player2
+    def exposed_getPhase (self):
+        if phase == Phase.reveal:
+            return "Reveal"
+        elif phase == Phase.draw:
+            return "Draw"
+        elif phase == Phase.attack:
+            return "Attack"
+        elif phase == Phase.play:
+            return "Play"
+        else:
+            return "Unknown phase %d" % phase
+
+    def getLocalPlayer ():
+        return player1
+
+    def getEnemyPlayer ():
+        return player2
+
+if __name__ == "__main__":
+    from rpyc.utils.server import ThreadedServer
+    t = ThreadedServer(OverlordService, port = 18861)
+    t.start()
