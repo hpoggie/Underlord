@@ -5,11 +5,11 @@ from Templars import Templars
 startHandSize = 5
 maxManaCap = 15
 
-class Turn (Enum):
+class Turn ():
     p1 = 0
     p2 = 1
 
-class Phase (Enum):
+class Phase ():
     reveal = 0
     draw = 1
     attack = 2
