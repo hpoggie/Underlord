@@ -21,70 +21,71 @@ class IllegalMoveError (Exception):
 turn = Turn.p1
 phase = Phase.reveal
 
-class Player ():
-    mana = 0
-
-    def __init__ (self, name, faction=Templars):
-        self.name = name
-
-        self.hand = []
-        self.facedowns = []
-        self.faceups = []
-        self.manaCap = 1
-        self.deck = list(faction.deck)
-
-        self.iconPath = faction.iconPath
-        self.cardBack = faction.cardBack
-
-        shuffle(self.deck)
-        for i in range(0, startHandSize):
-            self.drawCard()
-
-    def drawCard (self):
-        if len(self.deck) != 0:
-            self.hand.append(self.deck.pop())
-
-    def play (self, index):
-        if not self.isActivePlayer():
-            raise IllegalMoveError("Can only play facedowns during your turn.")
-        elif phase != Phase.play:
-            raise IllegalMoveError("Can only play facedowns during play phase.")
-        else:
-            card = self.hand.pop(index)
-            self.facedowns.append(card)
-
-    def printHand (self):
-        print "Hand:"
-        for card in self.hand:
-            print card.name
-
-    def getHandSize (self):
-        return len(self.hand)
-
-    def printFacedowns (self):
-        print "Facedowns:"
-        for card in self.facedowns:
-            print card.name
-
-    def revealFacedown (self, index):
-        global phase
-        if not self.isActivePlayer():
-            raise IllegalMoveError("Can only reveal facedowns during your turn.")
-        elif phase != Phase.reveal:
-            raise IllegalMoveError("Can only reveal facedowns during reveal phase.")
-        elif self.mana < self.facedowns[index].cost:
-            raise IllegalMoveError("Not enough mana.")
-        else:
-            card = self.facedowns.pop(index)
-            self.faceups.append(card)
-            self.mana -= card.cost
-
-    def isActivePlayer (self):
-        return turn == Turn.p1 if self.name == "Player 1" else turn == Turn.p2
-
 class OverlordService (rpyc.Service):
-    player1 = Player("Player 1")
-    player2 = Player("Player 2")
+    class exposed_Player ():
+        mana = 0
+
+        def __init__ (self, name, faction=Templars):
+            self.name = name
+
+            self.hand = []
+            self.facedowns = []
+            self.faceups = []
+            self.manaCap = 1
+            self.deck = list(faction.deck)
+
+            self.iconPath = faction.iconPath
+            self.cardBack = faction.cardBack
+
+            shuffle(self.deck)
+            for i in range(0, startHandSize):
+                self.drawCard()
+
+        def drawCard (self):
+            if len(self.deck) != 0:
+                self.hand.append(self.deck.pop())
+
+        def play (self, index):
+            if not self.isActivePlayer():
+                raise IllegalMoveError("Can only play facedowns during your turn.")
+            elif phase != Phase.play:
+                raise IllegalMoveError("Can only play facedowns during play phase.")
+            else:
+                card = self.hand.pop(index)
+                self.facedowns.append(card)
+
+        def printHand (self):
+            print "Hand:"
+            for card in self.hand:
+                print card.name
+
+
+        def printFacedowns (self):
+            print "Facedowns:"
+            for card in self.facedowns:
+                print card.name
+
+        def revealFacedown (self, index):
+            global phase
+            if not self.isActivePlayer():
+                raise IllegalMoveError("Can only reveal facedowns during your turn.")
+            elif phase != Phase.reveal:
+                raise IllegalMoveError("Can only reveal facedowns during reveal phase.")
+            elif self.mana < self.facedowns[index].cost:
+                raise IllegalMoveError("Not enough mana.")
+            else:
+                card = self.facedowns.pop(index)
+                self.faceups.append(card)
+                self.mana -= card.cost
+
+        def isActivePlayer (self):
+            return turn == Turn.p1 if self.name == "Player 1" else turn == Turn.p2
+
+        def exposed_getHandSize (self):
+            return len(self.hand)
+
+    player1 = exposed_Player("Player 1")
+    player2 = exposed_Player("Player 2")
 
     def on_connect (self):
         print "A player has connected."
@@ -130,11 +131,14 @@ class OverlordService (rpyc.Service):
         else:
             return "Unknown phase %d" % phase
 
-    def getLocalPlayer ():
-        return player1
+    def exposed_getLocalPlayer (self):
+        return self.player1
 
-    def getEnemyPlayer ():
-        return player2
+    def exposed_getEnemyPlayer ():
+        return self.player2
+
+    def exposed_getPlayerHand (self):
+        return self.player1.hand
 
 if __name__ == "__main__":
     from rpyc.utils.server import ThreadedServer
