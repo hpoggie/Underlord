@@ -98,9 +98,8 @@ class OverlordService (rpyc.Service):
     def on_disconnect (self):
         print "A player has disconnected."
 
-    def getActivePlayer ():
-        global turn, player1, player2
-        return player1 if turn == Turn.p1 else player2
+    def getActivePlayer (self):
+        return self.player1 if turn == Turn.p1 else self.player2
 
     def endTurn ():
         global turn, phase
