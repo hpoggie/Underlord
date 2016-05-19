@@ -8,6 +8,18 @@ class Card:
     def __init__ (self, attributes):
         self.__dict__ = attributes.copy()
 
+    def exposed_getName (self):
+        return self.name
+
+    def exposed_getImage (self):
+        return self.image
+
+    def exposed_getCost (self):
+        return self.cost
+
+    def exposed_getRank (self):
+        return self.rank
+
     def __print__ (self):
         print self.name + " cost " + cost
 

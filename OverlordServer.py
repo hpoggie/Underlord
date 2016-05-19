@@ -59,7 +59,6 @@ class OverlordService (rpyc.Service):
             for card in self.hand:
                 print card.name
 
-
         def printFacedowns (self):
             print "Facedowns:"
             for card in self.facedowns:
@@ -83,6 +82,9 @@ class OverlordService (rpyc.Service):
 
         def exposed_getHandSize (self):
             return len(self.hand)
+
+        def exposed_getHand (self, index):
+            return self.hand[index]
 
     player1 = exposed_Player("Player 1")
     player2 = exposed_Player("Player 2")
