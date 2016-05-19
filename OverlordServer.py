@@ -136,7 +136,7 @@ class OverlordService (rpyc.Service):
     def exposed_getLocalPlayer (self):
         return self.player1
 
-    def exposed_getEnemyPlayer ():
+    def exposed_getEnemyPlayer (self):
         return self.player2
 
     def exposed_getPlayerHand (self):
