@@ -101,11 +101,11 @@ class OverlordService (rpyc.Service):
     def getActivePlayer (self):
         return self.player1 if turn == Turn.p1 else self.player2
 
-    def endTurn ():
+    def endTurn (self):
         global turn, phase
-        player = getActivePlayer()
-        getActivePlayer().manaCap += 1
-        getActivePlayer().mana = getActivePlayer().manaCap
+        player = self.getActivePlayer()
+        self.getActivePlayer().manaCap += 1
+        self.getActivePlayer().mana = self.getActivePlayer().manaCap
         print "player " +player.name +" mana cap is " +str(player.manaCap)
         turn = not turn
         phase = Phase.reveal
