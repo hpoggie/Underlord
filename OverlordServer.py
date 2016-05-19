@@ -110,18 +110,18 @@ class OverlordService (rpyc.Service):
         turn = not turn
         phase = Phase.reveal
 
-    def endPhase ():
+    def exposed_endPhase (self):
         global phase
         phase += 1
 
         if phase == Phase.draw:
-            getActivePlayer().drawCard()
+            self.getActivePlayer().drawCard()
         elif phase == Phase.attack:
             pass
         elif phase == Phase.play:
             pass
         else:
-            endTurn()
+            self.endTurn()
 
     def exposed_getPhase (self):
         if phase == Phase.reveal:
