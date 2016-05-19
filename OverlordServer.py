@@ -86,6 +86,9 @@ class OverlordService (rpyc.Service):
         def exposed_getHand (self, index):
             return self.hand[index]
 
+        def exposed_getCardBack (self):
+            return self.cardBack
+
     player1 = exposed_Player("Player 1")
     player2 = exposed_Player("Player 2")
 
