@@ -86,6 +86,12 @@ class OverlordService (rpyc.Service):
         def exposed_getHand (self, index):
             return self.hand[index]
 
+        def exposed_getFaceups (self):
+            return self.faceups
+
+        def exposed_getFacedowns (self):
+            return self.facedowns
+
         def exposed_getCardBack (self):
             return self.cardBack
 
