@@ -45,7 +45,7 @@ class OverlordService (rpyc.Service):
             if len(self.deck) != 0:
                 self.hand.append(self.deck.pop())
 
-        def play (self, index):
+        def exposed_play (self, index):
             if not self.isActivePlayer():
                 raise IllegalMoveError("Can only play facedowns during your turn.")
             elif phase != Phase.play:
@@ -64,7 +64,7 @@ class OverlordService (rpyc.Service):
             for card in self.facedowns:
                 print card.name
 
-        def revealFacedown (self, index):
+        def exposed_revealFacedown (self, index):
             global phase
             if not self.isActivePlayer():
                 raise IllegalMoveError("Can only reveal facedowns during your turn.")
