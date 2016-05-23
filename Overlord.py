@@ -1,3 +1,4 @@
+import rpyc
 from direct.showbase.ShowBase import ShowBase
 from direct.showbase.DirectObject import DirectObject
 from panda3d.core import CardMaker
@@ -6,8 +7,7 @@ from panda3d.core import CollisionNode, GeomNode, CollisionRay
 from direct.gui.DirectGui import *
 from direct.gui.OnscreenText import OnscreenText
 
-import OverlordServer
-from OverlordServer import Player, IllegalMoveError
+from OverlordServer import IllegalMoveError
 
 from panda3d.core import loadPrcFileData
 f = open("overlordrc")
@@ -61,6 +61,12 @@ class App (ShowBase):
     playerFacedownNodes = []
     playerFaceupNodes = []
 
+    serverIp = "localhost"
+    port = 18861
+
+    connection = rpyc.connect(serverIp, port)
+    server = connection.root
+
     def __init__ (self):
         ShowBase.__init__(self)
         self.scene = self.loader.loadModel("empty.obj")
@@ -69,8 +75,8 @@ class App (ShowBase):
         base.cTrav = CollisionTraverser()
         self.handler = CollisionHandlerQueue()
 
-        self.playerIconPath = OverlordServer.getLocalPlayer().iconPath
-        self.enemyIconPath = OverlordServer.getEnemyPlayer().iconPath
+        self.playerIconPath = self.server.getLocalPlayer().getIconPath()
+        self.enemyIconPath = self.server.getEnemyPlayer().getIconPath()
 
         self.endPhaseButton = DirectButton(
                 image="./concentric-crescents.png",
@@ -80,12 +86,12 @@ class App (ShowBase):
                 command=endPhase
                 )
         self.endPhaseLabel = OnscreenText(
-                text=OverlordServer.getPhase(),
+                text=self.server.getPhase(),
                 pos=(0, -0.7, 0),
                 scale=(0.1, 0.1, 0.1)
                 )
 
-        print len(OverlordServer.getLocalPlayer().hand)
+        print self.server.getLocalPlayer().getHandSize()
         self.makeHand()
         self.makeEnemyHand()
 
@@ -94,15 +100,15 @@ class App (ShowBase):
             i.detachNode()
             self.handPos = 0.0
         self.playerHandNodes = []
-        for i in OverlordServer.getLocalPlayer().hand:
-            self.addHandCard(i)
+        for i in range(0, self.server.getLocalPlayer().getHandSize()):
+            self.addHandCard(self.server.getLocalPlayer().getHand(i))
 
     def makeEnemyHand (self):
         for i in self.enemyHandNodes:
             i.detachNode()
             self.enemyHandPos = 0.0
         self.enemyHandNodes = []
-        for i in range(0, OverlordServer.getEnemyPlayer().getHandSize()):
+        for i in range(0, self.server.getEnemyPlayer().getHandSize()):
             self.addEnemyHandCard()
 
     def makeBoard (self):
@@ -113,19 +119,19 @@ class App (ShowBase):
             i.detachNode()
         self.playerFaceupNodes = []
         self.fdPos = 0.0
-        for i in OverlordServer.getLocalPlayer().faceups:
+        for i in self.server.getLocalPlayer().getFaceups():
             self.addFaceupCard(i)
-        for i in OverlordServer.getLocalPlayer().facedowns:
+        for i in self.server.getLocalPlayer().getFacedowns():
             self.addFdCard(i)
 
     def addHandCard (self, card):
-        cm = CardMaker(card.name)
+        cm = CardMaker(card.getName())
         cardModel = self.render.attachNewNode(cm.generate())
-        path = self.playerIconPath + "/" + card.image
+        path = self.playerIconPath + "/" + card.getImage()
         tex = loader.loadTexture(path)
         cardModel.setTexture(tex)
         cardModel.setPos(self.handPos, 0, 0)
-        cardModel.setTag('card', card.name)
+        cardModel.setTag('card', card.getName())
         cardModel.setTag('zone', 'hand')
         self.handPos += 1.1
         self.playerHandNodes.append(cardModel)
@@ -133,7 +139,7 @@ class App (ShowBase):
     def addEnemyHandCard (self):
         cm = CardMaker('enemy hand card')
         cardModel = self.render.attachNewNode(cm.generate())
-        path = self.enemyIconPath + "/" + OverlordServer.getEnemyPlayer().cardBack
+        path = self.enemyIconPath + "/" + self.server.getEnemyPlayer().getCardBack()
         tex = loader.loadTexture(path)
         cardModel.setTexture(tex)
         cardModel.setPos(self.enemyHandPos, 0, 3.1)
@@ -145,23 +151,23 @@ class App (ShowBase):
     def addFdCard (self, card):
         cm = CardMaker('face-down card')
         cardModel = self.render.attachNewNode(cm.generate())
-        path = self.playerIconPath + "/" + OverlordServer.getLocalPlayer().cardBack
+        path = self.playerIconPath + "/" + self.server.getLocalPlayer().getCardBack()
         tex = loader.loadTexture(path)
         cardModel.setTexture(tex)
         cardModel.setPos(self.fdPos, 0, 1.1)
-        cardModel.setTag('card', card.name)
+        cardModel.setTag('card', card.getName())
         cardModel.setTag('zone', 'face-down')
         self.fdPos += 1.1
         self.playerFacedownNodes.append(cardModel)
 
     def addFaceupCard (self, card):
-        cm = CardMaker(card.name)
+        cm = CardMaker(card.getName())
         cardModel = self.render.attachNewNode(cm.generate())
-        path = self.playerIconPath + "/" + card.image
+        path = self.playerIconPath + "/" + card.getImage()
         tex = loader.loadTexture(path)
         cardModel.setTexture(tex)
         cardModel.setPos(self.fdPos, 0, 1.1)
-        cardModel.setTag('card', card.name)
+        cardModel.setTag('card', card.getName())
         cardModel.setTag('zone', 'face-up')
         self.fdPos += 1.1
         self.playerFaceupNodes.append(cardModel)
@@ -174,24 +180,24 @@ class App (ShowBase):
             return obj.getTag('card')
 
     def playCard (self, handCard):
-        OverlordServer.getLocalPlayer().play(self.playerHandNodes.index(handCard))
+        self.server.getLocalPlayer().play(self.playerHandNodes.index(handCard))
         self.makeHand()
         self.makeBoard()
 
     def revealFacedown (self, card):
         index = self.playerFacedownNodes.index(card)
-        OverlordServer.getLocalPlayer().revealFacedown(index)
+        self.server.getLocalPlayer().revealFacedown(index)
         self.makeHand()
         self.makeBoard()
 
 def endPhase ():
-    OverlordServer.endPhase()
+    base.server.endPhase()
     base.makeHand()
     base.makeBoard()
-    base.endPhaseLabel.text = OverlordServer.getPhase()
+    base.endPhaseLabel.text = base.server.getPhase()
 
 def endTurn ():
-    OverlordServer.endTurn()
+    base.server.endTurn()
     base.makeHand()
     base.makeBoard()
 
