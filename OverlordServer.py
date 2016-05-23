@@ -92,6 +92,9 @@ class OverlordService (rpyc.Service):
         def exposed_getFacedowns (self):
             return self.facedowns
 
+        def exposed_getIconPath (self):
+            return self.iconPath
+
         def exposed_getCardBack (self):
             return self.cardBack
 
