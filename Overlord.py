@@ -183,7 +183,7 @@ class App (ShowBase):
         path = self.playerIconPath + "/" + self.server.getLocalPlayer().getCardBack()
         tex = loader.loadTexture(path)
         cardModel.setTexture(tex)
-        cardModel.setPos(0, 0, 5)
+        cardModel.setPos(0, 0, -1.5)
         cardModel.setTag('zone', 'face')
 
     def makeEnemyFace (self):
@@ -192,7 +192,7 @@ class App (ShowBase):
         path = self.playerIconPath + "/" + self.server.getEnemyPlayer().getCardBack()
         tex = loader.loadTexture(path)
         cardModel.setTexture(tex)
-        cardModel.setPos(0, 0, -1.5)
+        cardModel.setPos(0, 0, 5)
         cardModel.setTag('zone', 'face')
 
     def testEvent (self, event):
