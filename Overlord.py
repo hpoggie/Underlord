@@ -55,6 +55,9 @@ class MouseHandler (DirectObject):
 class App (ShowBase):
     handPos = 0.0
     enemyHandPos = 0.0
+    playerFacePos = (0, 0, 1)
+    enemyFacePos = (0, 0, -1)
+
     playerHandNodes = []
     enemyHandNodes = []
     fdPos = 0.0
@@ -94,6 +97,8 @@ class App (ShowBase):
         print self.server.getLocalPlayer().getHandSize()
         self.makeHand()
         self.makeEnemyHand()
+        self.makePlayerFace()
+        self.makeEnemyFace()
 
     def makeHand (self):
         for i in self.playerHandNodes:
@@ -172,6 +177,24 @@ class App (ShowBase):
         self.fdPos += 1.1
         self.playerFaceupNodes.append(cardModel)
 
+    def makePlayerFace (self):
+        cm = CardMaker("face")
+        cardModel = self.render.attachNewNode(cm.generate())
+        path = self.playerIconPath + "/" + self.server.getLocalPlayer().getCardBack()
+        tex = loader.loadTexture(path)
+        cardModel.setTexture(tex)
+        cardModel.setPos(0, 0, 5)
+        cardModel.setTag('zone', 'face')
+
+    def makeEnemyFace (self):
+        cm = CardMaker("face")
+        cardModel = self.render.attachNewNode(cm.generate())
+        path = self.playerIconPath + "/" + self.server.getEnemyPlayer().getCardBack()
+        tex = loader.loadTexture(path)
+        cardModel.setTexture(tex)
+        cardModel.setPos(0, 0, -1.5)
+        cardModel.setTag('zone', 'face')
+
     def testEvent (self, event):
         print event
 
@@ -212,6 +235,6 @@ def logCameraTask (name):
 
 #app.taskMgr.add(logCameraTask, "LogCameraTask")
 
-app.camera.setPos(4, -15, 0.6)
+app.camera.setPos(4, -20, 1.2)
 
 app.run()
