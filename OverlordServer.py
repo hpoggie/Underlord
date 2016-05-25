@@ -170,6 +170,15 @@ class OverlordService (rpyc.Service):
         elif c1.rank == c2.rank:
             self.destroyFaceup(c1)
             self.destroyFaceup(c2)
+
+    def exposed_attack (self, cardIndex, targetIndex):
+        p1 = self.player1
+        p2 = self.player2
+        if targetIndex == "face":
+            p2.manaCap += p1.faceups[cardIndex].rank
+        elif targetIndex is int:
+            self.fight(p2.faceups[targetIndex], p1.faceups[cardIndex])
+
 if __name__ == "__main__":
     from rpyc.utils.server import ThreadedServer
     t = ThreadedServer(OverlordService, port = 18861)
