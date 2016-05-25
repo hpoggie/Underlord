@@ -27,6 +27,8 @@ class MouseHandler (DirectObject):
         #base.cTrav.showCollisions(render)
         base.disableMouse()
 
+        self.activeCard = None
+
     def getObjectClickedOn (self):
         if base.mouseWatcherNode.hasMouse:
             mpos = base.mouseWatcherNode.getMouse()
@@ -48,6 +50,25 @@ class MouseHandler (DirectObject):
                             base.revealFacedown(pickedObj)
                         except IllegalMoveError as error:
                             print error
+                    elif pickedObj.getTag('zone') == 'face-up':
+                        if not self.activeCard:
+                            self.activeCard = pickedObj
+                        else:
+                            print self.activeCard
+                            base.attack(self.activeCard, pickedObj)
+                            self.activeCard = None
+                    elif pickedObj.getTag('zone') == 'face':
+                        if self.activeCard:
+                            print self.activeCard
+                            base.attack(self.activeCard, pickedObj)
+                            self.activeCard = None
+                        else:
+                            if pickedObj == base.playerFaceNode:
+                                print "p. mc %d" %base.server.getLocalPlayer().getManaCap()
+                            elif pickedObj == base.enemyFaceNode:
+                                print "e. mc %d" %base.server.getEnemyPlayer().getManaCap()
+                else:
+                    self.activeCard = None
 
     def onMouse1 (self):
         self.getObjectClickedOn()
