@@ -161,6 +161,15 @@ class OverlordService (rpyc.Service):
         self.player1.facedowns.remove(card)
         self.player2.faceups.remove(card)
         self.player2.facedowns.remove(card)
+
+    def fight (self, c1, c2):
+        if c1.rank < c2.rank:
+            self.destroyFaceup(c1)
+        if c1.rank > c2.rank:
+            self.destroyFaceup(c2)
+        elif c1.rank == c2.rank:
+            self.destroyFaceup(c1)
+            self.destroyFaceup(c2)
 if __name__ == "__main__":
     from rpyc.utils.server import ThreadedServer
     t = ThreadedServer(OverlordService, port = 18861)
