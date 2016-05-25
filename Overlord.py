@@ -215,6 +215,17 @@ class App (ShowBase):
         self.makeHand()
         self.makeBoard()
 
+    def attack (self, card, target):
+        index = self.playerFaceupNodes.index(card)
+        if target.getTag('zone') == 'face':
+            targetIndex = "face"
+        else:
+            targetIndex = self.enemyFaceupNodes.index(target)
+
+        self.server.attack(index, targetIndex)
+        self.makeHand()
+        self.makeBoard()
+
 def endPhase ():
     base.server.endPhase()
     base.makeHand()
