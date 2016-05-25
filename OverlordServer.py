@@ -156,6 +156,11 @@ class OverlordService (rpyc.Service):
     def exposed_getPlayerHand (self):
         return self.player1.hand
 
+    def destroy (self, card):
+        self.player1.faceups.remove(card)
+        self.player1.facedowns.remove(card)
+        self.player2.faceups.remove(card)
+        self.player2.facedowns.remove(card)
 if __name__ == "__main__":
     from rpyc.utils.server import ThreadedServer
     t = ThreadedServer(OverlordService, port = 18861)
