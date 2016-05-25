@@ -185,6 +185,7 @@ class App (ShowBase):
         cardModel.setTexture(tex)
         cardModel.setPos(0, 0, -1.5)
         cardModel.setTag('zone', 'face')
+        self.playerFaceNode = cardModel
 
     def makeEnemyFace (self):
         cm = CardMaker("face")
@@ -194,6 +195,7 @@ class App (ShowBase):
         cardModel.setTexture(tex)
         cardModel.setPos(0, 0, 5)
         cardModel.setTag('zone', 'face')
+        self.enemyFaceNode = cardModel
 
     def testEvent (self, event):
         print event
