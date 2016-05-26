@@ -176,7 +176,7 @@ class OverlordService (rpyc.Service):
         p2 = self.player2
         if targetIndex == "face":
             p2.manaCap += p1.faceups[cardIndex].rank
-        elif targetIndex is int:
+        else:
             self.fight(p2.faceups[targetIndex], p1.faceups[cardIndex])
 
 if __name__ == "__main__":
