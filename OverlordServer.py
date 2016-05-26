@@ -157,10 +157,10 @@ class OverlordService (rpyc.Service):
         return self.player1.hand
 
     def destroy (self, card):
-        self.player1.faceups.remove(card)
-        self.player1.facedowns.remove(card)
-        self.player2.faceups.remove(card)
-        self.player2.facedowns.remove(card)
+        if card in self.player1.faceups: self.player1.faceups.remove(card)
+        if card in self.player1.facedowns: self.player1.faceups.remove(card)
+        if card in self.player2.faceups: self.player2.faceups.remove(card)
+        if card in self.player2.facedowns: self.player2.facedowns.remove(card)
 
     def fight (self, c1, c2):
         if c1.rank < c2.rank:
