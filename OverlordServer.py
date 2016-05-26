@@ -164,12 +164,12 @@ class OverlordService (rpyc.Service):
 
     def fight (self, c1, c2):
         if c1.rank < c2.rank:
-            self.destroyFaceup(c1)
+            self.destroy(c1)
         if c1.rank > c2.rank:
-            self.destroyFaceup(c2)
+            self.destroy(c2)
         elif c1.rank == c2.rank:
-            self.destroyFaceup(c1)
-            self.destroyFaceup(c2)
+            self.destroy(c1)
+            self.destroy(c2)
 
     def exposed_attack (self, cardIndex, targetIndex):
         p1 = self.player1
