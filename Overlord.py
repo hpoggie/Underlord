@@ -121,6 +121,8 @@ class App (ShowBase):
         print self.server.getLocalPlayer().getHandSize()
         self.makeHand()
         self.makeEnemyHand()
+        self.makeBoard()
+        self.makeEnemyBoard()
         self.makePlayerFace()
         self.makeEnemyFace()
 
