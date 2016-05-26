@@ -82,8 +82,11 @@ class App (ShowBase):
     playerHandNodes = []
     enemyHandNodes = []
     fdPos = 0.0
+    enemyFdPos = 0.0
     playerFacedownNodes = []
+    enemyFacedownNodes = []
     playerFaceupNodes = []
+    enemyFaceupNodes = []
 
     serverIp = "localhost"
     port = 18861
@@ -150,6 +153,19 @@ class App (ShowBase):
         for i in self.server.getLocalPlayer().getFacedowns():
             self.addFdCard(i)
 
+    def makeEnemyBoard (self):
+        for i in self.enemyFacedownNodes:
+            i.detachNode()
+        self.enemyFacedownNodes = []
+        for i in self.enemyFaceupNodes:
+            i.detachNode()
+        self.enemyFaceupNodes = []
+        self.enemyFdPos = 0.0
+        for i in self.server.getEnemyPlayer().getFaceups():
+            self.addEnemyFaceupCard(i)
+        for i in self.server.getEnemyPlayer().getFacedowns():
+            self.addEnemyFdCard(i)
+
     def addHandCard (self, card):
         cm = CardMaker(card.getName())
         cardModel = self.render.attachNewNode(cm.generate())
@@ -186,6 +202,18 @@ class App (ShowBase):
         self.fdPos += 1.1
         self.playerFacedownNodes.append(cardModel)
 
+    def addEnemyFdCard (self, card):
+        cm = CardMaker('face-down card')
+        cardModel = self.render.attachNewNode(cm.generate())
+        path = self.enemyIconPath + "/" + self.server.getEnemyPlayer().getCardBack()
+        tex = loader.loadTexture(path)
+        cardModel.setTexture(tex)
+        cardModel.setPos(self.enemyFdPos, 0, 2.1)
+        cardModel.setTag('card', card.getName())
+        cardModel.setTag('zone', 'face-down')
+        self.enemyFdPos += 1.1
+        self.enemyFacedownNodes.append(cardModel)
+
     def addFaceupCard (self, card):
         cm = CardMaker(card.getName())
         cardModel = self.render.attachNewNode(cm.generate())
@@ -197,6 +225,18 @@ class App (ShowBase):
         cardModel.setTag('zone', 'face-up')
         self.fdPos += 1.1
         self.playerFaceupNodes.append(cardModel)
+
+    def addEnemyFaceupCard (self, card):
+        cm = CardMaker(card.getName())
+        cardModel = self.render.attachNewNode(cm.generate())
+        path = self.enemyIconPath + "/" + card.getImage()
+        tex = loader.loadTexture(path)
+        cardModel.setTexture(tex)
+        cardModel.setPos(self.enemyFdPos, 0, 2.1)
+        cardModel.setTag('card', card.getName())
+        cardModel.setTag('zone', 'face-up')
+        self.enemyFdPos += 1.1
+        self.enemyFaceupNodes.append(cardModel)
 
     def makePlayerFace (self):
         cm = CardMaker("face")
@@ -242,15 +282,19 @@ class App (ShowBase):
             targetIndex = "face"
         else:
             targetIndex = self.enemyFaceupNodes.index(target)
+            print targetIndex
 
         self.server.attack(index, targetIndex)
         self.makeHand()
         self.makeBoard()
+        self.makeEnemyBoard()
 
 def endPhase ():
     base.server.endPhase()
     base.makeHand()
     base.makeBoard()
+    base.makeEnemyHand()
+    base.makeEnemyBoard()
     base.endPhaseLabel.text = base.server.getPhase()
 
 def endTurn ():
