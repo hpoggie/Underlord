@@ -59,12 +59,10 @@ class MouseHandler (DirectObject):
                         if not self.activeCard:
                             self.activeCard = pickedObj
                         else:
-                            print self.activeCard
                             base.attack(self.activeCard, pickedObj)
                             self.activeCard = None
                     elif pickedObj.getTag('zone') == 'face':
                         if self.activeCard:
-                            print self.activeCard
                             base.attack(self.activeCard, pickedObj)
                             self.activeCard = None
                         else:
