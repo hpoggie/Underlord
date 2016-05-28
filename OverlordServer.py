@@ -179,6 +179,11 @@ class OverlordService (rpyc.Service):
         else:
             self.fight(p2.faceups[targetIndex], p1.faceups[cardIndex])
 
+    def exposed_attackFacedown (self, cardIndex, targetIndex):
+        p1 = self.player1
+        p2 = self.player2
+        self.fight(p2.facedowns[targetIndex], p1.faceups[cardIndex])
+
 if __name__ == "__main__":
     from rpyc.utils.server import ThreadedServer
     t = ThreadedServer(OverlordService, port = 18861)
