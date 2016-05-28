@@ -46,10 +46,15 @@ class MouseHandler (DirectObject):
                         except IllegalMoveError as error:
                             print error
                     elif pickedObj.getTag('zone') == 'face-down':
-                        try:
-                            base.revealFacedown(pickedObj)
-                        except IllegalMoveError as error:
-                            print error
+                        if not self.activeCard:
+                            try:
+                                base.revealFacedown(pickedObj)
+                            except IllegalMoveError as error:
+                                print error
+                        else:
+                            print self.activeCard.name + " attacks " + pickedObj.name
+                            base.attack(self.activeCard, pickedObj)
+                            self.activeCard = None
                     elif pickedObj.getTag('zone') == 'face-up':
                         if not self.activeCard:
                             self.activeCard = pickedObj
@@ -281,12 +286,16 @@ class App (ShowBase):
     def attack (self, card, target):
         index = self.playerFaceupNodes.index(card)
         if target.getTag('zone') == 'face':
-            targetIndex = "face"
+            self.server.attack(index, 'face')
+        elif target.getTag('zone') == 'face-down':
+            targetIndex = self.enemyFacedownNodes.index(target)
+            self.server.attackFacedown(index, targetIndex)
+            print targetIndex
         else:
             targetIndex = self.enemyFaceupNodes.index(target)
+            self.server.attack(index, targetIndex)
             print targetIndex
 
-        self.server.attack(index, targetIndex)
         self.makeHand()
         self.makeBoard()
         self.makeEnemyBoard()
