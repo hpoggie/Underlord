@@ -124,6 +124,10 @@ class OverlordService (rpyc.Service):
 
     def exposed_endPhase (self):
         global phase
+
+        if phase == Phase.reveal:
+            self.getActivePlayer().facedowns = []
+
         phase += 1
 
         if phase == Phase.draw:
