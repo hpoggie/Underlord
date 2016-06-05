@@ -53,6 +53,7 @@ class OverlordService (rpyc.Service):
             else:
                 card = self.hand.pop(index)
                 self.facedowns.append(card)
+                card.hasAttacked = False
 
         def printHand (self):
             print "Hand:"
@@ -178,10 +179,16 @@ class OverlordService (rpyc.Service):
     def exposed_attack (self, cardIndex, targetIndex):
         p1 = self.player1
         p2 = self.player2
-        if targetIndex == "face":
-            p2.manaCap += p1.faceups[cardIndex].rank
+
+        if p1.faceups[cardIndex].hasAttacked:
+            raise IllegalMoveError("Can only attack once per turn.")
         else:
-            self.fight(p2.faceups[targetIndex], p1.faceups[cardIndex])
+            p1.faceups[cardIndex].hasAttacked = True
+
+            if targetIndex == "face":
+                p2.manaCap += p1.faceups[cardIndex].rank
+            else:
+                self.fight(p2.faceups[targetIndex], p1.faceups[cardIndex])
 
     def exposed_attackFacedown (self, cardIndex, targetIndex):
         p1 = self.player1
