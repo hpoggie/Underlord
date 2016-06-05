@@ -32,37 +32,42 @@ class Faction:
     def __init__ (self, attributes):
         self.__dict__ = attributes.copy()
 
-one = Card({
-    'name': "One",
-    'image': "dice-six-faces-one.png",
-    'cost': 1,
-    'rank': 1
-    })
+def one ():
+    return Card({
+        'name': "One",
+        'image': "dice-six-faces-one.png",
+        'cost': 1,
+        'rank': 1
+        })
 
-two = Card({
-    'name': "Two",
-    'image': "dice-six-faces-two.png",
-    'cost': 2,
-    'rank': 2
-    })
+def two ():
+    return Card({
+        'name': "Two",
+        'image': "dice-six-faces-two.png",
+        'cost': 2,
+        'rank': 2
+        })
 
-three = Card({
-    'name': "Three",
-    'image': "dice-six-faces-three.png",
-    'cost': 3,
-    'rank': 3
-    })
+def three ():
+    return Card({
+        'name': "Three",
+        'image': "dice-six-faces-three.png",
+        'cost': 3,
+        'rank': 3
+        })
 
-four = Card({
-    'name': "Four",
-    'image': "dice-six-faces-four.png",
-    'cost': 4,
-    'rank': 4
-    })
+def four ():
+    return Card({
+        'name': "Four",
+        'image': "dice-six-faces-four.png",
+        'cost': 4,
+        'rank': 4
+        })
 
-five = Card({
-    'name': "Five",
-    'image': "dice-six-faces-five.png",
-    'cost': 5,
-    'rank': 5
-    })
+def five ():
+    return Card({
+        'name': "Five",
+        'image': "dice-six-faces-five.png",
+        'cost': 5,
+        'rank': 5
+        })
