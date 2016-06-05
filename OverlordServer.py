@@ -134,7 +134,8 @@ class OverlordService (rpyc.Service):
         if phase == Phase.draw:
             self.getActivePlayer().drawCard()
         elif phase == Phase.attack:
-            pass
+            for f in self.getActivePlayer().faceups:
+                f.hasAttacked = False
         elif phase == Phase.play:
             pass
         else:
