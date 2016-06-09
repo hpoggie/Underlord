@@ -67,9 +67,9 @@ class MouseHandler (DirectObject):
                             self.activeCard = None
                         else:
                             if pickedObj == base.playerFaceNode:
-                                print "p. mc %d" %base.server.getLocalPlayer().getManaCap()
+                                print "p. mc %d" %base.getLocalPlayer().getManaCap()
                             elif pickedObj == base.enemyFaceNode:
-                                print "e. mc %d" %base.server.getEnemyPlayer().getManaCap()
+                                print "e. mc %d" %base.getEnemyPlayer().getManaCap()
                 else:
                     self.activeCard = None
 
@@ -96,6 +96,8 @@ class App (ShowBase):
 
     connection = rpyc.connect(serverIp, port)
     server = connection.root
+    playerKey = raw_input()
+    server.registerPlayer(playerKey)
 
     def __init__ (self):
         ShowBase.__init__(self)
@@ -105,8 +107,8 @@ class App (ShowBase):
         base.cTrav = CollisionTraverser()
         self.handler = CollisionHandlerQueue()
 
-        self.playerIconPath = self.server.getLocalPlayer().getIconPath()
-        self.enemyIconPath = self.server.getEnemyPlayer().getIconPath()
+        self.playerIconPath = self.getLocalPlayer().getIconPath()
+        self.enemyIconPath = self.getEnemyPlayer().getIconPath()
 
         self.endPhaseButton = DirectButton(
                 image="./concentric-crescents.png",
@@ -121,7 +123,7 @@ class App (ShowBase):
                 scale=(0.1, 0.1, 0.1)
                 )
 
-        print self.server.getLocalPlayer().getHandSize()
+        print self.getLocalPlayer().getHandSize()
         self.makeHand()
         self.makeEnemyHand()
         self.makeBoard()
@@ -129,20 +131,26 @@ class App (ShowBase):
         self.makePlayerFace()
         self.makeEnemyFace()
 
+    def getLocalPlayer (self):
+        return self.server.getLocalPlayer(self.playerKey)
+
+    def getEnemyPlayer (self):
+        return self.server.getEnemyPlayer(self.playerKey)
+
     def makeHand (self):
         for i in self.playerHandNodes:
             i.detachNode()
             self.handPos = 0.0
         self.playerHandNodes = []
-        for i in range(0, self.server.getLocalPlayer().getHandSize()):
-            self.addHandCard(self.server.getLocalPlayer().getHand(i))
+        for i in range(0, self.getLocalPlayer().getHandSize()):
+            self.addHandCard(self.getLocalPlayer().getHand(i))
 
     def makeEnemyHand (self):
         for i in self.enemyHandNodes:
             i.detachNode()
             self.enemyHandPos = 0.0
         self.enemyHandNodes = []
-        for i in range(0, self.server.getEnemyPlayer().getHandSize()):
+        for i in range(0, self.getEnemyPlayer().getHandSize()):
             self.addEnemyHandCard()
 
     def makeBoard (self):
@@ -153,9 +161,9 @@ class App (ShowBase):
             i.detachNode()
         self.playerFaceupNodes = []
         self.fdPos = 0.0
-        for i in self.server.getLocalPlayer().getFaceups():
+        for i in self.getLocalPlayer().getFaceups():
             self.addFaceupCard(i)
-        for i in self.server.getLocalPlayer().getFacedowns():
+        for i in self.getLocalPlayer().getFacedowns():
             self.addFdCard(i)
 
     def makeEnemyBoard (self):
@@ -166,9 +174,9 @@ class App (ShowBase):
             i.detachNode()
         self.enemyFaceupNodes = []
         self.enemyFdPos = 0.0
-        for i in self.server.getEnemyPlayer().getFaceups():
+        for i in self.getEnemyPlayer().getFaceups():
             self.addEnemyFaceupCard(i)
-        for i in self.server.getEnemyPlayer().getFacedowns():
+        for i in self.getEnemyPlayer().getFacedowns():
             self.addEnemyFdCard(i)
 
     def addHandCard (self, card):
@@ -186,7 +194,7 @@ class App (ShowBase):
     def addEnemyHandCard (self):
         cm = CardMaker('enemy hand card')
         cardModel = self.render.attachNewNode(cm.generate())
-        path = self.enemyIconPath + "/" + self.server.getEnemyPlayer().getCardBack()
+        path = self.enemyIconPath + "/" + self.getEnemyPlayer().getCardBack()
         tex = loader.loadTexture(path)
         cardModel.setTexture(tex)
         cardModel.setPos(self.enemyHandPos, 0, 3.1)
@@ -198,7 +206,7 @@ class App (ShowBase):
     def addFdCard (self, card):
         cm = CardMaker('face-down card')
         cardModel = self.render.attachNewNode(cm.generate())
-        path = self.playerIconPath + "/" + self.server.getLocalPlayer().getCardBack()
+        path = self.playerIconPath + "/" + self.getLocalPlayer().getCardBack()
         tex = loader.loadTexture(path)
         cardModel.setTexture(tex)
         cardModel.setPos(self.fdPos, 0, 1.1)
@@ -210,7 +218,7 @@ class App (ShowBase):
     def addEnemyFdCard (self, card):
         cm = CardMaker('face-down card')
         cardModel = self.render.attachNewNode(cm.generate())
-        path = self.enemyIconPath + "/" + self.server.getEnemyPlayer().getCardBack()
+        path = self.enemyIconPath + "/" + self.getEnemyPlayer().getCardBack()
         tex = loader.loadTexture(path)
         cardModel.setTexture(tex)
         cardModel.setPos(self.enemyFdPos, 0, 2.1)
@@ -246,7 +254,7 @@ class App (ShowBase):
     def makePlayerFace (self):
         cm = CardMaker("face")
         cardModel = self.render.attachNewNode(cm.generate())
-        path = self.playerIconPath + "/" + self.server.getLocalPlayer().getCardBack()
+        path = self.playerIconPath + "/" + self.getLocalPlayer().getCardBack()
         tex = loader.loadTexture(path)
         cardModel.setTexture(tex)
         cardModel.setPos(0, 0, -1.5)
@@ -256,7 +264,7 @@ class App (ShowBase):
     def makeEnemyFace (self):
         cm = CardMaker("face")
         cardModel = self.render.attachNewNode(cm.generate())
-        path = self.playerIconPath + "/" + self.server.getEnemyPlayer().getCardBack()
+        path = self.playerIconPath + "/" + self.getEnemyPlayer().getCardBack()
         tex = loader.loadTexture(path)
         cardModel.setTexture(tex)
         cardModel.setPos(0, 0, 5)
@@ -271,13 +279,13 @@ class App (ShowBase):
             return obj.getTag('card')
 
     def playCard (self, handCard):
-        self.server.getLocalPlayer().play(self.playerHandNodes.index(handCard))
+        self.getLocalPlayer().play(self.playerHandNodes.index(handCard))
         self.makeHand()
         self.makeBoard()
 
     def revealFacedown (self, card):
         index = self.playerFacedownNodes.index(card)
-        self.server.getLocalPlayer().revealFacedown(index)
+        self.getLocalPlayer().revealFacedown(index)
         self.makeHand()
         self.makeBoard()
 
@@ -287,20 +295,20 @@ class App (ShowBase):
             if target == self.playerFaceNode:
                 print "Can't attack yourself."
                 return
-            self.server.attack(index, 'face')
+            self.server.attack(index, 'face', self.playerKey)
         elif target.getTag('zone') == 'face-down':
             if target in self.playerFacedownNodes:
                 print "Can't attack your own facedowns."
                 return
             targetIndex = self.enemyFacedownNodes.index(target)
-            self.server.attackFacedown(index, targetIndex)
+            self.server.attackFacedown(index, targetIndex, self.playerKey)
             print targetIndex
         else:
             if target in self.playerFaceupNodes:
                 print "Can't attack your own faceups."
                 return
             targetIndex = self.enemyFaceupNodes.index(target)
-            self.server.attack(index, targetIndex)
+            self.server.attack(index, targetIndex, self.playerKey)
             print targetIndex
 
         self.makeHand()
@@ -308,7 +316,7 @@ class App (ShowBase):
         self.makeEnemyBoard()
 
 def endPhase ():
-    base.server.endPhase()
+    base.server.endPhase(base.playerKey)
     base.makeHand()
     base.makeBoard()
     base.makeEnemyHand()

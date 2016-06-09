@@ -105,6 +105,8 @@ class OverlordService (rpyc.Service):
     player1 = exposed_Player("Player 1")
     player2 = exposed_Player("Player 2")
 
+    players = {}
+
     def on_connect (self):
         print "A player has connected."
 
@@ -123,7 +125,13 @@ class OverlordService (rpyc.Service):
         turn = not turn
         phase = Phase.reveal
 
-    def exposed_endPhase (self):
+    def exposed_registerPlayer (self, playerName):
+        self.players[playerName] = self.player1 if len(self.players) == 0 else self.player2
+
+    def exposed_endPhase (self, playerKey):
+        if not self.players[playerKey].isActivePlayer():
+            raise IllegalMoveError("It is not your turn.")
+
         global phase
 
         if phase == Phase.reveal:
@@ -153,14 +161,14 @@ class OverlordService (rpyc.Service):
         else:
             return "Unknown phase %d" % phase
 
-    def exposed_getLocalPlayer (self):
-        return self.player1
+    def exposed_getLocalPlayer (self, playerKey):
+        return self.players[playerKey]
 
-    def exposed_getEnemyPlayer (self):
-        return self.player2
+    def exposed_getEnemyPlayer (self, playerKey):
+        return self.player1 if self.players[playerKey] == self.player2 else self.player2
 
-    def exposed_getPlayerHand (self):
-        return self.player1.hand
+    def exposed_getPlayerHand (self, playerKey):
+        return self.players[playerKey].hand
 
     def destroy (self, card):
         if card in self.player1.faceups: self.player1.faceups.remove(card)
@@ -177,7 +185,10 @@ class OverlordService (rpyc.Service):
             self.destroy(c1)
             self.destroy(c2)
 
-    def exposed_attack (self, cardIndex, targetIndex):
+    def exposed_attack (self, cardIndex, targetIndex, playerKey):
+        if not self.players[playerKey].isActivePlayer():
+            raise IllegalMoveError("It is not your turn.")
+
         p1 = self.player1
         p2 = self.player2
 
@@ -191,7 +202,7 @@ class OverlordService (rpyc.Service):
             else:
                 self.fight(p2.faceups[targetIndex], p1.faceups[cardIndex])
 
-    def exposed_attackFacedown (self, cardIndex, targetIndex):
+    def exposed_attackFacedown (self, cardIndex, targetIndex, playerKey):
         p1 = self.player1
         p2 = self.player2
         self.fight(p2.facedowns[targetIndex], p1.faceups[cardIndex])
