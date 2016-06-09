@@ -115,7 +115,7 @@ class App (ShowBase):
                 pos=(0, 0, -0.5),
                 scale=(0.1, 0.1, 0.1),
                 relief=None,
-                command=endPhase
+                command=self.endPhase
                 )
         self.endPhaseLabel = OnscreenText(
                 text=self.server.getPhase(),
@@ -315,18 +315,18 @@ class App (ShowBase):
         self.makeBoard()
         self.makeEnemyBoard()
 
-def endPhase ():
-    base.server.endPhase(base.playerKey)
-    base.makeHand()
-    base.makeBoard()
-    base.makeEnemyHand()
-    base.makeEnemyBoard()
-    base.endPhaseLabel.text = base.server.getPhase()
+    def endPhase (self):
+        self.server.endPhase(base.playerKey)
+        self.makeHand()
+        self..makeBoard()
+        self.makeEnemyHand()
+        self.makeEnemyBoard()
+        self.endPhaseLabel.text = base.server.getPhase()
 
-def endTurn ():
-    base.server.endTurn()
-    base.makeHand()
-    base.makeBoard()
+    def endTurn ():
+        self.server.endTurn()
+        self.makeHand()
+        self.makeBoard()
 
 app = App()
 handler = MouseHandler()
