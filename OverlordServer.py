@@ -199,8 +199,8 @@ class OverlordService (rpyc.Service):
         if not self.players[playerKey].isActivePlayer():
             raise IllegalMoveError("It is not your turn.")
 
-        p1 = self.player1
-        p2 = self.player2
+        p1 = self.getLocalPlayer(playerKey)
+        p2 = self.getEnemyPlayer(playerKey)
 
         if p1.faceups[cardIndex].hasAttacked:
             raise IllegalMoveError("Can only attack once per turn.")
