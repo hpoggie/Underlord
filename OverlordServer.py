@@ -107,6 +107,8 @@ class OverlordService (rpyc.Service):
 
     players = {}
 
+    redrawCallbacks = []
+
     def on_connect (self):
         print "A player has connected."
 
@@ -128,10 +130,16 @@ class OverlordService (rpyc.Service):
     def exposed_registerPlayer (self, playerName):
         self.players[playerName] = self.player1 if len(self.players) == 0 else self.player2
 
+    def exposed_setRedrawCallback (self, f):
+        self.redrawCallbacks.append(rpyc.async(f))
+
     def exposed_endPhase (self, playerKey):
         if not self.players[playerKey].isActivePlayer():
             raise IllegalMoveError("It is not your turn.")
 
+        self.endPhase()
+
+    def endPhase (self):
         global phase
 
         if phase == Phase.reveal:
@@ -148,6 +156,8 @@ class OverlordService (rpyc.Service):
             pass
         else:
             self.endTurn()
+
+        self.redraw()
 
     def exposed_getPhase (self):
         if phase == Phase.reveal:
@@ -206,6 +216,10 @@ class OverlordService (rpyc.Service):
         p1 = self.player1
         p2 = self.player2
         self.fight(p2.facedowns[targetIndex], p1.faceups[cardIndex])
+
+    def redraw (self):
+        for c in self.redrawCallbacks:
+            c()
 
 if __name__ == "__main__":
     from rpyc.utils.server import ThreadedServer

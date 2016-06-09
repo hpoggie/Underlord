@@ -131,6 +131,9 @@ class App (ShowBase):
         self.makePlayerFace()
         self.makeEnemyFace()
 
+        self.servingThread = rpyc.BgServingThread(self.connection)
+        self.server.setRedrawCallback(self.redraw)
+
     def getLocalPlayer (self):
         return self.server.getLocalPlayer(self.playerKey)
 
@@ -317,16 +320,18 @@ class App (ShowBase):
 
     def endPhase (self):
         self.server.endPhase(base.playerKey)
-        self.makeHand()
-        self..makeBoard()
-        self.makeEnemyHand()
-        self.makeEnemyBoard()
-        self.endPhaseLabel.text = base.server.getPhase()
 
     def endTurn ():
         self.server.endTurn()
         self.makeHand()
         self.makeBoard()
+
+    def redraw (self):
+        self.makeHand()
+        self.makeBoard()
+        self.makeEnemyHand()
+        self.makeEnemyBoard()
+        self.endPhaseLabel.text = base.server.getPhase()
 
 app = App()
 handler = MouseHandler()
