@@ -294,25 +294,23 @@ class App (ShowBase):
 
     def attack (self, card, target):
         index = self.playerFaceupNodes.index(card)
+        targetIndex = 0
         if target.getTag('zone') == 'face':
             if target == self.playerFaceNode:
                 print "Can't attack yourself."
                 return
-            self.server.attack(index, 'face', self.playerKey)
         elif target.getTag('zone') == 'face-down':
             if target in self.playerFacedownNodes:
                 print "Can't attack your own facedowns."
                 return
             targetIndex = self.enemyFacedownNodes.index(target)
-            self.server.attackFacedown(index, targetIndex, self.playerKey)
-            print targetIndex
         else:
             if target in self.playerFaceupNodes:
                 print "Can't attack your own faceups."
                 return
             targetIndex = self.enemyFaceupNodes.index(target)
-            self.server.attack(index, targetIndex, self.playerKey)
-            print targetIndex
+
+        self.server.attack(index, targetIndex, target.getTag('zone'), self.playerKey)
 
         self.makeHand()
         self.makeBoard()

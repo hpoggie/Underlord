@@ -181,10 +181,22 @@ class OverlordService (rpyc.Service):
         return self.players[playerKey].hand
 
     def destroy (self, card):
-        if card in self.player1.faceups: self.player1.faceups.remove(card)
-        if card in self.player1.facedowns: self.player1.faceups.remove(card)
-        if card in self.player2.faceups: self.player2.faceups.remove(card)
-        if card in self.player2.facedowns: self.player2.facedowns.remove(card)
+        try:
+            self.player1.faceups.remove(card)
+        except ValueError:
+            pass
+        try:
+            self.player1.facedowns.remove(card)
+        except ValueError:
+            pass
+        try:
+            self.player2.faceups.remove(card)
+        except ValueError:
+            pass
+        try:
+            self.player2.facedowns.remove(card)
+        except ValueError:
+            pass
 
     def fight (self, c1, c2):
         if c1.rank < c2.rank:
@@ -195,27 +207,26 @@ class OverlordService (rpyc.Service):
             self.destroy(c1)
             self.destroy(c2)
 
-    def exposed_attack (self, cardIndex, targetIndex, playerKey):
+    def exposed_attack (self, cardIndex, targetIndex, zone, playerKey):
         if not self.players[playerKey].isActivePlayer():
             raise IllegalMoveError("It is not your turn.")
 
-        p1 = self.getLocalPlayer(playerKey)
-        p2 = self.getEnemyPlayer(playerKey)
+        p1 = self.exposed_getLocalPlayer(playerKey)
+        p2 = self.exposed_getEnemyPlayer(playerKey)
 
         if p1.faceups[cardIndex].hasAttacked:
             raise IllegalMoveError("Can only attack once per turn.")
         else:
             p1.faceups[cardIndex].hasAttacked = True
 
-            if targetIndex == "face":
+            if zone == 'face':
                 p2.manaCap += p1.faceups[cardIndex].rank
-            else:
+            elif zone == 'face-up':
                 self.fight(p2.faceups[targetIndex], p1.faceups[cardIndex])
-
-    def exposed_attackFacedown (self, cardIndex, targetIndex, playerKey):
-        p1 = self.player1
-        p2 = self.player2
-        self.fight(p2.facedowns[targetIndex], p1.faceups[cardIndex])
+            elif zone == 'face-down':
+                self.fight(p2.facedowns[targetIndex], p1.faceups[cardIndex])
+            else:
+                raise IllegalMoveError("Not a recognized zone.")
 
     def redraw (self):
         for c in self.redrawCallbacks:
