@@ -30,7 +30,7 @@ class MouseHandler (DirectObject):
         self.activeCard = None
 
     def getObjectClickedOn (self):
-        if base.mouseWatcherNode.hasMouse:
+        if base.mouseWatcherNode.hasMouse():
             mpos = base.mouseWatcherNode.getMouse()
             self.pickerRay.setFromLens(base.camNode, mpos.getX(), mpos.getY())
 
