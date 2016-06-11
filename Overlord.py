@@ -106,6 +106,7 @@ class App (ShowBase):
 
         base.cTrav = CollisionTraverser()
         self.handler = CollisionHandlerQueue()
+        self.mouseHandler = MouseHandler()
 
         self.playerIconPath = self.getLocalPlayer().getIconPath()
         self.enemyIconPath = self.getEnemyPlayer().getIconPath()
@@ -332,7 +333,6 @@ class App (ShowBase):
         self.endPhaseLabel.text = base.server.getPhase()
 
 app = App()
-handler = MouseHandler()
 
 from direct.task import Task
 
