@@ -14,6 +14,8 @@ f = open("overlordrc")
 loadPrcFileData("", f.read())
 f.close()
 
+from direct.task import Task
+
 class MouseHandler (DirectObject):
     def __init__ (self):
         self.accept('mouse1', self.onMouse1, [])
@@ -128,6 +130,13 @@ class App (ShowBase):
                 pos=(0, -0.7, 0),
                 scale=(0.1, 0.1, 0.1)
                 )
+
+        self.cardStatsLabel = OnscreenText(
+                text="",
+                pos=(-0.7, -0.7, 0),
+                scale=(0.1, 0.1, 0.1)
+                )
+        self.taskMgr.add(self.mouseOverTask, "MouseOverTask")
 
         print self.getLocalPlayer().getHandSize()
         self.makeHand()
@@ -337,9 +346,16 @@ class App (ShowBase):
         self.makeEnemyBoard()
         self.endPhaseLabel.text = base.server.getPhase()
 
-app = App()
+    def mouseOverTask (self, name):
+        if self.mouseWatcherNode.hasMouse():
+            pickedObj = self.mouseHandler.getObjectClickedOn()
+            if pickedObj and pickedObj.getTag('zone') == 'hand':
+                card = self.getLocalPlayer().getHand(self.playerHandNodes.index(pickedObj))
+                self.cardStatsLabel.text = "%d %d" % (card.getCost(), card.getRank())
 
-from direct.task import Task
+        return Task.cont
+
+app = App()
 
 def logCameraTask (name):
     print base.camera.getPos()
