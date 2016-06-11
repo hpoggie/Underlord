@@ -39,42 +39,47 @@ class MouseHandler (DirectObject):
                 base.handler.sortEntries()
                 pickedObj = base.handler.getEntry(0).getIntoNodePath()
                 pickedObj = pickedObj.findNetTag('zone')
-                if not pickedObj.isEmpty():
-                    if pickedObj.getTag('zone') == 'hand':
-                        try:
-                            base.playCard(pickedObj)
-                        except IllegalMoveError as error:
-                            print error
-                    elif pickedObj.getTag('zone') == 'face-down':
-                        if not self.activeCard:
-                            try:
-                                base.revealFacedown(pickedObj)
-                            except IllegalMoveError as error:
-                                print error
-                        else:
-                            print self.activeCard.name + " attacks " + pickedObj.name
-                            base.attack(self.activeCard, pickedObj)
-                            self.activeCard = None
-                    elif pickedObj.getTag('zone') == 'face-up':
-                        if not self.activeCard:
-                            self.activeCard = pickedObj
-                        else:
-                            base.attack(self.activeCard, pickedObj)
-                            self.activeCard = None
-                    elif pickedObj.getTag('zone') == 'face':
-                        if self.activeCard:
-                            base.attack(self.activeCard, pickedObj)
-                            self.activeCard = None
-                        else:
-                            if pickedObj == base.playerFaceNode:
-                                print "p. mc %d" %base.getLocalPlayer().getManaCap()
-                            elif pickedObj == base.enemyFaceNode:
-                                print "e. mc %d" %base.getEnemyPlayer().getManaCap()
+                return pickedObj
+
+    def doClick (self):
+        pickedObj = self.getObjectClickedOn()
+
+        if not pickedObj.isEmpty():
+            if pickedObj.getTag('zone') == 'hand':
+                try:
+                    base.playCard(pickedObj)
+                except IllegalMoveError as error:
+                    print error
+            elif pickedObj.getTag('zone') == 'face-down':
+                if not self.activeCard:
+                    try:
+                        base.revealFacedown(pickedObj)
+                    except IllegalMoveError as error:
+                        print error
                 else:
+                    print self.activeCard.name + " attacks " + pickedObj.name
+                    base.attack(self.activeCard, pickedObj)
                     self.activeCard = None
+            elif pickedObj.getTag('zone') == 'face-up':
+                if not self.activeCard:
+                    self.activeCard = pickedObj
+                else:
+                    base.attack(self.activeCard, pickedObj)
+                    self.activeCard = None
+            elif pickedObj.getTag('zone') == 'face':
+                if self.activeCard:
+                    base.attack(self.activeCard, pickedObj)
+                    self.activeCard = None
+                else:
+                    if pickedObj == base.playerFaceNode:
+                        print "p. mc %d" %base.getLocalPlayer().getManaCap()
+                    elif pickedObj == base.enemyFaceNode:
+                        print "e. mc %d" %base.getEnemyPlayer().getManaCap()
+        else:
+            self.activeCard = None
 
     def onMouse1 (self):
-        self.getObjectClickedOn()
+        self.doClick()
 
 class App (ShowBase):
     handPos = 0.0
