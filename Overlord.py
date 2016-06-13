@@ -46,7 +46,7 @@ class MouseHandler (DirectObject):
     def doClick (self):
         pickedObj = self.getObjectClickedOn()
 
-        if not pickedObj.isEmpty():
+        if pickedObj and not pickedObj.isEmpty():
             if pickedObj.getTag('zone') == 'hand':
                 try:
                     base.playCard(pickedObj)
