@@ -302,6 +302,8 @@ class App (ShowBase):
         self.makeBoard()
 
     def revealFacedown (self, card):
+        if not card in self.playerFacedownNodes:
+            raise IllegalMoveError("That card is not one of your facedowns.")
         index = self.playerFacedownNodes.index(card)
         self.getLocalPlayer().revealFacedown(index)
         self.makeHand()
