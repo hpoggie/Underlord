@@ -1,6 +1,7 @@
 import rpyc
 from random import shuffle
 from Templars import Templars
+from copy import deepcopy
 
 startHandSize = 5
 maxManaCap = 15
@@ -32,7 +33,7 @@ class OverlordService (rpyc.Service):
             self.facedowns = []
             self.faceups = []
             self.manaCap = 1
-            self.deck = list(faction.deck)
+            self.deck = deepcopy(faction.deck)
 
             self.iconPath = faction.iconPath
             self.cardBack = faction.cardBack
