@@ -19,6 +19,13 @@ class Phase ():
 class IllegalMoveError (Exception):
     pass
 
+class DuplicateCardError (Exception):
+    def __init__ (self, card):
+        self.card = card
+
+    def __print__ (self):
+        print "Card " + card + " appears more than once."
+
 turn = Turn.p1
 phase = Phase.reveal
 
@@ -34,6 +41,13 @@ class OverlordService (rpyc.Service):
             self.faceups = []
             self.manaCap = 1
             self.deck = deepcopy(faction.deck)
+
+            for card in self.deck:
+                i = 0
+                for card2 in self.deck:
+                    if card == card2:
+                        i += 1
+                        if i > 1: raise DuplicateCardError(card)
 
             self.iconPath = faction.iconPath
             self.cardBack = faction.cardBack
