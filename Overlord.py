@@ -334,7 +334,10 @@ class App (ShowBase):
         self.makeEnemyBoard()
 
     def endPhase (self):
-        self.server.endPhase(base.playerKey)
+        try:
+            self.server.endPhase(base.playerKey)
+        except Exception as e:
+            print e
 
     def endTurn ():
         self.server.endTurn()
