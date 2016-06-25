@@ -334,10 +334,7 @@ class App (ShowBase):
         self.makeEnemyBoard()
 
     def endPhase (self):
-        try:
-            self.server.endPhase(base.playerKey)
-        except IllegalMoveError as error:
-            print error
+        self.server.endPhase(base.playerKey)
 
     def endTurn ():
         self.server.endTurn()
