@@ -1,12 +1,31 @@
+import types
+
 class Card:
+    owner = None
+
     name = "Placeholder Name"
     image = "concentric-crescents.png"
     cost = 0
     rank = 0
     spell = False
 
+    def defaultGetCost (self):
+        return self.cost
+
+    def defaultGetRank (self):
+        return self.rank
+
+    getCost = defaultGetCost
+    getRank = defaultGetRank
+
     def __init__ (self, attributes):
         self.__dict__ = attributes.copy()
+
+    def setCostAbility (self):
+        self.getCost = types.MethodType(func, self)
+
+    def setRankAbility (self, func):
+        self.getRank = types.MethodType(func, self)
 
     def exposed_getName (self):
         return self.name
@@ -15,10 +34,10 @@ class Card:
         return self.image
 
     def exposed_getCost (self):
-        return self.cost
+        return self.getCost()
 
     def exposed_getRank (self):
-        return self.rank
+        return self.getRank()
 
     def __print__ (self):
         print self.name + " cost " + cost

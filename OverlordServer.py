@@ -43,6 +43,8 @@ class OverlordService (rpyc.Service):
             self.deck = deepcopy(faction.deck)
 
             for card in self.deck:
+                card.owner = self
+
                 i = 0
                 for card2 in self.deck:
                     if card == card2:
