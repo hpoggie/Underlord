@@ -45,6 +45,7 @@ class OverlordService (rpyc.Service):
             self.faceups = []
             self.manaCap = 1
             self.deck = deepcopy(faction.deck)
+            self.graveyard = []
 
             for card in self.deck:
                 card.owner = self
@@ -204,22 +205,17 @@ class OverlordService (rpyc.Service):
         return self.players[playerKey].hand
 
     def destroy (self, card):
-        try:
-            self.player1.faceups.remove(card)
-        except ValueError:
-            pass
-        try:
-            self.player1.facedowns.remove(card)
-        except ValueError:
-            pass
-        try:
-            self.player2.faceups.remove(card)
-        except ValueError:
-            pass
-        try:
-            self.player2.facedowns.remove(card)
-        except ValueError:
-            pass
+        for pl in self.exposed_Player.instances:
+            try:
+                pl.faceups.remove(card)
+                pl.graveyard.append(card)
+            except ValueError:
+                pass
+            try:
+                pl.facedowns.remove(card)
+                pl.graveyard.append(card)
+            except ValueError:
+                pass
 
     def fight (self, c1, c2):
         if c1.rank < c2.rank:
