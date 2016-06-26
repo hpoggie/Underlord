@@ -15,8 +15,12 @@ class Card:
     def defaultGetRank (self):
         return self.rank
 
+    def defaultOnSpawn (self):
+        print "card has spawned"
+
     getCost = defaultGetCost
     getRank = defaultGetRank
+    onSpawn = defaultOnSpawn
 
     def __init__ (self, attributes):
         self.__dict__ = attributes.copy()
@@ -26,6 +30,9 @@ class Card:
 
     def setRankAbility (self, func):
         self.getRank = types.MethodType(func, self)
+
+    def setSpawnAbility (self, func):
+        self.onSpawn = types.MethodType(func, self)
 
     def exposed_getName (self):
         return self.name
