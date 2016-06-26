@@ -92,8 +92,10 @@ class OverlordService (rpyc.Service):
                 raise IllegalMoveError("Not enough mana.")
             else:
                 card = self.facedowns.pop(index)
-                self.faceups.append(card)
                 self.mana -= card.cost
+                if not card.spell:
+                    self.faceups.append(card)
+                card.onSpawn()
 
         def isActivePlayer (self):
             return turn == Turn.p1 if self.name == "Player 1" else turn == Turn.p2
