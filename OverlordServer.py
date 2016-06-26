@@ -31,9 +31,13 @@ phase = Phase.reveal
 
 class OverlordService (rpyc.Service):
     class exposed_Player ():
+        instances = []
+
         mana = 0
 
         def __init__ (self, name, faction=Templars):
+            self.__class__.instances.append(self)
+
             self.name = name
 
             self.hand = []
