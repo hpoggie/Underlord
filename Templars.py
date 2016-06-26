@@ -35,6 +35,7 @@ Templars = Faction({
     'deck': [
         card.one(), card.one(), card.one(), card.one(),
         card.sweep(), card.sweep(),
+        card.spellBlade(),
         strix(),
         equus(),
         equus(),

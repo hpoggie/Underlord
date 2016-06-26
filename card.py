@@ -35,6 +35,9 @@ class Card:
     def setSpawnAbility (self, func):
         self.onSpawn = types.MethodType(func, self)
 
+    def setTargetCallback (self, func):
+        self.onGetTarget = types.MethodType(func, self)
+
     def exposed_getName (self):
         return self.name
 
@@ -113,3 +116,21 @@ def sweep ():
     sweep.setSpawnAbility(sweepAbility)
 
     return sweep
+
+def spellBlade ():
+    def onGetTarget (self, target):
+        self.owner.overlordService.destroy(target)
+
+    def spellBladeAbility (self):
+        self.owner.requestTarget(self)
+
+    spellBlade = Card ({
+        'name': "Spell Blade",
+        'cost': 0,
+        'spell': True,
+        'playsFaceUp': True
+    })
+    spellBlade.setSpawnAbility(spellBladeAbility)
+    spellBlade.setTargetCallback(onGetTarget)
+
+    return spellBlade
