@@ -10,10 +10,17 @@ def strix ():
         })
 
 def equus ():
-    return Card({
+    def equusGetRank (self):
+        return 2 if (self.owner.manaCap % 2 == 0) else 5
+
+    equus = Card({
         'name': "Equus",
-        'image': "horse-head.png"
+        'image': "horse-head.png",
+        'cost': 3,
         })
+    equus.setRankAbility(equusGetRank)
+
+    return equus
 
 def grail ():
     return Card({
