@@ -100,6 +100,8 @@ class OverlordService (rpyc.Service):
                 self.mana -= card.cost
                 if not card.spell:
                     self.faceups.append(card)
+                else:
+                    self.graveyard.append(card)
                 card.onSpawn()
 
         def isActivePlayer (self):
