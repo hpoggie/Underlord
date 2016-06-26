@@ -4,7 +4,7 @@ class Card:
     owner = None
 
     name = "Placeholder Name"
-    image = "concentric-crescents.png"
+    image = "missing.png"
     cost = 0
     rank = 0
     spell = False
