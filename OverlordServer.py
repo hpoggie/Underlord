@@ -104,6 +104,20 @@ class OverlordService (rpyc.Service):
                     self.graveyard.append(card)
                 card.onSpawn()
 
+        def exposed_playFaceup (self, index):
+            if not self.isActivePlayer(): raise IllegalMoveError("Can only play faceups during your turn.")
+            elif phase != Phase.reveal: raise IllegalMoveError("Can only play faceups during reveal phase.")
+            elif not self.hand[index].playsFaceUp: raise IllegalMoveError("That card does not play face-up.")
+            elif self.mana < self.hand[index].cost: raise IllegalMoveError("Not enough mana.")
+            else:
+                card = self.hand.pop(index)
+                self.mana -= card.cost
+                if not card.spell:
+                    self.faceups.append(card)
+                else:
+                    self.graveyard.append(card)
+                card.onSpawn()
+
         def isActivePlayer (self):
             return turn == Turn.p1 if self.name == "Player 1" else turn == Turn.p2
 

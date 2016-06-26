@@ -297,7 +297,10 @@ class App (ShowBase):
             return obj.getTag('card')
 
     def playCard (self, handCard):
-        self.getLocalPlayer().play(self.playerHandNodes.index(handCard))
+        if self.server.getPhase() == "Reveal":
+            self.getLocalPlayer().playFaceup(self.playerHandNodes.index(handCard))
+        else:
+            self.getLocalPlayer().play(self.playerHandNodes.index(handCard))
         self.makeHand()
         self.makeBoard()
 
