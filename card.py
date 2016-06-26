@@ -8,6 +8,7 @@ class Card:
     cost = 0
     rank = 0
     spell = False
+    playsFaceUp = False
 
     def defaultGetCost (self):
         return self.cost
