@@ -34,6 +34,7 @@ Templars = Faction({
     'cardBack': "templar-shield.png",
     'deck': [
         card.one(), card.one(), card.one(), card.one(),
+        card.sweep(), card.sweep(),
         strix(),
         equus(),
         equus(),

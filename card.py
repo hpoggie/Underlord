@@ -97,3 +97,18 @@ def five ():
         'cost': 5,
         'rank': 5
         })
+
+def sweep ():
+    def sweepAbility (self):
+        for player in self.owner.instances:
+            player.faceups = []
+
+    sweep = Card ({
+        'name': "Sweep",
+        'image': "wind-slap.png",
+        'cost': 0,
+        'spell': True
+    })
+    sweep.setSpawnAbility(sweepAbility)
+
+    return sweep
