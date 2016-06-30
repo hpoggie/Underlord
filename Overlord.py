@@ -30,6 +30,7 @@ class MouseHandler (DirectObject):
         base.disableMouse()
 
         self.activeCard = None
+        self.targeting = False
 
     def getObjectClickedOn (self):
         if base.mouseWatcherNode.hasMouse():
@@ -45,6 +46,12 @@ class MouseHandler (DirectObject):
 
     def doClick (self):
         pickedObj = self.getObjectClickedOn()
+
+        if self.targeting:
+            if pickedObj != None:
+                base.acceptTarget(pickedObj)
+                self.targeting = False
+            return
 
         if pickedObj and not pickedObj.isEmpty():
             if pickedObj.getTag('zone') == 'hand':
@@ -148,6 +155,18 @@ class App (ShowBase):
 
         self.servingThread = rpyc.BgServingThread(self.connection)
         self.server.setRedrawCallback(self.redraw)
+        self.server.addTargetCallback(self.playerKey, self.getTarget)
+
+    def getTarget (self):
+        self.mouseHandler.targeting = True
+
+    def acceptTarget (self, target):
+        if target.getTag('zone') == 'face-down':
+            index = self.enemyFacedownNodes.index(target)
+        else:
+            index = -1
+
+        self.server.getLocalPlayer(self.playerKey).acceptTarget(index)
 
     def getLocalPlayer (self):
         return self.server.getLocalPlayer(self.playerKey)

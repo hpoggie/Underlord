@@ -63,6 +63,8 @@ class OverlordService (rpyc.Service):
             for i in range(0, startHandSize):
                 self.drawCard()
 
+            self.targetingCardInstance = None
+
         def drawCard (self):
             if len(self.deck) != 0:
                 self.hand.append(self.deck.pop())
@@ -121,6 +123,19 @@ class OverlordService (rpyc.Service):
         def isActivePlayer (self):
             return turn == Turn.p1 if self.name == "Player 1" else turn == Turn.p2
 
+        def requestTarget (self, cardInstance):
+            self.targetingCardInstance = cardInstance
+            key = [key for key in self.overlordService.players if self.overlordService.players[key] == self][0]
+            self.overlordService.getTarget(key)
+
+        def exposed_acceptTarget (self, targetIndex):
+            enemy = None
+            for pl in self.instances:
+                if pl != self:
+                    enemy = pl
+            self.targetingCardInstance.onGetTarget(enemy.facedowns[targetIndex])
+            self.targetingCardInstance = None
+
         def exposed_getHandSize (self):
             return len(self.hand)
 
@@ -148,9 +163,12 @@ class OverlordService (rpyc.Service):
     players = {}
 
     redrawCallbacks = []
+    targetCallbacks = {}
 
     def on_connect (self):
         print "A player has connected."
+        self.player1.overlordService = self
+        self.player2.overlordService = self
 
     def on_disconnect (self):
         print "A player has disconnected."
@@ -172,6 +190,10 @@ class OverlordService (rpyc.Service):
 
     def exposed_setRedrawCallback (self, f):
         self.redrawCallbacks.append(rpyc.async(f))
+
+    def exposed_addTargetCallback (self, playerKey, f):
+        self.targetCallbacks[playerKey] = f
+        print "adding target callback"
 
     def exposed_endPhase (self, playerKey):
         if not self.players[playerKey].isActivePlayer():
@@ -219,6 +241,9 @@ class OverlordService (rpyc.Service):
 
     def exposed_getPlayerHand (self, playerKey):
         return self.players[playerKey].hand
+
+    def getTarget (self, playerKey):
+        self.targetCallbacks[playerKey]()
 
     def destroy (self, card):
         for pl in self.exposed_Player.instances:
