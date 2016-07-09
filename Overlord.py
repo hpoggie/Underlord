@@ -317,9 +317,11 @@ class App (ShowBase):
 
     def playCard (self, handCard):
         if self.server.getPhase() == "Reveal":
-            self.getLocalPlayer().playFaceup(self.playerHandNodes.index(handCard))
+            try: self.getLocalPlayer().playFaceup(self.playerHandNodes.index(handCard))
+            except Exception as e: print e
         else:
-            self.getLocalPlayer().play(self.playerHandNodes.index(handCard))
+            try: self.getLocalPlayer().play(self.playerHandNodes.index(handCard))
+            except Exception as e: print e
         self.makeHand()
         self.makeBoard()
 
@@ -327,7 +329,8 @@ class App (ShowBase):
         if not card in self.playerFacedownNodes:
             raise IllegalMoveError("That card is not one of your facedowns.")
         index = self.playerFacedownNodes.index(card)
-        self.getLocalPlayer().revealFacedown(index)
+        try: self.getLocalPlayer().revealFacedown(index)
+        except Exception as e: print e
         self.makeHand()
         self.makeBoard()
 
@@ -349,7 +352,8 @@ class App (ShowBase):
                 return
             targetIndex = self.enemyFaceupNodes.index(target)
 
-        self.server.attack(index, targetIndex, target.getTag('zone'), self.playerKey)
+        try: self.server.attack(index, targetIndex, target.getTag('zone'), self.playerKey)
+        except Exception as e: print e
 
         self.makeHand()
         self.makeBoard()
