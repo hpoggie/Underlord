@@ -126,6 +126,7 @@ def spellBlade ():
 
     spellBlade = Card ({
         'name': "Spell Blade",
+        'image': "wave-strike.png",
         'cost': 0,
         'spell': True,
         'playsFaceUp': True
