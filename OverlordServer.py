@@ -69,16 +69,6 @@ class OverlordService (rpyc.Service):
             if len(self.deck) != 0:
                 self.hand.append(self.deck.pop())
 
-        def exposed_play (self, index):
-            if not self.isActivePlayer():
-                raise IllegalMoveError("Can only play facedowns during your turn.")
-            elif phase != Phase.play:
-                raise IllegalMoveError("Can only play facedowns during play phase.")
-            else:
-                card = self.hand.pop(index)
-                self.facedowns.append(card)
-                card.hasAttacked = False
-
         def printHand (self):
             print "Hand:"
             for card in self.hand:
@@ -88,6 +78,26 @@ class OverlordService (rpyc.Service):
             print "Facedowns:"
             for card in self.facedowns:
                 print card.name
+
+        def isActivePlayer (self):
+            return turn == Turn.p1 if self.name == "Player 1" else turn == Turn.p2
+
+        def requestTarget (self, cardInstance):
+            self.targetingCardInstance = cardInstance
+            key = [key for key in self.overlordService.players if self.overlordService.players[key] == self][0]
+            self.overlordService.getTarget(key)
+
+        #actions
+
+        def exposed_play (self, index):
+            if not self.isActivePlayer():
+                raise IllegalMoveError("Can only play facedowns during your turn.")
+            elif phase != Phase.play:
+                raise IllegalMoveError("Can only play facedowns during play phase.")
+            else:
+                card = self.hand.pop(index)
+                self.facedowns.append(card)
+                card.hasAttacked = False
 
         def exposed_revealFacedown (self, index):
             global phase
@@ -120,14 +130,6 @@ class OverlordService (rpyc.Service):
                     self.graveyard.append(card)
                 card.onSpawn()
 
-        def isActivePlayer (self):
-            return turn == Turn.p1 if self.name == "Player 1" else turn == Turn.p2
-
-        def requestTarget (self, cardInstance):
-            self.targetingCardInstance = cardInstance
-            key = [key for key in self.overlordService.players if self.overlordService.players[key] == self][0]
-            self.overlordService.getTarget(key)
-
         def exposed_acceptTarget (self, targetIndex):
             enemy = None
             for pl in self.instances:
@@ -135,6 +137,8 @@ class OverlordService (rpyc.Service):
                     enemy = pl
             self.targetingCardInstance.onGetTarget(enemy.facedowns[targetIndex])
             self.targetingCardInstance = None
+
+        #getters
 
         def exposed_getHandSize (self):
             return len(self.hand)

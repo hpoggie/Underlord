@@ -95,7 +95,6 @@ class App (ShowBase):
     enemyHandPos = 0.0
     playerFacePos = (0, 0, 1)
     enemyFacePos = (0, 0, -1)
-
     playerHandNodes = []
     enemyHandNodes = []
     fdPos = 0.0
@@ -166,7 +165,7 @@ class App (ShowBase):
         else:
             index = -1
 
-        self.server.getLocalPlayer(self.playerKey).acceptTarget(index)
+        self.getLocalPlayer().acceptTarget(index)
 
     def getLocalPlayer (self):
         return self.server.getLocalPlayer(self.playerKey)
@@ -387,13 +386,5 @@ class App (ShowBase):
         return Task.cont
 
 app = App()
-
-def logCameraTask (name):
-    print base.camera.getPos()
-    return Task.cont
-
-#app.taskMgr.add(logCameraTask, "LogCameraTask")
-
 app.camera.setPos(4, -20, 1.2)
-
 app.run()
