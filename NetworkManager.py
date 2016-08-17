@@ -25,6 +25,9 @@ class NetworkManager:
         self.unreceivedPackets.append((packet, target))
         self.currentId += 1
 
+    def sendInts (self, target, *args):
+        self.send([":"+str(x) for x in args][1:], target)
+
     def popSavedPackets (self):
         while len(self.savedPackets) > 0:
             foundPacket = False
