@@ -26,7 +26,7 @@ class Card:
     def __init__ (self, attributes):
         self.__dict__ = attributes.copy()
 
-    def setCostAbility (self):
+    def setCostAbility (self, func):
         self.getCost = types.MethodType(func, self)
 
     def setRankAbility (self, func):
