@@ -43,6 +43,7 @@ class ClientNetworkManager (NetworkManager):
 
     def onGotPacket (self, packet, addr):
         base = self.base
+        Opcodes = self.Opcodes
         segments = [int(x) for x in packet.split(":")]
         print "got opcode, ", segments[0]
         if segments[0] == Opcodes.updatePlayerHand:
