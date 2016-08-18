@@ -38,17 +38,11 @@ class Card:
     def setTargetCallback (self, func):
         self.onGetTarget = types.MethodType(func, self)
 
-    def exposed_getName (self):
+    def getName (self):
         return self.name
 
-    def exposed_getImage (self):
+    def getImage (self):
         return self.image
-
-    def exposed_getCost (self):
-        return self.getCost()
-
-    def exposed_getRank (self):
-        return self.getRank()
 
     def __print__ (self):
         print self.name + " cost " + cost
