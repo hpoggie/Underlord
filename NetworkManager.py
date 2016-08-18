@@ -26,7 +26,7 @@ class NetworkManager:
         self.currentId += 1
 
     def sendInts (self, target, *args):
-        self.send(":".join([str(x) for x in args]), target)
+        self.send(":".join(str(x) for x in args), target)
 
     def popSavedPackets (self):
         while len(self.savedPackets) > 0:
