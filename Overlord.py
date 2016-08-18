@@ -394,23 +394,23 @@ class App (ShowBase):
                 return
             targetIndex = self.enemyFaceupNodes.index(target)
 
-        try: self.server.attack(index, targetIndex, target.getTag('zone'), self.playerKey)
-        except Exception as e: print e
+        self.networkManager.send(
+            self.serverAddr,
+            ServerNetworkManager.Opcodes.attack,
+            index,
+            targetIndex,
+            target.getTag('zone')
+        )
 
         self.makeHand()
         self.makeBoard()
         self.makeEnemyBoard()
 
     def endPhase (self):
-        try:
-            self.server.endPhase(base.playerKey)
-        except Exception as e:
-            print e
-
-    def endTurn ():
-        self.server.endTurn()
-        self.makeHand()
-        self.makeBoard()
+        self.networkManager.sendInts(
+            self.serverAddr,
+            ServerNetworkManager.Opcodes.endPhase
+        )
 
     def redraw (self):
         self.makeHand()
