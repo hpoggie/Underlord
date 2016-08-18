@@ -319,17 +319,17 @@ class OverlordService:
             self.networkManager.sendInts(
                 pl.addr,
                 ClientNetworkManager.Opcodes.updatePlayerHand,
-                [getCard(c) for c in pl.hand]
+                *(getCard(c) for c in pl.hand)
                 )
             self.networkManager.sendInts(
                 pl.addr,
                 ClientNetworkManager.Opcodes.updatePlayerFacedowns,
-                [getCard(c) for c in pl.facedowns]
+                *(getCard(c) for c in pl.facedowns)
             )
             self.networkManager.sendInts(
                 pl.addr,
                 ClientNetworkManager.Opcodes.updatePlayerFaceups,
-                [getCard(c) for c in pl.faceups]
+                *(getCard(c) for c in pl.faceups)
             )
             self.networkManager.sendInts(
                 pl.addr,
@@ -357,7 +357,7 @@ class OverlordService:
                 self.networkManager.sendInts(
                     pl.addr,
                     ClientNetworkManager.Opcodes.updateEnemyFaceups,
-                    [getCard(c) for c in enemyPlayer.faceups]
+                    *(getCard(c) for c in enemyPlayer.faceups)
                 )
                 self.networkManager.sendInts(
                     pl.addr,
