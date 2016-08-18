@@ -323,18 +323,8 @@ class OverlordService:
                 )
             self.networkManager.sendInts(
                 pl.addr,
-                ClientNetworkManager.Opcodes.updateEnemyHand,
-                len(self.players[(i+1) % 2].hand)
-            )
-            self.networkManager.sendInts(
-                pl.addr,
                 ClientNetworkManager.Opcodes.updatePlayerFacedowns,
                 [getCard(c) for c in pl.facedowns]
-            )
-            self.networkManager.sendInts(
-                pl.addr,
-                ClientNetworkManager.Opcodes.updateEnemyFacedowns,
-                len(self.players[(i+1) % 2].facedowns)
             )
             self.networkManager.sendInts(
                 pl.addr,
@@ -343,24 +333,40 @@ class OverlordService:
             )
             self.networkManager.sendInts(
                 pl.addr,
-                ClientNetworkManager.Opcodes.updateEnemyFaceups,
-                [getCard(c) for c in self.players[(i+1) % 2].faceups]
-            )
-            self.networkManager.sendInts(
-                pl.addr,
                 ClientNetworkManager.Opcodes.updatePlayerManaCap,
                 pl.manaCap
-            )
-            self.networkManager.sendInts(
-                pl.addr,
-                ClientNetworkManager.Opcodes.updateEnemyManaCap,
-                self.players[(i+1) % 2].manaCap
             )
             self.networkManager.sendInts(
                 pl.addr,
                 ClientNetworkManager.Opcodes.updatePhase,
                 phase
             )
+
+            try:
+                enemyPlayer = self.players[(i+1) % 2]
+                self.networkManager.sendInts(
+                    pl.addr,
+                    ClientNetworkManager.Opcodes.updateEnemyHand,
+                    len(enemyPlayer.hand)
+                )
+                self.networkManager.sendInts(
+                    pl.addr,
+                    ClientNetworkManager.Opcodes.updateEnemyFacedowns,
+                    len(enemyPlayer.facedowns)
+                )
+                self.networkManager.sendInts(
+                    pl.addr,
+                    ClientNetworkManager.Opcodes.updateEnemyFaceups,
+                    [getCard(c) for c in enemyPlayer.faceups]
+                )
+                self.networkManager.sendInts(
+                    pl.addr,
+                    ClientNetworkManager.Opcodes.updateEnemyManaCap,
+                    enemyPlayer.manaCap
+                )
+            except IndexError:
+                pass
+
 
 if __name__ == "__main__":
     service = OverlordService()
