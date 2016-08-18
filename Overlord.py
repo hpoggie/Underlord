@@ -417,7 +417,7 @@ class App (ShowBase):
         self.makeBoard()
         self.makeEnemyHand()
         self.makeEnemyBoard()
-        self.endPhaseLabel.text = base.server.getPhase()
+        self.endPhaseLabel.text = str(self.phase)
 
     def mouseOverTask (self, name):
         if self.mouseWatcherNode.hasMouse():
