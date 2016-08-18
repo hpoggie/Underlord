@@ -124,20 +124,28 @@ class App (ShowBase):
     phase = Phase.reveal
 
     def updatePlayerHand (self, cardIds):
+        self.playerHand = [None] * len(cardIds)
         for i, x in enumerate(cardIds):
-            playerHand[i] = Templars.Templars.deck[x]# TODO
+            self.playerHand[i] = Templars.Templars.deck[x]# TODO
+        self.redraw()
 
     def updatePlayerFacedowns (self, cardIds):
+        self.playerFacedowns = [None] * len(cardIds)
         for i, x in enumerate(cardIds):
-            playerFacedowns[i] = Templars.Templars.deck[x]
+            self.playerFacedowns[i] = Templars.Templars.deck[x]
+        self.redraw()
 
     def updatePlayerFaceups (self, cardIds):
+        self.playerFaceups = [None] * len(cardIds)
         for i, x in enumerate(cardIds):
-            playerFaceups[i] = Templars.Templars.deck[x]
+            self.playerFaceups[i] = Templars.Templars.deck[x]
+        self.redraw()
 
     def updateEnemyFaceups (self, cardIds):
+        self.enemyFaceups = [None] * len(cardIds)
         for i, x in enumerate(cardIds):
-            enemyFaceups[i] = Templars.Templars.deck[x]
+            self.enemyFaceups[i] = Templars.Templars.deck[x]
+        self.redraw()
 
     def __init__ (self):
         ShowBase.__init__(self)
