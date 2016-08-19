@@ -9,7 +9,7 @@ class NetworkManager:
     sock.setblocking(0)
 
     unreceivedPackets = [] # all packets we sent that have not yet been received
-    currentId = 0 #the largest currently unallocated id
+    currentIds = dict() #the largest currently unallocated id
 
     lastReceivedPackets = dict()
     savedPackets = [] #out of order packets saved for later
@@ -20,10 +20,16 @@ class NetworkManager:
         self.sock.bind(("", self.port))
 
     def send (self, data, target):
-        packet = str(data) + " " +str(self.currentId)
+        try:
+            packet = str(data) + " " + str(self.currentIds[target])
+        except KeyError:
+            self.currentIds[target] = 0
+            packet = str(data) + " " + str(self.currentIds[target])
+
+        if self.verbose: print "Sent packet " + packet + " to ", target
         self.sock.sendto(packet, target)
         self.unreceivedPackets.append((packet, target))
-        self.currentId += 1
+        self.currentIds[target] += 1
 
     def sendInts (self, target, *args):
         self.send(":".join(str(x) for x in args), target)
@@ -52,6 +58,7 @@ class NetworkManager:
             lastReceivedPacket = self.lastReceivedPackets[addr]
         except KeyError:
             self.lastReceivedPackets[addr] = -1
+            self.currentIds[addr] = 0
             lastReceivedPacket = -1
 
         string, recId = data.split(" ")
