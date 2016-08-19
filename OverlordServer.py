@@ -104,7 +104,7 @@ class ServerNetworkManager (NetworkManager):
             if not pls[addr].isActivePlayer():
                 raise IllegalMoveError("It is not your turn.")
 
-            pls[addr].endPhase(addr)
+            base.endPhase()
 
 turn = Turn.p1
 phase = Phase.reveal
