@@ -14,7 +14,7 @@ class NetworkManager:
     lastReceivedPackets = dict()
     savedPackets = [] #out of order packets saved for later
 
-    verbose = False
+    verbose = True
 
     def startServer (self):
         self.sock.bind(("", self.port))
@@ -74,8 +74,7 @@ class NetworkManager:
             if self.verbose: print "Got duplicate packet ", recId
             self.sock.sendto(str(recId) + " -1", addr)#send back the id
 
-    def update (self):
-        self.recv()
+    def sendUnrecievedPackets (self):
         for p in self.unreceivedPackets:
             self.sock.sendto(p[0], p[1])
 

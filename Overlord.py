@@ -428,8 +428,13 @@ class App (ShowBase):
 
         return Task.cont
 
-    def networkUpdateTask (self, name):
-        self.networkManager.update()
+    lastTime = 0.0
+
+    def networkUpdateTask (self, task):
+        self.networkManager.recv()
+        if task.time - self.lastTime > 1.0:
+            self.networkManager.sendUnrecievedPackets()
+            self.lastTime = task.time
         return Task.cont
 
 app = App()
