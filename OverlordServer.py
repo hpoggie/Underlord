@@ -49,11 +49,11 @@ class ClientNetworkManager (NetworkManager):
         if segments[0] == Opcodes.updatePlayerHand:
             base.updatePlayerHand(segments[1:])
         elif segments[0] == Opcodes.updateEnemyHand:
-            base.enemyHandSize = segments[1]
+            base.updateEnemyHand(segments[1])
         elif segments[0] == Opcodes.updatePlayerFacedowns:
             base.updatePlayerFacedowns(segments[1:])
         elif segments[0] == Opcodes.updateEnemyFacedowns:
-            base.enemyFacedownSize = segments[1]
+            base.updateEnemyFacedowns(segments[1])
         elif segments[0] == Opcodes.updatePlayerFaceups:
             base.updatePlayerFaceups(segments[1:])
         elif segments[0] == Opcodes.updatePlayerManaCap:

@@ -9,7 +9,7 @@ from direct.gui.OnscreenText import OnscreenText
 
 from OverlordServer import IllegalMoveError
 from OverlordServer import ClientNetworkManager, ServerNetworkManager
-from OverlordServer import Phase
+from OverlordServer import Phase, Player
 
 from panda3d.core import loadPrcFileData
 f = open("overlordrc")
@@ -85,9 +85,9 @@ class MouseHandler (DirectObject):
                     self.activeCard = None
                 else:
                     if pickedObj == base.playerFaceNode:
-                        print "p. mc %d" %base.playerManaCap
+                        print "p. mc %d" %base.player.manaCap
                     elif pickedObj == base.enemyFaceNode:
-                        print "e. mc %d" %base.enemyManaCap
+                        print "e. mc %d" %base.enemy.manaCap
         else:
             self.activeCard = None
 
@@ -111,40 +111,42 @@ class App (ShowBase):
     serverIp = "localhost"
     port = 9099
 
-    playerHand = []
-    enemyHandSize = 0
-    playerFacedowns = []
-    enemyFacedownSize = 0
-    playerFaceups = []
-    enemyFaceups = []
-
-    playerManaCap = 0
-    enemyManaCap = 0
-
+    player = Player("Player")
+    enemy = Player("Enemy")
     phase = Phase.reveal
 
     def updatePlayerHand (self, cardIds):
-        self.playerHand = [None] * len(cardIds)
+        self.player.hand = [None] * len(cardIds)
         for i, x in enumerate(cardIds):
-            self.playerHand[i] = Templars.Templars.deck[x]# TODO
+            self.player.hand[i] = Templars.Templars.deck[x]# TODO
+            self.player.hand[i].owner = self.player
         self.redraw()
+
+    def updateEnemyHand (self, size):
+        self.enemy.hand = [None] * size
 
     def updatePlayerFacedowns (self, cardIds):
-        self.playerFacedowns = [None] * len(cardIds)
+        self.player.facedowns = [None] * len(cardIds)
         for i, x in enumerate(cardIds):
-            self.playerFacedowns[i] = Templars.Templars.deck[x]
+            self.player.facedowns[i] = Templars.Templars.deck[x]
+            self.player.facedowns[i].doIControl = True
         self.redraw()
 
+    def updateEnemyFacedowns (self, size):
+        self.enemy.facedowns = [None] * size
+
     def updatePlayerFaceups (self, cardIds):
-        self.playerFaceups = [None] * len(cardIds)
+        self.player.faceups = [None] * len(cardIds)
         for i, x in enumerate(cardIds):
-            self.playerFaceups[i] = Templars.Templars.deck[x]
+            self.player.faceups[i] = Templars.Templars.deck[x]
+            self.player.faceups[i].doIControl = True
         self.redraw()
 
     def updateEnemyFaceups (self, cardIds):
-        self.enemyFaceups = [None] * len(cardIds)
+        self.enemy.faceups = [None] * len(cardIds)
         for i, x in enumerate(cardIds):
-            self.enemyFaceups[i] = Templars.Templars.deck[x]
+            self.enemy.faceups[i] = Templars.Templars.deck[x]
+            self.enemy.faceups[i].doIControl = False
         self.redraw()
 
     def __init__ (self):
@@ -181,7 +183,7 @@ class App (ShowBase):
                 )
         self.taskMgr.add(self.mouseOverTask, "MouseOverTask")
 
-        print len(self.playerHand)
+        print len(self.player.hand)
         self.makeHand()
         self.makeEnemyHand()
         self.makeBoard()
@@ -215,15 +217,15 @@ class App (ShowBase):
             i.detachNode()
             self.handPos = 0.0
         self.playerHandNodes = []
-        for i in range(0, len(self.playerHand)):
-            self.addHandCard(self.playerHand[i])
+        for i in range(0, len(self.player.hand)):
+            self.addHandCard(self.player.hand[i])
 
     def makeEnemyHand (self):
         for i in self.enemyHandNodes:
             i.detachNode()
             self.enemyHandPos = 0.0
         self.enemyHandNodes = []
-        for i in range(0, self.enemyHandSize):
+        for i in range(0, len(self.enemy.hand)):
             self.addEnemyHandCard()
 
     def makeBoard (self):
@@ -234,9 +236,9 @@ class App (ShowBase):
             i.detachNode()
         self.playerFaceupNodes = []
         self.fdPos = 0.0
-        for i in self.playerFaceups:
+        for i in self.player.faceups:
             self.addFaceupCard(i)
-        for i in self.playerFacedowns:
+        for i in self.player.facedowns:
             self.addFdCard(i)
 
     def makeEnemyBoard (self):
@@ -247,9 +249,9 @@ class App (ShowBase):
             i.detachNode()
         self.enemyFaceupNodes = []
         self.enemyFdPos = 0.0
-        for i in self.enemyFaceups:
+        for i in self.enemy.faceups:
             self.addEnemyFaceupCard(i)
-        for i in range(0, self.enemyFacedownSize):
+        for i in range(0, len(self.enemy.facedowns)):
             self.addEnemyFdCard(i)
 
     def addHandCard (self, card):
@@ -423,7 +425,7 @@ class App (ShowBase):
         if self.mouseWatcherNode.hasMouse():
             pickedObj = self.mouseHandler.getObjectClickedOn()
             if pickedObj and pickedObj.getTag('zone') == 'hand':
-                card = self.playerHand[self.playerHandNodes.index(pickedObj)]
+                card = self.player.hand[self.playerHandNodes.index(pickedObj)]
                 self.cardStatsLabel.text = "%d %d" % (card.getCost(), card.getRank())
 
         return Task.cont
