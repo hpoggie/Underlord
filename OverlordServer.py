@@ -1,7 +1,8 @@
-import rpyc
+from NetworkManager import NetworkManager
 from random import shuffle
 from Templars import Templars
 from copy import deepcopy
+import time
 
 startHandSize = 5
 maxManaCap = 15
@@ -26,159 +27,212 @@ class DuplicateCardError (Exception):
     def __print__ (self):
         print "Card " + card + " appears more than once."
 
+class ClientNetworkManager (NetworkManager):
+    base = None
+
+    class Opcodes:
+        updatePlayerHand = 0
+        updateEnemyHand = 1
+        updatePlayerFacedowns = 2
+        updateEnemyFacedowns = 3
+        updatePlayerFaceups = 4
+        updateEnemyFaceups = 5
+        updatePlayerManaCap = 6
+        updateEnemyManaCap = 7
+        updatePhase = 8
+
+    def onGotPacket (self, packet, addr):
+        base = self.base
+        Opcodes = self.Opcodes
+        segments = [int(x) for x in packet.split(":")]
+        print "got opcode, ", segments[0]
+        if segments[0] == Opcodes.updatePlayerHand:
+            base.updatePlayerHand(segments[1:])
+        elif segments[0] == Opcodes.updateEnemyHand:
+            base.updateEnemyHand(segments[1])
+        elif segments[0] == Opcodes.updatePlayerFacedowns:
+            base.updatePlayerFacedowns(segments[1:])
+        elif segments[0] == Opcodes.updateEnemyFacedowns:
+            base.updateEnemyFacedowns(segments[1])
+        elif segments[0] == Opcodes.updatePlayerFaceups:
+            base.updatePlayerFaceups(segments[1:])
+        elif segments[0] == Opcodes.updatePlayerManaCap:
+            base.playerManaCap = segments[1]
+        elif segments[0] == Opcodes.updateEnemyManaCap:
+            base.enemyManaCap = segments[1]
+        elif segments[0] == Opcodes.updatePhase:
+            base.phase = segments[1]
+
+class ServerNetworkManager (NetworkManager):
+    base = None
+
+    class Opcodes:
+        connect = 0
+        revealFacedown = 1
+        playFaceup = 2
+        attack = 3
+        playCard = 4
+        acceptTarget = 5
+        endPhase = 6
+
+    def onGotPacket (self, packet, addr):
+        base = self.base
+        Opcodes = self.__class__.Opcodes
+        operands = [int(x) for x in packet.split(":")]
+        print "got opcode, ", operands[0]
+        pls = { p.addr : p for p in base.players }
+        if operands[0] == Opcodes.connect:
+            if len(base.players) < 2:
+                p = Player("Player " + str(len(base.players)))
+                p.addr = addr
+                p.overlordService = self.base
+                base.players.append(p)
+                base.redraw()
+            else:
+                print "Cannot add more players."
+        elif operands[0] == Opcodes.revealFacedown:
+            pls[addr].revealFacedown(operands[1])
+        elif operands[0] == Opcodes.playFaceup:
+            pls[addr].playFaceup(operands[1])
+        elif operands[0] == Opcodes.attack:
+            pls[addr].attack(operands[1], operands[2])
+        elif operands[0] == Opcodes.playCard:
+            pls[addr].play(operands[1])
+        elif operands[0] == Opcodes.acceptTarget:
+            pls[addr].acceptTarget(operands[1])
+        elif operands[0] == Opcodes.endPhase:
+            if not pls[addr].isActivePlayer():
+                raise IllegalMoveError("It is not your turn.")
+
+            base.endPhase()
+
 turn = Turn.p1
 phase = Phase.reveal
 
-class OverlordService (rpyc.Service):
-    class exposed_Player ():
-        instances = []
+class Player ():
+    instances = []
 
-        mana = 0
+    addr = None
 
-        def __init__ (self, name, faction=Templars):
-            self.__class__.instances.append(self)
+    mana = 0
 
-            self.name = name
+    def __init__ (self, name, faction=Templars):
+        self.__class__.instances.append(self)
 
-            self.hand = []
-            self.facedowns = []
-            self.faceups = []
-            self.manaCap = 1
-            self.deck = deepcopy(faction.deck)
-            self.graveyard = []
+        self.name = name
 
-            for card in self.deck:
-                card.owner = self
+        self.hand = []
+        self.facedowns = []
+        self.faceups = []
+        self.manaCap = 1
+        self.deck = deepcopy(faction.deck)
+        self.graveyard = []
 
-                i = 0
-                for card2 in self.deck:
-                    if card == card2:
-                        i += 1
-                        if i > 1: raise DuplicateCardError(card)
+        for card in self.deck:
+            card.owner = self
 
-            self.iconPath = faction.iconPath
-            self.cardBack = faction.cardBack
+            i = 0
+            for card2 in self.deck:
+                if card == card2:
+                    i += 1
+                    if i > 1: raise DuplicateCardError(card)
 
-            shuffle(self.deck)
-            for i in range(0, startHandSize):
-                self.drawCard()
+        self.iconPath = faction.iconPath
+        self.cardBack = faction.cardBack
 
-            self.targetingCardInstance = None
+        shuffle(self.deck)
+        for i in range(0, startHandSize):
+            self.drawCard()
 
-        def drawCard (self):
-            if len(self.deck) != 0:
-                self.hand.append(self.deck.pop())
+        self.targetingCardInstance = None
 
-        def printHand (self):
-            print "Hand:"
-            for card in self.hand:
-                print card.name
+    def drawCard (self):
+        if len(self.deck) != 0:
+            self.hand.append(self.deck.pop())
 
-        def printFacedowns (self):
-            print "Facedowns:"
-            for card in self.facedowns:
-                print card.name
+    def printHand (self):
+        print "Hand:"
+        for card in self.hand:
+            print card.name
 
-        def isActivePlayer (self):
-            return turn == Turn.p1 if self.name == "Player 1" else turn == Turn.p2
+    def printFacedowns (self):
+        print "Facedowns:"
+        for card in self.facedowns:
+            print card.name
 
-        def requestTarget (self, cardInstance):
-            self.targetingCardInstance = cardInstance
-            key = [key for key in self.overlordService.players if self.overlordService.players[key] == self][0]
-            self.overlordService.getTarget(key)
+    def isActivePlayer (self):
+        return turn == Turn.p1 if self.name == "Player 1" else turn == Turn.p2
 
-        #actions
+    def requestTarget (self, cardInstance):
+        self.targetingCardInstance = cardInstance
+        key = [key for key in self.overlordService.players if self.overlordService.players[key] == self][0]
+        self.overlordService.getTarget(key)
 
-        def exposed_play (self, index):
-            if not self.isActivePlayer():
-                raise IllegalMoveError("Can only play facedowns during your turn.")
-            elif phase != Phase.play:
-                raise IllegalMoveError("Can only play facedowns during play phase.")
+    #actions
+
+    def play (self, index):
+        if not self.isActivePlayer():
+            raise IllegalMoveError("Can only play facedowns during your turn.")
+        elif phase != Phase.play:
+            raise IllegalMoveError("Can only play facedowns during play phase.")
+        else:
+            card = self.hand.pop(index)
+            self.facedowns.append(card)
+            card.hasAttacked = False
+
+    def revealFacedown (self, index):
+        global phase
+        if not self.isActivePlayer():
+            raise IllegalMoveError("Can only reveal facedowns during your turn.")
+        elif phase != Phase.reveal:
+            raise IllegalMoveError("Can only reveal facedowns during reveal phase.")
+        elif self.mana < self.facedowns[index].cost:
+            raise IllegalMoveError("Not enough mana.")
+        else:
+            card = self.facedowns.pop(index)
+            self.mana -= card.cost
+            if not card.spell:
+                self.faceups.append(card)
             else:
-                card = self.hand.pop(index)
-                self.facedowns.append(card)
-                card.hasAttacked = False
+                self.graveyard.append(card)
+            card.onSpawn()
 
-        def exposed_revealFacedown (self, index):
-            global phase
-            if not self.isActivePlayer():
-                raise IllegalMoveError("Can only reveal facedowns during your turn.")
-            elif phase != Phase.reveal:
-                raise IllegalMoveError("Can only reveal facedowns during reveal phase.")
-            elif self.mana < self.facedowns[index].cost:
-                raise IllegalMoveError("Not enough mana.")
+    def playFaceup (self, index):
+        if not self.isActivePlayer(): raise IllegalMoveError("Can only play faceups during your turn.")
+        elif phase != Phase.reveal: raise IllegalMoveError("Can only play faceups during reveal phase.")
+        elif not self.hand[index].playsFaceUp: raise IllegalMoveError("That card does not play face-up.")
+        elif self.mana < self.hand[index].cost: raise IllegalMoveError("Not enough mana.")
+        else:
+            card = self.hand.pop(index)
+            self.mana -= card.cost
+            if not card.spell:
+                self.faceups.append(card)
             else:
-                card = self.facedowns.pop(index)
-                self.mana -= card.cost
-                if not card.spell:
-                    self.faceups.append(card)
-                else:
-                    self.graveyard.append(card)
-                card.onSpawn()
+                self.graveyard.append(card)
+            card.onSpawn()
 
-        def exposed_playFaceup (self, index):
-            if not self.isActivePlayer(): raise IllegalMoveError("Can only play faceups during your turn.")
-            elif phase != Phase.reveal: raise IllegalMoveError("Can only play faceups during reveal phase.")
-            elif not self.hand[index].playsFaceUp: raise IllegalMoveError("That card does not play face-up.")
-            elif self.mana < self.hand[index].cost: raise IllegalMoveError("Not enough mana.")
-            else:
-                card = self.hand.pop(index)
-                self.mana -= card.cost
-                if not card.spell:
-                    self.faceups.append(card)
-                else:
-                    self.graveyard.append(card)
-                card.onSpawn()
+    def acceptTarget (self, targetIndex):
+        enemy = None
+        for pl in self.instances:
+            if pl != self:
+                enemy = pl
+        self.targetingCardInstance.onGetTarget(enemy.facedowns[targetIndex])
+        self.targetingCardInstance = None
 
-        def exposed_acceptTarget (self, targetIndex):
-            enemy = None
-            for pl in self.instances:
-                if pl != self:
-                    enemy = pl
-            self.targetingCardInstance.onGetTarget(enemy.facedowns[targetIndex])
-            self.targetingCardInstance = None
+class OverlordService:
 
-        #getters
+    def __init__ (self):
+        self.networkManager = ServerNetworkManager()
+        self.networkManager.startServer()
+        self.networkManager.base = self
 
-        def exposed_getHandSize (self):
-            return len(self.hand)
-
-        def exposed_getHand (self, index):
-            return self.hand[index]
-
-        def exposed_getFaceups (self):
-            return self.faceups
-
-        def exposed_getFacedowns (self):
-            return self.facedowns
-
-        def exposed_getIconPath (self):
-            return self.iconPath
-
-        def exposed_getCardBack (self):
-            return self.cardBack
-
-        def exposed_getManaCap (self):
-            return self.manaCap
-
-    player1 = exposed_Player("Player 1")
-    player2 = exposed_Player("Player 2")
-
-    players = {}
+    players = []
 
     redrawCallbacks = []
     targetCallbacks = {}
 
-    def on_connect (self):
-        print "A player has connected."
-        self.player1.overlordService = self
-        self.player2.overlordService = self
-
-    def on_disconnect (self):
-        print "A player has disconnected."
-
     def getActivePlayer (self):
-        return self.player1 if turn == Turn.p1 else self.player2
+        return self.players[0] if turn == Turn.p1 else self.players[1]
 
     def endTurn (self):
         global turn, phase
@@ -189,23 +243,7 @@ class OverlordService (rpyc.Service):
         turn = not turn
         phase = Phase.reveal
 
-    def exposed_registerPlayer (self, playerName):
-        self.players[playerName] = self.player1 if len(self.players) == 0 else self.player2
-
-    def exposed_setRedrawCallback (self, f):
-        self.redrawCallbacks.append(rpyc.async(f))
-
-    def exposed_addTargetCallback (self, playerKey, f):
-        self.targetCallbacks[playerKey] = f
-        print "adding target callback"
-
-    def exposed_endPhase (self, playerKey):
-        if not self.players[playerKey].isActivePlayer():
-            raise IllegalMoveError("It is not your turn.")
-
-        self.endPhase()
-
-    def endPhase (self):
+    def endPhase (self, addr):
         global phase
 
         if phase == Phase.reveal:
@@ -224,27 +262,6 @@ class OverlordService (rpyc.Service):
             self.endTurn()
 
         self.redraw()
-
-    def exposed_getPhase (self):
-        if phase == Phase.reveal:
-            return "Reveal"
-        elif phase == Phase.draw:
-            return "Draw"
-        elif phase == Phase.attack:
-            return "Attack"
-        elif phase == Phase.play:
-            return "Play"
-        else:
-            return "Unknown phase %d" % phase
-
-    def exposed_getLocalPlayer (self, playerKey):
-        return self.players[playerKey]
-
-    def exposed_getEnemyPlayer (self, playerKey):
-        return self.player1 if self.players[playerKey] == self.player2 else self.player2
-
-    def exposed_getPlayerHand (self, playerKey):
-        return self.players[playerKey].hand
 
     def getTarget (self, playerKey):
         self.targetCallbacks[playerKey]()
@@ -271,7 +288,7 @@ class OverlordService (rpyc.Service):
             self.destroy(c1)
             self.destroy(c2)
 
-    def exposed_attack (self, cardIndex, targetIndex, zone, playerKey):
+    def attack (self, cardIndex, targetIndex, zone, playerKey):
         if not self.players[playerKey].isActivePlayer():
             raise IllegalMoveError("It is not your turn.")
 
@@ -293,10 +310,70 @@ class OverlordService (rpyc.Service):
                 raise IllegalMoveError("Not a recognized zone.")
 
     def redraw (self):
-        for c in self.redrawCallbacks:
-            c()
+        global phase
+        def getCard (c):
+            for i, tc in enumerate(Templars.deck):
+                if tc.name == c.name:
+                    return i
+
+        for i, pl in enumerate(self.players):
+            self.networkManager.sendInts(
+                pl.addr,
+                ClientNetworkManager.Opcodes.updatePlayerHand,
+                *(getCard(c) for c in pl.hand)
+                )
+            self.networkManager.sendInts(
+                pl.addr,
+                ClientNetworkManager.Opcodes.updatePlayerFacedowns,
+                *(getCard(c) for c in pl.facedowns)
+            )
+            self.networkManager.sendInts(
+                pl.addr,
+                ClientNetworkManager.Opcodes.updatePlayerFaceups,
+                *(getCard(c) for c in pl.faceups)
+            )
+            self.networkManager.sendInts(
+                pl.addr,
+                ClientNetworkManager.Opcodes.updatePlayerManaCap,
+                pl.manaCap
+            )
+            self.networkManager.sendInts(
+                pl.addr,
+                ClientNetworkManager.Opcodes.updatePhase,
+                phase
+            )
+
+            try:
+                enemyPlayer = self.players[(i+1) % 2]
+                self.networkManager.sendInts(
+                    pl.addr,
+                    ClientNetworkManager.Opcodes.updateEnemyHand,
+                    len(enemyPlayer.hand)
+                )
+                self.networkManager.sendInts(
+                    pl.addr,
+                    ClientNetworkManager.Opcodes.updateEnemyFacedowns,
+                    len(enemyPlayer.facedowns)
+                )
+                self.networkManager.sendInts(
+                    pl.addr,
+                    ClientNetworkManager.Opcodes.updateEnemyFaceups,
+                    *(getCard(c) for c in enemyPlayer.faceups)
+                )
+                self.networkManager.sendInts(
+                    pl.addr,
+                    ClientNetworkManager.Opcodes.updateEnemyManaCap,
+                    enemyPlayer.manaCap
+                )
+            except IndexError:
+                pass
+
 
 if __name__ == "__main__":
-    from rpyc.utils.server import ThreadedServer
-    t = ThreadedServer(OverlordService, port = 18861)
-    t.start()
+    service = OverlordService()
+    i = 0
+    while 1:
+        service.networkManager.recv()
+        i = (i+1) % 100
+        if i == 0: service.networkManager.sendUnrecievedPackets()
+        time.sleep(0.01)
