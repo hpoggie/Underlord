@@ -12,16 +12,19 @@ from OverlordServer import ClientNetworkManager, ServerNetworkManager
 from OverlordServer import Phase, Player
 
 from panda3d.core import loadPrcFileData
+from direct.task import Task
+import Templars
+import types
+
 f = open("overlordrc")
 loadPrcFileData("", f.read())
 f.close()
 
-from direct.task import Task
-
-import Templars, types
 
 class MouseHandler (DirectObject):
-    def __init__ (self):
+    showCollisions = False
+
+    def __init__(self):
         self.accept('mouse1', self.onMouse1, [])
 
         pickerNode = CollisionNode('mouseRay')
@@ -30,13 +33,14 @@ class MouseHandler (DirectObject):
         self.pickerRay = CollisionRay()
         pickerNode.addSolid(self.pickerRay)
         base.cTrav.addCollider(pickerNP, base.handler)
-        #base.cTrav.showCollisions(render)
+        if self.showCollisions:
+            base.cTrav.showCollisions(render)
         base.disableMouse()
 
         self.activeCard = None
         self.targeting = False
 
-    def getObjectClickedOn (self):
+    def getObjectClickedOn(self):
         if base.mouseWatcherNode.hasMouse():
             mpos = base.mouseWatcherNode.getMouse()
             self.pickerRay.setFromLens(base.camNode, mpos.getX(), mpos.getY())
@@ -48,11 +52,11 @@ class MouseHandler (DirectObject):
                 pickedObj = pickedObj.findNetTag('zone')
                 return pickedObj
 
-    def doClick (self):
+    def doClick(self):
         pickedObj = self.getObjectClickedOn()
 
         if self.targeting:
-            if pickedObj != None:
+            if pickedObj is not None:
                 base.acceptTarget(pickedObj)
                 self.targeting = False
             return
@@ -85,14 +89,15 @@ class MouseHandler (DirectObject):
                     self.activeCard = None
                 else:
                     if pickedObj == base.playerFaceNode:
-                        print "p. mc %d" %base.player.manaCap
+                        print "p. mc %d" % base.player.manaCap
                     elif pickedObj == base.enemyFaceNode:
-                        print "e. mc %d" %base.enemy.manaCap
+                        print "e. mc %d" % base.enemy.manaCap
         else:
             self.activeCard = None
 
-    def onMouse1 (self):
+    def onMouse1(self):
         self.doClick()
+
 
 class App (ShowBase):
     handPos = 0.0
@@ -115,41 +120,41 @@ class App (ShowBase):
     enemy = Player("Enemy")
     phase = Phase.reveal
 
-    def updatePlayerHand (self, cardIds):
+    def updatePlayerHand(self, cardIds):
         self.player.hand = [None] * len(cardIds)
         for i, x in enumerate(cardIds):
-            self.player.hand[i] = Templars.Templars.deck[x]# TODO
+            self.player.hand[i] = Templars.Templars.deck[x]  # TODO
             self.player.hand[i].owner = self.player
         self.redraw()
 
-    def updateEnemyHand (self, size):
+    def updateEnemyHand(self, size):
         self.enemy.hand = [None] * size
 
-    def updatePlayerFacedowns (self, cardIds):
+    def updatePlayerFacedowns(self, cardIds):
         self.player.facedowns = [None] * len(cardIds)
         for i, x in enumerate(cardIds):
             self.player.facedowns[i] = Templars.Templars.deck[x]
             self.player.facedowns[i].doIControl = True
         self.redraw()
 
-    def updateEnemyFacedowns (self, size):
+    def updateEnemyFacedowns(self, size):
         self.enemy.facedowns = [None] * size
 
-    def updatePlayerFaceups (self, cardIds):
+    def updatePlayerFaceups(self, cardIds):
         self.player.faceups = [None] * len(cardIds)
         for i, x in enumerate(cardIds):
             self.player.faceups[i] = Templars.Templars.deck[x]
             self.player.faceups[i].doIControl = True
         self.redraw()
 
-    def updateEnemyFaceups (self, cardIds):
+    def updateEnemyFaceups(self, cardIds):
         self.enemy.faceups = [None] * len(cardIds)
         for i, x in enumerate(cardIds):
             self.enemy.faceups[i] = Templars.Templars.deck[x]
             self.enemy.faceups[i].doIControl = False
         self.redraw()
 
-    def __init__ (self):
+    def __init__(self):
         ShowBase.__init__(self)
         self.scene = self.loader.loadModel("empty.obj")
         self.scene.reparentTo(self.render)
@@ -197,10 +202,10 @@ class App (ShowBase):
         self.taskMgr.add(self.networkUpdateTask, "NetworkUpdateTask")
         self.networkManager.send("0", self.serverAddr)
 
-    def getTarget (self):
+    def getTarget(self):
         self.mouseHandler.targeting = True
 
-    def acceptTarget (self, target):
+    def acceptTarget(self, target):
         if target.getTag('zone') == 'face-down':
             index = self.enemyFacedownNodes.index(target)
         else:
@@ -212,7 +217,7 @@ class App (ShowBase):
             self.serverAddr
             )
 
-    def makeHand (self):
+    def makeHand(self):
         for i in self.playerHandNodes:
             i.detachNode()
             self.handPos = 0.0
@@ -220,7 +225,7 @@ class App (ShowBase):
         for i in range(0, len(self.player.hand)):
             self.addHandCard(self.player.hand[i])
 
-    def makeEnemyHand (self):
+    def makeEnemyHand(self):
         for i in self.enemyHandNodes:
             i.detachNode()
             self.enemyHandPos = 0.0
@@ -228,7 +233,7 @@ class App (ShowBase):
         for i in range(0, len(self.enemy.hand)):
             self.addEnemyHandCard()
 
-    def makeBoard (self):
+    def makeBoard(self):
         for i in self.playerFacedownNodes:
             i.detachNode()
         self.playerFacedownNodes = []
@@ -241,7 +246,7 @@ class App (ShowBase):
         for i in self.player.facedowns:
             self.addFdCard(i)
 
-    def makeEnemyBoard (self):
+    def makeEnemyBoard(self):
         for i in self.enemyFacedownNodes:
             i.detachNode()
         self.enemyFacedownNodes = []
@@ -254,7 +259,7 @@ class App (ShowBase):
         for i in range(0, len(self.enemy.facedowns)):
             self.addEnemyFdCard(i)
 
-    def addHandCard (self, card):
+    def addHandCard(self, card):
         cm = CardMaker(card.getName())
         cardModel = self.render.attachNewNode(cm.generate())
         path = self.playerIconPath + "/" + card.getImage()
@@ -266,7 +271,7 @@ class App (ShowBase):
         self.handPos += 1.1
         self.playerHandNodes.append(cardModel)
 
-    def addEnemyHandCard (self):
+    def addEnemyHandCard(self):
         cm = CardMaker('enemy hand card')
         cardModel = self.render.attachNewNode(cm.generate())
         path = self.enemyIconPath + "/" + self.enemyCardBack
@@ -278,7 +283,7 @@ class App (ShowBase):
         self.enemyHandPos += 1.1
         self.enemyHandNodes.append(cardModel)
 
-    def addFdCard (self, card):
+    def addFdCard(self, card):
         cm = CardMaker('face-down card')
         cardModel = self.render.attachNewNode(cm.generate())
         path = self.playerIconPath + "/" + self.playerCardBack
@@ -290,7 +295,7 @@ class App (ShowBase):
         self.fdPos += 1.1
         self.playerFacedownNodes.append(cardModel)
 
-    def addEnemyFdCard (self, card):
+    def addEnemyFdCard(self, card):
         cm = CardMaker('face-down card')
         cardModel = self.render.attachNewNode(cm.generate())
         path = self.enemyIconPath + "/" + self.enemyCardBack
@@ -302,7 +307,7 @@ class App (ShowBase):
         self.enemyFdPos += 1.1
         self.enemyFacedownNodes.append(cardModel)
 
-    def addFaceupCard (self, card):
+    def addFaceupCard(self, card):
         cm = CardMaker(card.getName())
         cardModel = self.render.attachNewNode(cm.generate())
         path = self.playerIconPath + "/" + card.getImage()
@@ -314,7 +319,7 @@ class App (ShowBase):
         self.fdPos += 1.1
         self.playerFaceupNodes.append(cardModel)
 
-    def addEnemyFaceupCard (self, card):
+    def addEnemyFaceupCard(self, card):
         cm = CardMaker(card.getName())
         cardModel = self.render.attachNewNode(cm.generate())
         path = self.enemyIconPath + "/" + card.getImage()
@@ -326,7 +331,7 @@ class App (ShowBase):
         self.enemyFdPos += 1.1
         self.enemyFaceupNodes.append(cardModel)
 
-    def makePlayerFace (self):
+    def makePlayerFace(self):
         cm = CardMaker("face")
         cardModel = self.render.attachNewNode(cm.generate())
         path = self.playerIconPath + "/" + self.enemyCardBack
@@ -336,7 +341,7 @@ class App (ShowBase):
         cardModel.setTag('zone', 'face')
         self.playerFaceNode = cardModel
 
-    def makeEnemyFace (self):
+    def makeEnemyFace(self):
         cm = CardMaker("face")
         cardModel = self.render.attachNewNode(cm.generate())
         path = self.playerIconPath + "/" + self.enemyCardBack
@@ -346,14 +351,14 @@ class App (ShowBase):
         cardModel.setTag('zone', 'face')
         self.enemyFaceNode = cardModel
 
-    def testEvent (self, event):
+    def testEvent(self, event):
         print event
 
-    def getCard (self, obj):
+    def getCard(self, obj):
         if obj.getTag('zone') == 'hand':
             return obj.getTag('card')
 
-    def playCard (self, handCard):
+    def playCard(self, handCard):
         if self.phase == Phase.reveal:
             self.networkManager.sendInts(
                 ServerNetworkManager.Opcodes.playFaceup,
@@ -367,8 +372,8 @@ class App (ShowBase):
         self.makeHand()
         self.makeBoard()
 
-    def revealFacedown (self, card):
-        if not card in self.playerFacedownNodes:
+    def revealFacedown(self, card):
+        if card not in self.playerFacedownNodes:
             raise IllegalMoveError("That card is not one of your facedowns.")
         index = self.playerFacedownNodes.index(card)
         self.networkManager.sendInts(
@@ -378,7 +383,7 @@ class App (ShowBase):
         self.makeHand()
         self.makeBoard()
 
-    def attack (self, card, target):
+    def attack(self, card, target):
         index = self.playerFaceupNodes.index(card)
         targetIndex = 0
         if target.getTag('zone') == 'face':
@@ -408,31 +413,32 @@ class App (ShowBase):
         self.makeBoard()
         self.makeEnemyBoard()
 
-    def endPhase (self):
+    def endPhase(self):
         self.networkManager.sendInts(
             self.serverAddr,
             ServerNetworkManager.Opcodes.endPhase
         )
 
-    def redraw (self):
+    def redraw(self):
         self.makeHand()
         self.makeBoard()
         self.makeEnemyHand()
         self.makeEnemyBoard()
         self.endPhaseLabel.text = str(self.phase)
 
-    def mouseOverTask (self, name):
+    def mouseOverTask(self, name):
         if self.mouseWatcherNode.hasMouse():
             pickedObj = self.mouseHandler.getObjectClickedOn()
             if pickedObj and pickedObj.getTag('zone') == 'hand':
                 card = self.player.hand[self.playerHandNodes.index(pickedObj)]
-                self.cardStatsLabel.text = "%d %d" % (card.getCost(), card.getRank())
+                label = "%d %d" % (card.getCost(), card.getRank())
+                self.cardStatsLabel.text = label
 
         return Task.cont
 
     lastTime = 0.0
 
-    def networkUpdateTask (self, task):
+    def networkUpdateTask(self, task):
         self.networkManager.recv()
         if task.time - self.lastTime > 1.0:
             self.networkManager.sendUnrecievedPackets()

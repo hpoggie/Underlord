@@ -7,9 +7,11 @@ import time
 startHandSize = 5
 maxManaCap = 15
 
+
 class Turn ():
     p1 = 0
     p2 = 1
+
 
 class Phase ():
     reveal = 0
@@ -17,15 +19,18 @@ class Phase ():
     attack = 2
     play = 3
 
+
 class IllegalMoveError (Exception):
     pass
 
+
 class DuplicateCardError (Exception):
-    def __init__ (self, card):
+    def __init__(self, card):
         self.card = card
 
-    def __print__ (self):
+    def __print__(self):
         print "Card " + card + " appears more than once."
+
 
 class ClientNetworkManager (NetworkManager):
     base = None
@@ -41,7 +46,7 @@ class ClientNetworkManager (NetworkManager):
         updateEnemyManaCap = 7
         updatePhase = 8
 
-    def onGotPacket (self, packet, addr):
+    def onGotPacket(self, packet, addr):
         base = self.base
         Opcodes = self.Opcodes
         segments = [int(x) for x in packet.split(":")]
@@ -63,6 +68,7 @@ class ClientNetworkManager (NetworkManager):
         elif segments[0] == Opcodes.updatePhase:
             base.phase = segments[1]
 
+
 class ServerNetworkManager (NetworkManager):
     base = None
 
@@ -75,12 +81,12 @@ class ServerNetworkManager (NetworkManager):
         acceptTarget = 5
         endPhase = 6
 
-    def onGotPacket (self, packet, addr):
+    def onGotPacket(self, packet, addr):
         base = self.base
         Opcodes = self.__class__.Opcodes
         operands = [int(x) for x in packet.split(":")]
         print "got opcode, ", operands[0]
-        pls = { p.addr : p for p in base.players }
+        pls = {p.addr: p for p in base.players}
         if operands[0] == Opcodes.connect:
             if len(base.players) < 2:
                 p = Player("Player " + str(len(base.players)))
@@ -109,6 +115,7 @@ class ServerNetworkManager (NetworkManager):
 turn = Turn.p1
 phase = Phase.reveal
 
+
 class Player ():
     instances = []
 
@@ -116,7 +123,7 @@ class Player ():
 
     mana = 0
 
-    def __init__ (self, name, faction=Templars):
+    def __init__(self, name, faction=Templars):
         self.__class__.instances.append(self)
 
         self.name = name
@@ -135,7 +142,8 @@ class Player ():
             for card2 in self.deck:
                 if card == card2:
                     i += 1
-                    if i > 1: raise DuplicateCardError(card)
+                    if i > 1:
+                        raise DuplicateCardError(card)
 
         self.iconPath = faction.iconPath
         self.cardBack = faction.cardBack
@@ -146,31 +154,32 @@ class Player ():
 
         self.targetingCardInstance = None
 
-    def drawCard (self):
+    def drawCard(self):
         if len(self.deck) != 0:
             self.hand.append(self.deck.pop())
 
-    def printHand (self):
+    def printHand(self):
         print "Hand:"
         for card in self.hand:
             print card.name
 
-    def printFacedowns (self):
+    def printFacedowns(self):
         print "Facedowns:"
         for card in self.facedowns:
             print card.name
 
-    def isActivePlayer (self):
+    def isActivePlayer(self):
         return turn == Turn.p1 if self.name == "Player 1" else turn == Turn.p2
 
-    def requestTarget (self, cardInstance):
+    def requestTarget(self, cardInstance):
         self.targetingCardInstance = cardInstance
-        key = [key for key in self.overlordService.players if self.overlordService.players[key] == self][0]
+        key = [k for k in self.overlordService.players
+               if self.overlordService.players[k] == self][0]
         self.overlordService.getTarget(key)
 
-    #actions
+    # actions
 
-    def play (self, index):
+    def play(self, index):
         if not self.isActivePlayer():
             raise IllegalMoveError("Can only play facedowns during your turn.")
         elif phase != Phase.play:
@@ -180,7 +189,7 @@ class Player ():
             self.facedowns.append(card)
             card.hasAttacked = False
 
-    def revealFacedown (self, index):
+    def revealFacedown(self, index):
         global phase
         if not self.isActivePlayer():
             raise IllegalMoveError("Can only reveal facedowns during your turn.")
@@ -197,11 +206,15 @@ class Player ():
                 self.graveyard.append(card)
             card.onSpawn()
 
-    def playFaceup (self, index):
-        if not self.isActivePlayer(): raise IllegalMoveError("Can only play faceups during your turn.")
-        elif phase != Phase.reveal: raise IllegalMoveError("Can only play faceups during reveal phase.")
-        elif not self.hand[index].playsFaceUp: raise IllegalMoveError("That card does not play face-up.")
-        elif self.mana < self.hand[index].cost: raise IllegalMoveError("Not enough mana.")
+    def playFaceup(self, index):
+        if not self.isActivePlayer():
+            raise IllegalMoveError("Can only play faceups during your turn.")
+        elif phase != Phase.reveal:
+            raise IllegalMoveError("Can only play faceups during reveal phase.")
+        elif not self.hand[index].playsFaceUp:
+            raise IllegalMoveError("That card does not play face-up.")
+        elif self.mana < self.hand[index].cost:
+            raise IllegalMoveError("Not enough mana.")
         else:
             card = self.hand.pop(index)
             self.mana -= card.cost
@@ -211,7 +224,7 @@ class Player ():
                 self.graveyard.append(card)
             card.onSpawn()
 
-    def acceptTarget (self, targetIndex):
+    def acceptTarget(self, targetIndex):
         enemy = None
         for pl in self.instances:
             if pl != self:
@@ -219,9 +232,10 @@ class Player ():
         self.targetingCardInstance.onGetTarget(enemy.facedowns[targetIndex])
         self.targetingCardInstance = None
 
+
 class OverlordService:
 
-    def __init__ (self):
+    def __init__(self):
         self.networkManager = ServerNetworkManager()
         self.networkManager.startServer()
         self.networkManager.base = self
@@ -231,19 +245,19 @@ class OverlordService:
     redrawCallbacks = []
     targetCallbacks = {}
 
-    def getActivePlayer (self):
+    def getActivePlayer(self):
         return self.players[0] if turn == Turn.p1 else self.players[1]
 
-    def endTurn (self):
+    def endTurn(self):
         global turn, phase
         player = self.getActivePlayer()
         self.getActivePlayer().manaCap += 1
         self.getActivePlayer().mana = self.getActivePlayer().manaCap
-        print "player " +player.name +" mana cap is " +str(player.manaCap)
+        print "player " + player.name + " mana cap is " + str(player.manaCap)
         turn = not turn
         phase = Phase.reveal
 
-    def endPhase (self, addr):
+    def endPhase(self, addr):
         global phase
 
         if phase == Phase.reveal:
@@ -263,10 +277,10 @@ class OverlordService:
 
         self.redraw()
 
-    def getTarget (self, playerKey):
+    def getTarget(self, playerKey):
         self.targetCallbacks[playerKey]()
 
-    def destroy (self, card):
+    def destroy(self, card):
         for pl in self.exposed_Player.instances:
             try:
                 pl.faceups.remove(card)
@@ -279,7 +293,7 @@ class OverlordService:
             except ValueError:
                 pass
 
-    def fight (self, c1, c2):
+    def fight(self, c1, c2):
         if c1.rank < c2.rank:
             self.destroy(c1)
         if c1.rank > c2.rank:
@@ -288,7 +302,7 @@ class OverlordService:
             self.destroy(c1)
             self.destroy(c2)
 
-    def attack (self, cardIndex, targetIndex, zone, playerKey):
+    def attack(self, cardIndex, targetIndex, zone, playerKey):
         if not self.players[playerKey].isActivePlayer():
             raise IllegalMoveError("It is not your turn.")
 
@@ -309,9 +323,10 @@ class OverlordService:
             else:
                 raise IllegalMoveError("Not a recognized zone.")
 
-    def redraw (self):
+    def redraw(self):
         global phase
-        def getCard (c):
+
+        def getCard(c):
             for i, tc in enumerate(Templars.deck):
                 if tc.name == c.name:
                     return i
@@ -375,5 +390,6 @@ if __name__ == "__main__":
     while 1:
         service.networkManager.recv()
         i = (i+1) % 100
-        if i == 0: service.networkManager.sendUnrecievedPackets()
+        if i == 0:
+            service.networkManager.sendUnrecievedPackets()
         time.sleep(0.01)

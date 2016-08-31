@@ -1,5 +1,6 @@
 import types
 
+
 class Card:
     owner = None
 
@@ -10,42 +11,43 @@ class Card:
     spell = False
     playsFaceUp = False
 
-    def defaultGetCost (self):
+    def defaultGetCost(self):
         return self.cost
 
-    def defaultGetRank (self):
+    def defaultGetRank(self):
         return self.rank
 
-    def defaultOnSpawn (self):
+    def defaultOnSpawn(self):
         print "card has spawned"
 
     getCost = defaultGetCost
     getRank = defaultGetRank
     onSpawn = defaultOnSpawn
 
-    def __init__ (self, attributes):
+    def __init__(self, attributes):
         self.__dict__ = attributes.copy()
 
-    def setCostAbility (self, func):
+    def setCostAbility(self, func):
         self.getCost = types.MethodType(func, self)
 
-    def setRankAbility (self, func):
+    def setRankAbility(self, func):
         self.getRank = types.MethodType(func, self)
 
-    def setSpawnAbility (self, func):
+    def setSpawnAbility(self, func):
         self.onSpawn = types.MethodType(func, self)
 
-    def setTargetCallback (self, func):
+    def setTargetCallback(self, func):
         self.onGetTarget = types.MethodType(func, self)
 
-    def getName (self):
+    def getName(self):
         return self.name
 
-    def getImage (self):
+    def getImage(self):
         return self.image
 
-    def __print__ (self):
+    def __print__(self):
         print self.name + " cost " + cost
+
 
 class Faction:
     name = "My Faction"
@@ -53,10 +55,11 @@ class Faction:
     cardBack = "my-faction-back.png"
     deck = []
 
-    def __init__ (self, attributes):
+    def __init__(self, attributes):
         self.__dict__ = attributes.copy()
 
-def one ():
+
+def one():
     return Card({
         'name': "One",
         'image': "dice-six-faces-one.png",
@@ -64,7 +67,8 @@ def one ():
         'rank': 1
         })
 
-def two ():
+
+def two():
     return Card({
         'name': "Two",
         'image': "dice-six-faces-two.png",
@@ -72,7 +76,8 @@ def two ():
         'rank': 2
         })
 
-def three ():
+
+def three():
     return Card({
         'name': "Three",
         'image': "dice-six-faces-three.png",
@@ -80,7 +85,8 @@ def three ():
         'rank': 3
         })
 
-def four ():
+
+def four():
     return Card({
         'name': "Four",
         'image': "dice-six-faces-four.png",
@@ -88,7 +94,8 @@ def four ():
         'rank': 4
         })
 
-def five ():
+
+def five():
     return Card({
         'name': "Five",
         'image': "dice-six-faces-five.png",
@@ -96,12 +103,13 @@ def five ():
         'rank': 5
         })
 
-def sweep ():
-    def sweepAbility (self):
+
+def sweep():
+    def sweepAbility(self):
         for player in self.owner.instances:
             player.faceups = []
 
-    sweep = Card ({
+    sweep = Card({
         'name': "Sweep",
         'image': "wind-slap.png",
         'cost': 0,
@@ -111,14 +119,15 @@ def sweep ():
 
     return sweep
 
-def spellBlade ():
-    def onGetTarget (self, target):
+
+def spellBlade():
+    def onGetTarget(self, target):
         self.owner.overlordService.destroy(target)
 
-    def spellBladeAbility (self):
+    def spellBladeAbility(self):
         self.owner.requestTarget(self)
 
-    spellBlade = Card ({
+    spellBlade = Card({
         'name': "Spell Blade",
         'image': "wave-strike.png",
         'cost': 0,

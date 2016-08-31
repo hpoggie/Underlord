@@ -1,7 +1,8 @@
 import card
 from card import Card, Faction
 
-def strix ():
+
+def strix():
     return Card({
         'name': "Strix",
         'image': "owl.png",
@@ -9,8 +10,9 @@ def strix ():
         'rank': 1
         })
 
-def equus ():
-    def equusGetRank (self):
+
+def equus():
+    def equusGetRank(self):
         return 2 if (self.owner.manaCap % 2 == 0) else 5
 
     equus = Card({
@@ -22,7 +24,8 @@ def equus ():
 
     return equus
 
-def grail ():
+
+def grail():
     return Card({
         'name': "Grail",
         'image': "holy-grail.png"
