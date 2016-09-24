@@ -20,10 +20,6 @@ class Phase ():
     play = 3
 
 
-class IllegalMoveError (Exception):
-    pass
-
-
 class DuplicateCardError (Exception):
     def __init__(self, card):
         self.card = card
@@ -108,9 +104,9 @@ class ServerNetworkManager (NetworkManager):
             pls[addr].acceptTarget(operands[1])
         elif operands[0] == Opcodes.endPhase:
             if not pls[addr].isActivePlayer():
-                raise IllegalMoveError("It is not your turn.")
-
-            base.endPhase()
+                print "It is not your turn."
+            else:
+                base.endPhase()
 
 turn = Turn.p1
 phase = Phase.reveal
@@ -181,9 +177,9 @@ class Player ():
 
     def play(self, index):
         if not self.isActivePlayer():
-            raise IllegalMoveError("Can only play facedowns during your turn.")
+            print "Can only play facedowns during your turn."
         elif phase != Phase.play:
-            raise IllegalMoveError("Can only play facedowns during play phase.")
+            print "Can only play facedowns during play phase."
         else:
             card = self.hand.pop(index)
             self.facedowns.append(card)
@@ -192,11 +188,11 @@ class Player ():
     def revealFacedown(self, index):
         global phase
         if not self.isActivePlayer():
-            raise IllegalMoveError("Can only reveal facedowns during your turn.")
+            print "Can only reveal facedowns during your turn."
         elif phase != Phase.reveal:
-            raise IllegalMoveError("Can only reveal facedowns during reveal phase.")
+            print "Can only reveal facedowns during reveal phase."
         elif self.mana < self.facedowns[index].cost:
-            raise IllegalMoveError("Not enough mana.")
+            print "Not enough mana."
         else:
             card = self.facedowns.pop(index)
             self.mana -= card.cost
@@ -208,13 +204,13 @@ class Player ():
 
     def playFaceup(self, index):
         if not self.isActivePlayer():
-            raise IllegalMoveError("Can only play faceups during your turn.")
+            print "Can only play faceups during your turn."
         elif phase != Phase.reveal:
-            raise IllegalMoveError("Can only play faceups during reveal phase.")
+            print "Can only play faceups during reveal phase."
         elif not self.hand[index].playsFaceUp:
-            raise IllegalMoveError("That card does not play face-up.")
+            print "That card does not play face-up."
         elif self.mana < self.hand[index].cost:
-            raise IllegalMoveError("Not enough mana.")
+            print "Not enough mana."
         else:
             card = self.hand.pop(index)
             self.mana -= card.cost
@@ -304,13 +300,14 @@ class OverlordService:
 
     def attack(self, cardIndex, targetIndex, zone, playerKey):
         if not self.players[playerKey].isActivePlayer():
-            raise IllegalMoveError("It is not your turn.")
+            print "It is not your turn."
+            return
 
         p1 = self.exposed_getLocalPlayer(playerKey)
         p2 = self.exposed_getEnemyPlayer(playerKey)
 
         if p1.faceups[cardIndex].hasAttacked:
-            raise IllegalMoveError("Can only attack once per turn.")
+            print "Can only attack once per turn."
         else:
             p1.faceups[cardIndex].hasAttacked = True
 
@@ -321,7 +318,7 @@ class OverlordService:
             elif zone == 'face-down':
                 self.fight(p2.facedowns[targetIndex], p1.faceups[cardIndex])
             else:
-                raise IllegalMoveError("Not a recognized zone.")
+                print "Not a recognized zone."
 
     def redraw(self):
         global phase

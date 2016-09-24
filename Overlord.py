@@ -7,7 +7,6 @@ from panda3d.core import CollisionNode, GeomNode, CollisionRay
 from direct.gui.DirectGui import *
 from direct.gui.OnscreenText import OnscreenText
 
-from OverlordServer import IllegalMoveError
 from OverlordServer import ClientNetworkManager, ServerNetworkManager
 from OverlordServer import Phase, Player
 
@@ -19,6 +18,10 @@ import types
 f = open("overlordrc")
 loadPrcFileData("", f.read())
 f.close()
+
+
+class IllegalMoveError (Exception):
+    pass
 
 
 class MouseHandler (DirectObject):
