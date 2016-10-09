@@ -215,9 +215,9 @@ class App (ShowBase):
             index = -1
 
         self.networkManager.sendInts(
+            self.serverAddr,
             ServerNetworkManager.Opcodes.acceptTarget,
-            index,
-            self.serverAddr
+            index
             )
 
     def makeHand(self):
@@ -364,11 +364,13 @@ class App (ShowBase):
     def playCard(self, handCard):
         if self.phase == Phase.reveal:
             self.networkManager.sendInts(
+                self.serverAddr,
                 ServerNetworkManager.Opcodes.playFaceup,
                 self.playerHandNodes.index(handCard)
             )
         else:
             self.networkManager.sendInts(
+                self.serverAddr,
                 ServerNetworkManager.Opcodes.playFaceup,
                 self.playerHandNodes.index(handCard)
             )
@@ -380,6 +382,7 @@ class App (ShowBase):
             raise IllegalMoveError("That card is not one of your facedowns.")
         index = self.playerFacedownNodes.index(card)
         self.networkManager.sendInts(
+            self.serverAddr,
             ServerNetworkManager.Opcodes.revealFacedown,
             index
         )
