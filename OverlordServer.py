@@ -106,7 +106,7 @@ class ServerNetworkManager (NetworkManager):
             if not pls[addr].isActivePlayer():
                 print "It is not your turn."
             else:
-                base.endPhase()
+                base.endPhase(addr)
 
 turn = Turn.p1
 phase = Phase.reveal
