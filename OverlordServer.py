@@ -185,6 +185,7 @@ class Player ():
             card = self.hand.pop(index)
             self.facedowns.append(card)
             card.hasAttacked = False
+            self.overlordService.redraw()
 
     def revealFacedown(self, index):
         global phase
@@ -202,6 +203,7 @@ class Player ():
             else:
                 self.graveyard.append(card)
             card.onSpawn()
+            self.overlordService.redraw()
 
     def playFaceup(self, index):
         if not self.isActivePlayer():
@@ -220,6 +222,7 @@ class Player ():
             else:
                 self.graveyard.append(card)
             card.onSpawn()
+            self.overlordService.redraw()
 
     def acceptTarget(self, targetIndex):
         enemy = None
@@ -228,6 +231,7 @@ class Player ():
                 enemy = pl
         self.targetingCardInstance.onGetTarget(enemy.facedowns[targetIndex])
         self.targetingCardInstance = None
+        self.overlordService.redraw()
 
 
 class OverlordService:
