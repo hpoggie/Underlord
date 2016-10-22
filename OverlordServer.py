@@ -86,6 +86,7 @@ class ServerNetworkManager (NetworkManager):
         if operands[0] == Opcodes.connect:
             if len(base.players) < 2:
                 p = Player("Player " + str(len(base.players)))
+                p.index = len(base.players)
                 p.addr = addr
                 p.overlordService = self.base
                 base.players.append(p)
@@ -165,7 +166,7 @@ class Player ():
             print card.name
 
     def isActivePlayer(self):
-        return turn == Turn.p1 if self.name == "Player 1" else turn == Turn.p2
+        return turn == self.index
 
     def requestTarget(self, cardInstance):
         self.targetingCardInstance = cardInstance
@@ -242,7 +243,7 @@ class OverlordService:
     targetCallbacks = {}
 
     def getActivePlayer(self):
-        return self.players[0] if turn == Turn.p1 else self.players[1]
+        return self.players[turn]
 
     def endTurn(self):
         global turn, phase
