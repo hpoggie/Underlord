@@ -371,7 +371,7 @@ class App (ShowBase):
         else:
             self.networkManager.sendInts(
                 self.serverAddr,
-                ServerNetworkManager.Opcodes.playFaceup,
+                ServerNetworkManager.Opcodes.playCard,
                 self.playerHandNodes.index(handCard)
             )
         self.makeHand()
