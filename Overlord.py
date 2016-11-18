@@ -260,7 +260,7 @@ class App (ShowBase):
         for i in self.enemy.faceups:
             self.addEnemyFaceupCard(i)
         for i in range(0, len(self.enemy.facedowns)):
-            self.addEnemyFdCard(i)
+            self.addEnemyFdCard()
 
     def addHandCard(self, card):
         cm = CardMaker(card.getName())
@@ -298,14 +298,14 @@ class App (ShowBase):
         self.fdPos += 1.1
         self.playerFacedownNodes.append(cardModel)
 
-    def addEnemyFdCard(self, card):
+    def addEnemyFdCard(self):
         cm = CardMaker('face-down card')
         cardModel = self.render.attachNewNode(cm.generate())
         path = self.enemyIconPath + "/" + self.enemyCardBack
         tex = loader.loadTexture(path)
         cardModel.setTexture(tex)
         cardModel.setPos(self.enemyFdPos, 0, 2.1)
-        cardModel.setTag('card', card.getName())
+        cardModel.setTag('card', 'enemy face-down card')
         cardModel.setTag('zone', 'face-down')
         self.enemyFdPos += 1.1
         self.enemyFacedownNodes.append(cardModel)
