@@ -142,6 +142,7 @@ class App (ShowBase):
 
     def updateEnemyFacedowns(self, size):
         self.enemy.facedowns = [None] * size
+        self.redraw()
 
     def updatePlayerFaceups(self, cardIds):
         self.player.faceups = [None] * len(cardIds)
