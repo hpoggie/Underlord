@@ -20,9 +20,13 @@ class Card:
     def defaultOnSpawn(self):
         print "card has spawned"
 
+    def defaultOnDeath(self):
+        print "card has died"
+
     getCost = defaultGetCost
     getRank = defaultGetRank
     onSpawn = defaultOnSpawn
+    onDeath = defaultOnDeath
 
     def __init__(self, attributes):
         self.__dict__ = attributes.copy()
@@ -35,6 +39,9 @@ class Card:
 
     def setSpawnAbility(self, func):
         self.onSpawn = types.MethodType(func, self)
+
+    def setDeathAbility(self, func):
+        self.onDeath = types.MethodType(func, self)
 
     def setTargetCallback(self, func):
         self.onGetTarget = types.MethodType(func, self)

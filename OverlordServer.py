@@ -328,11 +328,13 @@ class OverlordService:
             try:
                 pl.faceups.remove(card)
                 pl.graveyard.append(card)
+                card.onDeath()
             except ValueError:
                 pass
             try:
                 pl.facedowns.remove(card)
                 pl.graveyard.append(card)
+                card.onDeath()
             except ValueError:
                 pass
 
