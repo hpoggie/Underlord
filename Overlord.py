@@ -8,7 +8,7 @@ from direct.gui.DirectGui import *
 from direct.gui.OnscreenText import OnscreenText
 
 from OverlordServer import ClientNetworkManager, ServerNetworkManager
-from OverlordServer import Phase, Player
+from OverlordServer import Phase, Player, Zone
 
 from panda3d.core import loadPrcFileData
 from direct.task import Task
@@ -393,27 +393,31 @@ class App (ShowBase):
     def attack(self, card, target):
         index = self.playerFaceupNodes.index(card)
         targetIndex = 0
+        zone = 0
         if target.getTag('zone') == 'face':
             if target == self.playerFaceNode:
                 print "Can't attack yourself."
                 return
+            zone = Zone.face
         elif target.getTag('zone') == 'face-down':
             if target in self.playerFacedownNodes:
                 print "Can't attack your own facedowns."
                 return
             targetIndex = self.enemyFacedownNodes.index(target)
+            zone = Zone.facedown
         else:
             if target in self.playerFaceupNodes:
                 print "Can't attack your own faceups."
                 return
             targetIndex = self.enemyFaceupNodes.index(target)
+            zone = Zone.faceup
 
-        self.networkManager.send(
+        self.networkManager.sendInts(
             self.serverAddr,
             ServerNetworkManager.Opcodes.attack,
             index,
             targetIndex,
-            target.getTag('zone')
+            zone
         )
 
         self.makeHand()

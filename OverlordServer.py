@@ -20,6 +20,12 @@ class Phase ():
     play = 3
 
 
+class Zone ():
+    face = 0
+    faceup = 1
+    facedown = 2
+
+
 class DuplicateCardError (Exception):
     def __init__(self, card):
         self.card = card
@@ -98,7 +104,7 @@ class ServerNetworkManager (NetworkManager):
         elif operands[0] == Opcodes.playFaceup:
             pls[addr].playFaceup(operands[1])
         elif operands[0] == Opcodes.attack:
-            pls[addr].attack(operands[1], operands[2])
+            pls[addr].attack(operands[1], operands[2], operands[3])
         elif operands[0] == Opcodes.playCard:
             pls[addr].play(operands[1])
         elif operands[0] == Opcodes.acceptTarget:
@@ -174,6 +180,10 @@ class Player ():
                if self.overlordService.players[k] == self][0]
         self.overlordService.getTarget(key)
 
+    def getEnemy(self):
+        index = 1 if self.__class__.instances[0] == self else 0
+        return self.__class__.instances[index]
+
     # actions
 
     def play(self, index):
@@ -223,6 +233,36 @@ class Player ():
                 self.graveyard.append(card)
             card.onSpawn()
             self.overlordService.redraw()
+
+    def attack(self, cardIndex, targetIndex, zone):
+        if not self.isActivePlayer():
+            print "It is not your turn."
+            return
+
+        attacker = self.faceups[cardIndex]
+
+        if attacker.hasAttacked:
+            print "Can only attack once per turn."
+        else:
+            attacker.hasAttacked = True
+
+            enemy = self.getEnemy()
+            if zone == Zone.face:
+                enemy.manaCap += attacker.rank
+            elif zone == Zone.faceup:
+                try:
+                    self.overlordService.fight(enemy.faceups[targetIndex], attacker)
+                except IndexError as e:
+                    print "Trying to attack card index that does not exist"
+            elif zone == Zone.facedown:
+                try:
+                    self.overlordService.fight(enemy.facedowns[targetIndex], attacker)
+                except IndexError as e:
+                    print "Trying to attack card index that does not exist"
+            else:
+                print "Not a recognized zone."
+
+        self.overlordService.redraw()
 
     def acceptTarget(self, targetIndex):
         enemy = None
@@ -282,7 +322,7 @@ class OverlordService:
         self.targetCallbacks[playerKey]()
 
     def destroy(self, card):
-        for pl in self.exposed_Player.instances:
+        for pl in self.players:
             try:
                 pl.faceups.remove(card)
                 pl.graveyard.append(card)
@@ -303,27 +343,6 @@ class OverlordService:
             self.destroy(c1)
             self.destroy(c2)
 
-    def attack(self, cardIndex, targetIndex, zone, playerKey):
-        if not self.players[playerKey].isActivePlayer():
-            print "It is not your turn."
-            return
-
-        p1 = self.exposed_getLocalPlayer(playerKey)
-        p2 = self.exposed_getEnemyPlayer(playerKey)
-
-        if p1.faceups[cardIndex].hasAttacked:
-            print "Can only attack once per turn."
-        else:
-            p1.faceups[cardIndex].hasAttacked = True
-
-            if zone == 'face':
-                p2.manaCap += p1.faceups[cardIndex].rank
-            elif zone == 'face-up':
-                self.fight(p2.faceups[targetIndex], p1.faceups[cardIndex])
-            elif zone == 'face-down':
-                self.fight(p2.facedowns[targetIndex], p1.faceups[cardIndex])
-            else:
-                print "Not a recognized zone."
 
     def redraw(self):
         global phase
