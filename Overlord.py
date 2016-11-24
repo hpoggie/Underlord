@@ -15,9 +15,14 @@ from direct.task import Task
 import Templars
 import types
 
-f = open("overlordrc")
-loadPrcFileData("", f.read())
-f.close()
+loadPrcFileData(
+    "",
+    """
+    win-size 500 500
+    window-title Overlord
+    fullscreen 0
+    """
+    )
 
 
 class IllegalMoveError (Exception):
