@@ -67,9 +67,9 @@ class ClientNetworkManager (NetworkManager):
         elif segments[0] == Opcodes.updateEnemyFaceups:
             base.updateEnemyFaceups(segments[1:])
         elif segments[0] == Opcodes.updatePlayerManaCap:
-            base.playerManaCap = segments[1]
+            base.updatePlayerManaCap(segments[1])
         elif segments[0] == Opcodes.updateEnemyManaCap:
-            base.enemyManaCap = segments[1]
+            base.updateEnemyManaCap(segments[1])
         elif segments[0] == Opcodes.updatePhase:
             base.phase = segments[1]
 

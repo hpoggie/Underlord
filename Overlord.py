@@ -158,6 +158,14 @@ class App (ShowBase):
             self.enemy.faceups[i].doIControl = False
         self.redraw()
 
+    def updatePlayerManaCap(self, manaCap):
+        self.player.manaCap = manaCap
+        self.redraw()
+
+    def updateEnemyManaCap(self, manaCap):
+        self.enemy.manaCap = manaCap
+        self.redraw()
+
     def __init__(self):
         ShowBase.__init__(self)
         self.scene = self.loader.loadModel("empty.obj")
@@ -184,7 +192,16 @@ class App (ShowBase):
                 pos=(0, -0.7, 0),
                 scale=(0.1, 0.1, 0.1)
                 )
-
+        self.playerManaCapLabel = OnscreenText(
+                text=str(self.player.manaCap),
+                pos=(-0.5, -0.44, 0),
+                scale=(0.1, 0.1, 0.1),
+                )
+        self.enemyManaCapLabel = OnscreenText(
+                text=str(self.enemy.manaCap),
+                pos=(-0.5, 0.77),
+                scale=(0.1, 0.1, 0.1),
+                )
         self.cardStatsLabel = OnscreenText(
                 text="",
                 pos=(-0.7, -0.7, 0),
@@ -436,6 +453,8 @@ class App (ShowBase):
         self.makeEnemyHand()
         self.makeEnemyBoard()
         self.endPhaseLabel.text = str(self.phase)
+        self.playerManaCapLabel.text = str(self.player.manaCap)
+        self.enemyManaCapLabel.text = str(self.enemy.manaCap)
 
     def mouseOverTask(self, name):
         if self.mouseWatcherNode.hasMouse():
