@@ -166,6 +166,18 @@ class App (ShowBase):
         self.enemy.manaCap = manaCap
         self.redraw()
 
+    def winGame(self):
+        self.winLabel = OnscreenText(
+            text="Victory",
+            scale=(0.5, 0.5, 0.5)
+            )
+
+    def loseGame(self):
+        self.winLabel = OnscreenText(
+            text="Defeat",
+            scale=(0.5, 0.5, 0.5)
+            )
+
     def __init__(self):
         ShowBase.__init__(self)
         self.scene = self.loader.loadModel("empty.obj")

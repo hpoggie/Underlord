@@ -47,6 +47,8 @@ class ClientNetworkManager (NetworkManager):
         updatePlayerManaCap = 6
         updateEnemyManaCap = 7
         updatePhase = 8
+        win = 9
+        lose = 10
 
     def onGotPacket(self, packet, addr):
         base = self.base
@@ -72,6 +74,10 @@ class ClientNetworkManager (NetworkManager):
             base.updateEnemyManaCap(segments[1])
         elif segments[0] == Opcodes.updatePhase:
             base.phase = segments[1]
+        elif segments[0] == Opcodes.win:
+            base.winGame()
+        elif segments[0] == Opcodes.lose:
+            base.loseGame()
 
 
 class ServerNetworkManager (NetworkManager):
@@ -253,6 +259,9 @@ class Player ():
             enemy = self.getEnemy()
             if zone == Zone.face:
                 enemy.manaCap += attacker.rank
+                if enemy.manaCap > 15:
+                    print "You're winner"
+                    self.win()
             elif zone == Zone.faceup:
                 try:
                     self.overlordService.fight(enemy.faceups[targetIndex], attacker)
@@ -277,6 +286,17 @@ class Player ():
         self.targetingCardInstance = None
         self.overlordService.redraw()
 
+    def win(self):
+        self.overlordService.networkManager.sendInts(
+            self.addr,
+            ClientNetworkManager.Opcodes.win,
+        )
+        self.overlordService.networkManager.sendInts(
+            self.getEnemy().addr,
+            ClientNetworkManager.Opcodes.lose,
+        )
+
+
 
 class OverlordService:
 
@@ -297,6 +317,8 @@ class OverlordService:
         global turn, phase
         player = self.getActivePlayer()
         self.getActivePlayer().manaCap += 1
+        if self.getActivePlayer().manaCap > 15:
+            self.getActivePlayer().getEnemy().win()
         self.getActivePlayer().mana = self.getActivePlayer().manaCap
         print "player " + player.name + " mana cap is " + str(player.manaCap)
         turn = not turn
