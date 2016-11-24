@@ -2,6 +2,25 @@ import card
 from card import Card, Faction
 
 
+class ConditionalAttack ():
+    def __init__(self, card, condition):
+        self.player = card.owner
+        self.enemy = self.player.getEnemy()
+        self.original = self.enemy.attack
+        self.enemy.attack = self
+
+        self.condition = condition
+
+    def destroy(self):
+        self.enemy.attack = self.original
+
+    def __call__(self, cardIndex, targetIndex, zone):
+        if (zone == 0 and self.condition(self.player)):
+            print "Attack failed."
+            return
+        self.original(cardIndex, targetIndex, zone)
+
+
 def strix():
     return Card({
         'name': "Strix",
@@ -26,10 +45,22 @@ def equus():
 
 
 def grail():
-    return Card({
+    def grailAttackCondition(player):
+        return player.manaCap % 2 == 0
+
+    def grailInit(self):
+        self.grailAttack = ConditionalAttack(self, grailAttackCondition)
+
+    def grailDestroy(self):
+        self.grailAttack.destroy()
+
+    grail = Card({
         'name': "Grail",
         'image': "holy-grail.png"
         })
+    grail.setSpawnAbility(grailInit)
+    grail.setDeathAbility(grailDestroy)
+    return grail
 
 Templars = Faction({
     'name': "Templars",
