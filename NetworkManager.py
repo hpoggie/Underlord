@@ -16,7 +16,7 @@ class NetworkManager:
     lastReceivedPackets = dict()
     savedPackets = []  # out of order packets saved for later
 
-    verbose = True
+    verbose = False
 
     def startServer(self):
         self.sock.bind(("", self.port))

@@ -52,7 +52,8 @@ class ClientNetworkManager (NetworkManager):
         base = self.base
         Opcodes = self.Opcodes
         segments = [int(x) for x in packet.split(":")]
-        print "got opcode, ", segments[0]
+        if self.verbose:
+            print "got opcode, ", segments[0]
         if segments[0] == Opcodes.updatePlayerHand:
             base.updatePlayerHand(segments[1:])
         elif segments[0] == Opcodes.updateEnemyHand:
@@ -89,7 +90,8 @@ class ServerNetworkManager (NetworkManager):
         base = self.base
         Opcodes = self.__class__.Opcodes
         operands = [int(x) for x in packet.split(":")]
-        print "got opcode, ", operands[0]
+        if self.verbose:
+            print "got opcode, ", operands[0]
         pls = {p.addr: p for p in base.players}
         if operands[0] == Opcodes.connect:
             if len(base.players) < 2:
