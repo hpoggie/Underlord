@@ -297,7 +297,6 @@ class Player ():
         )
 
 
-
 class OverlordService:
 
     def __init__(self):
@@ -370,7 +369,6 @@ class OverlordService:
         elif c1.rank == c2.rank:
             self.destroy(c1)
             self.destroy(c2)
-
 
     def redraw(self):
         global phase
