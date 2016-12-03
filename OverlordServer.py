@@ -1,4 +1,5 @@
-from NetworkManager import NetworkManager
+from ServerNetworkManager import ServerNetworkManager
+from ClientNetworkManager import ClientNetworkManager
 from random import shuffle
 from Templars import Templars
 from copy import deepcopy
@@ -33,97 +34,6 @@ class DuplicateCardError (Exception):
     def __print__(self):
         print "Card " + card + " appears more than once."
 
-
-class ClientNetworkManager (NetworkManager):
-    base = None
-
-    class Opcodes:
-        updatePlayerHand = 0
-        updateEnemyHand = 1
-        updatePlayerFacedowns = 2
-        updateEnemyFacedowns = 3
-        updatePlayerFaceups = 4
-        updateEnemyFaceups = 5
-        updatePlayerManaCap = 6
-        updateEnemyManaCap = 7
-        updatePhase = 8
-        win = 9
-        lose = 10
-
-    def onGotPacket(self, packet, addr):
-        base = self.base
-        Opcodes = self.Opcodes
-        segments = [int(x) for x in packet.split(":")]
-        if self.verbose:
-            print "got opcode, ", segments[0]
-        if segments[0] == Opcodes.updatePlayerHand:
-            base.updatePlayerHand(segments[1:])
-        elif segments[0] == Opcodes.updateEnemyHand:
-            base.updateEnemyHand(segments[1])
-        elif segments[0] == Opcodes.updatePlayerFacedowns:
-            base.updatePlayerFacedowns(segments[1:])
-        elif segments[0] == Opcodes.updateEnemyFacedowns:
-            base.updateEnemyFacedowns(segments[1])
-        elif segments[0] == Opcodes.updatePlayerFaceups:
-            base.updatePlayerFaceups(segments[1:])
-        elif segments[0] == Opcodes.updateEnemyFaceups:
-            base.updateEnemyFaceups(segments[1:])
-        elif segments[0] == Opcodes.updatePlayerManaCap:
-            base.updatePlayerManaCap(segments[1])
-        elif segments[0] == Opcodes.updateEnemyManaCap:
-            base.updateEnemyManaCap(segments[1])
-        elif segments[0] == Opcodes.updatePhase:
-            base.phase = segments[1]
-        elif segments[0] == Opcodes.win:
-            base.winGame()
-        elif segments[0] == Opcodes.lose:
-            base.loseGame()
-
-
-class ServerNetworkManager (NetworkManager):
-    base = None
-
-    class Opcodes:
-        connect = 0
-        revealFacedown = 1
-        playFaceup = 2
-        attack = 3
-        playCard = 4
-        acceptTarget = 5
-        endPhase = 6
-
-    def onGotPacket(self, packet, addr):
-        base = self.base
-        Opcodes = self.__class__.Opcodes
-        operands = [int(x) for x in packet.split(":")]
-        if self.verbose:
-            print "got opcode, ", operands[0]
-        pls = {p.addr: p for p in base.players}
-        if operands[0] == Opcodes.connect:
-            if len(base.players) < 2:
-                p = Player("Player " + str(len(base.players)))
-                p.index = len(base.players)
-                p.addr = addr
-                p.overlordService = self.base
-                base.players.append(p)
-                base.redraw()
-            else:
-                print "Cannot add more players."
-        elif operands[0] == Opcodes.revealFacedown:
-            pls[addr].revealFacedown(operands[1])
-        elif operands[0] == Opcodes.playFaceup:
-            pls[addr].playFaceup(operands[1])
-        elif operands[0] == Opcodes.attack:
-            pls[addr].attack(operands[1], operands[2], operands[3])
-        elif operands[0] == Opcodes.playCard:
-            pls[addr].play(operands[1])
-        elif operands[0] == Opcodes.acceptTarget:
-            pls[addr].acceptTarget(operands[1])
-        elif operands[0] == Opcodes.endPhase:
-            if not pls[addr].isActivePlayer():
-                print "It is not your turn."
-            else:
-                base.endPhase(addr)
 
 turn = Turn.p1
 phase = Phase.reveal
@@ -308,6 +218,17 @@ class OverlordService:
 
     redrawCallbacks = []
     targetCallbacks = {}
+
+    def addPlayer(self, addr):
+        if len(self.players) < 2:
+            p = Player("Player " + str(len(self.players)))
+            p.index = len(self.players)
+            p.addr = addr
+            p.overlordService = self
+            self.players.append(p)
+            self.redraw()
+        else:
+            print "Cannot add more players."
 
     def getActivePlayer(self):
         return self.players[turn]

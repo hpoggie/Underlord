@@ -7,7 +7,8 @@ from panda3d.core import CollisionNode, GeomNode, CollisionRay
 from direct.gui.DirectGui import *
 from direct.gui.OnscreenText import OnscreenText
 
-from OverlordServer import ClientNetworkManager, ServerNetworkManager
+from ClientNetworkManager import ClientNetworkManager
+from ServerNetworkManager import ServerNetworkManager
 from OverlordServer import Phase, Player, Zone
 
 from panda3d.core import loadPrcFileData
