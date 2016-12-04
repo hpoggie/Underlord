@@ -1,4 +1,3 @@
-from NetworkManager import NetworkManager
 from direct.showbase.ShowBase import ShowBase
 from direct.showbase.DirectObject import DirectObject
 from panda3d.core import CardMaker
@@ -9,7 +8,8 @@ from direct.gui.OnscreenText import OnscreenText
 
 from ClientNetworkManager import ClientNetworkManager
 from ServerNetworkManager import ServerNetworkManager
-from OverlordServer import Phase, Player, Zone
+from enums import *
+from Player import Player
 
 from panda3d.core import loadPrcFileData
 from direct.task import Task
