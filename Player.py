@@ -1,6 +1,7 @@
 from copy import deepcopy
 from random import shuffle
 from enums import *
+from ClientNetworkManager import ClientNetworkManager
 from Templars import Templars
 
 startHandSize = 5
@@ -62,15 +63,33 @@ class Player ():
     def isActivePlayer(self):
         return self.overlordService.turn == self.index
 
-    def requestTarget(self, cardInstance):
-        self.targetingCardInstance = cardInstance
-        key = [k for k in self.overlordService.players
-               if self.overlordService.players[k] == self][0]
-        self.overlordService.getTarget(key)
+    def requestTarget(self, card):
+        try:
+            index = self.faceups.index(card)
+            zone = Zone.faceup
+        except ValueError:
+            try:
+                index = self.facedowns.index(card)
+                zone = Zone.facedown
+            except ValueError:
+                pass
+
+        self.overlordService.networkManager.sendInts(
+            self.addr,
+            ClientNetworkManager.Opcodes.requestTarget,
+            zone,
+            index
+        )
 
     def getEnemy(self):
         index = 1 if self.__class__.instances[0] == self else 0
         return self.__class__.instances[index]
+
+    def getCard(self, zone, index):
+        if zone == Zone.faceup:
+            return self.faceups[index]
+        elif zone == Zone.facedown:
+            return self.facedowns[index]
 
     # actions
 
@@ -95,6 +114,7 @@ class Player ():
         else:
             card = self.facedowns.pop(index)
             self.mana -= card.cost
+            # TODO: change this also.
             if not card.spell:
                 self.faceups.append(card)
             else:
@@ -114,11 +134,10 @@ class Player ():
         else:
             card = self.hand.pop(index)
             self.mana -= card.cost
-            if not card.spell:
-                self.faceups.append(card)
-            else:
-                self.graveyard.append(card)
+            self.faceups.append(card)
             card.onSpawn()
+            if card.spell:
+                self.graveyard.append(card)
             self.overlordService.redraw()
 
     def attack(self, cardIndex, targetIndex, zone):
@@ -154,13 +173,11 @@ class Player ():
 
         self.overlordService.redraw()
 
-    def acceptTarget(self, targetIndex):
-        enemy = None
-        for pl in self.instances:
-            if pl != self:
-                enemy = pl
-        self.targetingCardInstance.onGetTarget(enemy.facedowns[targetIndex])
-        self.targetingCardInstance = None
+    def acceptTarget(self, cardZone, cardIndex, targetIndex):
+        enemy = self.getEnemy()
+        card = getCard(cardZone, cardIndex)
+
+        card.onGetTarget(enemy.facedowns[targetIndex])
         self.overlordService.redraw()
 
     def win(self):

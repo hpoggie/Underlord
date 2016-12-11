@@ -31,7 +31,7 @@ class ServerNetworkManager (NetworkManager):
         elif operands[0] == Opcodes.playCard:
             pls[addr].play(operands[1])
         elif operands[0] == Opcodes.acceptTarget:
-            pls[addr].acceptTarget(operands[1])
+            pls[addr].acceptTarget(operands[1], operands[2], operands[3])
         elif operands[0] == Opcodes.endPhase:
             if not pls[addr].isActivePlayer():
                 print "It is not your turn."
