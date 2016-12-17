@@ -174,11 +174,17 @@ class Player ():
 
         self.overlordService.redraw()
 
-    def acceptTarget(self, cardZone, cardIndex, targetIndex):
+    def acceptTarget(self, cardIndex, targetZone, targetIndex):
         enemy = self.getEnemy()
-        card = self.getCard(cardZone, cardIndex)
+        card = self.getCard(Zone.faceup, cardIndex)
 
-        card.onGetTarget(enemy.facedowns[targetIndex])
+        if targetZone == Zone.facedown:
+            card.onGetTarget(enemy.facedowns[targetIndex])
+        elif targetZone == Zone.faceup:
+            card.onGetTarget(enemy.faceups[targetIndex])
+        else:
+            raise Exception("Bad zone.")
+
         self.overlordService.redraw()
 
     def win(self):

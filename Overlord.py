@@ -246,16 +246,21 @@ class App (ShowBase):
 
     def acceptTarget(self, target):
         targetIndex = -1
+        targetZone = -1
         if target.getTag('zone') == 'face-down':
             targetIndex = self.enemyFacedownNodes.index(target)
+            targetZone = Zone.facedown
+        elif target.getTag('zone') == 'face-up':
+            targetIndex = self.enemyFaceupNodes.index(target)
+            targetZone = Zone.faceup
 
         cardIndex = self.player.faceups.index(self.mouseHandler.targeting)
 
         self.networkManager.sendInts(
             self.serverAddr,
             ServerNetworkManager.Opcodes.acceptTarget,
-            Zone.faceup,
             cardIndex,
+            targetZone,
             targetIndex
             )
 

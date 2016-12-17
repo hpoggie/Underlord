@@ -129,7 +129,8 @@ def sweep():
 
 def spellBlade():
     def onGetTarget(self, target):
-        self.owner.overlordService.destroy(target)
+        if target in self.owner.getEnemy().facedowns:
+            self.owner.overlordService.destroy(target)
 
     def spellBladeAbility(self):
         self.owner.requestTarget(self)
