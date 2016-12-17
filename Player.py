@@ -135,6 +135,7 @@ class Player ():
             card = self.hand.pop(index)
             self.mana -= card.cost
             self.faceups.append(card)
+            self.overlordService.redraw()
             card.onSpawn()
             if card.spell:
                 self.graveyard.append(card)
@@ -175,7 +176,7 @@ class Player ():
 
     def acceptTarget(self, cardZone, cardIndex, targetIndex):
         enemy = self.getEnemy()
-        card = getCard(cardZone, cardIndex)
+        card = self.getCard(cardZone, cardIndex)
 
         card.onGetTarget(enemy.facedowns[targetIndex])
         self.overlordService.redraw()

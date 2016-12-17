@@ -245,17 +245,18 @@ class App (ShowBase):
         self.mouseHandler.targeting = self.player.getCard(zone, index)
 
     def acceptTarget(self, target):
+        targetIndex = -1
         if target.getTag('zone') == 'face-down':
-            index = self.enemyFacedownNodes.index(target)
-        else:
-            index = -1
+            targetIndex = self.enemyFacedownNodes.index(target)
+
+        cardIndex = self.player.faceups.index(self.mouseHandler.targeting)
 
         self.networkManager.sendInts(
             self.serverAddr,
             ServerNetworkManager.Opcodes.acceptTarget,
             Zone.faceup,
-
-            index
+            cardIndex,
+            targetIndex
             )
 
     def makeHand(self):
