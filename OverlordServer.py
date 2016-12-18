@@ -74,19 +74,7 @@ class OverlordService:
         self.targetCallbacks[playerKey]()
 
     def destroy(self, card):
-        for pl in self.players:
-            try:
-                pl.faceups.remove(card)
-                pl.graveyard.append(card)
-                card.onDeath()
-            except ValueError:
-                pass
-            try:
-                pl.facedowns.remove(card)
-                pl.graveyard.append(card)
-                card.onDeath()
-            except ValueError:
-                pass
+        card.moveZone(Zone.graveyard)
 
     def fight(self, c1, c2):
         if c1.rank < c2.rank:

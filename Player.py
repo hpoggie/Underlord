@@ -17,6 +17,7 @@ class Player ():
 
     def __init__(self, name, faction=Templars):
         self.__class__.instances.append(self)
+        self.overlordService = None
 
         self.name = name
 
@@ -48,7 +49,8 @@ class Player ():
 
     def drawCard(self):
         if len(self.deck) != 0:
-            self.hand.append(self.deck.pop())
+            c = self.deck.pop()
+            c.moveZone(Zone.hand)
 
     def printHand(self):
         print "Hand:"
@@ -99,10 +101,9 @@ class Player ():
         elif self.overlordService.phase != Phase.play:
             print "Can only play facedowns during play phase."
         else:
-            card = self.hand.pop(index)
-            self.facedowns.append(card)
+            card = self.hand[index]
+            card.moveZone(Zone.facedown)
             card.hasAttacked = False
-            self.overlordService.redraw()
 
     def revealFacedown(self, index):
         if not self.isActivePlayer():
@@ -112,15 +113,9 @@ class Player ():
         elif self.mana < self.facedowns[index].cost:
             print "Not enough mana."
         else:
-            card = self.facedowns.pop(index)
+            card = self.facedowns[index]
             self.mana -= card.cost
-            # TODO: change this also.
-            if not card.spell:
-                self.faceups.append(card)
-            else:
-                self.graveyard.append(card)
-            card.onSpawn()
-            self.overlordService.redraw()
+            card.moveZone(Zone.faceup)
 
     def playFaceup(self, index):
         if not self.isActivePlayer():
@@ -132,14 +127,9 @@ class Player ():
         elif self.mana < self.hand[index].cost:
             print "Not enough mana."
         else:
-            card = self.hand.pop(index)
+            card = self.hand[index]
             self.mana -= card.cost
-            self.faceups.append(card)
-            self.overlordService.redraw()
-            card.onSpawn()
-            if card.spell:
-                self.graveyard.append(card)
-            self.overlordService.redraw()
+            card.moveZone(Zone.faceup)
 
     def attack(self, cardIndex, targetIndex, zone):
         if not self.isActivePlayer():

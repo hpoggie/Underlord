@@ -14,3 +14,5 @@ class Zone ():
     face = 0
     faceup = 1
     facedown = 2
+    hand = 3
+    graveyard = 4

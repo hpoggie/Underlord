@@ -1,4 +1,5 @@
 import types
+from enums import Zone
 
 
 class Card:
@@ -19,6 +20,8 @@ class Card:
 
     def defaultOnSpawn(self):
         print "card has spawned"
+        if self.spell:
+            self.moveZone(Zone.graveyard)
 
     def defaultOnDeath(self):
         print "card has died"
@@ -30,6 +33,7 @@ class Card:
 
     def __init__(self, attributes):
         self.__dict__ = attributes.copy()
+        self.zone = None
 
     def setCostAbility(self, func):
         self.getCost = types.MethodType(func, self)
@@ -54,6 +58,39 @@ class Card:
 
     def __print__(self):
         print self.name + " cost " + cost
+
+    def moveZone(self, zone):
+        if self.zone == Zone.faceup:
+            self.owner.faceups.remove(self)
+        elif self.zone == Zone.facedown:
+            self.owner.facedowns.remove(self)
+        elif self.zone == Zone.hand:
+            self.owner.hand.remove(self)
+        elif self.zone == Zone.graveyard:
+            self.owner.graveyard.remove(self)
+
+        if zone == Zone.faceup:
+            self.owner.faceups.append(self)
+            self.zone = Zone.faceup
+
+            if self.owner.overlordService:
+                self.owner.overlordService.redraw()
+
+            self.onSpawn()
+        elif zone == Zone.facedown:
+            self.owner.facedowns.append(self)
+            self.zone = Zone.facedown
+        elif zone == Zone.hand:
+            self.owner.hand.append(self)
+            self.zone = Zone.hand
+        elif zone == Zone.graveyard:
+            if self.zone == Zone.faceup:
+                self.onDeath()
+            self.owner.graveyard.append(self)
+            self.zone = Zone.graveyard
+
+        if self.owner.overlordService:
+            self.owner.overlordService.redraw()
 
 
 class Faction:
@@ -114,7 +151,10 @@ def five():
 def sweep():
     def sweepAbility(self):
         for player in self.owner.instances:
-            player.faceups = []
+            for c in player.faceups:
+                c.moveZone(Zone.graveyard)
+
+        self.moveZone(Zone.graveyard)
 
     sweep = Card({
         'name': "Sweep",
@@ -131,6 +171,8 @@ def spellBlade():
     def onGetTarget(self, target):
         if target in self.owner.getEnemy().facedowns:
             self.owner.overlordService.destroy(target)
+
+        self.moveZone(Zone.graveyard)
 
     def spellBladeAbility(self):
         self.owner.requestTarget(self)
