@@ -27,24 +27,47 @@ class OverlordService:
         self.turn = Turn.p1
         self.phase = Phase.reveal
 
-    players = []
+    players = {}
 
     redrawCallbacks = []
     targetCallbacks = {}
 
+    def getActivePlayer(self):
+        return Player.instances[self.turn]
+
+    # actions
+
+    # opcode 0
     def addPlayer(self, addr):
         if len(self.players) < 2:
             p = Player("Player " + str(len(self.players)))
             p.index = len(self.players)
             p.addr = addr
             p.overlordService = self
-            self.players.append(p)
+            self.players[addr] = p
             self.redraw()
         else:
             print "Cannot add more players."
 
-    def getActivePlayer(self):
-        return self.players[self.turn]
+    # opcode 1
+    def revealFacedown(self, addr, index):
+        players[addr].revealFacedown(index)
+
+    # opcode 2
+    def playFaceup(self, addr, index):
+        players[addr].revealFacedown(index)
+
+    # opcode 3
+    def attack(self, addr, cardIndex, targetIndex):
+        players[addr].attack(cardIndex, targetIndex)
+
+    # opcode 4
+    def playCard(self, player, index):
+        players[addr].play(index)
+
+    # opcode 5
+    def acceptTarget(self, player, cardIndex, targetZone, targetIndex):
+        players[addr].acceptTarget(cardIndex, targetZone, targetIndex)
 
     def endTurn(self):
         player = self.getActivePlayer()
@@ -56,7 +79,12 @@ class OverlordService:
         self.turn = not self.turn
         self.phase = Phase.reveal
 
+    # opcode 6
     def endPhase(self, addr):
+        if not self.players[addr].isActivePlayer():
+            print "It is not your turn."
+            return
+
         if self.phase == Phase.reveal:
             self.getActivePlayer().facedowns = []
 
@@ -95,52 +123,53 @@ class OverlordService:
                 if tc.name == c.name:
                     return i
 
-        for i, pl in enumerate(self.players):
+        for addr in self.players.keys():
+            pl = self.players[addr]
             self.networkManager.sendInts(
-                pl.addr,
+                addr,
                 ClientNetworkManager.Opcodes.updatePlayerHand,
                 *(getCard(c) for c in pl.hand)
                 )
             self.networkManager.sendInts(
-                pl.addr,
+                addr,
                 ClientNetworkManager.Opcodes.updatePlayerFacedowns,
                 *(getCard(c) for c in pl.facedowns)
             )
             self.networkManager.sendInts(
-                pl.addr,
+                addr,
                 ClientNetworkManager.Opcodes.updatePlayerFaceups,
                 *(getCard(c) for c in pl.faceups)
             )
             self.networkManager.sendInts(
-                pl.addr,
+                addr,
                 ClientNetworkManager.Opcodes.updatePlayerManaCap,
                 pl.manaCap
             )
             self.networkManager.sendInts(
-                pl.addr,
+                addr,
                 ClientNetworkManager.Opcodes.updatePhase,
                 self.phase
             )
 
             try:
-                enemyPlayer = self.players[(i+1) % 2]
+                enemyPlayer = pl.getEnemy()
                 self.networkManager.sendInts(
-                    pl.addr,
+                    addr,
                     ClientNetworkManager.Opcodes.updateEnemyHand,
                     len(enemyPlayer.hand)
                 )
                 self.networkManager.sendInts(
-                    pl.addr,
+                    addr,
                     ClientNetworkManager.Opcodes.updateEnemyFacedowns,
                     len(enemyPlayer.facedowns)
                 )
                 self.networkManager.sendInts(
-                    pl.addr,
+                    addr,
                     ClientNetworkManager.Opcodes.updateEnemyFaceups,
                     *(getCard(c) for c in enemyPlayer.faceups)
                 )
                 self.networkManager.sendInts(
-                    pl.addr,
+                    addr,
                     ClientNetworkManager.Opcodes.updateEnemyManaCap,
                     enemyPlayer.manaCap
                 )

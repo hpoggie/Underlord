@@ -19,21 +19,17 @@ class ServerNetworkManager (NetworkManager):
         operands = [int(x) for x in packet.split(":")]
         if self.verbose:
             print "got opcode, ", operands[0]
-        pls = {p.addr: p for p in base.players}
         if operands[0] == Opcodes.connect:
             base.addPlayer(addr)
         elif operands[0] == Opcodes.revealFacedown:
-            pls[addr].revealFacedown(operands[1])
+            base.revealFacedown(addr, operands[1])
         elif operands[0] == Opcodes.playFaceup:
-            pls[addr].playFaceup(operands[1])
+            base.playFaceup(addr, operands[1])
         elif operands[0] == Opcodes.attack:
-            pls[addr].attack(operands[1], operands[2], operands[3])
+            base.attack(addr, operands[1], operands[2], operands[3])
         elif operands[0] == Opcodes.playCard:
-            pls[addr].play(operands[1])
+            base.play(addr, operands[1])
         elif operands[0] == Opcodes.acceptTarget:
-            pls[addr].acceptTarget(operands[1], operands[2], operands[3])
+            base.acceptTarget(addr, operands[1], operands[2], operands[3])
         elif operands[0] == Opcodes.endPhase:
-            if not pls[addr].isActivePlayer():
-                print "It is not your turn."
-            else:
-                base.endPhase(addr)
+            base.endPhase(addr)
