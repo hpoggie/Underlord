@@ -1,3 +1,7 @@
+"""
+Server script. Takes the client's actions and computes the results, then sends them back.
+"""
+
 from ServerNetworkManager import ServerNetworkManager
 from ClientNetworkManager import ClientNetworkManager
 from Player import Player

@@ -1,3 +1,11 @@
+"""
+Player class.
+It has some actions associated with it that the player can take.
+A player has the following characteristics:
+    Zones
+    Mana cap
+    Mana
+"""
 from copy import deepcopy
 from random import shuffle
 from enums import *

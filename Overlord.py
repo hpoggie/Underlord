@@ -1,3 +1,8 @@
+"""
+This is the client script. It takes game data and draws it on the screen.
+It also takes user input and turns it into game actions.
+"""
+
 from direct.showbase.ShowBase import ShowBase
 from direct.showbase.DirectObject import DirectObject
 from panda3d.core import CardMaker

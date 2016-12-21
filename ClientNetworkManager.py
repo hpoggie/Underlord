@@ -2,6 +2,9 @@ from NetworkManager import NetworkManager
 
 
 class ClientNetworkManager (NetworkManager):
+    """
+    The ClientNetworkManager takes incoming network opcodes and turns them into calls to the client.
+    """
     base = None
 
     class Opcodes:

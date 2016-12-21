@@ -3,6 +3,17 @@ from enums import Zone
 
 
 class Card:
+    """
+    A card has the following characteristics:
+        Name
+        cost
+        rank
+        abilities
+        image
+
+    It is owned by a player.
+    """
+
     owner = None
 
     name = "Placeholder Name"
