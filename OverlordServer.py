@@ -51,23 +51,23 @@ class OverlordService:
 
     # opcode 1
     def revealFacedown(self, addr, index):
-        players[addr].revealFacedown(index)
+        self.players[addr].revealFacedown(index)
 
     # opcode 2
     def playFaceup(self, addr, index):
-        players[addr].revealFacedown(index)
+        self.players[addr].playFaceup(index)
 
     # opcode 3
-    def attack(self, addr, cardIndex, targetIndex):
-        players[addr].attack(cardIndex, targetIndex)
+    def attack(self, addr, cardIndex, targetIndex, zone):
+        self.players[addr].attack(cardIndex, targetIndex, zone)
 
     # opcode 4
-    def playCard(self, player, index):
-        players[addr].play(index)
+    def play(self, addr, index):
+        self.players[addr].play(index)
 
     # opcode 5
-    def acceptTarget(self, player, cardIndex, targetZone, targetIndex):
-        players[addr].acceptTarget(cardIndex, targetZone, targetIndex)
+    def acceptTarget(self, addr, cardIndex, targetZone, targetIndex):
+        self.players[addr].acceptTarget(cardIndex, targetZone, targetIndex)
 
     def endTurn(self):
         player = self.getActivePlayer()
