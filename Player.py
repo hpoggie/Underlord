@@ -60,16 +60,6 @@ class Player ():
             c = self.deck.pop()
             c.moveZone(Zone.hand)
 
-    def printHand(self):
-        print "Hand:"
-        for card in self.hand:
-            print card.name
-
-    def printFacedowns(self):
-        print "Facedowns:"
-        for card in self.facedowns:
-            print card.name
-
     def isActivePlayer(self):
         return self.overlordService.turn == self.index
 
