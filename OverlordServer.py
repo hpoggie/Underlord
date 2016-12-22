@@ -27,10 +27,10 @@ class OverlordService:
         self.turn = Turn.p1
         self.phase = Phase.reveal
 
-    players = {}
+        self.players = {}
 
-    redrawCallbacks = []
-    targetCallbacks = {}
+        self.redrawCallbacks = []
+        self.targetCallbacks = {}
 
     def getActivePlayer(self):
         return Player.instances[self.turn]
