@@ -14,14 +14,18 @@ class Card:
     It is owned by a player.
     """
 
-    owner = None
-
     name = "Placeholder Name"
     image = "missing.png"
     cost = 0
     rank = 0
     spell = False
     playsFaceUp = False
+
+    def __init__(self, attributes):
+        self.__dict__ = attributes.copy()
+
+        self.owner = None
+        self.zone = None
 
     def defaultGetCost(self):
         return self.cost
@@ -41,10 +45,6 @@ class Card:
     getRank = defaultGetRank
     onSpawn = defaultOnSpawn
     onDeath = defaultOnDeath
-
-    def __init__(self, attributes):
-        self.__dict__ = attributes.copy()
-        self.zone = None
 
     def setCostAbility(self, func):
         self.getCost = types.MethodType(func, self)
