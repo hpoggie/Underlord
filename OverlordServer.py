@@ -71,10 +71,10 @@ class OverlordService:
 
     def endTurn(self):
         player = self.getActivePlayer()
-        self.getActivePlayer().manaCap += 1
-        if self.getActivePlayer().manaCap > 15:
-            self.getActivePlayer().getEnemy().win()
-        self.getActivePlayer().mana = self.getActivePlayer().manaCap
+        player.manaCap += 1
+        if player.manaCap > 15:
+            player.getEnemy().win()
+        player.mana = player.manaCap
         print "player " + player.name + " mana cap is " + str(player.manaCap)
         self.turn = not self.turn
         self.phase = Phase.reveal
