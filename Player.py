@@ -19,32 +19,21 @@ maxManaCap = 15
 class Player ():
     instances = []
 
-    addr = None
-
-    mana = 0
-
     def __init__(self, name, faction=Templars):
         self.__class__.instances.append(self)
         self.overlordService = None
+        self.addr = None
 
         self.name = name
 
         self.hand = []
         self.facedowns = []
         self.faceups = []
-        self.manaCap = 1
         self.deck = deepcopy(faction.deck)
+        self.checkDeckForDuplicates()
         self.graveyard = []
-
-        for card in self.deck:
-            card.owner = self
-
-            i = 0
-            for card2 in self.deck:
-                if card == card2:
-                    i += 1
-                    if i > 1:
-                        raise DuplicateCardError(card)
+        self.manaCap = 1
+        self.mana = 0
 
         self.iconPath = faction.iconPath
         self.cardBack = faction.cardBack
@@ -54,6 +43,17 @@ class Player ():
             self.drawCard()
 
         self.targetingCardInstance = None
+
+    def checkDeckForDuplicates(self):
+        for card in self.deck:
+            card.owner = self
+
+            i = 0
+            for card2 in self.deck:
+                if card == card2:
+                    i += 1
+                    if i > 1:
+                        raise DuplicateCardError(card)
 
     def drawCard(self):
         if len(self.deck) != 0:
