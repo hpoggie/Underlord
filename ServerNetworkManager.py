@@ -2,7 +2,8 @@ from NetworkManager import NetworkManager
 
 
 class ServerNetworkManager (NetworkManager):
-    base = None
+    def __init__(self, base):
+        self.base = base
 
     class Opcodes:
         connect = 0

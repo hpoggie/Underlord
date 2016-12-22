@@ -20,9 +20,8 @@ class DuplicateCardError (Exception):
 
 class OverlordService:
     def __init__(self):
-        self.networkManager = ServerNetworkManager()
+        self.networkManager = ServerNetworkManager(self)
         self.networkManager.startServer()
-        self.networkManager.base = self
 
         self.turn = Turn.p1
         self.phase = Phase.reveal
