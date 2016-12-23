@@ -30,7 +30,8 @@ class Player ():
         self.facedowns = []
         self.faceups = []
         self.deck = deepcopy(faction.deck)
-        self.checkDeckForDuplicates()
+        for card in self.deck:
+            card.owner = self
         self.graveyard = []
         self.manaCap = 1
         self.mana = 0
@@ -43,17 +44,6 @@ class Player ():
             self.drawCard()
 
         self.targetingCardInstance = None
-
-    def checkDeckForDuplicates(self):
-        for card in self.deck:
-            card.owner = self
-
-            i = 0
-            for card2 in self.deck:
-                if card == card2:
-                    i += 1
-                    if i > 1:
-                        raise DuplicateCardError(card)
 
     def drawCard(self):
         if len(self.deck) != 0:

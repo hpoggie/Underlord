@@ -10,14 +10,6 @@ from Templars import Templars
 import time
 
 
-class DuplicateCardError (Exception):
-    def __init__(self, card):
-        self.card = card
-
-    def __print__(self):
-        print "Card " + card + " appears more than once."
-
-
 class OverlordService:
     def __init__(self):
         self.networkManager = ServerNetworkManager(self)
