@@ -240,8 +240,7 @@ class App (ShowBase):
         self.makePlayerFace()
         self.makeEnemyFace()
 
-        self.networkManager = ClientNetworkManager()
-        self.networkManager.base = self
+        self.networkManager = ClientNetworkManager(self)
         self.serverAddr = (self.serverIp, self.port)
         self.taskMgr.add(self.networkUpdateTask, "NetworkUpdateTask")
         self.networkManager.send("0", self.serverAddr)

@@ -5,7 +5,8 @@ class ClientNetworkManager (NetworkManager):
     """
     The ClientNetworkManager takes incoming network opcodes and turns them into calls to the client.
     """
-    base = None
+    def __init__(self, base):
+        self.base = base
 
     class Opcodes:
         updatePlayerHand = 0
