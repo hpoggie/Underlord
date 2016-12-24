@@ -67,7 +67,7 @@ class OverlordService:
             player.getEnemy().win()
         player.mana = player.manaCap
         print "player " + player.name + " mana cap is " + str(player.manaCap)
-        self.turn = not self.turn
+        self.turn = Turn.p2 if self.turn == Turn.p1 else Turn.p1
         self.phase = Phase.reveal
 
     # opcode 6
