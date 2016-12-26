@@ -69,9 +69,8 @@ class Player ():
         )
 
     def getEnemy(self):
-        players = [t[1] for t in self.overlordService.players.items()]
-        index = 1 if players[0] == self else 0
-        return players[index]
+        index = 1 if self.overlordService.players[0] == self else 0
+        return self.overlordService.players[index]
 
     def getCard(self, zone, index):
         if zone == Zone.faceup:

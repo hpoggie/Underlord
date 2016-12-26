@@ -18,13 +18,18 @@ class OverlordService:
         self.turn = Turn.p1
         self.phase = Phase.reveal
 
-        self.players = {}
+        self.players = []
 
         self.redrawCallbacks = []
         self.targetCallbacks = {}
 
+    def getPlayer(self, addr):
+        for pl in self.players:
+            if pl.addr == addr:
+                return pl
+
     def getActivePlayer(self):
-        return self.players.items()[self.turn][1]
+        return self.players[self.turn]
 
     # actions
 
@@ -35,30 +40,30 @@ class OverlordService:
             p.index = len(self.players)
             p.addr = addr
             p.overlordService = self
-            self.players[addr] = p
+            self.players.append(p)
             self.redraw()
         else:
             print "Cannot add more players."
 
     # opcode 1
     def revealFacedown(self, addr, index):
-        self.players[addr].revealFacedown(index)
+        self.getPlayer(addr).revealFacedown(index)
 
     # opcode 2
     def playFaceup(self, addr, index):
-        self.players[addr].playFaceup(index)
+        self.getPlayer(addr).playFaceup(index)
 
     # opcode 3
     def attack(self, addr, cardIndex, targetIndex, zone):
-        self.players[addr].attack(cardIndex, targetIndex, zone)
+        self.getPlayer(addr).attack(cardIndex, targetIndex, zone)
 
     # opcode 4
     def play(self, addr, index):
-        self.players[addr].play(index)
+        self.getPlayer(addr).play(index)
 
     # opcode 5
     def acceptTarget(self, addr, cardIndex, targetZone, targetIndex):
-        self.players[addr].acceptTarget(cardIndex, targetZone, targetIndex)
+        self.getPlayer(addr).acceptTarget(cardIndex, targetZone, targetIndex)
 
     def endTurn(self):
         player = self.getActivePlayer()
@@ -72,7 +77,7 @@ class OverlordService:
 
     # opcode 6
     def endPhase(self, addr):
-        if not self.players[addr].isActivePlayer():
+        if not self.getPlayer(addr).isActivePlayer():
             print "It is not your turn."
             return
 
@@ -114,30 +119,29 @@ class OverlordService:
                 if tc.name == c.name:
                     return i
 
-        for addr in self.players.keys():
-            pl = self.players[addr]
+        for pl in self.players:
             self.networkManager.sendInts(
-                addr,
+                pl.addr,
                 ClientNetworkManager.Opcodes.updatePlayerHand,
                 *(getCard(c) for c in pl.hand)
                 )
             self.networkManager.sendInts(
-                addr,
+                pl.addr,
                 ClientNetworkManager.Opcodes.updatePlayerFacedowns,
                 *(getCard(c) for c in pl.facedowns)
             )
             self.networkManager.sendInts(
-                addr,
+                pl.addr,
                 ClientNetworkManager.Opcodes.updatePlayerFaceups,
                 *(getCard(c) for c in pl.faceups)
             )
             self.networkManager.sendInts(
-                addr,
+                pl.addr,
                 ClientNetworkManager.Opcodes.updatePlayerManaCap,
                 pl.manaCap
             )
             self.networkManager.sendInts(
-                addr,
+                pl.addr,
                 ClientNetworkManager.Opcodes.updatePhase,
                 self.phase
             )
@@ -145,22 +149,22 @@ class OverlordService:
             try:
                 enemyPlayer = pl.getEnemy()
                 self.networkManager.sendInts(
-                    addr,
+                    pl.addr,
                     ClientNetworkManager.Opcodes.updateEnemyHand,
                     len(enemyPlayer.hand)
                 )
                 self.networkManager.sendInts(
-                    addr,
+                    pl.addr,
                     ClientNetworkManager.Opcodes.updateEnemyFacedowns,
                     len(enemyPlayer.facedowns)
                 )
                 self.networkManager.sendInts(
-                    addr,
+                    pl.addr,
                     ClientNetworkManager.Opcodes.updateEnemyFaceups,
                     *(getCard(c) for c in enemyPlayer.faceups)
                 )
                 self.networkManager.sendInts(
-                    addr,
+                    pl.addr,
                     ClientNetworkManager.Opcodes.updateEnemyManaCap,
                     enemyPlayer.manaCap
                 )
