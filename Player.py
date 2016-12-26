@@ -17,10 +17,7 @@ maxManaCap = 15
 
 
 class Player ():
-    instances = []
-
     def __init__(self, name, faction=Templars):
-        self.__class__.instances.append(self)
         self.overlordService = None
         self.addr = None
 
@@ -72,8 +69,9 @@ class Player ():
         )
 
     def getEnemy(self):
-        index = 1 if self.__class__.instances[0] == self else 0
-        return self.__class__.instances[index]
+        players = [t[1] for t in self.overlordService.players.items()]
+        index = 1 if players[0] == self else 0
+        return players[index]
 
     def getCard(self, zone, index):
         if zone == Zone.faceup:

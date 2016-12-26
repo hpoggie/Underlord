@@ -24,7 +24,7 @@ class OverlordService:
         self.targetCallbacks = {}
 
     def getActivePlayer(self):
-        return Player.instances[self.turn]
+        return self.players.items()[self.turn][1]
 
     # actions
 
