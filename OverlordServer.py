@@ -20,7 +20,6 @@ class OverlordService:
 
         self.players = []
 
-        self.redrawCallbacks = []
         self.targetCallbacks = {}
 
     def getPlayer(self, addr):
