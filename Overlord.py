@@ -11,8 +11,7 @@ from panda3d.core import CollisionNode, GeomNode, CollisionRay
 from direct.gui.DirectGui import *
 from direct.gui.OnscreenText import OnscreenText
 
-from ClientNetworkManager import ClientNetworkManager
-from ServerNetworkManager import ServerNetworkManager
+from network import *
 from enums import *
 from Player import Player
 
