@@ -161,7 +161,7 @@ def five():
 
 def sweep():
     def sweepAbility(self):
-        for player in self.owner.instances:
+        for player in self.owner.overlordService.players:
             for c in player.faceups:
                 c.moveZone(Zone.graveyard)
 
