@@ -71,37 +71,7 @@ class Card:
         print self.name + " cost " + cost
 
     def moveZone(self, zone):
-        if self.zone == Zone.faceup:
-            self.owner.faceups.remove(self)
-        elif self.zone == Zone.facedown:
-            self.owner.facedowns.remove(self)
-        elif self.zone == Zone.hand:
-            self.owner.hand.remove(self)
-        elif self.zone == Zone.graveyard:
-            self.owner.graveyard.remove(self)
-
-        if zone == Zone.faceup:
-            self.owner.faceups.append(self)
-            self.zone = Zone.faceup
-
-            if self.owner.overlordService:
-                self.owner.overlordService.redraw()
-
-            self.onSpawn()
-        elif zone == Zone.facedown:
-            self.owner.facedowns.append(self)
-            self.zone = Zone.facedown
-        elif zone == Zone.hand:
-            self.owner.hand.append(self)
-            self.zone = Zone.hand
-        elif zone == Zone.graveyard:
-            if self.zone == Zone.faceup:
-                self.onDeath()
-            self.owner.graveyard.append(self)
-            self.zone = Zone.graveyard
-
-        if self.owner.overlordService:
-            self.owner.overlordService.redraw()
+        self.owner.moveCard(self, zone)
 
 
 class Faction:

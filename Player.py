@@ -78,6 +78,39 @@ class Player ():
         elif zone == Zone.facedown:
             return self.facedowns[index]
 
+    def moveCard(self, card, zone):
+        if card.zone == Zone.faceup:
+            self.faceups.remove(card)
+        elif card.zone == Zone.facedown:
+            self.facedowns.remove(card)
+        elif card.zone == Zone.hand:
+            self.hand.remove(card)
+        elif card.zone == Zone.graveyard:
+            self.graveyard.remove(card)
+
+        if zone == Zone.faceup:
+            self.faceups.append(card)
+            card.zone = Zone.faceup
+
+            if self.overlordService:
+                self.overlordService.redraw()
+
+            card.onSpawn()
+        elif zone == Zone.facedown:
+            self.facedowns.append(card)
+            card.zone = Zone.facedown
+        elif zone == Zone.hand:
+            self.hand.append(card)
+            card.zone = Zone.hand
+        elif zone == Zone.graveyard:
+            if card.zone == Zone.faceup:
+                card.onDeath()
+            self.graveyard.append(card)
+            card.zone = Zone.graveyard
+
+        if self.overlordService:
+            self.overlordService.redraw()
+
     # actions
 
     def play(self, index):
