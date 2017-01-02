@@ -111,6 +111,14 @@ class OverlordService:
             self.destroy(c1)
             self.destroy(c2)
 
+    def requestTarget(self, zone, index):
+        self.networkManager.sendInts(
+            self.addr,
+            ClientNetworkManager.Opcodes.requestTarget,
+            zone,
+            index
+        )
+
     def redraw(self):
         def getCard(c):
             for i, tc in enumerate(Templars.deck):
@@ -169,6 +177,15 @@ class OverlordService:
             except IndexError:
                 pass
 
+    def endGame(self, winner):
+        self.networkManager.sendInts(
+            winner.addr,
+            ClientNetworkManager.Opcodes.win,
+        )
+        self.networkManager.sendInts(
+            winner.getEnemy().addr,
+            ClientNetworkManager.Opcodes.lose,
+        )
 
 if __name__ == "__main__":
     service = OverlordService()

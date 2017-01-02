@@ -9,7 +9,6 @@ A player has the following characteristics:
 from copy import deepcopy
 from random import shuffle
 from enums import *
-from ClientNetworkManager import ClientNetworkManager
 from Templars import Templars
 
 startHandSize = 5
@@ -61,12 +60,7 @@ class Player ():
             except ValueError:
                 pass
 
-        self.overlordService.networkManager.sendInts(
-            self.addr,
-            ClientNetworkManager.Opcodes.requestTarget,
-            zone,
-            index
-        )
+        self.overlordService.requestTarget(self, zone, index)
 
     def getEnemy(self):
         index = 1 if self.overlordService.players[0] == self else 0
@@ -196,11 +190,4 @@ class Player ():
         self.overlordService.redraw()
 
     def win(self):
-        self.overlordService.networkManager.sendInts(
-            self.addr,
-            ClientNetworkManager.Opcodes.win,
-        )
-        self.overlordService.networkManager.sendInts(
-            self.getEnemy().addr,
-            ClientNetworkManager.Opcodes.lose,
-        )
+        self.overlordService.endGame(winner=self)
