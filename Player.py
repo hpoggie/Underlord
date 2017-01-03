@@ -34,8 +34,6 @@ class Player ():
         self.iconPath = faction.iconPath
         self.cardBack = faction.cardBack
 
-        self.targetingCardInstance = None
-
     def shuffle(self):
         shuffle(self.deck)
 
