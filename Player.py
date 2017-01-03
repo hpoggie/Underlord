@@ -18,7 +18,6 @@ maxManaCap = 15
 class Player ():
     def __init__(self, name, faction=Templars):
         self.overlordService = None
-        self.addr = None
 
         self.name = name
 
@@ -47,7 +46,7 @@ class Player ():
             c.moveZone(Zone.hand)
 
     def isActivePlayer(self):
-        return self.overlordService.turn == self.index
+        return self.game.activePlayer == self
 
     def requestTarget(self, card):
         try:
@@ -63,8 +62,8 @@ class Player ():
         self.overlordService.requestTarget(self, zone, index)
 
     def getEnemy(self):
-        index = 1 if self.overlordService.players[0] == self else 0
-        return self.overlordService.players[index]
+        index = 1 if self.game.players[0] == self else 0
+        return self.game.players[index]
 
     def getCard(self, zone, index):
         if zone == Zone.faceup:
@@ -110,7 +109,7 @@ class Player ():
     def play(self, index):
         if not self.isActivePlayer():
             print "Can only play facedowns during your turn."
-        elif self.overlordService.phase != Phase.play:
+        elif self.game.phase != Phase.play:
             print "Can only play facedowns during play phase."
         else:
             card = self.hand[index]
@@ -120,7 +119,7 @@ class Player ():
     def revealFacedown(self, index):
         if not self.isActivePlayer():
             print "Can only reveal facedowns during your turn."
-        elif self.overlordService.phase != Phase.reveal:
+        elif self.game.phase != Phase.reveal:
             print "Can only reveal facedowns during reveal phase."
         elif self.mana < self.facedowns[index].cost:
             print "Not enough mana."
@@ -132,7 +131,7 @@ class Player ():
     def playFaceup(self, index):
         if not self.isActivePlayer():
             print "Can only play faceups during your turn."
-        elif self.overlordService.phase != Phase.reveal:
+        elif self.game.phase != Phase.reveal:
             print "Can only play faceups during reveal phase."
         elif not self.hand[index].playsFaceUp:
             print "That card does not play face-up."
@@ -168,7 +167,7 @@ class Player ():
                     print "Trying to attack card index that does not exist"
             elif zone == Zone.facedown:
                 try:
-                    self.overlordService.fight(enemy.facedowns[targetIndex], attacker)
+                    self.game.fight(enemy.facedowns[targetIndex], attacker)
                 except IndexError as e:
                     print "Trying to attack card index that does not exist"
             else:
