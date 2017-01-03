@@ -34,22 +34,27 @@ class OverlordService:
     # opcode 1
     def revealFacedown(self, addr, index):
         self.getPlayer(addr).revealFacedown(index)
+        self.redraw()
 
     # opcode 2
     def playFaceup(self, addr, index):
         self.getPlayer(addr).playFaceup(index)
+        self.redraw()
 
     # opcode 3
     def attack(self, addr, cardIndex, targetIndex, zone):
         self.getPlayer(addr).attack(cardIndex, targetIndex, zone)
+        self.redraw()
 
     # opcode 4
     def play(self, addr, index):
         self.getPlayer(addr).play(index)
+        self.redraw()
 
     # opcode 5
     def acceptTarget(self, addr, cardIndex, targetZone, targetIndex):
         self.getPlayer(addr).acceptTarget(cardIndex, targetZone, targetIndex)
+        self.redraw()
 
     # opcode 6
     def endPhase(self, addr):

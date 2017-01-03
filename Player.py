@@ -104,9 +104,6 @@ class Player ():
             self.graveyard.append(card)
             card.zone = Zone.graveyard
 
-        if self.overlordService:
-            self.overlordService.redraw()
-
     # actions
 
     def play(self, index):
@@ -176,8 +173,6 @@ class Player ():
             else:
                 print "Not a recognized zone."
 
-        self.overlordService.redraw()
-
     def acceptTarget(self, cardIndex, targetZone, targetIndex):
         enemy = self.getEnemy()
         card = self.getCard(Zone.faceup, cardIndex)
@@ -188,8 +183,6 @@ class Player ():
             card.onGetTarget(enemy.faceups[targetIndex])
         else:
             raise Exception("Bad zone.")
-
-        self.overlordService.redraw()
 
     def win(self):
         self.overlordService.endGame(winner=self)
