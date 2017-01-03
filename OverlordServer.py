@@ -56,9 +56,11 @@ class OverlordService:
         self.game.endPhase(self.getPlayer(addr))
         self.redraw()
 
-    def requestTarget(self, zone, index):
+    def requestTarget(self, player, zone, index):
+        addr = self.players.keys()[self.players.values().index(player)]
+
         self.networkManager.sendInts(
-            self.addr,
+            addr,
             ClientNetworkManager.Opcodes.requestTarget,
             zone,
             index
