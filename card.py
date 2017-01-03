@@ -131,7 +131,7 @@ def five():
 
 def sweep():
     def sweepAbility(self):
-        for player in self.owner.overlordService.players:
+        for player in self.game.players:
             for c in player.faceups:
                 c.moveZone(Zone.graveyard)
 
@@ -151,7 +151,7 @@ def sweep():
 def spellBlade():
     def onGetTarget(self, target):
         if target in self.owner.getEnemy().facedowns:
-            self.owner.overlordService.destroy(target)
+            self.game.destroy(target)
 
         self.moveZone(Zone.graveyard)
 

@@ -34,11 +34,14 @@ class Player ():
         self.iconPath = faction.iconPath
         self.cardBack = faction.cardBack
 
+        self.targetingCardInstance = None
+
+    def shuffle(self):
         shuffle(self.deck)
+
+    def drawOpeningHand(self):
         for i in range(0, startHandSize):
             self.drawCard()
-
-        self.targetingCardInstance = None
 
     def drawCard(self):
         if len(self.deck) != 0:

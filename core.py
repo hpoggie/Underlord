@@ -12,6 +12,8 @@ class Game:
             player.game = self
             for card in player.deck:
                 card.game = self
+            player.shuffle()
+            player.drawOpeningHand()
 
     @property
     def activePlayer(self):
