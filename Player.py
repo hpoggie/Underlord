@@ -165,7 +165,7 @@ class Player ():
                     self.win()
             elif zone == Zone.faceup:
                 try:
-                    self.overlordService.fight(enemy.faceups[targetIndex], attacker)
+                    self.game.fight(enemy.faceups[targetIndex], attacker)
                 except IndexError as e:
                     print "Trying to attack card index that does not exist"
             elif zone == Zone.facedown:
