@@ -19,8 +19,6 @@ class OverlordService:
 
         self.players = []
 
-        self.targetCallbacks = {}
-
     def getPlayer(self, addr):
         for pl in self.players:
             if pl.addr == addr:
@@ -95,9 +93,6 @@ class OverlordService:
             self.endTurn()
 
         self.redraw()
-
-    def getTarget(self, playerKey):
-        self.targetCallbacks[playerKey]()
 
     def destroy(self, card):
         card.moveZone(Zone.graveyard)
