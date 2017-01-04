@@ -1,4 +1,5 @@
 import types
+import inspect
 from enums import Zone
 
 
@@ -58,9 +59,6 @@ class Card:
     def setDeathAbility(self, func):
         self.onDeath = types.MethodType(func, self)
 
-    def setTargetCallback(self, func):
-        self.onGetTarget = types.MethodType(func, self)
-
     def getName(self):
         return self.name
 
@@ -72,6 +70,25 @@ class Card:
 
     def moveZone(self, zone):
         self.owner.moveCard(self, zone)
+
+
+class TargetedAbility:
+    """
+    An ability that has targets.
+
+    Called just like a regular ability, but becomes the player's active ability instead of
+    immediately executing. Then the player can execute it after getting targets.
+    """
+    def __init__(self, func, card):
+        self.card = card
+        self.numTargets = len(inspect.getargspec(func))  # TODO: support multiple targets
+        self.func = types.MethodType(func, card)
+
+    def __call__(self):
+        self.card.owner.activeAbility = self
+
+    def execute(self, *args):
+        self.func(*args)
 
 
 class Faction:
@@ -149,14 +166,11 @@ def sweep():
 
 
 def spellBlade():
-    def onGetTarget(self, target):
+    def spellBladeAbility(self, target):
         if target in self.owner.getEnemy().facedowns:
             self.game.destroy(target)
 
         self.moveZone(Zone.graveyard)
-
-    def spellBladeAbility(self):
-        self.owner.requestTarget(self)
 
     spellBlade = Card({
         'name': "Spell Blade",
@@ -165,7 +179,6 @@ def spellBlade():
         'spell': True,
         'playsFaceUp': True
     })
-    spellBlade.setSpawnAbility(spellBladeAbility)
-    spellBlade.setTargetCallback(onGetTarget)
+    spellBlade.onSpawn = TargetedAbility(spellBladeAbility, spellBlade)
 
     return spellBlade

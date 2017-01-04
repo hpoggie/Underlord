@@ -31,11 +31,15 @@ class OverlordService:
     def revealFacedown(self, addr, index):
         self.players[addr].revealFacedown(index)
         self.redraw()
+        if self.players[addr].activeAbility is not None:
+            self.requestTarget(addr)
 
     # opcode 2
     def playFaceup(self, addr, index):
         self.players[addr].playFaceup(index)
         self.redraw()
+        if self.players[addr].activeAbility is not None:
+            self.requestTarget(addr)
 
     # opcode 3
     def attack(self, addr, cardIndex, targetIndex, zone):
@@ -49,7 +53,7 @@ class OverlordService:
 
     # opcode 5
     def acceptTarget(self, addr, cardIndex, targetZone, targetIndex):
-        self.players[addr].acceptTarget(cardIndex, targetZone, targetIndex)
+        self.players[addr].acceptTarget(targetZone, targetIndex)
         self.redraw()
 
     # opcode 6
@@ -57,8 +61,10 @@ class OverlordService:
         self.game.endPhase(self.players[addr])
         self.redraw()
 
-    def requestTarget(self, player, zone, index):
-        addr = self.players.keys()[self.players.values().index(player)]
+    def requestTarget(self, addr):
+        card = self.players[addr].activeAbility.card
+        zone = card.zone
+        index = self.players[addr].faceups.index(card)  # TODO: other zones
 
         self.networkManager.sendInts(
             addr,

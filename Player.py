@@ -34,6 +34,8 @@ class Player ():
         self.iconPath = faction.iconPath
         self.cardBack = faction.cardBack
 
+        self.activeAbility = None
+
     def shuffle(self):
         shuffle(self.deck)
 
@@ -48,19 +50,6 @@ class Player ():
 
     def isActivePlayer(self):
         return self.game.activePlayer == self
-
-    def requestTarget(self, card):
-        try:
-            index = self.faceups.index(card)
-            zone = Zone.faceup
-        except ValueError:
-            try:
-                index = self.facedowns.index(card)
-                zone = Zone.facedown
-            except ValueError:
-                pass
-
-        self.overlordService.requestTarget(self, zone, index)
 
     def getEnemy(self):
         index = 1 if self.game.players[0] == self else 0
@@ -110,6 +99,9 @@ class Player ():
         elif self.game.phase != Phase.play:
             print "Can only play facedowns during play phase."
         else:
+            if self.activeAbility:
+                self.cancelTarget()
+
             card = self.hand[index]
             card.moveZone(Zone.facedown)
             card.hasAttacked = False
@@ -122,6 +114,9 @@ class Player ():
         elif self.mana < self.facedowns[index].cost:
             print "Not enough mana."
         else:
+            if self.activeAbility:
+                self.cancelTarget()
+
             card = self.facedowns[index]
             self.mana -= card.cost
             card.moveZone(Zone.faceup)
@@ -136,6 +131,9 @@ class Player ():
         elif self.mana < self.hand[index].cost:
             print "Not enough mana."
         else:
+            if self.activeAbility:
+                self.cancelTarget()
+
             card = self.hand[index]
             self.mana -= card.cost
             card.moveZone(Zone.faceup)
@@ -150,6 +148,10 @@ class Player ():
         if attacker.hasAttacked:
             print "Can only attack once per turn."
         else:
+            # TODO: clean up so as to not cancel target on fail
+            if self.activeAbility:
+                self.cancelTarget()
+
             attacker.hasAttacked = True
 
             enemy = self.getEnemy()
@@ -171,16 +173,21 @@ class Player ():
             else:
                 print "Not a recognized zone."
 
-    def acceptTarget(self, cardIndex, targetZone, targetIndex):
+    def acceptTarget(self, targetZone, targetIndex):
         enemy = self.getEnemy()
-        card = self.getCard(Zone.faceup, cardIndex)
 
         if targetZone == Zone.facedown:
-            card.onGetTarget(enemy.facedowns[targetIndex])
+            self.activeAbility.execute(enemy.facedowns[targetIndex])
+            self.activeAbility = None
         elif targetZone == Zone.faceup:
-            card.onGetTarget(enemy.faceups[targetIndex])
+            self.activeAbility.execute(enemy.faceups[targetIndex])
+            self.activeAbility = None
         else:
             raise Exception("Bad zone.")
+
+    def cancelTarget(self):
+        self.activeAbility.execute(None)
+        self.activeAbility = None
 
     def win(self):
         self.overlordService.endGame(winner=self)
