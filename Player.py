@@ -17,8 +17,6 @@ maxManaCap = 15
 
 class Player ():
     def __init__(self, name, faction=Templars):
-        self.overlordService = None
-
         self.name = name
 
         self.hand = []
@@ -74,9 +72,6 @@ class Player ():
         if zone == Zone.faceup:
             self.faceups.append(card)
             card.zone = Zone.faceup
-
-            if self.overlordService:
-                self.overlordService.redraw()
 
             card.onSpawn()
         elif zone == Zone.facedown:
@@ -188,6 +183,3 @@ class Player ():
     def cancelTarget(self):
         self.activeAbility.execute(None)
         self.activeAbility = None
-
-    def win(self):
-        self.overlordService.endGame(winner=self)

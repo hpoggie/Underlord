@@ -22,7 +22,6 @@ class OverlordService:
     def addPlayer(self, addr):
         if len(self.players) < 2:
             self.players[addr] = self.game.players[len(self.players)]
-            self.players[addr].overlordService = self
             self.redraw()
         else:
             print "Cannot add more players."
