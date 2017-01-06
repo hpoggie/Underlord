@@ -62,11 +62,11 @@ def grail():
     grail.setDeathAbility(grailDestroy)
     return grail
 
-Templars = Faction({
-    'name': "Templars",
-    'iconPath': "./templar_icons",
-    'cardBack': "templar-shield.png",
-    'deck': [
+Templars = Faction(
+    name="Templars",
+    iconPath="./templar_icons",
+    cardBack="templar-shield.png",
+    deck=[
         card.one(), card.one(), card.one(), card.one(),
         card.sweep(), card.sweep(),
         card.spellBlade(),
@@ -75,4 +75,4 @@ Templars = Faction({
         equus(),
         grail()
         ]
-    })
+    )

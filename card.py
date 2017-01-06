@@ -88,13 +88,13 @@ class TargetedAbility:
 
 
 class Faction:
-    name = "My Faction"
-    iconPath = "./my_faction_icons"
-    cardBack = "my-faction-back.png"
-    deck = []
+    def __init__(self, **kwargs):
+        self.name = "My Faction"
+        self.iconPath = "./my_faction_icons"
+        self.cardBack = "my-faction-back.png"
+        self.deck = []
 
-    def __init__(self, attributes):
-        self.__dict__ = attributes.copy()
+        vars(self).update(kwargs.copy())
 
 
 def one():
