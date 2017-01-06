@@ -65,9 +65,6 @@ class Card:
     def getImage(self):
         return self.image
 
-    def __print__(self):
-        print self.name + " cost " + cost
-
     def moveZone(self, zone):
         self.owner.moveCard(self, zone)
 
