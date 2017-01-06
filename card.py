@@ -15,18 +15,17 @@ class Card:
     It is owned by a player.
     """
 
-    name = "Placeholder Name"
-    image = "missing.png"
-    cost = 0
-    rank = 0
-    spell = False
-    playsFaceUp = False
-
-    def __init__(self, attributes):
-        self.__dict__ = attributes.copy()
-
+    def __init__(self, **kwargs):
+        self.name = "Placeholder Name"
+        self.image = "missing.png"
+        self.cost = 0
+        self.rank = 0
+        self.spell = False
+        self.playsFaceUp = False
         self.owner = None
         self.zone = None
+
+        vars(self).update(kwargs.copy())
 
     def defaultGetCost(self):
         return self.cost
@@ -99,48 +98,48 @@ class Faction:
 
 
 def one():
-    return Card({
-        'name': "One",
-        'image': "dice-six-faces-one.png",
-        'cost': 1,
-        'rank': 1
-        })
+    return Card(
+        name="One",
+        image="dice-six-faces-one.png",
+        cost=1,
+        rank=1
+        )
 
 
 def two():
-    return Card({
-        'name': "Two",
-        'image': "dice-six-faces-two.png",
-        'cost': 2,
-        'rank': 2
-        })
+    return Card(
+        name="Two",
+        image="dice-six-faces-two.png",
+        cost=2,
+        rank=2
+        )
 
 
 def three():
-    return Card({
-        'name': "Three",
-        'image': "dice-six-faces-three.png",
-        'cost': 3,
-        'rank': 3
-        })
+    return Card(
+        name="Three",
+        image="dice-six-faces-three.png",
+        cost=3,
+        rank=3
+        )
 
 
 def four():
-    return Card({
-        'name': "Four",
-        'image': "dice-six-faces-four.png",
-        'cost': 4,
-        'rank': 4
-        })
+    return Card(
+        name="Four",
+        image="dice-six-faces-four.png",
+        cost=4,
+        rank=4
+        )
 
 
 def five():
-    return Card({
-        'name': "Five",
-        'image': "dice-six-faces-five.png",
-        'cost': 5,
-        'rank': 5
-        })
+    return Card(
+        name="Five",
+        image="dice-six-faces-five.png",
+        cost=5,
+        rank=5
+        )
 
 
 def sweep():
@@ -151,12 +150,12 @@ def sweep():
 
         self.moveZone(Zone.graveyard)
 
-    sweep = Card({
-        'name': "Sweep",
-        'image': "wind-slap.png",
-        'cost': 0,
-        'spell': True
-    })
+    sweep = Card(
+        name="Sweep",
+        image="wind-slap.png",
+        cost=0,
+        spell=True
+    )
     sweep.setSpawnAbility(sweepAbility)
 
     return sweep
@@ -169,13 +168,13 @@ def spellBlade():
 
         self.moveZone(Zone.graveyard)
 
-    spellBlade = Card({
-        'name': "Spell Blade",
-        'image': "wave-strike.png",
-        'cost': 0,
-        'spell': True,
-        'playsFaceUp': True
-    })
+    spellBlade = Card(
+        name="Spell Blade",
+        image="wave-strike.png",
+        cost=0,
+        spell=True,
+        playsFaceUp=True
+    )
     spellBlade.onSpawn = TargetedAbility(spellBladeAbility, spellBlade)
 
     return spellBlade

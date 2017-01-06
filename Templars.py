@@ -22,23 +22,23 @@ class ConditionalAttack ():
 
 
 def strix():
-    return Card({
-        'name': "Strix",
-        'image': "owl.png",
-        'cost': 1,
-        'rank': 1
-        })
+    return Card(
+        name="Strix",
+        image="owl.png",
+        cost=1,
+        rank=1
+        )
 
 
 def equus():
     def equusGetRank(self):
         return 2 if (self.owner.manaCap % 2 == 0) else 5
 
-    equus = Card({
-        'name': "Equus",
-        'image': "horse-head.png",
-        'cost': 3,
-        })
+    equus = Card(
+        name="Equus",
+        image="horse-head.png",
+        cost=3,
+        )
     equus.setRankAbility(equusGetRank)
 
     return equus
@@ -54,10 +54,10 @@ def grail():
     def grailDestroy(self):
         self.grailAttack.destroy()
 
-    grail = Card({
-        'name': "Grail",
-        'image': "holy-grail.png"
-        })
+    grail = Card(
+        name="Grail",
+        image="holy-grail.png"
+        )
     grail.setSpawnAbility(grailInit)
     grail.setDeathAbility(grailDestroy)
     return grail
