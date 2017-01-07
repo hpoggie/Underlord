@@ -94,8 +94,7 @@ class Player ():
         elif self.game.phase != Phase.play:
             print "Can only play facedowns during play phase."
         else:
-            if self.activeAbility:
-                self.cancelTarget()
+            self.cancelTarget()
 
             card = self.hand[index]
             card.moveZone(Zone.facedown)
@@ -109,8 +108,7 @@ class Player ():
         elif self.mana < self.facedowns[index].cost:
             print "Not enough mana."
         else:
-            if self.activeAbility:
-                self.cancelTarget()
+            self.cancelTarget()
 
             card = self.facedowns[index]
             self.mana -= card.cost
@@ -126,8 +124,7 @@ class Player ():
         elif self.mana < self.hand[index].cost:
             print "Not enough mana."
         else:
-            if self.activeAbility:
-                self.cancelTarget()
+            self.cancelTarget()
 
             card = self.hand[index]
             self.mana -= card.cost
@@ -144,8 +141,7 @@ class Player ():
             print "Can only attack once per turn."
         else:
             # TODO: clean up so as to not cancel target on fail
-            if self.activeAbility:
-                self.cancelTarget()
+            self.cancelTarget()
 
             attacker.hasAttacked = True
 
@@ -181,5 +177,6 @@ class Player ():
             raise Exception("Bad zone.")
 
     def cancelTarget(self):
-        self.activeAbility.execute(None)
-        self.activeAbility = None
+        if self.activeAbility is not None:
+            self.activeAbility.execute(None)
+            self.activeAbility = None
