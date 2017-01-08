@@ -12,12 +12,12 @@ from direct.gui.DirectGui import *
 from direct.gui.OnscreenText import OnscreenText
 
 from network import *
-from enums import *
-from Player import Player
+from core.enums import *
+from core.Player import Player
 
 from panda3d.core import loadPrcFileData
 from direct.task import Task
-import Templars
+from factions import Templars
 import types
 
 loadPrcFileData(

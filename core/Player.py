@@ -9,7 +9,10 @@ A player has the following characteristics:
 from copy import deepcopy
 from random import shuffle
 from enums import *
-from Templars import Templars
+
+# TODO: add possibility of multiple factions
+from factions.Templars import Templars
+
 
 startHandSize = 5
 maxManaCap = 15

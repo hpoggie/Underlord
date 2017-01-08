@@ -1,5 +1,5 @@
-import card
-from card import Card, Faction
+import core.card as card
+from core.card import Card, Faction
 
 
 class ConditionalAttack ():
