@@ -41,8 +41,8 @@ class OverlordService:
             self.requestTarget(addr)
 
     # opcode 3
-    def attack(self, addr, cardIndex, targetIndex, zone):
-        self.players[addr].attack(cardIndex, targetIndex, zone)
+    def attack(self, addr, cardIndex, targetIndex, targetZone):
+        self.players[addr].attack(cardIndex, targetIndex, targetZone)
         self.redraw()
 
     # opcode 4
