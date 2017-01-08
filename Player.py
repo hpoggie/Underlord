@@ -130,39 +130,35 @@ class Player ():
             self.mana -= card.cost
             card.moveZone(Zone.faceup)
 
-    def attack(self, cardIndex, targetIndex, zone):
+    def attack(self, cardIndex, targetIndex, targetZone):
+        enemy = self.getEnemy()
+        attacker = self.faceups[cardIndex]
+        target = enemy.getCard(targetZone, targetIndex)
+
         if not self.isActivePlayer():
             print "It is not your turn."
             return
 
-        attacker = self.faceups[cardIndex]
-
         if attacker.hasAttacked:
             print "Can only attack once per turn."
+            return
+
+        if self.game.phase != Phase.attack:
+            print "Can only attack during attack phase."
+            return
+
+        attacker.hasAttacked = True
+
+        if targetZone == Zone.face:
+            self.attackFace(attacker)
         else:
-            # TODO: clean up so as to not cancel target on fail
-            self.cancelTarget()
+            self.game.fight(target, attacker)
 
-            attacker.hasAttacked = True
-
-            enemy = self.getEnemy()
-            if zone == Zone.face:
-                enemy.manaCap += attacker.rank
-                if enemy.manaCap > 15:
-                    print "You're winner"
-                    self.win()
-            elif zone == Zone.faceup:
-                try:
-                    self.game.fight(enemy.faceups[targetIndex], attacker)
-                except IndexError as e:
-                    print "Trying to attack card index that does not exist"
-            elif zone == Zone.facedown:
-                try:
-                    self.game.fight(enemy.facedowns[targetIndex], attacker)
-                except IndexError as e:
-                    print "Trying to attack card index that does not exist"
-            else:
-                print "Not a recognized zone."
+    def attackFace(self, attacker):
+        self.getEnemy().manaCap += attacker.rank
+        if self.getEnemy().manaCap > 15:
+            print "You're winner"
+            self.win()
 
     def acceptTarget(self, targetZone, targetIndex):
         enemy = self.getEnemy()
