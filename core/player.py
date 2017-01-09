@@ -11,7 +11,7 @@ from random import shuffle
 from enums import *
 
 # TODO: add possibility of multiple factions
-from factions.Templars import Templars
+from factions.templars import Templars
 
 
 startHandSize = 5

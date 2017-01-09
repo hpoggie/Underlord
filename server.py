@@ -4,7 +4,7 @@ Server script. Takes the client's actions and computes the results, then sends t
 
 from network import *
 from core.core import Game
-from factions.Templars import Templars
+from factions.templars import Templars
 import time
 
 

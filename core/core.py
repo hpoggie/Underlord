@@ -1,5 +1,5 @@
 from enums import *
-from Player import Player
+from player import Player
 
 
 class Game:

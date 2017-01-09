@@ -13,11 +13,11 @@ from direct.gui.OnscreenText import OnscreenText
 
 from network import *
 from core.enums import *
-from core.Player import Player
+from core.player import Player
 
 from panda3d.core import loadPrcFileData
 from direct.task import Task
-from factions import Templars
+from factions import templars
 import types
 
 loadPrcFileData(
@@ -136,7 +136,7 @@ class App (ShowBase):
     def updatePlayerHand(self, cardIds):
         self.player.hand = [None] * len(cardIds)
         for i, x in enumerate(cardIds):
-            self.player.hand[i] = Templars.Templars.deck[x]  # TODO
+            self.player.hand[i] = templars.Templars.deck[x]  # TODO
             self.player.hand[i].owner = self.player
         self.redraw()
 
@@ -146,7 +146,7 @@ class App (ShowBase):
     def updatePlayerFacedowns(self, cardIds):
         self.player.facedowns = [None] * len(cardIds)
         for i, x in enumerate(cardIds):
-            self.player.facedowns[i] = Templars.Templars.deck[x]
+            self.player.facedowns[i] = templars.Templars.deck[x]
             self.player.facedowns[i].doIControl = True
         self.redraw()
 
@@ -157,14 +157,14 @@ class App (ShowBase):
     def updatePlayerFaceups(self, cardIds):
         self.player.faceups = [None] * len(cardIds)
         for i, x in enumerate(cardIds):
-            self.player.faceups[i] = Templars.Templars.deck[x]
+            self.player.faceups[i] = templars.Templars.deck[x]
             self.player.faceups[i].doIControl = True
         self.redraw()
 
     def updateEnemyFaceups(self, cardIds):
         self.enemy.faceups = [None] * len(cardIds)
         for i, x in enumerate(cardIds):
-            self.enemy.faceups[i] = Templars.Templars.deck[x]
+            self.enemy.faceups[i] = templars.Templars.deck[x]
             self.enemy.faceups[i].doIControl = False
         self.redraw()
 
@@ -197,10 +197,10 @@ class App (ShowBase):
         self.handler = CollisionHandlerQueue()
         self.mouseHandler = MouseHandler()
 
-        self.playerIconPath = Templars.Templars.iconPath
-        self.enemyIconPath = Templars.Templars.iconPath
-        self.playerCardBack = Templars.Templars.cardBack
-        self.enemyCardBack = Templars.Templars.cardBack
+        self.playerIconPath = templars.Templars.iconPath
+        self.enemyIconPath = templars.Templars.iconPath
+        self.playerCardBack = templars.Templars.cardBack
+        self.enemyCardBack = templars.Templars.cardBack
 
         self.endPhaseButton = DirectButton(
                 image="./concentric-crescents.png",

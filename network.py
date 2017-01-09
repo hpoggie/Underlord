@@ -1,4 +1,4 @@
-from NetworkManager import NetworkManager
+from network_manager import NetworkManager
 
 
 class ServerNetworkManager (NetworkManager):
