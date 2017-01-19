@@ -25,5 +25,22 @@ class PlayerTest(unittest.TestCase):
                 if card1 == card2:
                     self.fail('' + card1.name + ' equals ' + card2.name)
 
+
+class ActionsTest(unittest.TestCase):
+    def testPlay(self):
+        from core.core import Game
+        from core import card
+        game = Game()
+        game.start()
+        player = game.players[0]
+        newCard = card.one()
+        newCard.owner = player
+        player.deck = [newCard]
+        player.drawCard()
+        game.endPhase(player)
+        game.endPhase(player)
+        game.endPhase(player)
+        player.play(0)
+
 if __name__ == '__main__':
     unittest.main()
