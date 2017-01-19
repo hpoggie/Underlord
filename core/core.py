@@ -12,6 +12,9 @@ class Game:
             player.game = self
             for card in player.deck:
                 card.game = self
+
+    def start(self):
+        for player in self.players:
             player.shuffle()
             player.drawOpeningHand()
 

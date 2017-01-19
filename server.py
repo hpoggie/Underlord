@@ -14,6 +14,7 @@ class OverlordService:
         self.networkManager.startServer()
 
         self.game = Game()
+        self.game.start()
         self.players = {}
 
     # actions
