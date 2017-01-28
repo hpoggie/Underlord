@@ -12,13 +12,13 @@ class PlayerTest(unittest.TestCase):
 
     def testForDuplicates(self):
         from core.player import Player
-        player = Player("Test Player")
+        player = Player()
         self.checkDeckForDuplicates(player.deck)
 
     def testForDuplicatesBetweenPlayers(self):
         from core.player import Player
-        player1 = Player("Player 1")
-        player2 = Player("Player 2")
+        player1 = Player()
+        player2 = Player()
 
         for card1 in player1.deck:
             for card2 in player2.deck:

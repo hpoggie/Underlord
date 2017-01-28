@@ -7,7 +7,7 @@ class Game:
         self.turn = Turn.p1
         self.phase = Phase.reveal
 
-        self.players = (Player("Player 1"), Player("Player 2"))
+        self.players = (Player(), Player())
         for player in self.players:
             player.game = self
             for card in player.deck:
@@ -60,6 +60,6 @@ class Game:
         if player.manaCap > 15:
             player.getEnemy().win()
         player.mana = player.manaCap
-        print "player " + player.name + " mana cap is " + str(player.manaCap)
+        print "player " + player + " mana cap is " + str(player.manaCap)
         self.turn = Turn.p2 if self.turn == Turn.p1 else Turn.p1
         self.phase = Phase.reveal

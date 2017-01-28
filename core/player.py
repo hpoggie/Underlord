@@ -19,9 +19,7 @@ maxManaCap = 15
 
 
 class Player ():
-    def __init__(self, name, faction=Templars):
-        self.name = name
-
+    def __init__(self, faction=Templars):
         self.hand = []
         self.facedowns = []
         self.faceups = []
