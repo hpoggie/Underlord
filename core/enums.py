@@ -16,3 +16,7 @@ class Zone ():
     facedown = 2
     hand = 3
     graveyard = 4
+
+
+class IllegalMoveError (Exception):
+    pass

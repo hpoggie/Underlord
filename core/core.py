@@ -36,8 +36,7 @@ class Game:
 
     def endPhase(self, player):
         if not player.isActivePlayer():
-            print "It is not your turn."
-            return
+            raise IllegalMoveError("It is not your turn.")
 
         if self.phase == Phase.reveal:
             self.activePlayer.facedowns = []
