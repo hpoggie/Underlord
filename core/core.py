@@ -1,5 +1,6 @@
 from enums import *
 from player import Player
+from factions.templars import Templars
 
 
 class Game:
@@ -7,7 +8,7 @@ class Game:
         self.turn = Turn.p1
         self.phase = Phase.reveal
 
-        self.players = (Player(), Player())
+        self.players = (Player(Templars), Player(Templars))
         for player in self.players:
             player.game = self
             for card in player.deck:

@@ -10,16 +10,12 @@ from copy import deepcopy
 from random import shuffle
 from enums import *
 
-# TODO: add possibility of multiple factions
-from factions.templars import Templars
-
-
 startHandSize = 5
 maxManaCap = 15
 
 
 class Player ():
-    def __init__(self, faction=Templars):
+    def __init__(self, faction):
         self.hand = []
         self.facedowns = []
         self.faceups = []

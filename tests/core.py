@@ -3,6 +3,7 @@ import unittest
 from core.player import Player
 from core.core import Game
 from factions import base
+from factions.templars import Templars
 
 
 class PlayerTest(unittest.TestCase):
@@ -13,12 +14,12 @@ class PlayerTest(unittest.TestCase):
                     self.fail('' + card.name + ' equals ' + card2.name)
 
     def testForDuplicates(self):
-        player = Player()
+        player = Player(Templars)
         self.checkDeckForDuplicates(player.deck)
 
     def testForDuplicatesBetweenPlayers(self):
-        player1 = Player()
-        player2 = Player()
+        player1 = Player(Templars)
+        player2 = Player(Templars)
 
         for card1 in player1.deck:
             for card2 in player2.deck:
