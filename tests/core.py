@@ -1,6 +1,8 @@
+import __init__
 import unittest
-import sys
-sys.path.insert(0, "..")
+from core.player import Player
+from core.core import Game
+from factions import base
 
 
 class PlayerTest(unittest.TestCase):
@@ -11,12 +13,10 @@ class PlayerTest(unittest.TestCase):
                     self.fail('' + card.name + ' equals ' + card2.name)
 
     def testForDuplicates(self):
-        from core.player import Player
         player = Player()
         self.checkDeckForDuplicates(player.deck)
 
     def testForDuplicatesBetweenPlayers(self):
-        from core.player import Player
         player1 = Player()
         player2 = Player()
 
@@ -28,8 +28,6 @@ class PlayerTest(unittest.TestCase):
 
 class ActionsTest(unittest.TestCase):
     def testPlay(self):
-        from core.core import Game
-        from factions import base
         game = Game()
         game.start()
         player = game.players[0]
