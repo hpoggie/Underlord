@@ -29,11 +29,11 @@ class PlayerTest(unittest.TestCase):
 class ActionsTest(unittest.TestCase):
     def testPlay(self):
         from core.core import Game
-        from core import card
+        from factions import base
         game = Game()
         game.start()
         player = game.players[0]
-        newCard = card.one()
+        newCard = base.one()
         newCard.owner = player
         player.deck = [newCard]
         player.drawCard()
