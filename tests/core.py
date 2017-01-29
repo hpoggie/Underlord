@@ -40,7 +40,7 @@ class ActionsTest(unittest.TestCase):
         game.endPhase(player)
         game.endPhase(player)
         game.endPhase(player)
-        player.play(0)
+        player.play(newCard)
 
 if __name__ == '__main__':
     unittest.main()
