@@ -27,24 +27,19 @@ class Card:
 
         vars(self).update(kwargs.copy())
 
-    def defaultGetCost(self):
+    def getCost(self):
         return self.cost
 
-    def defaultGetRank(self):
+    def getRank(self):
         return self.rank
 
-    def defaultOnSpawn(self):
+    def onSpawn(self):
         print "card has spawned"
         if self.spell:
             self.moveZone(Zone.graveyard)
 
-    def defaultOnDeath(self):
+    def onDeath(self):
         print "card has died"
-
-    getCost = defaultGetCost
-    getRank = defaultGetRank
-    onSpawn = defaultOnSpawn
-    onDeath = defaultOnDeath
 
     def setCostAbility(self, func):
         self.getCost = types.MethodType(func, self)
