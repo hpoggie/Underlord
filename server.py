@@ -29,31 +29,38 @@ class OverlordService:
 
     # opcode 1
     def revealFacedown(self, addr, index):
-        self.players[addr].revealFacedown(index)
+        pl = self.players[addr]
+        pl.revealFacedown(pl.facedowns[index])
         self.redraw()
-        if self.players[addr].activeAbility is not None:
+        if pl.activeAbility is not None:
             self.requestTarget(addr)
 
     # opcode 2
     def playFaceup(self, addr, index):
-        self.players[addr].playFaceup(index)
+        pl = self.players[addr]
+        pl.playFaceup(pl.faceups[index])
         self.redraw()
-        if self.players[addr].activeAbility is not None:
+        if pl.activeAbility is not None:
             self.requestTarget(addr)
 
     # opcode 3
     def attack(self, addr, cardIndex, targetIndex, targetZone):
-        self.players[addr].attack(cardIndex, targetIndex, targetZone)
+        pl = self.players[addr]
+        attacker = pl.faceups[cardIndex]
+        target = pl.getEnemy().getCard(targetZone, targetIndex)
+        pl.attack(attacker, target)
         self.redraw()
 
     # opcode 4
     def play(self, addr, index):
-        self.players[addr].play(index)
+        pl = self.players[addr]
+        pl.play(pl.hand[index])
         self.redraw()
 
     # opcode 5
     def acceptTarget(self, addr, cardIndex, targetZone, targetIndex):
-        self.players[addr].acceptTarget(targetZone, targetIndex)
+        pl = self.players[addr]
+        pl.acceptTarget(pl.getEnemy().getCard(targetZone, targetIndex))
         self.redraw()
 
     # opcode 6

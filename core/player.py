@@ -10,16 +10,12 @@ from copy import deepcopy
 from random import shuffle
 from enums import *
 
-# TODO: add possibility of multiple factions
-from factions.templars import Templars
-
-
 startHandSize = 5
 maxManaCap = 15
 
 
 class Player ():
-    def __init__(self, faction=Templars):
+    def __init__(self, faction):
         self.hand = []
         self.facedowns = []
         self.faceups = []
@@ -89,64 +85,75 @@ class Player ():
 
     # actions
 
-    def play(self, index):
+    def play(self, card):
         if not self.isActivePlayer():
-            print "Can only play facedowns during your turn."
-        elif self.game.phase != Phase.play:
-            print "Can only play facedowns during play phase."
-        else:
-            self.cancelTarget()
+            raise IllegalMoveError("Can only play facedowns during your turn.")
 
-            card = self.hand[index]
-            card.moveZone(Zone.facedown)
-            card.hasAttacked = False
+        if self.game.phase != Phase.play:
+            raise IllegalMoveError("Can only play facedowns during play phase.")
 
-    def revealFacedown(self, index):
+        if card.zone != Zone.hand:
+            raise IllegalMoveError("Can't play a card that's not in your hand.")
+
+        self.cancelTarget()
+
+        card.moveZone(Zone.facedown)
+        card.hasAttacked = False
+
+    def revealFacedown(self, card):
         if not self.isActivePlayer():
-            print "Can only reveal facedowns during your turn."
-        elif self.game.phase != Phase.reveal:
-            print "Can only reveal facedowns during reveal phase."
-        elif self.mana < self.facedowns[index].cost:
-            print "Not enough mana."
-        else:
-            self.cancelTarget()
+            raise IllegalMoveError("Can only reveal facedowns during your turn.")
 
-            card = self.facedowns[index]
-            self.mana -= card.cost
-            card.moveZone(Zone.faceup)
+        if self.game.phase != Phase.reveal:
+            raise IllegalMoveError("Can only reveal facedowns during reveal phase.")
 
-    def playFaceup(self, index):
+        if self.mana < self.facedowns[index].cost:
+            raise IllegalMoveError("Not enough mana.")
+
+        if card.zone != Zone.facedown:
+            raise IllegalMoveError("Can't reveal a card that's not face-down.")
+
+        self.cancelTarget()
+
+        self.mana -= card.cost
+        card.moveZone(Zone.faceup)
+
+    def playFaceup(self, card):
         if not self.isActivePlayer():
-            print "Can only play faceups during your turn."
-        elif self.game.phase != Phase.reveal:
-            print "Can only play faceups during reveal phase."
-        elif not self.hand[index].playsFaceUp:
-            print "That card does not play face-up."
-        elif self.mana < self.hand[index].cost:
-            print "Not enough mana."
-        else:
-            self.cancelTarget()
+            raise IllegalMoveError("Can only play faceups during your turn.")
 
-            card = self.hand[index]
-            self.mana -= card.cost
-            card.moveZone(Zone.faceup)
+        if self.game.phase != Phase.reveal:
+            raise IllegalMoveError("Can only play faceups during reveal phase.")
 
-    def attack(self, cardIndex, targetIndex, targetZone):
-        enemy = self.getEnemy()
-        attacker = self.faceups[cardIndex]
-        target = enemy.getCard(targetZone, targetIndex)
+        if card not in self.hand:
+            raise IllegalMoveError("Can't play a card face-up that's not in hand.")
 
+        if not card.playsFaceUp:
+            raise IllegalMoveError("That card does not play face-up.")
+
+        if self.mana < card.cost:
+            raise IllegalMoveError("Not enough mana.")
+
+        self.cancelTarget()
+
+        self.mana -= card.cost
+        card.moveZone(Zone.faceup)
+
+    def attack(self, attacker, target):
         if not self.isActivePlayer():
-            print "It is not your turn."
-            return
+            raise IllegalMoveError("It is not your turn.")
 
         if attacker.hasAttacked:
-            print "Can only attack once per turn."
-            return
+            raise IllegalMoveError("Can only attack once per turn.")
 
         if self.game.phase != Phase.attack:
-            print "Can only attack during attack phase."
-            return
+            raise IllegalMoveError("Can only attack during attack phase.")
+
+        if attacker.zone != Zone.faceup:
+            raise IllegalMoveError("Can only attack with face-up cards.")
+
+        if target.zone != Zone.faceup and target.zone != Zone.facedown and target.zone != Zone.face:
+            raise IllegalMoveError("Can only attack face-up / face-down targets or a player.")
 
         attacker.hasAttacked = True
 
@@ -161,17 +168,9 @@ class Player ():
             print "You're winner"
             self.win()
 
-    def acceptTarget(self, targetZone, targetIndex):
-        enemy = self.getEnemy()
-
-        if targetZone == Zone.facedown:
-            self.activeAbility.execute(enemy.facedowns[targetIndex])
-            self.activeAbility = None
-        elif targetZone == Zone.faceup:
-            self.activeAbility.execute(enemy.faceups[targetIndex])
-            self.activeAbility = None
-        else:
-            raise Exception("Bad zone.")
+    def acceptTarget(self, target):
+        self.activeAbility.execute(target)
+        self.activeAbility = None
 
     def cancelTarget(self):
         if self.activeAbility is not None:

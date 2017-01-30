@@ -1,4 +1,4 @@
-import core.card as card
+import base
 from core.card import Card, Faction
 
 
@@ -67,9 +67,9 @@ Templars = Faction(
     iconPath="./templar_icons",
     cardBack="templar-shield.png",
     deck=[
-        card.one(), card.one(), card.one(), card.one(),
-        card.sweep(), card.sweep(),
-        card.spellBlade(),
+        base.one(), base.one(), base.one(), base.one(),
+        base.sweep(), base.sweep(),
+        base.spellBlade(),
         strix(),
         equus(),
         equus(),

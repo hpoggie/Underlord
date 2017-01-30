@@ -1,24 +1,28 @@
+import __init__
 import unittest
-import sys
-sys.path.insert(0, "..")
+from core.player import Player
+from core.core import Game
+from factions import base
+from factions.templars import Templars
+from core.enums import *
+
+
+def deckContainsDuplicates(deck):
+    for i, card in enumerate(deck):
+        for card2 in deck[i+1:]:
+            if card == card2:
+                return True
+    return False
 
 
 class PlayerTest(unittest.TestCase):
-    def checkDeckForDuplicates(self, deck):
-        for i, card in enumerate(deck):
-            for card2 in deck[i+1:]:
-                if card == card2:
-                    self.fail('' + card.name + ' equals ' + card2.name)
-
     def testForDuplicates(self):
-        from core.player import Player
-        player = Player()
-        self.checkDeckForDuplicates(player.deck)
+        player = Player(Templars)
+        self.failIf(deckContainsDuplicates(player.deck))
 
     def testForDuplicatesBetweenPlayers(self):
-        from core.player import Player
-        player1 = Player()
-        player2 = Player()
+        player1 = Player(Templars)
+        player2 = Player(Templars)
 
         for card1 in player1.deck:
             for card2 in player2.deck:
@@ -28,19 +32,18 @@ class PlayerTest(unittest.TestCase):
 
 class ActionsTest(unittest.TestCase):
     def testPlay(self):
-        from core.core import Game
-        from core import card
         game = Game()
         game.start()
         player = game.players[0]
-        newCard = card.one()
+        newCard = base.one()
         newCard.owner = player
         player.deck = [newCard]
         player.drawCard()
         game.endPhase(player)
         game.endPhase(player)
         game.endPhase(player)
-        player.play(0)
+        player.play(newCard)
+        self.failUnlessEqual(newCard.zone, Zone.facedown)
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(verbosity=2)
