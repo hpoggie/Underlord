@@ -1,6 +1,17 @@
 from enums import *
 from player import Player
 from factions.templars import Templars
+import action
+
+
+def setupActions(player):
+    from action import Action
+    player.play = Action(player, action.play)
+    player.revealFacedown = Action(player, action.revealFacedown)
+    player.playFaceup = Action(player, action.playFaceup)
+    player.attack = Action(player, action.attack)
+    player.acceptTarget = Action(player, action.acceptTarget)
+    player.cancelTarget = Action(player, action.cancelTarget)
 
 
 class Game:
@@ -11,6 +22,7 @@ class Game:
         self.players = (Player(Templars), Player(Templars))
         for player in self.players:
             player.game = self
+            setupActions(player)
             for card in player.deck:
                 card.game = self
 
