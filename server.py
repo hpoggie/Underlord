@@ -65,7 +65,7 @@ class OverlordService:
 
     # opcode 6
     def endPhase(self, addr):
-        self.game.endPhase(self.players[addr])
+        self.players[addr].endPhase()
         self.redraw()
 
     def requestTarget(self, addr):

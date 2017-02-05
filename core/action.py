@@ -108,9 +108,14 @@ def _cancelTarget(self):
         self.activeAbility.execute(None)
         self.activeAbility = None
 
+
+def _endPhase(self):
+    self.game.endPhase()
+
 play = [failIfInactive, _play]
 revealFacedown = [failIfInactive, _revealFacedown]
 playFaceup = [failIfInactive, _revealFacedown]
 attack = [failIfInactive, _attack]
 acceptTarget = [failIfInactive, _acceptTarget]
 cancelTarget = [failIfInactive, _cancelTarget]
+endPhase = [failIfInactive, _endPhase]

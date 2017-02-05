@@ -39,9 +39,9 @@ class ActionsTest(unittest.TestCase):
         newCard.owner = player
         player.deck = [newCard]
         player.drawCard()
-        game.endPhase(player)
-        game.endPhase(player)
-        game.endPhase(player)
+        player.endPhase()
+        player.endPhase()
+        player.endPhase()
         player.play(newCard)
         self.failUnlessEqual(newCard.zone, Zone.facedown)
 

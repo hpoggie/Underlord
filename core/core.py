@@ -12,6 +12,7 @@ def setupActions(player):
     player.attack = Action(player, action.attack)
     player.acceptTarget = Action(player, action.acceptTarget)
     player.cancelTarget = Action(player, action.cancelTarget)
+    player.endPhase = Action(player, action.endPhase)
 
 
 class Game:
@@ -47,10 +48,7 @@ class Game:
     def destroy(self, card):
         card.moveZone(Zone.graveyard)
 
-    def endPhase(self, player):
-        if not player.isActivePlayer():
-            raise IllegalMoveError("It is not your turn.")
-
+    def endPhase(self):
         if self.phase == Phase.reveal:
             self.activePlayer.facedowns = []
 
