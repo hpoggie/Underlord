@@ -22,7 +22,7 @@ def failIfInactive(self, *args):
         raise IllegalMoveError("Can only play facedowns during your turn.")
 
 
-def _play(self, card):
+def play(self, card):
     if self.game.phase != Phase.play:
         raise IllegalMoveError("Can only play facedowns during play phase.")
 
@@ -35,7 +35,7 @@ def _play(self, card):
     card.hasAttacked = False
 
 
-def _revealFacedown(self, card):
+def revealFacedown(self, card):
     if self.game.phase != Phase.reveal:
         raise IllegalMoveError("Can only reveal facedowns during reveal phase.")
 
@@ -51,7 +51,7 @@ def _revealFacedown(self, card):
     card.moveZone(Zone.faceup)
 
 
-def _playFaceup(self, card):
+def playFaceup(self, card):
     if self.game.phase != Phase.reveal:
         raise IllegalMoveError("Can only play faceups during reveal phase.")
 
@@ -70,7 +70,7 @@ def _playFaceup(self, card):
     card.moveZone(Zone.faceup)
 
 
-def _attack(self, attacker, target):
+def attack(self, attacker, target):
     if attacker.hasAttacked:
         raise IllegalMoveError("Can only attack once per turn.")
 
@@ -98,24 +98,26 @@ def attackFace(self, attacker):
         self.win()
 
 
-def _acceptTarget(self, target):
+def acceptTarget(self, target):
     self.activeAbility.execute(target)
     self.activeAbility = None
 
 
-def _cancelTarget(self):
+def cancelTarget(self):
     if self.activeAbility is not None:
         self.activeAbility.execute(None)
         self.activeAbility = None
 
 
-def _endPhase(self):
+def endPhase(self):
     self.game.endPhase()
 
-play = [failIfInactive, _play]
-revealFacedown = [failIfInactive, _revealFacedown]
-playFaceup = [failIfInactive, _revealFacedown]
-attack = [failIfInactive, _attack]
-acceptTarget = [failIfInactive, _acceptTarget]
-cancelTarget = [failIfInactive, _cancelTarget]
-endPhase = [failIfInactive, _endPhase]
+actions = {
+    'play': [failIfInactive, play],
+    'revealFacedown': [failIfInactive, revealFacedown],
+    'playFaceup': [failIfInactive, revealFacedown],
+    'attack': [failIfInactive, attack],
+    'acceptTarget': [failIfInactive, acceptTarget],
+    'cancelTarget': [failIfInactive, cancelTarget],
+    'endPhase': [failIfInactive, endPhase]
+}

@@ -6,13 +6,7 @@ import action
 
 def setupActions(player):
     from action import Action
-    player.play = Action(player, action.play)
-    player.revealFacedown = Action(player, action.revealFacedown)
-    player.playFaceup = Action(player, action.playFaceup)
-    player.attack = Action(player, action.attack)
-    player.acceptTarget = Action(player, action.acceptTarget)
-    player.cancelTarget = Action(player, action.cancelTarget)
-    player.endPhase = Action(player, action.endPhase)
+    vars(player).update(dict((key, Action(player, value)) for key, value in action.actions.iteritems()))
 
 
 class Game:
