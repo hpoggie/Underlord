@@ -121,3 +121,9 @@ actions = {
     'cancelTarget': [failIfInactive, cancelTarget],
     'endPhase': [failIfInactive, endPhase]
 }
+
+
+def setupActions(player):
+    global actions
+    from action import Action
+    vars(player).update(dict((key, Action(player, value)) for key, value in actions.iteritems()))

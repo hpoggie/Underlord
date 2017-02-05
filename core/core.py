@@ -4,11 +4,6 @@ from factions.templars import Templars
 import action
 
 
-def setupActions(player):
-    from action import Action
-    vars(player).update(dict((key, Action(player, value)) for key, value in action.actions.iteritems()))
-
-
 class Game:
     def __init__(self):
         self.turn = Turn.p1
@@ -17,7 +12,7 @@ class Game:
         self.players = (Player(Templars), Player(Templars))
         for player in self.players:
             player.game = self
-            setupActions(player)
+            action.setupActions(player)
             for card in player.deck:
                 card.game = self
 
