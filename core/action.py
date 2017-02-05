@@ -80,12 +80,12 @@ def attack(self, attacker, target):
     if attacker.zone != Zone.faceup:
         raise IllegalMoveError("Can only attack with face-up cards.")
 
-    if target.zone != Zone.faceup and target.zone != Zone.facedown and target.zone != Zone.face:
+    if target != Zone.face and target.zone not in [Zone.faceup, Zone.facedown]:
         raise IllegalMoveError("Can only attack face-up / face-down targets or a player.")
 
     attacker.hasAttacked = True
 
-    if targetZone == Zone.face:
+    if target == Zone.face:
         self.attackFace(attacker)
     else:
         self.game.fight(target, attacker)
