@@ -2,23 +2,16 @@ import base
 from core.card import Card, Faction
 
 
-class ConditionalAttack ():
-    def __init__(self, card, condition):
-        self.player = card.owner
-        self.enemy = self.player.getEnemy()
-        self.original = self.enemy.attack
-        self.enemy.attack = self
+def failIfTaunts(self, attacker, target):
+    if target == Zone.face:
+        for card in self.getEnemy().facedowns:
+            if hasattr(card, 'Taunt') and card.Taunt:
+                raise IllegalMoveError("Can't attack into Taunts.")
 
-        self.condition = condition
 
-    def destroy(self):
-        self.enemy.attack = self.original
-
-    def __call__(self, cardIndex, targetIndex, zone):
-        if (zone == 0 and self.condition(self.player)):
-            print "Attack failed."
-            return
-        self.original(cardIndex, targetIndex, zone)
+def setup(game):
+    for player in game.players:
+        player.attack.funcs.insert(0, failIfTaunts)
 
 
 def strix():
@@ -45,21 +38,15 @@ def equus():
 
 
 def grail():
-    def grailAttackCondition(player):
-        return player.manaCap % 2 == 0
+    class Grail(Card):
+        @property
+        def Taunt(self):
+            return self.owner.manaCap % 2 == 0
 
-    def grailInit(self):
-        self.grailAttack = ConditionalAttack(self, grailAttackCondition)
-
-    def grailDestroy(self):
-        self.grailAttack.destroy()
-
-    grail = Card(
+    grail = Grail(
         name="Grail",
         image="holy-grail.png"
         )
-    grail.setSpawnAbility(grailInit)
-    grail.setDeathAbility(grailDestroy)
     return grail
 
 Templars = Faction(
@@ -74,5 +61,6 @@ Templars = Faction(
         equus(),
         equus(),
         grail()
-        ]
+        ],
+    setup=setup
     )

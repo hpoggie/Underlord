@@ -1,20 +1,23 @@
 from enums import *
 from player import Player
-from factions.templars import Templars
 import action
 
 
 class Game:
-    def __init__(self):
+    def __init__(self, p1Faction, p2Faction):
         self.turn = Turn.p1
         self.phase = Phase.reveal
 
-        self.players = (Player(Templars), Player(Templars))
+        self.players = (Player(p1Faction), Player(p2Faction))
         for player in self.players:
             player.game = self
             action.setupActions(player)
             for card in player.deck:
                 card.game = self
+
+        p1Faction.setup(self)
+        if p2Faction != p1Faction:
+            p2Faction.setup(self)
 
     def start(self):
         for player in self.players:
