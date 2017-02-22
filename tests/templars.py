@@ -1,4 +1,4 @@
-import __init__
+import context
 import unittest
 import factions.templars as templars
 import core.core

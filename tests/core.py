@@ -1,4 +1,4 @@
-import __init__
+import context
 import unittest
 from core.player import Player
 from core.core import Game
