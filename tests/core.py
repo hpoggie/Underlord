@@ -32,7 +32,7 @@ class PlayerTest(unittest.TestCase):
 
 class ActionsTest(unittest.TestCase):
     def testPlay(self):
-        game = Game()
+        game = Game(Templars, Templars)
         game.start()
         player = game.players[0]
         newCard = base.one()
