@@ -4,7 +4,7 @@ from enums import *
 """
 Most actions have many different ways they can fail.
 Also, more code can be added to an action at runtime.
-This is an elegant way to handle that.
+This is a way to handle that.
 """
 
 
