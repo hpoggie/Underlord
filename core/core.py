@@ -62,6 +62,5 @@ class Game:
         if player.manaCap > 15:
             player.getEnemy().win()
         player.mana = player.manaCap
-        print "player " + player + " mana cap is " + str(player.manaCap)
         self.turn = Turn.p2 if self.turn == Turn.p1 else Turn.p1
         self.phase = Phase.reveal
