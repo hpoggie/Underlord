@@ -39,7 +39,7 @@ def revealFacedown(self, card):
     if self.game.phase != Phase.reveal:
         raise IllegalMoveError("Can only reveal facedowns during reveal phase.")
 
-    if self.mana < self.facedowns[index].cost:
+    if self.mana < card.cost:
         raise IllegalMoveError("Not enough mana.")
 
     if card.zone != Zone.facedown:
