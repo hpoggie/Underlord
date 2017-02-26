@@ -38,7 +38,7 @@ class OverlordService:
     # opcode 2
     def playFaceup(self, addr, index):
         pl = self.players[addr]
-        pl.playFaceup(pl.faceups[index])
+        pl.playFaceup(pl.hand[index])
         self.redraw()
         if pl.activeAbility is not None:
             self.requestTarget(addr)
