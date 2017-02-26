@@ -1,5 +1,6 @@
 import base
 from core.card import Card, Faction
+from core.enums import Zone
 
 
 def failIfTaunts(self, attacker, target):
@@ -10,8 +11,9 @@ def failIfTaunts(self, attacker, target):
 
 
 def setup(game):
+    import types
     for player in game.players:
-        player.attack.funcs.insert(0, failIfTaunts)
+        player.attack.insert(0, types.MethodType(failIfTaunts, player))
 
 
 def strix():

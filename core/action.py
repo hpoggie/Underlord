@@ -12,6 +12,9 @@ class Action:
     def __init__(self, player, funcs):
         self.funcs = [types.MethodType(func, player) for func in funcs]
 
+    def insert(self, index, obj):
+        self.funcs.insert(index, obj)
+
     def __call__(self, *args):
         for func in self.funcs:
             func(*args)
