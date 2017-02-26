@@ -35,13 +35,9 @@ class TestGrail(unittest.TestCase):
 
     def testGrail(self):
         self.player1.endPhase()
-        self.player1.endPhase()
-        self.player1.endPhase()
         self.player1.play(self.grail)
         self.player1.endPhase()
 
-        self.player2.endPhase()
-        self.player2.endPhase()
         self.player2.endPhase()
         self.player2.play(self.one)
         self.player2.endPhase()
@@ -49,11 +45,8 @@ class TestGrail(unittest.TestCase):
         self.player1.revealFacedown(self.grail)
         self.player1.endPhase()
         self.player1.endPhase()
-        self.player1.endPhase()
-        self.player1.endPhase()
 
         self.player2.revealFacedown(self.one)
-        self.player2.endPhase()
         self.player2.endPhase()
         self.player2.endPhase()
         try:

@@ -43,17 +43,14 @@ class Game:
     def endPhase(self):
         if self.phase == Phase.reveal:
             self.activePlayer.facedowns = []
+            self.activePlayer.drawCard()
 
         self.phase += 1
 
-        if self.phase == Phase.draw:
-            self.activePlayer.drawCard()
-        elif self.phase == Phase.attack:
+        if self.phase == Phase.play:
             for f in self.activePlayer.faceups:
                 f.hasAttacked = False
-        elif self.phase == Phase.play:
-            pass
-        else:
+        elif self.phase > Phase.play:
             self.endTurn()
 
     def endTurn(self):

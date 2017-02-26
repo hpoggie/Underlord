@@ -77,7 +77,7 @@ def attack(self, attacker, target):
     if attacker.hasAttacked:
         raise IllegalMoveError("Can only attack once per turn.")
 
-    if self.game.phase != Phase.attack:
+    if self.game.phase != Phase.play:
         raise IllegalMoveError("Can only attack during attack phase.")
 
     if attacker.zone != Zone.faceup:

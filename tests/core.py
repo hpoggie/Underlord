@@ -40,8 +40,6 @@ class ActionsTest(unittest.TestCase):
         player.deck = [newCard]
         player.drawCard()
         player.endPhase()
-        player.endPhase()
-        player.endPhase()
         player.play(newCard)
         self.failUnlessEqual(newCard.zone, Zone.facedown)
 

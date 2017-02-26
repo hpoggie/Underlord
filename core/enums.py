@@ -5,9 +5,7 @@ class Turn ():
 
 class Phase ():
     reveal = 0
-    draw = 1
-    attack = 2
-    play = 3
+    play = 1
 
 
 class Zone ():
