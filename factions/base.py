@@ -1,4 +1,5 @@
 from core.card import Card, TargetedAbility
+from core.enums import *
 
 
 def one():
