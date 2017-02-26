@@ -129,8 +129,8 @@ class App (ShowBase):
     serverIp = "localhost"
     port = 9099
 
-    player = Player("Player")
-    enemy = Player("Enemy")
+    player = Player(templars.Templars)
+    enemy = Player(templars.Templars)
     phase = Phase.reveal
 
     def updatePlayerHand(self, cardIds):
