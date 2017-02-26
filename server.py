@@ -13,7 +13,7 @@ class OverlordService:
         self.networkManager = ServerNetworkManager(self)
         self.networkManager.startServer()
 
-        self.game = Game()
+        self.game = Game(Templars, Templars)
         self.game.start()
         self.players = {}
 
