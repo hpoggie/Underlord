@@ -118,7 +118,7 @@ def endPhase(self):
 actions = {
     'play': [failIfInactive, play],
     'revealFacedown': [failIfInactive, revealFacedown],
-    'playFaceup': [failIfInactive, revealFacedown],
+    'playFaceup': [failIfInactive, playFaceup],
     'attack': [failIfInactive, attack],
     'acceptTarget': [failIfInactive, acceptTarget],
     'cancelTarget': [failIfInactive, cancelTarget],
