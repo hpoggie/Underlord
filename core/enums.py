@@ -1,19 +1,10 @@
-class Turn ():
-    p1 = 0
-    p2 = 1
+def numericEnum(*items):
+    return type('NumericEnum', (), dict(zip(items, range(0, len(items)))))
 
 
-class Phase ():
-    reveal = 0
-    play = 1
-
-
-class Zone ():
-    face = 0
-    faceup = 1
-    facedown = 2
-    hand = 3
-    graveyard = 4
+Turn = numericEnum('p1', 'p2')
+Phase = numericEnum('reveal', 'play')
+Zone = numericEnum('face', 'faceup', 'facedown', 'hand', 'graveyard')
 
 
 class IllegalMoveError (Exception):
