@@ -1,18 +1,19 @@
 from network_manager import NetworkManager
+from core.enums import numericEnum
 
 
 class ServerNetworkManager (NetworkManager):
     def __init__(self, base):
         self.base = base
 
-    class Opcodes:
-        connect = 0
-        revealFacedown = 1
-        playFaceup = 2
-        attack = 3
-        playCard = 4
-        acceptTarget = 5
-        endPhase = 6
+    Opcodes = numericEnum(
+        'connect',
+        'revealFacedown',
+        'playFaceup',
+        'attack',
+        'playCard',
+        'acceptTarget',
+        'endPhase')
 
     def onGotPacket(self, packet, addr):
         base = self.base
@@ -43,19 +44,19 @@ class ClientNetworkManager (NetworkManager):
     def __init__(self, base):
         self.base = base
 
-    class Opcodes:
-        updatePlayerHand = 0
-        updateEnemyHand = 1
-        updatePlayerFacedowns = 2
-        updateEnemyFacedowns = 3
-        updatePlayerFaceups = 4
-        updateEnemyFaceups = 5
-        updatePlayerManaCap = 6
-        updateEnemyManaCap = 7
-        updatePhase = 8
-        requestTarget = 9
-        win = 10
-        lose = 11
+    Opcodes = numericEnum(
+        'updatePlayerHand',
+        'updateEnemyHand',
+        'updatePlayerFacedowns',
+        'updateEnemyFacedowns',
+        'updatePlayerFaceups',
+        'updateEnemyFaceups',
+        'updatePlayerManaCap',
+        'updateEnemyManaCap',
+        'updatePhase',
+        'requestTarget',
+        'win',
+        'lose')
 
     def onGotPacket(self, packet, addr):
         base = self.base
