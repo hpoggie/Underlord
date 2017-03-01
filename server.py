@@ -6,6 +6,7 @@ from network import *
 from core.core import Game
 from factions.templars import Templars
 import time
+from core.enums import IllegalMoveError
 
 
 class OverlordService:
@@ -30,7 +31,10 @@ class OverlordService:
     # opcode 1
     def revealFacedown(self, addr, index):
         pl = self.players[addr]
-        pl.revealFacedown(pl.facedowns[index])
+        try:
+            pl.revealFacedown(pl.facedowns[index])
+        except IllegalMoveError as e:
+            print e
         self.redraw()
         if pl.activeAbility is not None:
             self.requestTarget(addr)
@@ -38,7 +42,10 @@ class OverlordService:
     # opcode 2
     def playFaceup(self, addr, index):
         pl = self.players[addr]
-        pl.playFaceup(pl.hand[index])
+        try:
+            pl.playFaceup(pl.hand[index])
+        except IllegalMoveError as e:
+            print e
         self.redraw()
         if pl.activeAbility is not None:
             self.requestTarget(addr)
@@ -48,24 +55,36 @@ class OverlordService:
         pl = self.players[addr]
         attacker = pl.faceups[cardIndex]
         target = pl.getEnemy().getCard(targetZone, targetIndex)
-        pl.attack(attacker, target)
+        try:
+            pl.attack(attacker, target)
+        except IllegalMoveError as e:
+            print e
         self.redraw()
 
     # opcode 4
     def play(self, addr, index):
         pl = self.players[addr]
-        pl.play(pl.hand[index])
+        try:
+            pl.play(pl.hand[index])
+        except IllegalMoveError as e:
+            print e
         self.redraw()
 
     # opcode 5
     def acceptTarget(self, addr, cardIndex, targetZone, targetIndex):
         pl = self.players[addr]
-        pl.acceptTarget(pl.getEnemy().getCard(targetZone, targetIndex))
+        try:
+            pl.acceptTarget(pl.getEnemy().getCard(targetZone, targetIndex))
+        except IllegalMoveError as e:
+            print e
         self.redraw()
 
     # opcode 6
     def endPhase(self, addr):
-        self.players[addr].endPhase()
+        try:
+            self.players[addr].endPhase()
+        except IllegalMoveError as e:
+            print e
         self.redraw()
 
     def requestTarget(self, addr):
