@@ -50,7 +50,11 @@ def five():
 def sweep():
     def sweepAbility(self):
         for player in self.game.players:
-            for c in player.faceups:
+            cards = player.faceups
+            player.faceups = []
+            for c in cards:
+                player.graveyard.append(c)
+                c.zone = Zone.graveyard
                 c.moveZone(Zone.graveyard)
 
         self.moveZone(Zone.graveyard)
