@@ -490,7 +490,7 @@ class App (ShowBase):
             pickedObj = self.mouseHandler.getObjectClickedOn()
             if pickedObj and pickedObj.getTag('zone') == 'hand':
                 card = self.player.hand[self.playerHandNodes.index(pickedObj)]
-                label = "%d %d" % (card.getCost(), card.getRank())
+                label = str(card.cost) + " " + str(card.rank)
                 self.cardStatsLabel.text = label
 
         return Task.cont

@@ -63,6 +63,7 @@ def sweep():
         name="Sweep",
         image="wind-slap.png",
         cost=0,
+        rank="s",
         spell=True
     )
     sweep.setSpawnAbility(sweepAbility)
@@ -81,6 +82,7 @@ def spellBlade():
         name="Spell Blade",
         image="wave-strike.png",
         cost=0,
+        rank="s",
         spell=True,
         playsFaceUp=True
     )

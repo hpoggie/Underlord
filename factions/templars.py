@@ -26,15 +26,18 @@ def strix():
 
 
 def equus():
-    def equusGetRank(self):
-        return 2 if (self.owner.manaCap % 2 == 0) else 5
+    import types
 
-    equus = Card(
+    class Equus(Card):
+        @property
+        def rank(self):
+            return 2 if (self.owner.manaCap % 2 == 0) else 5
+
+    equus = Equus(
         name="Equus",
         image="horse-head.png",
-        cost=3,
+        cost=3
         )
-    equus.setRankAbility(equusGetRank)
 
     return equus
 
@@ -47,7 +50,9 @@ def grail():
 
     grail = Grail(
         name="Grail",
-        image="holy-grail.png"
+        image="holy-grail.png",
+        cost=0,
+        rank=0
         )
     return grail
 

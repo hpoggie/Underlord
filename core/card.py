@@ -18,20 +18,12 @@ class Card:
     def __init__(self, **kwargs):
         self.name = "Placeholder Name"
         self.image = "missing.png"
-        self.cost = 0
-        self.rank = 0
         self.spell = False
         self.playsFaceUp = False
         self.owner = None
         self.zone = None
 
         vars(self).update(kwargs.copy())
-
-    def getCost(self):
-        return self.cost
-
-    def getRank(self):
-        return self.rank
 
     def onSpawn(self):
         print "card has spawned"
@@ -40,12 +32,6 @@ class Card:
 
     def onDeath(self):
         print "card has died"
-
-    def setCostAbility(self, func):
-        self.getCost = types.MethodType(func, self)
-
-    def setRankAbility(self, func):
-        self.getRank = types.MethodType(func, self)
 
     def setSpawnAbility(self, func):
         self.onSpawn = types.MethodType(func, self)
