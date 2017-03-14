@@ -115,6 +115,11 @@ def cancelTarget(self):
 def endPhase(self):
     self.game.endPhase()
 
+
+def endTurn(self):
+    while self.isActivePlayer():
+        self.endPhase()
+
 actions = {
     'play': [failIfInactive, play],
     'revealFacedown': [failIfInactive, revealFacedown],
@@ -123,7 +128,8 @@ actions = {
     'attackFace': [failIfInactive, attackFace],
     'acceptTarget': [failIfInactive, acceptTarget],
     'cancelTarget': [failIfInactive, cancelTarget],
-    'endPhase': [failIfInactive, endPhase]
+    'endPhase': [failIfInactive, endPhase],
+    'endTurn': [failIfInactive, endTurn]
 }
 
 
