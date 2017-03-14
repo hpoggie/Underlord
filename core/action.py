@@ -120,6 +120,7 @@ actions = {
     'revealFacedown': [failIfInactive, revealFacedown],
     'playFaceup': [failIfInactive, playFaceup],
     'attack': [failIfInactive, attack],
+    'attackFace': [failIfInactive, attackFace],
     'acceptTarget': [failIfInactive, acceptTarget],
     'cancelTarget': [failIfInactive, cancelTarget],
     'endPhase': [failIfInactive, endPhase]
