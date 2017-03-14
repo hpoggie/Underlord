@@ -63,5 +63,17 @@ class ActionsTest(unittest.TestCase):
         player.play(newCard)
         self.failUnlessEqual(newCard.zone, Zone.facedown)
 
+    def testPlayFaceup(self):
+        game = emptyGame()
+        player = game.players[0]
+        newCard = base.one()
+        newCard.owner = player
+        player.deck = [newCard]
+        newCard.playsFaceUp = True
+        newCard.cost = 0
+        player.drawCard()
+        player.playFaceup(newCard)
+        self.failUnlessEqual(newCard.zone, Zone.faceup)
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)
