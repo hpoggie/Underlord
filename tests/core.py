@@ -2,6 +2,7 @@ import context
 import unittest
 from core.player import Player
 from core.core import Game
+from core.card import Faction
 from factions import base
 from factions.templars import Templars
 from core.enums import *
@@ -31,16 +32,20 @@ class PlayerTest(unittest.TestCase):
 
 
 class ActionsTest(unittest.TestCase):
+    def setUp(self):
+        empty = Faction(setup=lambda x: None)
+        self.game = Game(empty, empty)
+        self.game.start()
+        self.player1 = self.game.players[0]
+        self.player2 = self.game.players[1]
+
     def testPlay(self):
-        game = Game(Templars, Templars)
-        game.start()
-        player = game.players[0]
         newCard = base.one()
-        newCard.owner = player
-        player.deck = [newCard]
-        player.drawCard()
-        player.endPhase()
-        player.play(newCard)
+        newCard.owner = self.player1
+        self.player1.deck = [newCard]
+        self.player1.drawCard()
+        self.player1.endPhase()
+        self.player1.play(newCard)
         self.failUnlessEqual(newCard.zone, Zone.facedown)
 
 if __name__ == '__main__':
