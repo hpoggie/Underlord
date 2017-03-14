@@ -39,6 +39,16 @@ class ActionsTest(unittest.TestCase):
         self.player1 = self.game.players[0]
         self.player2 = self.game.players[1]
 
+    def testReveal(self):
+        newCard = base.one()
+        newCard.owner = self.player1
+        self.player1.deck = [newCard]
+        self.player1.endPhase()  # draw the card
+        self.player1.play(newCard)
+        self.player1.endPhase()
+        self.player2.endTurn()
+        self.player1.revealFacedown(newCard)
+
     def testPlay(self):
         newCard = base.one()
         newCard.owner = self.player1
