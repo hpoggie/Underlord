@@ -6,7 +6,7 @@ from network import *
 from core.core import Game
 from factions.templars import Templars
 import time
-from core.enums import IllegalMoveError
+from core.enums import IllegalMoveError, Zone
 
 
 class OverlordService:
@@ -54,7 +54,11 @@ class OverlordService:
     def attack(self, addr, cardIndex, targetIndex, targetZone):
         pl = self.players[addr]
         attacker = pl.faceups[cardIndex]
-        target = pl.getEnemy().getCard(targetZone, targetIndex)
+        if targetZone == Zone.face:
+            target = Zone.face
+        else:
+            target = pl.getEnemy().getCard(targetZone, targetIndex)
+
         try:
             pl.attack(attacker, target)
         except IllegalMoveError as e:
