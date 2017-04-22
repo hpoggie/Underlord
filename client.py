@@ -251,11 +251,17 @@ class App (ShowBase):
         targetIndex = -1
         targetZone = -1
         if target.getTag('zone') == 'face-down':
-            targetIndex = self.enemyFacedownNodes.index(target)
-            targetZone = Zone.facedown
+            try:
+                targetIndex = self.enemyFacedownNodes.index(target)
+                targetZone = Zone.facedown
+            except ValueError as e:
+                print e
         elif target.getTag('zone') == 'face-up':
-            targetIndex = self.enemyFaceupNodes.index(target)
-            targetZone = Zone.faceup
+            try:
+                targetIndex = self.enemyFaceupNodes.index(target)
+                targetZone = Zone.faceup
+            except ValueError as e:
+                print e
 
         cardIndex = self.player.faceups.index(self.mouseHandler.targeting)
 
