@@ -81,3 +81,6 @@ class Player ():
                 card.onDeath()
             self.graveyard.append(card)
             card.zone = Zone.graveyard
+
+    def win(self):
+        self.game.end(winner=self)

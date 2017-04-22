@@ -3,6 +3,11 @@ from player import Player
 import action
 
 
+class EndOfGame:
+    def __init__(self, winner):
+        self.winner = winner
+
+
 class Game:
     def __init__(self, p1Faction, p2Faction):
         self.turn = Turn.p1
@@ -61,3 +66,6 @@ class Game:
         player.mana = player.manaCap
         self.turn = Turn.p2 if self.turn == Turn.p1 else Turn.p1
         self.phase = Phase.reveal
+
+    def end(self, winner):
+        raise EndOfGame(winner)

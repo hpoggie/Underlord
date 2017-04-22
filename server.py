@@ -3,7 +3,7 @@ Server script. Takes the client's actions and computes the results, then sends t
 """
 
 from network import *
-from core.core import Game
+from core.core import Game, EndOfGame
 from factions.templars import Templars
 import time
 from core.enums import IllegalMoveError, Zone
@@ -177,7 +177,12 @@ if __name__ == "__main__":
     service = OverlordService()
     i = 0
     while 1:
-        service.networkManager.recv()
+        try:
+            service.networkManager.recv()
+        except EndOfGame as e:
+            service.endGame(e.winner)
+            break
+
         i = (i+1) % 100
         if i == 0:
             service.networkManager.sendUnrecievedPackets()
