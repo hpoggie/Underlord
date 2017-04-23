@@ -56,6 +56,7 @@ class ClientNetworkManager (NetworkManager):
         requestTarget = 9
         win = 10
         lose = 11
+        setActive = 12
 
     def onGotPacket(self, packet, addr):
         base = self.base
@@ -87,3 +88,5 @@ class ClientNetworkManager (NetworkManager):
             base.winGame()
         elif segments[0] == Opcodes.lose:
             base.loseGame()
+        elif segments[0] == Opcodes.setActive:
+            base.active = bool(segments[1])

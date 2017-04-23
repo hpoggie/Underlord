@@ -135,6 +135,11 @@ class OverlordService:
                 ClientNetworkManager.Opcodes.updatePhase,
                 self.game.phase
             )
+            self.networkManager.sendInts(
+                addr,
+                ClientNetworkManager.Opcodes.setActive,
+                int(pl.isActivePlayer())
+            )
 
             try:
                 enemyPlayer = pl.getEnemy()

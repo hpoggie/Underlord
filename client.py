@@ -214,6 +214,11 @@ class App (ShowBase):
                 pos=(0, -0.7, 0),
                 scale=(0.1, 0.1, 0.1)
                 )
+        self.turnLabel = OnscreenText(
+                text="",
+                pos=(0, -0.9, 0),
+                scale=(0.1, 0.1, 0.1)
+                )
         self.playerManaCapLabel = OnscreenText(
                 text=str(self.player.manaCap),
                 pos=(-0.5, -0.44, 0),
@@ -243,6 +248,8 @@ class App (ShowBase):
         self.serverAddr = (self.serverIp, self.port)
         self.taskMgr.add(self.networkUpdateTask, "NetworkUpdateTask")
         self.networkManager.send("0", self.serverAddr)
+
+        self.active = False
 
     def getTarget(self, zone, index):
         self.mouseHandler.targeting = self.player.getCard(zone, index)
@@ -488,6 +495,7 @@ class App (ShowBase):
         self.makeEnemyHand()
         self.makeEnemyBoard()
         self.endPhaseLabel.text = str(self.phase)
+        self.turnLabel.text = "Your Turn" if self.active else "Enemy Turn"
         self.playerManaCapLabel.text = str(self.player.manaCap)
         self.enemyManaCapLabel.text = str(self.enemy.manaCap)
 
