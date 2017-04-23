@@ -3,6 +3,7 @@ from network_manager import NetworkManager
 
 class ServerNetworkManager (NetworkManager):
     def __init__(self, base):
+        super(ServerNetworkManager, self).__init__()
         self.base = base
 
     class Opcodes:
@@ -40,8 +41,10 @@ class ClientNetworkManager (NetworkManager):
     """
     The ClientNetworkManager takes incoming network opcodes and turns them into calls to the client.
     """
-    def __init__(self, base):
+    def __init__(self, base, ip):
+        super(ClientNetworkManager, self).__init__()
         self.base = base
+        self.ip = ip
 
     class Opcodes:
         updatePlayerHand = 0

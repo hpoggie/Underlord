@@ -2,21 +2,22 @@ import socket
 import struct
 
 
-class NetworkManager:
-    ip = "127.0.0.1"
-    port = 9099
-    bufsize = 1024
+class NetworkManager (object):
+    def __init__(self):
+        self.ip = "127.0.0.1"
+        self.port = 9099
+        self.bufsize = 1024
 
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # internet, udp
-    sock.setblocking(0)
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # internet, udp
+        self.sock.setblocking(0)
 
-    unreceivedPackets = []  # all packets we sent that have not yet been received
-    currentIds = dict()  # the largest currently unallocated id
+        self.unreceivedPackets = []  # all packets we sent that have not yet been received
+        self.currentIds = dict()  # the largest currently unallocated id
 
-    lastReceivedPackets = dict()
-    savedPackets = []  # out of order packets saved for later
+        self.lastReceivedPackets = dict()
+        self.savedPackets = []  # out of order packets saved for later
 
-    verbose = False
+        self.verbose = False
 
     def startServer(self):
         self.sock.bind(("", self.port))

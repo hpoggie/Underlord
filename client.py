@@ -20,6 +20,8 @@ from direct.task import Task
 from factions import templars
 import types
 
+import sys
+
 loadPrcFileData(
     "",
     """
@@ -126,7 +128,6 @@ class App (ShowBase):
     playerFaceupNodes = []
     enemyFaceupNodes = []
 
-    serverIp = "localhost"
     port = 9099
 
     player = Player(templars.Templars)
@@ -188,7 +189,7 @@ class App (ShowBase):
             scale=(0.5, 0.5, 0.5)
             )
 
-    def __init__(self):
+    def __init__(self, argv):
         ShowBase.__init__(self)
         self.scene = self.loader.loadModel("empty.obj")
         self.scene.reparentTo(self.render)
@@ -244,7 +245,8 @@ class App (ShowBase):
         self.makePlayerFace()
         self.makeEnemyFace()
 
-        self.networkManager = ClientNetworkManager(self)
+        self.serverIp = argv[1] if len(argv) > 1 else "127.0.0.1"
+        self.networkManager = ClientNetworkManager(self, self.serverIp)
         self.serverAddr = (self.serverIp, self.port)
         self.taskMgr.add(self.networkUpdateTask, "NetworkUpdateTask")
         self.networkManager.send("0", self.serverAddr)
@@ -518,6 +520,6 @@ class App (ShowBase):
             self.lastTime = task.time
         return Task.cont
 
-app = App()
+app = App(sys.argv)
 app.camera.setPos(4, -20, 1.2)
 app.run()
