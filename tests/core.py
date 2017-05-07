@@ -16,13 +16,6 @@ def deckContainsDuplicates(deck):
     return False
 
 
-def emptyGame():
-    empty = Faction()
-    game = Game(empty, empty)
-    game.start()
-    return game
-
-
 class PlayerTest(unittest.TestCase):
     def testForDuplicates(self):
         player = Player(Templars)
@@ -40,12 +33,10 @@ class PlayerTest(unittest.TestCase):
 
 class ActionsTest(unittest.TestCase):
     def testReveal(self):
-        game = emptyGame()
+        game = Game(Faction(deck=[base.one()]), Faction())
         player = game.players[0]
-        newCard = base.one()
-        newCard.owner = player
-        player.deck = [newCard]
         player.endPhase()  # draw the card
+        newCard = player.hand[0]
         player.play(newCard)
         player.endPhase()
         game.players[1].endTurn()
@@ -53,27 +44,23 @@ class ActionsTest(unittest.TestCase):
         self.failUnlessEqual(newCard.zone, Zone.faceup)
 
     def testPlay(self):
-        game = emptyGame()
+        game = Game(Faction(deck=[base.one()]), Faction())
         player = game.players[0]
-        newCard = base.one()
-        newCard.owner = player
-        player.deck = [newCard]
-        player.drawCard()
         player.endPhase()
+        newCard = player.hand[0]
         player.play(newCard)
         self.failUnlessEqual(newCard.zone, Zone.facedown)
 
     def testPlayFaceup(self):
-        game = emptyGame()
-        player = game.players[0]
         newCard = base.one()
-        newCard.owner = player
-        player.deck = [newCard]
         newCard.playsFaceUp = True
         newCard.cost = 0
+        game = Game(Faction(deck=[newCard]), Faction())
+        player = game.players[0]
         player.drawCard()
-        player.playFaceup(newCard)
-        self.failUnlessEqual(newCard.zone, Zone.faceup)
+        instance = player.hand[0]
+        player.playFaceup(instance)
+        self.failUnlessEqual(instance.zone, Zone.faceup)
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
