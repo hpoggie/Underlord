@@ -17,7 +17,7 @@ def deckContainsDuplicates(deck):
 
 
 def emptyGame():
-    empty = Faction(setup=lambda x: None)
+    empty = Faction()
     game = Game(empty, empty)
     game.start()
     return game
