@@ -35,6 +35,10 @@ class OverlordService:
             pl.revealFacedown(pl.facedowns[index])
         except IllegalMoveError as e:
             print e
+            return
+        except IndexOutOfRangeError as e:
+            print e
+            return
         self.redraw()
         if pl.activeAbility is not None:
             self.requestTarget(addr)
@@ -46,6 +50,10 @@ class OverlordService:
             pl.playFaceup(pl.hand[index])
         except IllegalMoveError as e:
             print e
+            return
+        except IndexOutOfRangeError as e:
+            print e
+            return
         self.redraw()
         if pl.activeAbility is not None:
             self.requestTarget(addr)
@@ -53,7 +61,11 @@ class OverlordService:
     # opcode 3
     def attack(self, addr, cardIndex, targetIndex, targetZone):
         pl = self.players[addr]
-        attacker = pl.faceups[cardIndex]
+        try:
+            attacker = pl.faceups[cardIndex]
+        except IndexOutOfRangeError as e:
+            print e
+            return
         if targetZone == Zone.face:
             target = Zone.face
         else:
@@ -72,6 +84,9 @@ class OverlordService:
             pl.play(pl.hand[index])
         except IllegalMoveError as e:
             print e
+        except IndexOutOfRangeError as e:
+            print e
+            return
         self.redraw()
 
     # opcode 5
@@ -81,6 +96,9 @@ class OverlordService:
             pl.acceptTarget(pl.getEnemy().getCard(targetZone, targetIndex))
         except IllegalMoveError as e:
             print e
+        except IndexOutOfRangeError as e:
+            print e
+            return
         self.redraw()
 
     # opcode 6
