@@ -74,6 +74,5 @@ class Faction:
         self.iconPath = "./my_faction_icons"
         self.cardBack = "my-faction-back.png"
         self.deck = []
-        self.setup = lambda x: None
 
         vars(self).update(kwargs.copy())

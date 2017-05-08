@@ -4,19 +4,6 @@ from core.enums import Zone
 from core.core import IllegalMoveError
 
 
-def failIfTaunts(self, attacker, target):
-    if target == Zone.face:
-        for card in self.getEnemy().facedowns:
-            if hasattr(card, 'Taunt') and card.Taunt:
-                raise IllegalMoveError("Can't attack into Taunts.")
-
-
-def setup(game):
-    import types
-    for player in game.players:
-        player.attack.insert(0, types.MethodType(failIfTaunts, player))
-
-
 def strix():
     return Card(
         name="Strix",
@@ -43,20 +30,6 @@ def equus():
     return equus
 
 
-def grail():
-    class Grail(Card):
-        @property
-        def Taunt(self):
-            return self.owner.manaCap % 2 == 0
-
-    grail = Grail(
-        name="Grail",
-        image="holy-grail.png",
-        cost=0,
-        rank=0
-        )
-    return grail
-
 Templars = Faction(
     name="Templars",
     iconPath="./templar_icons",
@@ -68,7 +41,5 @@ Templars = Faction(
         strix(),
         equus(),
         equus(),
-        grail()
         ],
-    setup=setup
     )

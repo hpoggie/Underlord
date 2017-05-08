@@ -1,6 +1,5 @@
 from enums import *
 from player import Player
-import action
 
 
 class EndOfGame:
@@ -16,13 +15,8 @@ class Game:
         self.players = (Player(p1Faction), Player(p2Faction))
         for player in self.players:
             player.game = self
-            action.setupActions(player)
             for card in player.deck:
                 card.game = self
-
-        p1Faction.setup(self)
-        if p2Faction != p1Faction:
-            p2Faction.setup(self)
 
     def start(self):
         for player in self.players:
