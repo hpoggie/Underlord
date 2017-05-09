@@ -62,5 +62,52 @@ class ActionsTest(unittest.TestCase):
         player.playFaceup(instance)
         self.failUnlessEqual(instance.zone, Zone.faceup)
 
+    def testAttackFace(self):
+        newCard = base.one()
+        newCard.playsFaceUp = True
+        newCard.cost = 0
+        game = Game(Faction(deck=[newCard]), Faction())
+        player = game.players[0]
+        player.drawCard()
+        player.playFaceup(player.hand[0])
+        player.endPhase()
+        player.attackFace(player.faceups[0])
+        self.failUnlessEqual(game.players[1].manaCap, 2)
+
+    def testAttackFacedown(self):
+        newCard = base.one()
+        newCard.playsFaceUp = True
+        newCard.cost = 0
+        faction = Faction(deck=[newCard])
+        game = Game(faction, faction)
+        game.start()
+        #1st player plays a facedown
+        game.players[0].endPhase()
+        game.players[0].play(game.players[0].hand[0])
+        game.players[0].endTurn()
+        #2nd player attacks it
+        game.players[1].playFaceup(game.players[1].hand[0])
+        game.players[1].endPhase()
+        game.players[1].attack(game.players[1].faceups[0], game.players[0].facedowns[0])
+        self.failUnlessEqual(len(game.players[0].facedowns), 0)
+        self.failUnlessEqual(len(game.players[1].faceups), 0)
+
+    def testAttackFacedown(self):
+        newCard = base.one()
+        newCard.playsFaceUp = True
+        newCard.cost = 0
+        faction = Faction(deck=[newCard])
+        game = Game(faction, faction)
+        game.start()
+        #1st player plays a facedown
+        game.players[0].playFaceup(game.players[0].hand[0])
+        game.players[0].endTurn()
+        #2nd player attacks it
+        game.players[1].playFaceup(game.players[1].hand[0])
+        game.players[1].endPhase()
+        game.players[1].attack(game.players[1].faceups[0], game.players[0].faceups[0])
+        self.failUnlessEqual(len(game.players[0].facedowns), 0)
+        self.failUnlessEqual(len(game.players[1].faceups), 0)
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)
