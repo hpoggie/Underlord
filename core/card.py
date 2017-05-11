@@ -57,12 +57,6 @@ class Card:
     def setDeathAbility(self, func):
         self.onDeath = types.MethodType(func, self)
 
-    def getName(self):
-        return self.name
-
-    def getImage(self):
-        return self.image
-
     def moveZone(self, zone):
         self.owner.moveCard(self, zone)
 

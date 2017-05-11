@@ -325,13 +325,13 @@ class App (ShowBase):
             self.addEnemyFdCard()
 
     def addHandCard(self, card):
-        cm = CardMaker(card.getName())
+        cm = CardMaker(card.name)
         cardModel = self.render.attachNewNode(cm.generate())
-        path = self.playerIconPath + "/" + card.getImage()
+        path = self.playerIconPath + "/" + card.image
         tex = loader.loadTexture(path)
         cardModel.setTexture(tex)
         cardModel.setPos(self.handPos, 0, 0)
-        cardModel.setTag('card', card.getName())
+        cardModel.setTag('card', card.name)
         cardModel.setTag('zone', 'hand')
         self.handPos += 1.1
         self.playerHandNodes.append(cardModel)
@@ -355,7 +355,7 @@ class App (ShowBase):
         tex = loader.loadTexture(path)
         cardModel.setTexture(tex)
         cardModel.setPos(self.fdPos, 0, 1.1)
-        cardModel.setTag('card', card.getName())
+        cardModel.setTag('card', card.name)
         cardModel.setTag('zone', 'face-down')
         self.fdPos += 1.1
         self.playerFacedownNodes.append(cardModel)
@@ -373,25 +373,25 @@ class App (ShowBase):
         self.enemyFacedownNodes.append(cardModel)
 
     def addFaceupCard(self, card):
-        cm = CardMaker(card.getName())
+        cm = CardMaker(card.name)
         cardModel = self.render.attachNewNode(cm.generate())
-        path = self.playerIconPath + "/" + card.getImage()
+        path = self.playerIconPath + "/" + card.image
         tex = loader.loadTexture(path)
         cardModel.setTexture(tex)
         cardModel.setPos(self.fdPos, 0, 1.1)
-        cardModel.setTag('card', card.getName())
+        cardModel.setTag('card', card.name)
         cardModel.setTag('zone', 'face-up')
         self.fdPos += 1.1
         self.playerFaceupNodes.append(cardModel)
 
     def addEnemyFaceupCard(self, card):
-        cm = CardMaker(card.getName())
+        cm = CardMaker(card.name)
         cardModel = self.render.attachNewNode(cm.generate())
-        path = self.enemyIconPath + "/" + card.getImage()
+        path = self.enemyIconPath + "/" + card.image
         tex = loader.loadTexture(path)
         cardModel.setTexture(tex)
         cardModel.setPos(self.enemyFdPos, 0, 2.1)
-        cardModel.setTag('card', card.getName())
+        cardModel.setTag('card', card.name)
         cardModel.setTag('zone', 'face-up')
         self.enemyFdPos += 1.1
         self.enemyFaceupNodes.append(cardModel)
