@@ -19,11 +19,29 @@ class Card:
         self.name = "Placeholder Name"
         self.image = "missing.png"
         self.spell = False
+        self._cost = 0
+        self._rank = 0
         self.playsFaceUp = False
         self.owner = None
         self.zone = None
 
         vars(self).update(kwargs.copy())
+
+    @property
+    def cost(self):
+        return self._cost
+
+    @cost.setter
+    def cost(self, value):
+        self._cost = value
+
+    @property
+    def rank(self):
+        return self._rank
+
+    @rank.setter
+    def rank(self, value):
+        self._rank = value
 
     def onSpawn(self):
         print "card has spawned"
