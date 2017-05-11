@@ -36,7 +36,7 @@ class OverlordService:
         except IllegalMoveError as e:
             print e
             return
-        except IndexOutOfRangeError as e:
+        except IndexError as e:
             print e
             return
         self.redraw()
@@ -51,7 +51,7 @@ class OverlordService:
         except IllegalMoveError as e:
             print e
             return
-        except IndexOutOfRangeError as e:
+        except IndexError as e:
             print e
             return
         self.redraw()
@@ -63,7 +63,7 @@ class OverlordService:
         pl = self.players[addr]
         try:
             attacker = pl.faceups[cardIndex]
-        except IndexOutOfRangeError as e:
+        except IndexError as e:
             print e
             return
         if targetZone == Zone.face:
@@ -84,7 +84,7 @@ class OverlordService:
             pl.play(pl.hand[index])
         except IllegalMoveError as e:
             print e
-        except IndexOutOfRangeError as e:
+        except IndexError as e:
             print e
             return
         self.redraw()
@@ -96,7 +96,7 @@ class OverlordService:
             pl.acceptTarget(pl.getEnemy().getCard(targetZone, targetIndex))
         except IllegalMoveError as e:
             print e
-        except IndexOutOfRangeError as e:
+        except IndexError as e:
             print e
             return
         self.redraw()
