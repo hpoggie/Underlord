@@ -38,22 +38,18 @@ def archangel():
             )
 
 def holyHandGrenade():
+    def _onSpawn(self, target):
+        self.game.destroy(target)
+        self.moveZone(target)
+
     hhg = Card(
             name="Holy Hand Grenade",
             image="holy-hand-grenade.png",
             playsFaceUp=True,
             cost=5,
-            spell=True
+            spell=True,
+            onSpawn=_onSpawn
             )
-
-    def _onSpawn(self, target):
-        self.game.destroy(target)
-        self.moveZone(target)
-
-    hhg.onSpawn=TargetedAbility(
-        func=_onSpawn,
-        card=hhg
-        )
 
     return hhg
 
