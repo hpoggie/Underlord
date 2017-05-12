@@ -3,7 +3,7 @@ import inspect
 from enums import Zone
 
 
-class Card:
+class Card(object):
     """
     A card has the following characteristics:
         Name
@@ -19,31 +19,60 @@ class Card:
         self.name = "Placeholder Name"
         self.image = "missing.png"
         self.spell = False
+        self._cost = 0
+        self._rank = 0
         self.playsFaceUp = False
         self.owner = None
         self.zone = None
 
-        vars(self).update(kwargs.copy())
+        for (key, value) in kwargs.iteritems():
+            setattr(self, key, value)
 
-    def onSpawn(self):
+    @property
+    def cost(self):
+        return self._cost
+
+    @cost.setter
+    def cost(self, value):
+        self._cost = value
+
+    @property
+    def rank(self):
+        return self._rank
+
+    @rank.setter
+    def rank(self, value):
+        self._rank = value
+
+    def _onSpawn(self):
         print "card has spawned"
         if self.spell:
             self.moveZone(Zone.graveyard)
 
+    def _onDeath(self):
+        pass
+
+    @property
+    def onSpawn(self):
+        return self._onSpawn
+
+    @onSpawn.setter
+    def onSpawn(self, func):
+        if len(inspect.getargspec(func).args) > 1:
+            self._onSpawn = TargetedAbility(func, self)
+        else:
+            self._onSpawn = types.MethodType(func, self)
+
+    @property
     def onDeath(self):
-        print "card has died"
+        return self._onDeath
 
-    def setSpawnAbility(self, func):
-        self.onSpawn = types.MethodType(func, self)
-
-    def setDeathAbility(self, func):
-        self.onDeath = types.MethodType(func, self)
-
-    def getName(self):
-        return self.name
-
-    def getImage(self):
-        return self.image
+    @onDeath.setter
+    def onDeath(self, func):
+        if len(inspect.getargspec(func).args) > 1:
+            self._onDeath = TargetedAbility(func, self)
+        else:
+            self._onDeath = types.MethodType(func, self)
 
     def moveZone(self, zone):
         self.owner.moveCard(self, zone)
@@ -58,7 +87,7 @@ class TargetedAbility:
     """
     def __init__(self, func, card):
         self.card = card
-        self.numTargets = len(inspect.getargspec(func))  # TODO: support multiple targets
+        self.numTargets = len(inspect.getargspec(func).args)  # TODO: support multiple targets
         self.func = types.MethodType(func, card)
 
     def __call__(self):

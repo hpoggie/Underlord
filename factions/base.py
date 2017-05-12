@@ -63,9 +63,9 @@ def sweep():
         image="wind-slap.png",
         cost=0,
         rank="s",
-        spell=True
+        spell=True,
+        onSpawn=sweepAbility
     )
-    sweep.setSpawnAbility(sweepAbility)
 
     return sweep
 
@@ -83,8 +83,8 @@ def spellBlade():
         cost=0,
         rank="s",
         spell=True,
-        playsFaceUp=True
+        playsFaceUp=True,
+        onSpawn = spellBladeAbility
     )
-    spellBlade.onSpawn = TargetedAbility(spellBladeAbility, spellBlade)
 
     return spellBlade
