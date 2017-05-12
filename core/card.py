@@ -25,7 +25,8 @@ class Card(object):
         self.owner = None
         self.zone = None
 
-        vars(self).update(kwargs.copy())
+        for (key, value) in kwargs.iteritems():
+            setattr(self, key, value)
 
     @property
     def cost(self):

@@ -65,8 +65,8 @@ def sweep():
         cost=0,
         rank="s",
         spell=True,
+        onSpawn=sweepAbility
     )
-    sweep.onSpawn=sweepAbility
 
     return sweep
 
@@ -85,7 +85,7 @@ def spellBlade():
         rank="s",
         spell=True,
         playsFaceUp=True,
+        onSpawn = spellBladeAbility
     )
-    spellBlade.onSpawn = spellBladeAbility #TODO: do this inside constructor
 
     return spellBlade
