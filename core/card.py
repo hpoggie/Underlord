@@ -57,7 +57,7 @@ class Card(object):
 
     @onSpawn.setter
     def onSpawn(self, func):
-        if len(inspect.getargspec(func)) > 1:
+        if len(inspect.getargspec(func).args) > 1:
             self._onSpawn = TargetedAbility(func, self)
         else:
             self._onSpawn = types.MethodType(func, self)
@@ -68,7 +68,7 @@ class Card(object):
 
     @onDeath.setter
     def onDeath(self, func):
-        if len(inspect.getargspec(func)) > 1:
+        if len(inspect.getargspec(func).args) > 1:
             self._onDeath = TargetedAbility(func, self)
         else:
             self._onDeath = types.MethodType(func, self)
@@ -86,7 +86,7 @@ class TargetedAbility:
     """
     def __init__(self, func, card):
         self.card = card
-        self.numTargets = len(inspect.getargspec(func))  # TODO: support multiple targets
+        self.numTargets = len(inspect.getargspec(func).args)  # TODO: support multiple targets
         self.func = types.MethodType(func, card)
 
     def __call__(self):
