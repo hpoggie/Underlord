@@ -3,7 +3,7 @@ import inspect
 from enums import Zone
 
 
-class Card:
+class Card(object):
     """
     A card has the following characteristics:
         Name
