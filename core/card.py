@@ -43,19 +43,35 @@ class Card(object):
     def rank(self, value):
         self._rank = value
 
-    def onSpawn(self):
+    def _onSpawn(self):
         print "card has spawned"
         if self.spell:
             self.moveZone(Zone.graveyard)
 
+    def _onDeath(self):
+        pass
+
+    @property
+    def onSpawn(self):
+        return self._onSpawn
+
+    @onSpawn.setter
+    def onSpawn(self, func):
+        if len(inspect.getargspec(func)) > 1:
+            self._onSpawn = TargetedAbility(func, self)
+        else:
+            self._onSpawn = types.MethodType(func, self)
+
+    @property
     def onDeath(self):
-        print "card has died"
+        return self._onDeath
 
-    def setSpawnAbility(self, func):
-        self.onSpawn = types.MethodType(func, self)
-
-    def setDeathAbility(self, func):
-        self.onDeath = types.MethodType(func, self)
+    @onDeath.setter
+    def onDeath(self, func):
+        if len(inspect.getargspec(func)) > 1:
+            self._onDeath = TargetedAbility(func, self)
+        else:
+            self._onDeath = types.MethodType(func, self)
 
     def moveZone(self, zone):
         self.owner.moveCard(self, zone)
