@@ -34,6 +34,25 @@ class TemplarTest(unittest.TestCase):
         game.players[1].acceptTarget(game.players[0].faceups[0])
         self.failUnlessEqual(game.players[0].facedowns, [])
 
+    def testWrathOfGod(self):
+        game = Game(
+                Faction(deck=[base.one(), base.one()]),
+                Faction(deck=[wrathOfGod()])
+                )
+        game.players[0].drawCard()
+        game.players[0].drawCard()
+        game.players[0].hand[0].playsFaceUp = True
+        game.players[0].hand[0].cost = 0
+        game.players[0].hand[1].playsFaceUp = True
+        game.players[0].hand[1].cost = 0
+        game.players[0].playFaceup(game.players[0].hand[0])
+        game.players[0].playFaceup(game.players[0].hand[0])
+        game.players[0].endTurn()
+        game.players[1].drawCard()
+        game.players[1].hand[0].cost = 0
+        game.players[1].playFaceup(game.players[1].hand[0])
+        self.failUnlessEqual(game.players[0].faceups, [])
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
