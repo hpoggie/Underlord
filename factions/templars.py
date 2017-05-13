@@ -46,7 +46,7 @@ def holyHandGrenade():
             name="Holy Hand Grenade",
             image="holy-hand-grenade.png",
             playsFaceUp=True,
-            cost=5,
+            cost=4,
             spell=True,
             onSpawn=_onSpawn
             )
