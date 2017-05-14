@@ -31,7 +31,7 @@ def archangel():
 def holyHandGrenade():
     def _onSpawn(self, target):
         self.game.destroy(target)
-        self.moveZone(target)
+        self.moveZone(Zone.graveyard)
 
     hhg = Card(
             name="Holy Hand Grenade",
@@ -70,6 +70,7 @@ def miracle():
     def _onSpawn(self):
         while(len(self.owner.hand) < 5):
             self.owner.drawCard()
+        self.moveZone(Zone.graveyard)
 
     return Card(
             name="Miracle",
