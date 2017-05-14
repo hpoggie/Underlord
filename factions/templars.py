@@ -102,6 +102,7 @@ Templars = Faction(
         corvus(),
         holyHandGrenade(),
         wrathOfGod(),
-        archangel()
+        archangel(),
+        miracle()
         ],
     )
