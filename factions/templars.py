@@ -68,7 +68,7 @@ def corvus():
 
 def miracle():
     def _onSpawn(self):
-        while(len(self.owner.hand) < 5):
+        while(len(self.owner.hand) < 5 and len(self.owner.deck) > 0):
             self.owner.drawCard()
         self.moveZone(Zone.graveyard)
 
