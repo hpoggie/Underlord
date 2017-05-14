@@ -452,7 +452,11 @@ class App (ShowBase):
         self.makeBoard()
 
     def attack(self, card, target):
-        index = self.playerFaceupNodes.index(card)
+        try:
+            index = self.playerFaceupNodes.index(card)
+        except ValueError:
+            print "That card is not one of your faceups."
+            return
         targetIndex = 0
         zone = 0
         if target.getTag('zone') == 'face':
