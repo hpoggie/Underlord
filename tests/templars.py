@@ -75,6 +75,22 @@ class TemplarTest(unittest.TestCase):
         game.players[0].playFaceup(game.players[0].hand[0])
         self.failUnlessEqual(len(game.players[0].hand), 5)
 
+    def testMiracleNotEnoughCards(self):
+        game = Game(
+                Faction(deck=[
+                    base.one(),
+                    base.one(),
+                    miracle()
+                    ]),
+                Faction()
+                )
+        game.players[0].drawCard()
+        self.failUnlessEqual(len(game.players[0].hand), 1)
+        game.players[0].hand[0].playsFaceUp = True
+        game.players[0].hand[0].cost = 0
+        game.players[0].playFaceup(game.players[0].hand[0])
+        self.failUnlessEqual(len(game.players[0].hand), 2)
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
