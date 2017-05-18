@@ -237,7 +237,6 @@ class App (ShowBase):
                 )
         self.taskMgr.add(self.mouseOverTask, "MouseOverTask")
 
-        print len(self.player.hand)
         self.makeHand()
         self.makeEnemyHand()
         self.makeBoard()
@@ -415,9 +414,6 @@ class App (ShowBase):
         cardModel.setPos(0, 0, 5)
         cardModel.setTag('zone', 'face')
         self.enemyFaceNode = cardModel
-
-    def testEvent(self, event):
-        print event
 
     def getCard(self, obj):
         if obj.getTag('zone') == 'hand':
