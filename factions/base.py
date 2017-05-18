@@ -46,19 +46,18 @@ def five():
         rank=5
         )
 
+def sweepAbility(self):
+    for player in self.game.players:
+        cards = player.faceups
+        player.faceups = []
+        for c in cards:
+            player.graveyard.append(c)
+            c.zone = Zone.graveyard
+            c.moveZone(Zone.graveyard)
+
+    self.moveZone(Zone.graveyard)
 
 def sweep():
-    def sweepAbility(self):
-        for player in self.game.players:
-            cards = player.faceups
-            player.faceups = []
-            for c in cards:
-                player.graveyard.append(c)
-                c.zone = Zone.graveyard
-                c.moveZone(Zone.graveyard)
-
-        self.moveZone(Zone.graveyard)
-
     sweep = Card(
         name="Sweep",
         image="wind-slap.png",
