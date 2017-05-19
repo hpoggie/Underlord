@@ -65,7 +65,6 @@ class NetworkManager (object):
             lastReceivedPacket = self.lastReceivedPackets[addr]
         except KeyError:
             self.lastReceivedPackets[addr] = -1
-            self.currentIds[addr] = 0
             lastReceivedPacket = -1
 
         string, recId = data.split(" ")
