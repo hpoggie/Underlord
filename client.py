@@ -89,7 +89,6 @@ class MouseHandler (DirectObject):
                     except IllegalMoveError as error:
                         print error
                 else:
-                    print self.activeCard.name + " attacks " + pickedObj.name
                     base.attack(self.activeCard, pickedObj)
                     self.activeCard = None
             elif pickedObj.getTag('zone') == 'face-up':
@@ -98,15 +97,9 @@ class MouseHandler (DirectObject):
                 else:
                     base.attack(self.activeCard, pickedObj)
                     self.activeCard = None
-            elif pickedObj.getTag('zone') == 'face':
-                if self.activeCard:
+            elif pickedObj.getTag('zone') == 'face' and self.activeCard:
                     base.attack(self.activeCard, pickedObj)
                     self.activeCard = None
-                else:
-                    if pickedObj == base.playerFaceNode:
-                        print "p. mc %d" % base.player.manaCap
-                    elif pickedObj == base.enemyFaceNode:
-                        print "e. mc %d" % base.enemy.manaCap
         else:
             self.activeCard = None
 

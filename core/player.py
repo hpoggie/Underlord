@@ -164,7 +164,6 @@ class Player ():
         self.failIfInactive()
         self.getEnemy().manaCap += attacker.rank
         if self.getEnemy().manaCap > 15:
-            print "You're winner"
             self.win()
 
     def acceptTarget(self, target):

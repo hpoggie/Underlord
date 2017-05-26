@@ -45,7 +45,6 @@ class Card(object):
         self._rank = value
 
     def _onSpawn(self):
-        print "card has spawned"
         if self.spell:
             self.moveZone(Zone.graveyard)
 
