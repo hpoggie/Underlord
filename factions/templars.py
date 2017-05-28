@@ -86,14 +86,11 @@ Templars = Faction(
     iconPath="./templar_icons",
     cardBack="templar-shield.png",
     deck=[
-        base.one(), base.one(), base.one(), base.one(),
-        base.sweep(), base.sweep(),
-        base.spellBlade(),
         equus(), equus(),
         corvus(),
         holyHandGrenade(),
         wrathOfGod(),
         archangel(),
         miracle()
-        ],
+        ] + base.deck,
     )
