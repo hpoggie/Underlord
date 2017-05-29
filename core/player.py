@@ -23,7 +23,7 @@ class Player ():
             card.owner = self
         self.graveyard = []
         self.manaCap = 1
-        self.mana = 0
+        self.mana = 1
 
         self.iconPath = faction.iconPath
         self.cardBack = faction.cardBack
