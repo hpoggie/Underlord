@@ -88,7 +88,8 @@ class MouseHandler (DirectObject):
                         base.revealFacedown(pickedObj)
                     except IllegalMoveError as error:
                         print error
-                else:
+            elif pickedObj.getTag('zone') == 'enemy face-down':
+                if self.activeCard:
                     base.attack(self.activeCard, pickedObj)
                     self.activeCard = None
             elif pickedObj.getTag('zone') == 'face-up':
@@ -360,7 +361,7 @@ class App (ShowBase):
         cardModel.setTexture(tex)
         cardModel.setPos(self.enemyFdPos, 0, 2.1)
         cardModel.setTag('card', 'enemy face-down card')
-        cardModel.setTag('zone', 'face-down')
+        cardModel.setTag('zone', 'enemy face-down')
         self.enemyFdPos += 1.1
         self.enemyFacedownNodes.append(cardModel)
 
@@ -453,10 +454,7 @@ class App (ShowBase):
                 print "Can't attack yourself."
                 return
             zone = Zone.face
-        elif target.getTag('zone') == 'face-down':
-            if target in self.playerFacedownNodes:
-                print "Can't attack your own facedowns."
-                return
+        elif target.getTag('zone') == 'enemy face-down':
             targetIndex = self.enemyFacedownNodes.index(target)
             zone = Zone.facedown
         else:
@@ -496,11 +494,22 @@ class App (ShowBase):
 
     def mouseOverTask(self, name):
         if self.mouseWatcherNode.hasMouse():
+            if hasattr(self, '_activeObj') and self._activeObj is not None:
+                path = self.playerIconPath + "/" + self.playerCardBack
+                self._activeObj.setTexture(loader.loadTexture(path))
+                self._activeObj = None
+
             pickedObj = self.mouseHandler.getObjectClickedOn()
-            if pickedObj and pickedObj.getTag('zone') == 'hand':
-                card = self.player.hand[self.playerHandNodes.index(pickedObj)]
-                label = str(card.cost) + " " + str(card.rank)
-                self.cardStatsLabel.text = label
+            if pickedObj:
+                if pickedObj.getTag('zone') == 'hand':
+                    card = self.player.hand[self.playerHandNodes.index(pickedObj)]
+                    label = str(card.cost) + " " + str(card.rank)
+                    self.cardStatsLabel.text = label
+                elif pickedObj.getTag('zone') == 'face-down':
+                    card = self.player.facedowns[self.playerFacedownNodes.index(pickedObj)]
+                    self._activeObj = pickedObj
+                    path = self.playerIconPath + "/" + card.image
+                    pickedObj.setTexture(loader.loadTexture(path))
 
         return Task.cont
 
