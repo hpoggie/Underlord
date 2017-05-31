@@ -254,6 +254,12 @@ class App (ShowBase):
         targetZone = -1
         if target.getTag('zone') == 'face-down':
             try:
+                targetIndex = self.playerFacedownNodes.index(target)
+                targetZone = Zone.facedown
+            except ValueError as e:
+                print e
+        if target.getTag('zone') == 'enemy face-down':
+            try:
                 targetIndex = self.enemyFacedownNodes.index(target)
                 targetZone = Zone.facedown
             except ValueError as e:
