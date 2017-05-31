@@ -494,6 +494,8 @@ class App (ShowBase):
 
     def mouseOverTask(self, name):
         if self.mouseWatcherNode.hasMouse():
+            self.cardStatsLabel.text = ""
+
             if hasattr(self, '_activeObj') and self._activeObj is not None:
                 path = self.playerIconPath + "/" + self.playerCardBack
                 self._activeObj.setTexture(loader.loadTexture(path))
@@ -510,6 +512,8 @@ class App (ShowBase):
                     self._activeObj = pickedObj
                     path = self.playerIconPath + "/" + card.image
                     pickedObj.setTexture(loader.loadTexture(path))
+                    label = str(card.cost) + " " + str(card.rank)
+                    self.cardStatsLabel.text = label
 
         return Task.cont
 
