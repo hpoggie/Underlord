@@ -520,6 +520,13 @@ class App (ShowBase):
                     pickedObj.setTexture(loader.loadTexture(path))
                     label = str(card.cost) + " " + str(card.rank)
                     self.cardStatsLabel.text = label
+                elif pickedObj.getTag('zone') == 'face-up':
+                    if pickedObj in self.playerFaceupNodes:
+                        card = self.player.faceups[self.playerFaceupNodes.index(pickedObj)]
+                    else:
+                        card = self.enemy.faceups[self.enemyFaceupNodes.index(pickedObj)]
+                    label = str(card.cost) + " " + str(card.rank)
+                    self.cardStatsLabel.text = label
 
         return Task.cont
 
