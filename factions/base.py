@@ -61,7 +61,7 @@ def sweep():
     sweep = Card(
         name="Sweep",
         image="wind-slap.png",
-        cost=0,
+        cost=4,
         rank="s",
         spell=True,
         onSpawn=sweepAbility
@@ -80,7 +80,7 @@ def spellBlade():
     spellBlade = Card(
         name="Spell Blade",
         image="wave-strike.png",
-        cost=0,
+        cost=3,
         rank="s",
         spell=True,
         playsFaceUp=True,
