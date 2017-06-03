@@ -88,3 +88,11 @@ def spellBlade():
     )
 
     return spellBlade
+
+deck = [one() for i in range(5)]\
+    + [two() for i in range(4)]\
+    + [three() for i in range(3)]\
+    + [four() for i in range(2)]\
+    + [five()]\
+    + [sweep(), sweep()]\
+    + [spellBlade()]
