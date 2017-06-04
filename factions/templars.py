@@ -1,68 +1,96 @@
 import base
-from core.card import Card, Faction
+from core.card import Card, Faction, TargetedAbility
 from core.enums import Zone
-
-
-def failIfTaunts(self, attacker, target):
-    if target == Zone.face:
-        for card in self.getEnemy().facedowns:
-            if hasattr(card, 'Taunt') and card.Taunt:
-                raise IllegalMoveError("Can't attack into Taunts.")
-
-
-def setup(game):
-    import types
-    for player in game.players:
-        player.attack.insert(0, types.MethodType(failIfTaunts, player))
-
-
-def strix():
-    return Card(
-        name="Strix",
-        image="owl.png",
-        cost=1,
-        rank=1
-        )
+from core.core import IllegalMoveError
 
 
 def equus():
-    def equusGetRank(self):
-        return 2 if (self.owner.manaCap % 2 == 0) else 5
+    import types
 
-    equus = Card(
+    class Equus(Card):
+        @property
+        def rank(self):
+            return 2 if (self.owner.manaCap % 2 == 0) else 5
+
+    equus = Equus(
         name="Equus",
         image="horse-head.png",
-        cost=3,
+        cost=3
         )
-    equus.setRankAbility(equusGetRank)
 
     return equus
 
+def archangel():
+    return Card(
+            name="Archangel",
+            image="angel-wings.png",
+            cost=13,
+            rank=15
+            )
 
-def grail():
-    class Grail(Card):
-        @property
-        def Taunt(self):
-            return self.owner.manaCap % 2 == 0
+def holyHandGrenade():
+    def _onSpawn(self, target):
+        self.game.destroy(target)
+        self.moveZone(Zone.graveyard)
 
-    grail = Grail(
-        name="Grail",
-        image="holy-grail.png"
-        )
-    return grail
+    hhg = Card(
+            name="Holy Hand Grenade",
+            image="holy-hand-grenade.png",
+            playsFaceUp=True,
+            cost=4,
+            spell=True,
+            onSpawn=_onSpawn
+            )
+
+    return hhg
+
+def wrathOfGod():
+    return Card(
+            name="Wrath of God",
+            image="wind-hole.png",
+            cost=5,
+            spell=True,
+            playsFaceUp=True,
+            onSpawn=base.sweepAbility
+            )
+
+def corvus():
+    def _onSpawn(self):
+        self.owner.manaCap += 1
+
+    return Card(
+            name="Corvus",
+            image="raven.png",
+            cost=1,
+            rank=1,
+            onSpawn=_onSpawn
+            )
+
+def miracle():
+    def _onSpawn(self):
+        while(len(self.owner.hand) < 5 and len(self.owner.deck) > 0):
+            self.owner.drawCard()
+        self.moveZone(Zone.graveyard)
+
+    return Card(
+            name="Miracle",
+            image="sundial.png",
+            cost=6,
+            spell=True,
+            onSpawn=_onSpawn
+            )
+
 
 Templars = Faction(
     name="Templars",
     iconPath="./templar_icons",
     cardBack="templar-shield.png",
     deck=[
-        base.one(), base.one(), base.one(), base.one(),
-        base.sweep(), base.sweep(),
-        base.spellBlade(),
-        strix(),
-        equus(),
-        equus(),
-        grail()
-        ],
-    setup=setup
+        equus(), equus(),
+        corvus(),
+        holyHandGrenade(),
+        wrathOfGod(),
+        archangel(),
+        miracle()
+        ] + base.deck,
     )

@@ -4,6 +4,7 @@ from core.enums import numericEnum
 
 class ServerNetworkManager (NetworkManager):
     def __init__(self, base):
+        super(ServerNetworkManager, self).__init__()
         self.base = base
 
     Opcodes = numericEnum(
@@ -41,8 +42,10 @@ class ClientNetworkManager (NetworkManager):
     """
     The ClientNetworkManager takes incoming network opcodes and turns them into calls to the client.
     """
-    def __init__(self, base):
+    def __init__(self, base, ip):
+        super(ClientNetworkManager, self).__init__()
         self.base = base
+        self.ip = ip
 
     Opcodes = numericEnum(
         'updatePlayerHand',
@@ -52,11 +55,14 @@ class ClientNetworkManager (NetworkManager):
         'updatePlayerFaceups',
         'updateEnemyFaceups',
         'updatePlayerManaCap',
+        'updatePlayerMana',
         'updateEnemyManaCap',
         'updatePhase',
         'requestTarget',
         'win',
-        'lose')
+        'lose',
+        'setActive'
+        )
 
     def onGotPacket(self, packet, addr):
         base = self.base
@@ -78,6 +84,8 @@ class ClientNetworkManager (NetworkManager):
             base.updateEnemyFaceups(segments[1:])
         elif segments[0] == Opcodes.updatePlayerManaCap:
             base.updatePlayerManaCap(segments[1])
+        elif segments[0] == Opcodes.updatePlayerMana:
+            base.updatePlayerMana(segments[1])
         elif segments[0] == Opcodes.updateEnemyManaCap:
             base.updateEnemyManaCap(segments[1])
         elif segments[0] == Opcodes.updatePhase:
@@ -88,3 +96,5 @@ class ClientNetworkManager (NetworkManager):
             base.winGame()
         elif segments[0] == Opcodes.lose:
             base.loseGame()
+        elif segments[0] == Opcodes.setActive:
+            base.active = bool(segments[1])

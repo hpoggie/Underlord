@@ -1,6 +1,10 @@
 from enums import *
 from player import Player
-import action
+
+
+class EndOfGame:
+    def __init__(self, winner):
+        self.winner = winner
 
 
 class Game:
@@ -11,13 +15,8 @@ class Game:
         self.players = (Player(p1Faction), Player(p2Faction))
         for player in self.players:
             player.game = self
-            action.setupActions(player)
             for card in player.deck:
                 card.game = self
-
-        p1Faction.setup(self)
-        if p2Faction != p1Faction:
-            p2Faction.setup(self)
 
     def start(self):
         for player in self.players:
@@ -29,6 +28,8 @@ class Game:
         return self.players[self.turn]
 
     def fight(self, c1, c2):
+        if c1.spell or c2.spell:
+            return
         if c1.rank < c2.rank:
             self.destroy(c1)
         if c1.rank > c2.rank:
@@ -58,6 +59,9 @@ class Game:
         player.manaCap += 1
         if player.manaCap > 15:
             player.getEnemy().win()
-        player.mana = player.manaCap
+        player.getEnemy().mana = player.getEnemy().manaCap
         self.turn = Turn.p2 if self.turn == Turn.p1 else Turn.p1
         self.phase = Phase.reveal
+
+    def end(self, winner):
+        raise EndOfGame(winner)

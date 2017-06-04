@@ -20,6 +20,8 @@ from direct.task import Task
 from factions import templars
 import types
 
+import sys
+
 loadPrcFileData(
     "",
     """
@@ -86,8 +88,8 @@ class MouseHandler (DirectObject):
                         base.revealFacedown(pickedObj)
                     except IllegalMoveError as error:
                         print error
-                else:
-                    print self.activeCard.name + " attacks " + pickedObj.name
+            elif pickedObj.getTag('zone') == 'enemy face-down':
+                if self.activeCard:
                     base.attack(self.activeCard, pickedObj)
                     self.activeCard = None
             elif pickedObj.getTag('zone') == 'face-up':
@@ -96,15 +98,9 @@ class MouseHandler (DirectObject):
                 else:
                     base.attack(self.activeCard, pickedObj)
                     self.activeCard = None
-            elif pickedObj.getTag('zone') == 'face':
-                if self.activeCard:
+            elif pickedObj.getTag('zone') == 'face' and self.activeCard:
                     base.attack(self.activeCard, pickedObj)
                     self.activeCard = None
-                else:
-                    if pickedObj == base.playerFaceNode:
-                        print "p. mc %d" % base.player.manaCap
-                    elif pickedObj == base.enemyFaceNode:
-                        print "e. mc %d" % base.enemy.manaCap
         else:
             self.activeCard = None
 
@@ -126,7 +122,6 @@ class App (ShowBase):
     playerFaceupNodes = []
     enemyFaceupNodes = []
 
-    serverIp = "localhost"
     port = 9099
 
     player = Player(templars.Templars)
@@ -172,6 +167,10 @@ class App (ShowBase):
         self.player.manaCap = manaCap
         self.redraw()
 
+    def updatePlayerMana(self, mana):
+        self.player.mana = mana
+        self.redraw()
+
     def updateEnemyManaCap(self, manaCap):
         self.enemy.manaCap = manaCap
         self.redraw()
@@ -188,7 +187,7 @@ class App (ShowBase):
             scale=(0.5, 0.5, 0.5)
             )
 
-    def __init__(self):
+    def __init__(self, argv):
         ShowBase.__init__(self)
         self.scene = self.loader.loadModel("empty.obj")
         self.scene.reparentTo(self.render)
@@ -214,9 +213,14 @@ class App (ShowBase):
                 pos=(0, -0.7, 0),
                 scale=(0.1, 0.1, 0.1)
                 )
+        self.turnLabel = OnscreenText(
+                text="",
+                pos=(0, -0.9, 0),
+                scale=(0.1, 0.1, 0.1)
+                )
         self.playerManaCapLabel = OnscreenText(
                 text=str(self.player.manaCap),
-                pos=(-0.5, -0.44, 0),
+                pos=(-0.45, -0.44, 0),
                 scale=(0.1, 0.1, 0.1),
                 )
         self.enemyManaCapLabel = OnscreenText(
@@ -231,7 +235,6 @@ class App (ShowBase):
                 )
         self.taskMgr.add(self.mouseOverTask, "MouseOverTask")
 
-        print len(self.player.hand)
         self.makeHand()
         self.makeEnemyHand()
         self.makeBoard()
@@ -239,10 +242,13 @@ class App (ShowBase):
         self.makePlayerFace()
         self.makeEnemyFace()
 
-        self.networkManager = ClientNetworkManager(self)
+        self.serverIp = argv[1] if len(argv) > 1 else "127.0.0.1"
+        self.networkManager = ClientNetworkManager(self, self.serverIp)
         self.serverAddr = (self.serverIp, self.port)
         self.taskMgr.add(self.networkUpdateTask, "NetworkUpdateTask")
         self.networkManager.send("0", self.serverAddr)
+
+        self.active = False
 
     def getTarget(self, zone, index):
         self.mouseHandler.targeting = self.player.getCard(zone, index)
@@ -251,11 +257,23 @@ class App (ShowBase):
         targetIndex = -1
         targetZone = -1
         if target.getTag('zone') == 'face-down':
-            targetIndex = self.enemyFacedownNodes.index(target)
-            targetZone = Zone.facedown
+            try:
+                targetIndex = self.playerFacedownNodes.index(target)
+                targetZone = Zone.facedown
+            except ValueError as e:
+                print e
+        if target.getTag('zone') == 'enemy face-down':
+            try:
+                targetIndex = self.enemyFacedownNodes.index(target)
+                targetZone = Zone.facedown
+            except ValueError as e:
+                print e
         elif target.getTag('zone') == 'face-up':
-            targetIndex = self.enemyFaceupNodes.index(target)
-            targetZone = Zone.faceup
+            try:
+                targetIndex = self.enemyFaceupNodes.index(target)
+                targetZone = Zone.faceup
+            except ValueError as e:
+                print e
 
         cardIndex = self.player.faceups.index(self.mouseHandler.targeting)
 
@@ -310,13 +328,13 @@ class App (ShowBase):
             self.addEnemyFdCard()
 
     def addHandCard(self, card):
-        cm = CardMaker(card.getName())
+        cm = CardMaker(card.name)
         cardModel = self.render.attachNewNode(cm.generate())
-        path = self.playerIconPath + "/" + card.getImage()
+        path = self.playerIconPath + "/" + card.image
         tex = loader.loadTexture(path)
         cardModel.setTexture(tex)
         cardModel.setPos(self.handPos, 0, 0)
-        cardModel.setTag('card', card.getName())
+        cardModel.setTag('card', card.name)
         cardModel.setTag('zone', 'hand')
         self.handPos += 1.1
         self.playerHandNodes.append(cardModel)
@@ -340,7 +358,7 @@ class App (ShowBase):
         tex = loader.loadTexture(path)
         cardModel.setTexture(tex)
         cardModel.setPos(self.fdPos, 0, 1.1)
-        cardModel.setTag('card', card.getName())
+        cardModel.setTag('card', card.name)
         cardModel.setTag('zone', 'face-down')
         self.fdPos += 1.1
         self.playerFacedownNodes.append(cardModel)
@@ -353,30 +371,30 @@ class App (ShowBase):
         cardModel.setTexture(tex)
         cardModel.setPos(self.enemyFdPos, 0, 2.1)
         cardModel.setTag('card', 'enemy face-down card')
-        cardModel.setTag('zone', 'face-down')
+        cardModel.setTag('zone', 'enemy face-down')
         self.enemyFdPos += 1.1
         self.enemyFacedownNodes.append(cardModel)
 
     def addFaceupCard(self, card):
-        cm = CardMaker(card.getName())
+        cm = CardMaker(card.name)
         cardModel = self.render.attachNewNode(cm.generate())
-        path = self.playerIconPath + "/" + card.getImage()
+        path = self.playerIconPath + "/" + card.image
         tex = loader.loadTexture(path)
         cardModel.setTexture(tex)
         cardModel.setPos(self.fdPos, 0, 1.1)
-        cardModel.setTag('card', card.getName())
+        cardModel.setTag('card', card.name)
         cardModel.setTag('zone', 'face-up')
         self.fdPos += 1.1
         self.playerFaceupNodes.append(cardModel)
 
     def addEnemyFaceupCard(self, card):
-        cm = CardMaker(card.getName())
+        cm = CardMaker(card.name)
         cardModel = self.render.attachNewNode(cm.generate())
-        path = self.enemyIconPath + "/" + card.getImage()
+        path = self.enemyIconPath + "/" + card.image
         tex = loader.loadTexture(path)
         cardModel.setTexture(tex)
         cardModel.setPos(self.enemyFdPos, 0, 2.1)
-        cardModel.setTag('card', card.getName())
+        cardModel.setTag('card', card.name)
         cardModel.setTag('zone', 'face-up')
         self.enemyFdPos += 1.1
         self.enemyFaceupNodes.append(cardModel)
@@ -400,9 +418,6 @@ class App (ShowBase):
         cardModel.setPos(0, 0, 5)
         cardModel.setTag('zone', 'face')
         self.enemyFaceNode = cardModel
-
-    def testEvent(self, event):
-        print event
 
     def getCard(self, obj):
         if obj.getTag('zone') == 'hand':
@@ -437,7 +452,11 @@ class App (ShowBase):
         self.makeBoard()
 
     def attack(self, card, target):
-        index = self.playerFaceupNodes.index(card)
+        try:
+            index = self.playerFaceupNodes.index(card)
+        except ValueError:
+            print "That card is not one of your faceups."
+            return
         targetIndex = 0
         zone = 0
         if target.getTag('zone') == 'face':
@@ -445,10 +464,7 @@ class App (ShowBase):
                 print "Can't attack yourself."
                 return
             zone = Zone.face
-        elif target.getTag('zone') == 'face-down':
-            if target in self.playerFacedownNodes:
-                print "Can't attack your own facedowns."
-                return
+        elif target.getTag('zone') == 'enemy face-down':
             targetIndex = self.enemyFacedownNodes.index(target)
             zone = Zone.facedown
         else:
@@ -482,16 +498,42 @@ class App (ShowBase):
         self.makeEnemyHand()
         self.makeEnemyBoard()
         self.endPhaseLabel.text = str(self.phase)
-        self.playerManaCapLabel.text = str(self.player.manaCap)
+        self.turnLabel.text = "Your Turn" if self.active else "Enemy Turn"
+        if self.phase == Phase.reveal:
+            self.playerManaCapLabel.text = str(self.player.manaCap) + " (" + str(self.player.mana) + ")"
+        else:
+            self.playerManaCapLabel.text = str(self.player.manaCap)
         self.enemyManaCapLabel.text = str(self.enemy.manaCap)
 
     def mouseOverTask(self, name):
         if self.mouseWatcherNode.hasMouse():
+            self.cardStatsLabel.text = ""
+
+            if hasattr(self, '_activeObj') and self._activeObj is not None:
+                path = self.playerIconPath + "/" + self.playerCardBack
+                self._activeObj.setTexture(loader.loadTexture(path))
+                self._activeObj = None
+
             pickedObj = self.mouseHandler.getObjectClickedOn()
-            if pickedObj and pickedObj.getTag('zone') == 'hand':
-                card = self.player.hand[self.playerHandNodes.index(pickedObj)]
-                label = "%d %d" % (card.getCost(), card.getRank())
-                self.cardStatsLabel.text = label
+            if pickedObj:
+                if pickedObj.getTag('zone') == 'hand':
+                    card = self.player.hand[self.playerHandNodes.index(pickedObj)]
+                    label = str(card.cost) + " " + str(card.rank)
+                    self.cardStatsLabel.text = label
+                elif pickedObj.getTag('zone') == 'face-down':
+                    card = self.player.facedowns[self.playerFacedownNodes.index(pickedObj)]
+                    self._activeObj = pickedObj
+                    path = self.playerIconPath + "/" + card.image
+                    pickedObj.setTexture(loader.loadTexture(path))
+                    label = str(card.cost) + " " + str(card.rank)
+                    self.cardStatsLabel.text = label
+                elif pickedObj.getTag('zone') == 'face-up':
+                    if pickedObj in self.playerFaceupNodes:
+                        card = self.player.faceups[self.playerFaceupNodes.index(pickedObj)]
+                    else:
+                        card = self.enemy.faceups[self.enemyFaceupNodes.index(pickedObj)]
+                    label = str(card.cost) + " " + str(card.rank)
+                    self.cardStatsLabel.text = label
 
         return Task.cont
 
@@ -504,6 +546,6 @@ class App (ShowBase):
             self.lastTime = task.time
         return Task.cont
 
-app = App()
+app = App(sys.argv)
 app.camera.setPos(4, -20, 1.2)
 app.run()

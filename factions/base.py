@@ -46,22 +46,26 @@ def five():
         rank=5
         )
 
+def sweepAbility(self):
+    for player in self.game.players:
+        cards = player.faceups
+        player.faceups = []
+        for c in cards:
+            player.graveyard.append(c)
+            c.zone = Zone.graveyard
+            c.moveZone(Zone.graveyard)
+
+    self.moveZone(Zone.graveyard)
 
 def sweep():
-    def sweepAbility(self):
-        for player in self.game.players:
-            for c in player.faceups:
-                c.moveZone(Zone.graveyard)
-
-        self.moveZone(Zone.graveyard)
-
     sweep = Card(
         name="Sweep",
         image="wind-slap.png",
-        cost=0,
-        spell=True
+        cost=4,
+        rank="s",
+        spell=True,
+        onSpawn=sweepAbility
     )
-    sweep.setSpawnAbility(sweepAbility)
 
     return sweep
 
@@ -76,10 +80,19 @@ def spellBlade():
     spellBlade = Card(
         name="Spell Blade",
         image="wave-strike.png",
-        cost=0,
+        cost=3,
+        rank="s",
         spell=True,
-        playsFaceUp=True
+        playsFaceUp=True,
+        onSpawn = spellBladeAbility
     )
-    spellBlade.onSpawn = TargetedAbility(spellBladeAbility, spellBlade)
 
     return spellBlade
+
+deck = [one() for i in range(5)]\
+    + [two() for i in range(4)]\
+    + [three() for i in range(3)]\
+    + [four() for i in range(2)]\
+    + [five()]\
+    + [sweep(), sweep()]\
+    + [spellBlade()]

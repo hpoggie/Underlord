@@ -3,9 +3,10 @@ Server script. Takes the client's actions and computes the results, then sends t
 """
 
 from network import *
-from core.core import Game
+from core.core import Game, EndOfGame
 from factions.templars import Templars
 import time
+from core.enums import IllegalMoveError, Zone
 
 
 class OverlordService:
@@ -30,7 +31,14 @@ class OverlordService:
     # opcode 1
     def revealFacedown(self, addr, index):
         pl = self.players[addr]
-        pl.revealFacedown(pl.facedowns[index])
+        try:
+            pl.revealFacedown(pl.facedowns[index])
+        except IllegalMoveError as e:
+            print e
+            return
+        except IndexError as e:
+            print e
+            return
         self.redraw()
         if pl.activeAbility is not None:
             self.requestTarget(addr)
@@ -38,7 +46,14 @@ class OverlordService:
     # opcode 2
     def playFaceup(self, addr, index):
         pl = self.players[addr]
-        pl.playFaceup(pl.hand[index])
+        try:
+            pl.playFaceup(pl.hand[index])
+        except IllegalMoveError as e:
+            print e
+            return
+        except IndexError as e:
+            print e
+            return
         self.redraw()
         if pl.activeAbility is not None:
             self.requestTarget(addr)
@@ -46,26 +61,52 @@ class OverlordService:
     # opcode 3
     def attack(self, addr, cardIndex, targetIndex, targetZone):
         pl = self.players[addr]
-        attacker = pl.faceups[cardIndex]
-        target = pl.getEnemy().getCard(targetZone, targetIndex)
-        pl.attack(attacker, target)
+        try:
+            attacker = pl.faceups[cardIndex]
+        except IndexError as e:
+            print e
+            return
+        if targetZone == Zone.face:
+            target = Zone.face
+        else:
+            target = pl.getEnemy().getCard(targetZone, targetIndex)
+
+        try:
+            pl.attack(attacker, target)
+        except IllegalMoveError as e:
+            print e
         self.redraw()
 
     # opcode 4
     def play(self, addr, index):
         pl = self.players[addr]
-        pl.play(pl.hand[index])
+        try:
+            pl.play(pl.hand[index])
+        except IllegalMoveError as e:
+            print e
+        except IndexError as e:
+            print e
+            return
         self.redraw()
 
     # opcode 5
     def acceptTarget(self, addr, cardIndex, targetZone, targetIndex):
         pl = self.players[addr]
-        pl.acceptTarget(pl.getEnemy().getCard(targetZone, targetIndex))
+        try:
+            pl.acceptTarget(pl.getEnemy().getCard(targetZone, targetIndex))
+        except IllegalMoveError as e:
+            print e
+        except IndexError as e:
+            print e
+            return
         self.redraw()
 
     # opcode 6
     def endPhase(self, addr):
-        self.players[addr].endPhase()
+        try:
+            self.players[addr].endPhase()
+        except IllegalMoveError as e:
+            print e
         self.redraw()
 
     def requestTarget(self, addr):
@@ -109,8 +150,18 @@ class OverlordService:
             )
             self.networkManager.sendInts(
                 addr,
+                ClientNetworkManager.Opcodes.updatePlayerMana,
+                pl.mana
+            )
+            self.networkManager.sendInts(
+                addr,
                 ClientNetworkManager.Opcodes.updatePhase,
                 self.game.phase
+            )
+            self.networkManager.sendInts(
+                addr,
+                ClientNetworkManager.Opcodes.setActive,
+                int(pl.isActivePlayer())
             )
 
             try:
@@ -154,7 +205,12 @@ if __name__ == "__main__":
     service = OverlordService()
     i = 0
     while 1:
-        service.networkManager.recv()
+        try:
+            service.networkManager.recv()
+        except EndOfGame as e:
+            service.endGame(e.winner)
+            break
+
         i = (i+1) % 100
         if i == 0:
             service.networkManager.sendUnrecievedPackets()
