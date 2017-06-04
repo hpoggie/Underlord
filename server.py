@@ -150,6 +150,11 @@ class OverlordService:
             )
             self.networkManager.sendInts(
                 addr,
+                ClientNetworkManager.Opcodes.updatePlayerMana,
+                pl.mana
+            )
+            self.networkManager.sendInts(
+                addr,
                 ClientNetworkManager.Opcodes.updatePhase,
                 self.game.phase
             )

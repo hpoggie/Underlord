@@ -54,12 +54,13 @@ class ClientNetworkManager (NetworkManager):
         updatePlayerFaceups = 4
         updateEnemyFaceups = 5
         updatePlayerManaCap = 6
-        updateEnemyManaCap = 7
-        updatePhase = 8
-        requestTarget = 9
-        win = 10
-        lose = 11
-        setActive = 12
+        updatePlayerMana = 7
+        updateEnemyManaCap = 8
+        updatePhase = 9
+        requestTarget = 10
+        win = 11
+        lose = 12
+        setActive = 13
 
     def onGotPacket(self, packet, addr):
         base = self.base
@@ -81,6 +82,8 @@ class ClientNetworkManager (NetworkManager):
             base.updateEnemyFaceups(segments[1:])
         elif segments[0] == Opcodes.updatePlayerManaCap:
             base.updatePlayerManaCap(segments[1])
+        elif segments[0] == Opcodes.updatePlayerMana:
+            base.updatePlayerMana(segments[1])
         elif segments[0] == Opcodes.updateEnemyManaCap:
             base.updateEnemyManaCap(segments[1])
         elif segments[0] == Opcodes.updatePhase:

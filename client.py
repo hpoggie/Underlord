@@ -167,6 +167,10 @@ class App (ShowBase):
         self.player.manaCap = manaCap
         self.redraw()
 
+    def updatePlayerMana(self, mana):
+        self.player.mana = mana
+        self.redraw()
+
     def updateEnemyManaCap(self, manaCap):
         self.enemy.manaCap = manaCap
         self.redraw()
@@ -216,7 +220,7 @@ class App (ShowBase):
                 )
         self.playerManaCapLabel = OnscreenText(
                 text=str(self.player.manaCap),
-                pos=(-0.5, -0.44, 0),
+                pos=(-0.45, -0.44, 0),
                 scale=(0.1, 0.1, 0.1),
                 )
         self.enemyManaCapLabel = OnscreenText(
@@ -495,7 +499,10 @@ class App (ShowBase):
         self.makeEnemyBoard()
         self.endPhaseLabel.text = str(self.phase)
         self.turnLabel.text = "Your Turn" if self.active else "Enemy Turn"
-        self.playerManaCapLabel.text = str(self.player.manaCap)
+        if self.phase == Phase.reveal:
+            self.playerManaCapLabel.text = str(self.player.manaCap) + " (" + str(self.player.mana) + ")"
+        else:
+            self.playerManaCapLabel.text = str(self.player.manaCap)
         self.enemyManaCapLabel.text = str(self.enemy.manaCap)
 
     def mouseOverTask(self, name):
