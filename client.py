@@ -220,7 +220,7 @@ class App (ShowBase):
                 )
         self.playerManaCapLabel = OnscreenText(
                 text=str(self.player.manaCap),
-                pos=(-0.45, -0.44, 0),
+                pos=(-0.4, -0.44, 0),
                 scale=(0.1, 0.1, 0.1),
                 )
         self.enemyManaCapLabel = OnscreenText(
