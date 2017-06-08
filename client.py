@@ -37,10 +37,10 @@ class IllegalMoveError (Exception):
 
 
 class MouseHandler (DirectObject):
-    showCollisions = False
-
     def __init__(self):
         self.accept('mouse1', self.onMouse1, [])
+
+        self.showCollisions = False
 
         pickerNode = CollisionNode('mouseRay')
         pickerNP = camera.attachNewNode(pickerNode)
@@ -109,86 +109,28 @@ class MouseHandler (DirectObject):
 
 
 class App (ShowBase):
-    handPos = 0.0
-    enemyHandPos = 0.0
-    playerFacePos = (0, 0, 1)
-    enemyFacePos = (0, 0, -1)
-    playerHandNodes = []
-    enemyHandNodes = []
-    fdPos = 0.0
-    enemyFdPos = 0.0
-    playerFacedownNodes = []
-    enemyFacedownNodes = []
-    playerFaceupNodes = []
-    enemyFaceupNodes = []
-
-    port = 9099
-
-    player = Player(templars.Templars)
-    enemy = Player(templars.Templars)
-    phase = Phase.reveal
-
-    def updatePlayerHand(self, cardIds):
-        self.player.hand = [None] * len(cardIds)
-        for i, x in enumerate(cardIds):
-            self.player.hand[i] = templars.Templars.deck[x]  # TODO
-            self.player.hand[i].owner = self.player
-        self.redraw()
-
-    def updateEnemyHand(self, size):
-        self.enemy.hand = [None] * size
-
-    def updatePlayerFacedowns(self, cardIds):
-        self.player.facedowns = [None] * len(cardIds)
-        for i, x in enumerate(cardIds):
-            self.player.facedowns[i] = templars.Templars.deck[x]
-            self.player.facedowns[i].doIControl = True
-        self.redraw()
-
-    def updateEnemyFacedowns(self, size):
-        self.enemy.facedowns = [None] * size
-        self.redraw()
-
-    def updatePlayerFaceups(self, cardIds):
-        self.player.faceups = [None] * len(cardIds)
-        for i, x in enumerate(cardIds):
-            self.player.faceups[i] = templars.Templars.deck[x]
-            self.player.faceups[i].doIControl = True
-        self.redraw()
-
-    def updateEnemyFaceups(self, cardIds):
-        self.enemy.faceups = [None] * len(cardIds)
-        for i, x in enumerate(cardIds):
-            self.enemy.faceups[i] = templars.Templars.deck[x]
-            self.enemy.faceups[i].doIControl = False
-        self.redraw()
-
-    def updatePlayerManaCap(self, manaCap):
-        self.player.manaCap = manaCap
-        self.redraw()
-
-    def updatePlayerMana(self, mana):
-        self.player.mana = mana
-        self.redraw()
-
-    def updateEnemyManaCap(self, manaCap):
-        self.enemy.manaCap = manaCap
-        self.redraw()
-
-    def winGame(self):
-        self.winLabel = OnscreenText(
-            text="Victory",
-            scale=(0.5, 0.5, 0.5)
-            )
-
-    def loseGame(self):
-        self.winLabel = OnscreenText(
-            text="Defeat",
-            scale=(0.5, 0.5, 0.5)
-            )
-
     def __init__(self, argv):
         ShowBase.__init__(self)
+
+        self.handPos = 0.0
+        self.enemyHandPos = 0.0
+        self.playerFacePos = (0, 0, 1)
+        self.enemyFacePos = (0, 0, -1)
+        self.playerHandNodes = []
+        self.enemyHandNodes = []
+        self.fdPos = 0.0
+        self.enemyFdPos = 0.0
+        self.playerFacedownNodes = []
+        self.enemyFacedownNodes = []
+        self.playerFaceupNodes = []
+        self.enemyFaceupNodes = []
+
+        self.port = 9099
+
+        self.player = Player(templars.Templars)
+        self.enemy = Player(templars.Templars)
+        self.phase = Phase.reveal
+
         self.scene = self.loader.loadModel("empty.obj")
         self.scene.reparentTo(self.render)
 
@@ -249,6 +191,65 @@ class App (ShowBase):
         self.networkManager.send("0", self.serverAddr)
 
         self.active = False
+
+    def updatePlayerHand(self, cardIds):
+        self.player.hand = [None] * len(cardIds)
+        for i, x in enumerate(cardIds):
+            self.player.hand[i] = templars.Templars.deck[x]  # TODO
+            self.player.hand[i].owner = self.player
+        self.redraw()
+
+    def updateEnemyHand(self, size):
+        self.enemy.hand = [None] * size
+
+    def updatePlayerFacedowns(self, cardIds):
+        self.player.facedowns = [None] * len(cardIds)
+        for i, x in enumerate(cardIds):
+            self.player.facedowns[i] = templars.Templars.deck[x]
+            self.player.facedowns[i].doIControl = True
+        self.redraw()
+
+    def updateEnemyFacedowns(self, size):
+        self.enemy.facedowns = [None] * size
+        self.redraw()
+
+    def updatePlayerFaceups(self, cardIds):
+        self.player.faceups = [None] * len(cardIds)
+        for i, x in enumerate(cardIds):
+            self.player.faceups[i] = templars.Templars.deck[x]
+            self.player.faceups[i].doIControl = True
+        self.redraw()
+
+    def updateEnemyFaceups(self, cardIds):
+        self.enemy.faceups = [None] * len(cardIds)
+        for i, x in enumerate(cardIds):
+            self.enemy.faceups[i] = templars.Templars.deck[x]
+            self.enemy.faceups[i].doIControl = False
+        self.redraw()
+
+    def updatePlayerManaCap(self, manaCap):
+        self.player.manaCap = manaCap
+        self.redraw()
+
+    def updatePlayerMana(self, mana):
+        self.player.mana = mana
+        self.redraw()
+
+    def updateEnemyManaCap(self, manaCap):
+        self.enemy.manaCap = manaCap
+        self.redraw()
+
+    def winGame(self):
+        self.winLabel = OnscreenText(
+            text="Victory",
+            scale=(0.5, 0.5, 0.5)
+            )
+
+    def loseGame(self):
+        self.winLabel = OnscreenText(
+            text="Defeat",
+            scale=(0.5, 0.5, 0.5)
+            )
 
     def getTarget(self, zone, index):
         self.mouseHandler.targeting = self.player.getCard(zone, index)
