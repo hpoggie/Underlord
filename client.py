@@ -177,12 +177,13 @@ class App (ShowBase):
                 )
         self.taskMgr.add(self.mouseOverTask, "MouseOverTask")
 
-        self.makeHand()
-        self.makeEnemyHand()
-        self.makeBoard()
-        self.makeEnemyBoard()
-        self.makePlayerFace()
-        self.makeEnemyFace()
+        self.templarsButton = DirectButton(
+                image=templars.Templars.iconPath + '/' + templars.Templars.cardBack,
+                pos=(0, 0, 0),
+                scale=(0.1, 0.1, 0.1),
+                relief=None,
+                command=self.pickFaction
+                )
 
         self.serverIp = argv[1] if len(argv) > 1 else "127.0.0.1"
         self.networkManager = ClientNetworkManager(self, self.serverIp)
@@ -191,6 +192,21 @@ class App (ShowBase):
         self.networkManager.send("0", self.serverAddr)
 
         self.active = False
+
+    def pickFaction(self):
+        self.networkManager.sendInts(
+            self.serverAddr,
+            ServerNetworkManager.Opcodes.selectFaction,
+            0
+            )
+
+    def startGame(self):
+        self.makeHand()
+        self.makeEnemyHand()
+        self.makeBoard()
+        self.makeEnemyBoard()
+        self.makePlayerFace()
+        self.makeEnemyFace()
 
     def updatePlayerHand(self, cardIds):
         self.player.hand = [None] * len(cardIds)

@@ -8,25 +8,36 @@ from factions.templars import Templars
 import time
 from core.enums import IllegalMoveError, Zone
 
+availableFactions = [Templars]
 
 class OverlordService:
     def __init__(self):
         self.networkManager = ServerNetworkManager(self)
         self.networkManager.startServer()
-
-        self.game = Game(Templars, Templars)
-        self.game.start()
-        self.players = {}
+        self.connections = []
+        self.factions = [None, None]
 
     # actions
 
     # opcode 0
     def addPlayer(self, addr):
-        if len(self.players) < 2:
-            self.players[addr] = self.game.players[len(self.players)]
-            self.redraw()
+        if len(self.connections) < 2:
+            self.connections.append((addr, len(self.connections)))
+            #self.redraw()
         else:
             print "Cannot add more players."
+
+    def selectFaction(self, addr, index):
+        #self.players[addr].faction = factions[index]
+        self.factions[dict(self.connections)[addr]] = availableFactions[index]
+        if None not in self.factions:
+            self.start()
+
+    def start(self):
+        self.game = Game(Templars, Templars)
+        self.game.start()
+        self.players = dict([(conn[0], self.game.players[conn[1]]) for conn in self.connections])
+        self.redraw()
 
     # opcode 1
     def revealFacedown(self, addr, index):

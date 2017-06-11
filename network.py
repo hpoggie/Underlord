@@ -9,6 +9,7 @@ class ServerNetworkManager (NetworkManager):
 
     Opcodes = numericEnum(
         'connect',
+        'selectFaction',
         'revealFacedown',
         'playFaceup',
         'attack',
@@ -24,6 +25,8 @@ class ServerNetworkManager (NetworkManager):
             print "got opcode, ", operands[0]
         if operands[0] == Opcodes.connect:
             base.addPlayer(addr)
+        elif operands[0] == Opcodes.selectFaction:
+            base.selectFaction(addr, operands[1])
         elif operands[0] == Opcodes.revealFacedown:
             base.revealFacedown(addr, operands[1])
         elif operands[0] == Opcodes.playFaceup:
