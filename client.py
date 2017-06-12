@@ -108,7 +108,7 @@ class MouseHandler (DirectObject):
         self.doClick()
 
 
-class App (ShowBase):
+class App (ShowBase, object):
     def __init__(self, argv):
         ShowBase.__init__(self)
 
@@ -191,7 +191,18 @@ class App (ShowBase):
         self.taskMgr.add(self.networkUpdateTask, "NetworkUpdateTask")
         self.networkManager.send("0", self.serverAddr)
 
-        self.active = False
+        self._active = False
+        self._started = False
+
+    @property
+    def active(self):
+        return self._active
+
+    @active.setter
+    def active(self, value):
+        self._active = value
+        if not self._started:
+            self.startGame()
 
     def pickFaction(self):
         self.networkManager.sendInts(
@@ -207,6 +218,9 @@ class App (ShowBase):
         self.makeEnemyBoard()
         self.makePlayerFace()
         self.makeEnemyFace()
+
+        self.templarsButton.destroy()
+        del self.templarsButton
 
     def updatePlayerHand(self, cardIds):
         self.player.hand = [None] * len(cardIds)
