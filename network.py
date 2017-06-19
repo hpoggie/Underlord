@@ -18,13 +18,11 @@ class ServerNetworkManager (NetworkManager):
         'endPhase')
 
     def onGotPacket(self, packet, addr):
-        base = self.base
-        Opcodes = self.__class__.Opcodes
         operands = [int(x) for x in packet.split(":")]
         (opcode, operands) = (operands[0], operands[1:])
         if self.verbose:
             print "got opcode, ", Opcodes.keys[opcode]
-        getattr(base, Opcodes.keys[opcode])(addr, *operands)
+        getattr(self.base, self.Opcodes.keys[opcode])(addr, *operands)
 
 class ClientNetworkManager (NetworkManager):
     """
@@ -53,10 +51,8 @@ class ClientNetworkManager (NetworkManager):
         )
 
     def onGotPacket(self, packet, addr):
-        base = self.base
-        Opcodes = self.Opcodes
         operands = [int(x) for x in packet.split(":")]
         (opcode, operands) = (operands[0], operands[1:])
         if self.verbose:
             print "got opcode, ", opcode
-        getattr(base, Opcodes.keys[opcode])(*operands)
+        getattr(self.base, self.Opcodes.keys[opcode])(*operands)
