@@ -203,9 +203,9 @@ class OverlordService:
     def endGame(self, winner):
         for addr, pl in self.players.iteritems():
             if pl == winner:
-                opcode = ClientNetworkManager.Opcodes.win
+                opcode = ClientNetworkManager.Opcodes.winGame
             else:
-                opcode = ClientNetworkManager.Opcodes.lose
+                opcode = ClientNetworkManager.Opcodes.loseGame
 
             self.networkManager.sendInts(
                 addr,

@@ -223,7 +223,7 @@ class App (ShowBase, object):
         self.templarsButton.destroy()
         del self.templarsButton
 
-    def updatePlayerHand(self, cardIds):
+    def updatePlayerHand(self, *cardIds):
         self.player.hand = [None] * len(cardIds)
         for i, x in enumerate(cardIds):
             self.player.hand[i] = templars.Templars.deck[x]  # TODO
@@ -233,7 +233,7 @@ class App (ShowBase, object):
     def updateEnemyHand(self, size):
         self.enemy.hand = [None] * size
 
-    def updatePlayerFacedowns(self, cardIds):
+    def updatePlayerFacedowns(self, *cardIds):
         self.player.facedowns = [None] * len(cardIds)
         for i, x in enumerate(cardIds):
             self.player.facedowns[i] = templars.Templars.deck[x]
@@ -244,14 +244,14 @@ class App (ShowBase, object):
         self.enemy.facedowns = [None] * size
         self.redraw()
 
-    def updatePlayerFaceups(self, cardIds):
+    def updatePlayerFaceups(self, *cardIds):
         self.player.faceups = [None] * len(cardIds)
         for i, x in enumerate(cardIds):
             self.player.faceups[i] = templars.Templars.deck[x]
             self.player.faceups[i].doIControl = True
         self.redraw()
 
-    def updateEnemyFaceups(self, cardIds):
+    def updateEnemyFaceups(self, *cardIds):
         self.enemy.faceups = [None] * len(cardIds)
         for i, x in enumerate(cardIds):
             self.enemy.faceups[i] = templars.Templars.deck[x]
@@ -270,6 +270,12 @@ class App (ShowBase, object):
         self.enemy.manaCap = manaCap
         self.redraw()
 
+    def updatePhase(self, phase):
+        self.phase = phase
+
+    def setActive(self, value):
+        self.active = bool(value)
+
     def winGame(self):
         self.winLabel = OnscreenText(
             text="Victory",
@@ -282,7 +288,7 @@ class App (ShowBase, object):
             scale=(0.5, 0.5, 0.5)
             )
 
-    def getTarget(self, zone, index):
+    def requestTarget(self, zone, index):
         self.mouseHandler.targeting = self.player.getCard(zone, index)
 
     def acceptTarget(self, target):
