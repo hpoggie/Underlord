@@ -203,6 +203,7 @@ class App (ShowBase, object):
         self._active = value
         if not self._started:
             self.startGame()
+            self._started = True
 
     def pickFaction(self):
         self.networkManager.sendInts(
