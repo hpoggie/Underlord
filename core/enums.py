@@ -1,5 +1,7 @@
 def numericEnum(*items):
-    return type('NumericEnum', (), dict(zip(items, range(0, len(items)))))
+    d_items = dict(zip(items, range(0, len(items))))
+    d_items['keys'] = items
+    return type('NumericEnum', (), d_items)
 
 
 Turn = numericEnum('p1', 'p2')
