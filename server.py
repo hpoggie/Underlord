@@ -19,16 +19,13 @@ class OverlordService:
 
     # actions
 
-    # opcode 0
     def addPlayer(self, addr):
         if len(self.connections) < 2:
             self.connections.append((addr, len(self.connections)))
-            #self.redraw()
         else:
             print "Cannot add more players."
 
     def selectFaction(self, addr, index):
-        #self.players[addr].faction = factions[index]
         self.factions[dict(self.connections)[addr]] = availableFactions[index]
         if None not in self.factions:
             self.start()
@@ -39,7 +36,6 @@ class OverlordService:
         self.players = dict([(conn[0], self.game.players[conn[1]]) for conn in self.connections])
         self.redraw()
 
-    # opcode 1
     def revealFacedown(self, addr, index):
         pl = self.players[addr]
         try:
@@ -54,7 +50,6 @@ class OverlordService:
         if pl.activeAbility is not None:
             self.requestTarget(addr)
 
-    # opcode 2
     def playFaceup(self, addr, index):
         pl = self.players[addr]
         try:
@@ -69,7 +64,6 @@ class OverlordService:
         if pl.activeAbility is not None:
             self.requestTarget(addr)
 
-    # opcode 3
     def attack(self, addr, cardIndex, targetIndex, targetZone):
         pl = self.players[addr]
         try:
@@ -88,7 +82,6 @@ class OverlordService:
             print e
         self.redraw()
 
-    # opcode 4
     def play(self, addr, index):
         pl = self.players[addr]
         try:
@@ -100,7 +93,6 @@ class OverlordService:
             return
         self.redraw()
 
-    # opcode 5
     def acceptTarget(self, addr, cardIndex, targetZone, targetIndex):
         pl = self.players[addr]
         try:
@@ -112,7 +104,6 @@ class OverlordService:
             return
         self.redraw()
 
-    # opcode 6
     def endPhase(self, addr):
         try:
             self.players[addr].endPhase()
