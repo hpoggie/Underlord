@@ -237,7 +237,7 @@ class App (ShowBase, object):
         self.player.facedowns = [None] * len(cardIds)
         for i, x in enumerate(cardIds):
             self.player.facedowns[i] = templars.Templars.deck[x]
-            self.player.facedowns[i].doIControl = True
+            self.player.facedowns[i].owner = self.player
         self.redraw()
 
     def updateEnemyFacedowns(self, size):
@@ -248,14 +248,14 @@ class App (ShowBase, object):
         self.player.faceups = [None] * len(cardIds)
         for i, x in enumerate(cardIds):
             self.player.faceups[i] = templars.Templars.deck[x]
-            self.player.faceups[i].doIControl = True
+            self.player.faceups[i].owner = self.player
         self.redraw()
 
     def updateEnemyFaceups(self, *cardIds):
         self.enemy.faceups = [None] * len(cardIds)
         for i, x in enumerate(cardIds):
             self.enemy.faceups[i] = templars.Templars.deck[x]
-            self.enemy.faceups[i].doIControl = False
+            self.enemy.faceups[i].owner = self.enemy
         self.redraw()
 
     def updatePlayerManaCap(self, manaCap):
