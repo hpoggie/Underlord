@@ -52,7 +52,7 @@ class NetworkManager (object):
 
     def recv(self):
         readers, writers, errors = select.select(
-                [c.conn for c in self.connections], [], [], 0.1)
+                [c.conn for c in self.connections], [], [], 0)
 
         for conn in readers:
             c = next(x for x in self.connections if x.conn == conn)
