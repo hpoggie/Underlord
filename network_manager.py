@@ -19,7 +19,7 @@ class NetworkManager (object):
         self.connections = []
         self.isClient = False
 
-        self.verbose = True
+        self.verbose = False
 
     def startServer(self):
         self.sock.bind(("", self.port))
