@@ -189,6 +189,7 @@ class App (ShowBase, object):
         self.networkManager = ClientNetworkManager(self, self.serverIp)
         self.serverAddr = (self.serverIp, self.port)
         self.taskMgr.add(self.networkUpdateTask, "NetworkUpdateTask")
+        self.networkManager.connect(self.serverAddr)
         self.networkManager.send("0", self.serverAddr)
 
         self._active = False
@@ -579,9 +580,6 @@ class App (ShowBase, object):
 
     def networkUpdateTask(self, task):
         self.networkManager.recv()
-        if task.time - self.lastTime > 1.0:
-            self.networkManager.sendUnrecievedPackets()
-            self.lastTime = task.time
         return Task.cont
 
 app = App(sys.argv)

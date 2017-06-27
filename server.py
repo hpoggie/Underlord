@@ -205,7 +205,6 @@ class OverlordService:
 
 if __name__ == "__main__":
     service = OverlordService()
-    i = 0
     while 1:
         try:
             service.networkManager.recv()
@@ -213,7 +212,4 @@ if __name__ == "__main__":
             service.endGame(e.winner)
             break
 
-        i = (i+1) % 100
-        if i == 0:
-            service.networkManager.sendUnrecievedPackets()
         time.sleep(0.01)

@@ -18,6 +18,8 @@ class ServerNetworkManager (NetworkManager):
         'endPhase')
 
     def onGotPacket(self, packet, addr):
+        if packet == '':
+            return
         operands = [int(x) for x in packet.split(":")]
         (opcode, operands) = (operands[0], operands[1:])
         if self.verbose:
@@ -51,6 +53,8 @@ class ClientNetworkManager (NetworkManager):
         )
 
     def onGotPacket(self, packet, addr):
+        if packet == '':
+            return
         operands = [int(x) for x in packet.split(":")]
         (opcode, operands) = (operands[0], operands[1:])
         if self.verbose:

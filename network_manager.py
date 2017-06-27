@@ -1,5 +1,12 @@
 import socket
 import struct
+import select
+
+
+class Connection (object):
+    def __init__(self, conn, addr):
+        self.conn, self.addr = conn, addr
+        self.buffer = ''
 
 
 class NetworkManager (object):
@@ -8,97 +15,56 @@ class NetworkManager (object):
         self.port = 9099
         self.bufsize = 1024
 
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # internet, udp
-        self.sock.setblocking(0)
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # internet, tcp
+        self.connections = []
+        self.isClient = False
 
-        self.unreceivedPackets = []  # all packets we sent that have not yet been received
-        self.currentIds = dict()  # the largest currently unallocated id
-
-        self.lastReceivedPackets = dict()
-        self.savedPackets = []  # out of order packets saved for later
-
-        self.verbose = False
+        self.verbose = True
 
     def startServer(self):
         self.sock.bind(("", self.port))
+        self.sock.listen(2)
+        self.connections = [
+                Connection(*self.sock.accept()),
+                Connection(*self.sock.accept())]
+        if self.verbose: print "got 2 players. starting"
+        self.sock.setblocking(0)
+
+    def connect(self, addr):
+        self.sock.connect(addr)
+        self.connections = [Connection(self.sock, addr)]
+        self.isClient = True
+        self.sock.setblocking(0)
 
     def send(self, data, target):
-        try:
-            packet = str(data) + " " + str(self.currentIds[target])
-        except KeyError:
-            self.currentIds[target] = 0
-            packet = str(data) + " " + str(self.currentIds[target])
+        packet = str(data) + '\0'
 
         if self.verbose:
             print "Sent packet " + packet + " to ", target
-        self.sock.sendto(packet, target)
-        self.unreceivedPackets.append((packet, target))
-        self.currentIds[target] += 1
+
+        if self.isClient:
+            self.sock.sendall(packet)
+        else:
+            next(x for x in self.connections if x.addr == target).conn.sendall(packet)
 
     def sendInts(self, target, *args):
         self.send(":".join(str(x) for x in args), target)
 
-    def popSavedPackets(self):
-        while len(self.savedPackets) > 0:
-            foundPacket = False
-            for p in self.savedPackets:
-                data, num = p[0].split(" ")
-                num = int(num)
-                if num == self.lastReceivedPackets[p[1]] + 1:
-                    if self.verbose:
-                        print "Using saved packet ", num
-
-                    self.lastReceivedPackets[p[1]] = num
-                    self.onGotPacket(data, p[1])
-                    self.savedPackets.remove(p)
-                    foundPacket = True
-            if not foundPacket:
-                return
-
     def recv(self):
-        try:
-            data, addr = self.sock.recvfrom(self.bufsize)
-        except socket.error:
-            return
+        readers, writers, errors = select.select(
+                [c.conn for c in self.connections], [], [], 0.1)
 
-        try:
-            lastReceivedPacket = self.lastReceivedPackets[addr]
-        except KeyError:
-            self.lastReceivedPackets[addr] = -1
-            lastReceivedPacket = -1
+        for conn in readers:
+            c = next(x for x in self.connections if x.conn == conn)
+            newData = c.conn.recv(self.bufsize)
+            c.buffer += newData
+            data = c.buffer.split('\0')
+            c.buffer = data[-1]
+            data = data[:-1]
 
-        string, recId = data.split(" ")
-        recId = int(recId)
-
-        if recId == -1:  # packet was a response
-            if self.verbose:
-                print "Got response for packet ", string
-
-            for packet in self.unreceivedPackets:
-                if packet[0].split(" ")[1] == string:
-                    self.unreceivedPackets.remove(packet)
-        elif recId == lastReceivedPacket + 1:  # actual data
-            if self.verbose:
-                print "Got packet ", recId
-
-            self.lastReceivedPackets[addr] = recId
-            self.sock.sendto(str(recId) + " -1", addr)  # send back the id
-            self.onGotPacket(string, addr)
-            self.popSavedPackets()
-        elif recId > lastReceivedPacket + 1:  # out of order
-            if self.verbose:
-                print "Saving out of order packet ", recId
-
-            self.savedPackets.append((data, addr))
-        else:
-            if self.verbose:
-                print "Got duplicate packet ", recId
-
-            self.sock.sendto(str(recId) + " -1", addr)  # send back the id
-
-    def sendUnrecievedPackets(self):
-        for p in self.unreceivedPackets:
-            self.sock.sendto(p[0], p[1])
+            for d in data:
+                self.onGotPacket(d,
+                        next(x for x in self.connections if x.conn == conn).addr)
 
     def onGotPacket(self, packet, addr):
         print packet
