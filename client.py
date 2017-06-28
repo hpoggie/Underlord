@@ -153,27 +153,32 @@ class App (ShowBase, object):
         self.endPhaseLabel = OnscreenText(
                 text=str(self.phase),
                 pos=(0, -0.7, 0),
-                scale=(0.1, 0.1, 0.1)
+                scale=(0.1, 0.1, 0.1),
+                mayChange=True,
                 )
         self.turnLabel = OnscreenText(
                 text="",
                 pos=(0, -0.9, 0),
-                scale=(0.1, 0.1, 0.1)
+                scale=(0.1, 0.1, 0.1),
+                mayChange=True,
                 )
         self.playerManaCapLabel = OnscreenText(
                 text=str(self.player.manaCap),
                 pos=(-0.4, -0.44, 0),
                 scale=(0.1, 0.1, 0.1),
+                mayChange=True,
                 )
         self.enemyManaCapLabel = OnscreenText(
                 text=str(self.enemy.manaCap),
                 pos=(-0.5, 0.77),
                 scale=(0.1, 0.1, 0.1),
+                mayChange=True,
                 )
         self.cardStatsLabel = OnscreenText(
                 text="",
                 pos=(-0.7, -0.7, 0),
-                scale=(0.1, 0.1, 0.1)
+                scale=(0.1, 0.1, 0.1),
+                mayChange=True,
                 )
         self.taskMgr.add(self.mouseOverTask, "MouseOverTask")
 
@@ -536,17 +541,17 @@ class App (ShowBase, object):
         self.makeBoard()
         self.makeEnemyHand()
         self.makeEnemyBoard()
-        self.endPhaseLabel.text = str(self.phase)
-        self.turnLabel.text = "Your Turn" if self.active else "Enemy Turn"
+        self.endPhaseLabel.setText(str(self.phase))
+        self.turnLabel.setText("Your Turn" if self.active else "Enemy Turn")
         if self.phase == Phase.reveal:
-            self.playerManaCapLabel.text = str(self.player.manaCap) + " (" + str(self.player.mana) + ")"
+            self.playerManaCapLabel.setText(str(self.player.manaCap) + " (" + str(self.player.mana) + ")")
         else:
-            self.playerManaCapLabel.text = str(self.player.manaCap)
-        self.enemyManaCapLabel.text = str(self.enemy.manaCap)
+            self.playerManaCapLabel.setText(str(self.player.manaCap))
+        self.enemyManaCapLabel.setText(str(self.enemy.manaCap))
 
     def mouseOverTask(self, name):
         if self.mouseWatcherNode.hasMouse():
-            self.cardStatsLabel.text = ""
+            self.cardStatsLabel.setText("")
 
             if hasattr(self, '_activeObj') and self._activeObj is not None:
                 path = self.playerIconPath + "/" + self.playerCardBack
@@ -558,21 +563,21 @@ class App (ShowBase, object):
                 if pickedObj.getTag('zone') == 'hand':
                     card = self.player.hand[self.playerHandNodes.index(pickedObj)]
                     label = str(card.cost) + " " + str(card.rank)
-                    self.cardStatsLabel.text = label
+                    self.cardStatsLabel.setText(label)
                 elif pickedObj.getTag('zone') == 'face-down':
                     card = self.player.facedowns[self.playerFacedownNodes.index(pickedObj)]
                     self._activeObj = pickedObj
                     path = self.playerIconPath + "/" + card.image
                     pickedObj.setTexture(loader.loadTexture(path))
                     label = str(card.cost) + " " + str(card.rank)
-                    self.cardStatsLabel.text = label
+                    self.cardStatsLabel.setText(label)
                 elif pickedObj.getTag('zone') == 'face-up':
                     if pickedObj in self.playerFaceupNodes:
                         card = self.player.faceups[self.playerFaceupNodes.index(pickedObj)]
                     else:
                         card = self.enemy.faceups[self.enemyFaceupNodes.index(pickedObj)]
                     label = str(card.cost) + " " + str(card.rank)
-                    self.cardStatsLabel.text = label
+                    self.cardStatsLabel.setText(label)
 
         return Task.cont
 
