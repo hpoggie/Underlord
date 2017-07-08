@@ -1,0 +1,18 @@
+import sys
+print sys.path
+# add the working directory to the path so local files and modules can be found
+sys.path.insert(0,'') 
+
+class OverlordP3D(p3d):
+    require('morepy','panda3d')
+ 
+    config( 
+        version="0.1", 
+        display_name="OverlordP3D") 
+ 
+    #dir('.', newDir='.')
+    module('core', required=True)
+    #dir('factions', newDir='factions')
+    module('factions', required=True)
+    #dir('data',newDir='data') # include a folder called data
+    mainModule('client') # include and set the main module that runs when the p3d is run
