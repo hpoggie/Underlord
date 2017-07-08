@@ -1,0 +1,3 @@
+[submodule "obj2egg"]
+	path = obj2egg
+	url = https://github.com/treeform/obj2egg.git
