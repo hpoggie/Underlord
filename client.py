@@ -131,7 +131,7 @@ class App (ShowBase, object):
         self.enemy = Player(templars.Templars)
         self.phase = Phase.reveal
 
-        self.scene = self.loader.loadModel("empty.obj")
+        self.scene = self.loader.loadModel("empty.egg")
         self.scene.reparentTo(self.render)
 
         base.cTrav = CollisionTraverser()
