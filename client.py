@@ -131,7 +131,7 @@ class App (ShowBase, object):
         self.enemy = Player(templars.Templars)
         self.phase = Phase.reveal
 
-        self.scene = self.loader.loadModel("empty.obj")
+        self.scene = self.loadModel("empty")
         self.scene.reparentTo(self.render)
 
         base.cTrav = CollisionTraverser()
@@ -199,6 +199,14 @@ class App (ShowBase, object):
 
         self._active = False
         self._started = False
+
+    def loadModel(self, name):
+        try:
+            ret = self.loader.loadModel(name + ".bam")
+        except IOError:
+            ret = self.loader.loadModel(name + ".egg")
+
+        return ret
 
     @property
     def active(self):
