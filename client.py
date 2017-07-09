@@ -190,7 +190,7 @@ class App (ShowBase, object):
                 command=self.pickFaction
                 )
 
-        self.serverIp = argv[1] if len(argv) > 1 else "127.0.0.1"
+        self.serverIp = argv[1] if len(argv) > 1 else "174.138.119.84"
         self.networkManager = ClientNetworkManager(self, self.serverIp)
         self.serverAddr = (self.serverIp, self.port)
         self.taskMgr.add(self.networkUpdateTask, "NetworkUpdateTask")
