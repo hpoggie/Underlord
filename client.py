@@ -151,7 +151,7 @@ class App (ShowBase, object):
                 command=self.endPhase
                 )
         self.endPhaseLabel = OnscreenText(
-                text=str(self.phase),
+                text=str(Phase.keys[self.phase]),
                 pos=(0, -0.7, 0),
                 scale=(0.1, 0.1, 0.1),
                 mayChange=True,
@@ -549,7 +549,7 @@ class App (ShowBase, object):
         self.makeBoard()
         self.makeEnemyHand()
         self.makeEnemyBoard()
-        self.endPhaseLabel.setText(str(self.phase))
+        self.endPhaseLabel.setText(str(Phase.keys[self.phase]))
         self.turnLabel.setText("Your Turn" if self.active else "Enemy Turn")
         if self.phase == Phase.reveal:
             self.playerManaCapLabel.setText(str(self.player.manaCap) + " (" + str(self.player.mana) + ")")
