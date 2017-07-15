@@ -151,7 +151,7 @@ class App (ShowBase, object):
                 command=self.endPhase
                 )
         self.endPhaseLabel = OnscreenText(
-                text=str(Phase.keys[self.phase]),
+                text="faction select",
                 pos=(0, -0.7, 0),
                 scale=(0.1, 0.1, 0.1),
                 mayChange=True,
