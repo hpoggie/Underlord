@@ -112,19 +112,6 @@ class App (ShowBase, object):
     def __init__(self, argv):
         ShowBase.__init__(self)
 
-        self.handPos = 0.0
-        self.enemyHandPos = 0.0
-        self.playerFacePos = (0, 0, 1)
-        self.enemyFacePos = (0, 0, -1)
-        self.playerHandNodes = []
-        self.enemyHandNodes = []
-        self.fdPos = 0.0
-        self.enemyFdPos = 0.0
-        self.playerFacedownNodes = []
-        self.enemyFacedownNodes = []
-        self.playerFaceupNodes = []
-        self.enemyFaceupNodes = []
-
         self.port = 9099
 
         self.player = Player(templars.Templars)
@@ -143,40 +130,9 @@ class App (ShowBase, object):
         self.playerCardBack = templars.Templars.cardBack
         self.enemyCardBack = templars.Templars.cardBack
 
-        self.endPhaseButton = DirectButton(
-                image="./concentric-crescents.png",
-                pos=(0, 0, -0.5),
-                scale=(0.1, 0.1, 0.1),
-                relief=None,
-                command=self.endPhase
-                )
         self.endPhaseLabel = OnscreenText(
                 text="faction select",
                 pos=(0, -0.7, 0),
-                scale=(0.1, 0.1, 0.1),
-                mayChange=True,
-                )
-        self.turnLabel = OnscreenText(
-                text="",
-                pos=(0, -0.9, 0),
-                scale=(0.1, 0.1, 0.1),
-                mayChange=True,
-                )
-        self.playerManaCapLabel = OnscreenText(
-                text=str(self.player.manaCap),
-                pos=(-0.4, -0.44, 0),
-                scale=(0.1, 0.1, 0.1),
-                mayChange=True,
-                )
-        self.enemyManaCapLabel = OnscreenText(
-                text=str(self.enemy.manaCap),
-                pos=(-0.5, 0.77),
-                scale=(0.1, 0.1, 0.1),
-                mayChange=True,
-                )
-        self.cardStatsLabel = OnscreenText(
-                text="",
-                pos=(-0.7, -0.7, 0),
                 scale=(0.1, 0.1, 0.1),
                 mayChange=True,
                 )
@@ -227,15 +183,63 @@ class App (ShowBase, object):
             )
 
     def startGame(self):
+        self.makeGameUi()
+        self.templarsButton.destroy()
+        del self.templarsButton
+
+    def makeGameUi(self):
+        self.turnLabel = OnscreenText(
+                text="",
+                pos=(0, -0.9, 0),
+                scale=(0.1, 0.1, 0.1),
+                mayChange=True,
+                )
+
+        self.playerManaCapLabel = OnscreenText(
+                text=str(self.player.manaCap),
+                pos=(-0.4, -0.44, 0),
+                scale=(0.1, 0.1, 0.1),
+                mayChange=True,
+                )
+        self.enemyManaCapLabel = OnscreenText(
+                text=str(self.enemy.manaCap),
+                pos=(-0.5, 0.77),
+                scale=(0.1, 0.1, 0.1),
+                mayChange=True,
+                )
+        self.cardStatsLabel = OnscreenText(
+                text="",
+                pos=(-0.7, -0.7, 0),
+                scale=(0.1, 0.1, 0.1),
+                mayChange=True,
+                )
+        self.endPhaseButton = DirectButton(
+                image="./concentric-crescents.png",
+                pos=(0, 0, -0.5),
+                scale=(0.1, 0.1, 0.1),
+                relief=None,
+                command=self.endPhase
+                )
+
+        self.handPos = 0.0
+        self.enemyHandPos = 0.0
+        self.playerFacePos = (0, 0, 1)
+        self.enemyFacePos = (0, 0, -1)
+        self.playerHandNodes = []
+        self.enemyHandNodes = []
+        self.fdPos = 0.0
+        self.enemyFdPos = 0.0
+        self.playerFacedownNodes = []
+        self.enemyFacedownNodes = []
+        self.playerFaceupNodes = []
+        self.enemyFaceupNodes = []
+
         self.makeHand()
         self.makeEnemyHand()
         self.makeBoard()
         self.makeEnemyBoard()
         self.makePlayerFace()
         self.makeEnemyFace()
-
-        self.templarsButton.destroy()
-        del self.templarsButton
 
     def updatePlayerHand(self, *cardIds):
         self.player.hand = [None] * len(cardIds)
@@ -559,7 +563,8 @@ class App (ShowBase, object):
 
     def mouseOverTask(self, name):
         if self.mouseWatcherNode.hasMouse():
-            self.cardStatsLabel.setText("")
+            if hasattr(self, 'cardStatsLabel'):
+                self.cardStatsLabel.setText("")
 
             if hasattr(self, '_activeObj') and self._activeObj is not None:
                 path = self.playerIconPath + "/" + self.playerCardBack

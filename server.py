@@ -132,6 +132,11 @@ class OverlordService:
         for addr, pl in self.players.iteritems():
             self.networkManager.sendInts(
                 addr,
+                ClientNetworkManager.Opcodes.setActive,
+                int(pl.isActivePlayer())
+            )
+            self.networkManager.sendInts(
+                addr,
                 ClientNetworkManager.Opcodes.updatePlayerHand,
                 *(getCard(c) for c in pl.hand)
                 )
@@ -159,11 +164,6 @@ class OverlordService:
                 addr,
                 ClientNetworkManager.Opcodes.updatePhase,
                 self.game.phase
-            )
-            self.networkManager.sendInts(
-                addr,
-                ClientNetworkManager.Opcodes.setActive,
-                int(pl.isActivePlayer())
             )
 
             try:
