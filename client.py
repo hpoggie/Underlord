@@ -214,7 +214,7 @@ class App (ShowBase, object):
                 mayChange=True,
                 )
         self.endPhaseButton = DirectButton(
-                image="./concentric-crescents.png",
+                image="./end_phase.png",
                 pos=(0, 0, -0.5),
                 scale=(0.1, 0.1, 0.1),
                 relief=None,
