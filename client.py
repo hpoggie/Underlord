@@ -7,7 +7,7 @@ from direct.showbase.ShowBase import ShowBase
 from direct.showbase.DirectObject import DirectObject
 from panda3d.core import CardMaker
 from panda3d.core import CollisionTraverser, CollisionHandlerQueue
-from panda3d.core import CollisionNode, GeomNode, CollisionRay
+from panda3d.core import CollisionNode, GeomNode, CollisionRay, TextNode
 from direct.gui.DirectGui import *
 from direct.gui.OnscreenText import OnscreenText
 
@@ -134,6 +134,13 @@ class App (ShowBase, object):
                 text="faction select",
                 pos=(0, -0.7, 0),
                 scale=(0.1, 0.1, 0.1),
+                mayChange=True,
+                )
+        self.descLabel = OnscreenText(
+                text="",
+                pos=(-0.9, -0.8, 0),
+                align=TextNode.ALeft,
+                wordwrap=10,
                 mayChange=True,
                 )
         self.taskMgr.add(self.mouseOverTask, "MouseOverTask")
@@ -566,6 +573,9 @@ class App (ShowBase, object):
             if hasattr(self, 'cardStatsLabel'):
                 self.cardStatsLabel.setText("")
 
+            if hasattr(self, 'descLabel'):
+                self.descLabel.setText("")
+
             if hasattr(self, '_activeObj') and self._activeObj is not None:
                 path = self.playerIconPath + "/" + self.playerCardBack
                 self._activeObj.setTexture(loader.loadTexture(path))
@@ -577,6 +587,7 @@ class App (ShowBase, object):
                     card = self.player.hand[self.playerHandNodes.index(pickedObj)]
                     label = str(card.cost) + " " + str(card.rank)
                     self.cardStatsLabel.setText(label)
+                    self.descLabel.setText(card.desc)
                 elif pickedObj.getTag('zone') == 'face-down':
                     card = self.player.facedowns[self.playerFacedownNodes.index(pickedObj)]
                     self._activeObj = pickedObj
@@ -584,6 +595,7 @@ class App (ShowBase, object):
                     pickedObj.setTexture(loader.loadTexture(path))
                     label = str(card.cost) + " " + str(card.rank)
                     self.cardStatsLabel.setText(label)
+                    self.descLabel.setText(card.desc)
                 elif pickedObj.getTag('zone') == 'face-up':
                     if pickedObj in self.playerFaceupNodes:
                         card = self.player.faceups[self.playerFaceupNodes.index(pickedObj)]
@@ -591,6 +603,7 @@ class App (ShowBase, object):
                         card = self.enemy.faceups[self.enemyFaceupNodes.index(pickedObj)]
                     label = str(card.cost) + " " + str(card.rank)
                     self.cardStatsLabel.setText(label)
+                    self.descLabel.setText(card.desc)
 
         return Task.cont
 
