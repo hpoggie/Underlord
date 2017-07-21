@@ -15,7 +15,8 @@ def equus():
     equus = Equus(
         name="Equus",
         image="horse-head.png",
-        cost=3
+        cost=3,
+        desc="Has rank 2 if your mana cap is even and rank 5 if your mana cap is odd."
         )
 
     return equus
@@ -39,7 +40,8 @@ def holyHandGrenade():
             playsFaceUp=True,
             cost=4,
             spell=True,
-            onSpawn=_onSpawn
+            onSpawn=_onSpawn,
+            desc="Destroy target card."
             )
 
     return hhg
@@ -51,7 +53,8 @@ def wrathOfGod():
             cost=5,
             spell=True,
             playsFaceUp=True,
-            onSpawn=base.sweepAbility
+            onSpawn=base.sweepAbility,
+            desc=base.sweep().desc
             )
 
 def corvus():
@@ -63,7 +66,8 @@ def corvus():
             image="raven.png",
             cost=1,
             rank=1,
-            onSpawn=_onSpawn
+            onSpawn=_onSpawn,
+            desc="When this spawns, add 1 to your mana cap."
             )
 
 def miracle():
@@ -77,7 +81,8 @@ def miracle():
             image="sundial.png",
             cost=6,
             spell=True,
-            onSpawn=_onSpawn
+            onSpawn=_onSpawn,
+            desc="Draw until you have 5 cards in hand."
             )
 
 

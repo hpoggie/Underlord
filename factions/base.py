@@ -64,7 +64,8 @@ def sweep():
         cost=4,
         rank="s",
         spell=True,
-        onSpawn=sweepAbility
+        onSpawn=sweepAbility,
+        desc="Destroy all face-up units."
     )
 
     return sweep
@@ -84,7 +85,8 @@ def spellBlade():
         rank="s",
         spell=True,
         playsFaceUp=True,
-        onSpawn = spellBladeAbility
+        onSpawn = spellBladeAbility,
+        desc="Destroy target face-down card."
     )
 
     return spellBlade
