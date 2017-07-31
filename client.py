@@ -587,7 +587,7 @@ class App (ShowBase, object):
                     card = self.player.hand[self.playerHandNodes.index(pickedObj)]
                     label = str(card.cost) + " " + str(card.rank)
                     self.cardStatsLabel.setText(label)
-                    self.descLabel.setText(card.desc)
+                    self.descLabel.setText(("Instant. " if card.playsFaceUp else "") + card.desc)
                 elif pickedObj.getTag('zone') == 'face-down':
                     card = self.player.facedowns[self.playerFacedownNodes.index(pickedObj)]
                     self._activeObj = pickedObj
