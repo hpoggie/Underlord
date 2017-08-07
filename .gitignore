@@ -5,3 +5,5 @@ build/
 wheels/
 requirements.txt
 build_output.txt
+*.egg-info
+*.old
