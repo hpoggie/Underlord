@@ -16,7 +16,8 @@ setup(
                 '*.swp',
                 'tests/*',
                 '.git/*',
-                '.gitignore'
+                '.gitignore',
+                'build.sh'
             ],
             'plugins': [
                 'pandagl',
