@@ -7,6 +7,7 @@ from core.core import Game, EndOfGame
 from factions.templars import Templars
 import time
 from core.enums import IllegalMoveError, Zone
+import os
 
 availableFactions = [Templars]
 
@@ -206,10 +207,16 @@ class OverlordService:
 if __name__ == "__main__":
     service = OverlordService()
     while 1:
-        try:
-            service.networkManager.recv()
-        except EndOfGame as e:
-            service.endGame(e.winner)
-            break
+        service.networkManager.accept()
+        if os.fork() == 0:
+            while 1:
+                try:
+                    service.networkManager.recv()
+                except EndOfGame as e:
+                    service.endGame(e.winner)
+                    exit(0)
 
-        time.sleep(0.01)
+                time.sleep(0.01)
+        else:
+            service.networkManager.close()
+            service.networkManager.sock.setblocking(1)
