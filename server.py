@@ -8,6 +8,7 @@ from factions.templars import Templars
 import time
 from core.enums import IllegalMoveError, Zone
 import os
+import signal
 
 availableFactions = [Templars]
 
@@ -205,6 +206,7 @@ class OverlordService:
             )
 
 if __name__ == "__main__":
+    signal.signal(signal.SIGCHLD, signal.SIG_IGN)
     service = OverlordService()
     while 1:
         service.networkManager.accept()
