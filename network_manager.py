@@ -27,7 +27,7 @@ class NetworkManager (object):
         self.connections = [
                 Connection(*self.sock.accept()),
                 Connection(*self.sock.accept())]
-        if self.verbose: print "got 2 players. starting"
+        if self.verbose: print("got 2 players. starting")
         self.sock.setblocking(0)
 
     def connect(self, addr):
@@ -40,7 +40,7 @@ class NetworkManager (object):
         packet = str(data) + '\0'
 
         if self.verbose:
-            print "Sent packet " + packet + " to ", target
+            print("Sent packet " + packet + " to ", target)
 
         if self.isClient:
             self.sock.sendall(packet)
@@ -67,4 +67,4 @@ class NetworkManager (object):
                         next(x for x in self.connections if x.conn == conn).addr)
 
     def onGotPacket(self, packet, addr):
-        print packet
+        print(packet)

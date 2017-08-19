@@ -23,7 +23,7 @@ class OverlordService:
         if len(self.connections) < 2:
             self.connections.append((addr, len(self.connections)))
         else:
-            print "Cannot add more players."
+            print("Cannot add more players.")
 
     def selectFaction(self, addr, index):
         self.factions[dict(self.connections)[addr]] = availableFactions[index]
@@ -41,10 +41,10 @@ class OverlordService:
         try:
             pl.revealFacedown(pl.facedowns[index])
         except IllegalMoveError as e:
-            print e
+            print(e)
             return
         except IndexError as e:
-            print e
+            print(e)
             return
         self.redraw()
         if pl.activeAbility is not None:
@@ -55,10 +55,10 @@ class OverlordService:
         try:
             pl.playFaceup(pl.hand[index])
         except IllegalMoveError as e:
-            print e
+            print(e)
             return
         except IndexError as e:
-            print e
+            print(e)
             return
         self.redraw()
         if pl.activeAbility is not None:
@@ -69,7 +69,7 @@ class OverlordService:
         try:
             attacker = pl.faceups[cardIndex]
         except IndexError as e:
-            print e
+            print(e)
             return
         if targetZone == Zone.face:
             target = Zone.face
@@ -79,7 +79,7 @@ class OverlordService:
         try:
             pl.attack(attacker, target)
         except IllegalMoveError as e:
-            print e
+            print(e)
         self.redraw()
 
     def play(self, addr, index):
@@ -87,9 +87,9 @@ class OverlordService:
         try:
             pl.play(pl.hand[index])
         except IllegalMoveError as e:
-            print e
+            print(e)
         except IndexError as e:
-            print e
+            print(e)
             return
         self.redraw()
 
@@ -98,9 +98,9 @@ class OverlordService:
         try:
             pl.acceptTarget(pl.getEnemy().getCard(targetZone, targetIndex))
         except IllegalMoveError as e:
-            print e
+            print(e)
         except IndexError as e:
-            print e
+            print(e)
             return
         self.redraw()
 
@@ -108,7 +108,7 @@ class OverlordService:
         try:
             self.players[addr].endPhase()
         except IllegalMoveError as e:
-            print e
+            print(e)
         self.redraw()
 
     def requestTarget(self, addr):
@@ -129,7 +129,7 @@ class OverlordService:
                 if tc.name == c.name:
                     return i
 
-        for addr, pl in self.players.iteritems():
+        for addr, pl in self.players.items():
             self.networkManager.sendInts(
                 addr,
                 ClientNetworkManager.Opcodes.setActive,
@@ -192,7 +192,7 @@ class OverlordService:
                 pass
 
     def endGame(self, winner):
-        for addr, pl in self.players.iteritems():
+        for addr, pl in self.players.items():
             if pl == winner:
                 opcode = ClientNetworkManager.Opcodes.winGame
             else:
@@ -205,7 +205,7 @@ class OverlordService:
 
 if __name__ == "__main__":
     service = OverlordService()
-    while 1:
+    while True:
         try:
             service.networkManager.recv()
         except EndOfGame as e:

@@ -81,13 +81,13 @@ class MouseHandler (DirectObject):
                 try:
                     base.playCard(pickedObj)
                 except IllegalMoveError as error:
-                    print error
+                    print(error)
             elif pickedObj.getTag('zone') == 'face-down':
                 if not self.activeCard:
                     try:
                         base.revealFacedown(pickedObj)
                     except IllegalMoveError as error:
-                        print error
+                        print(error)
             elif pickedObj.getTag('zone') == 'enemy face-down':
                 if self.activeCard:
                     base.attack(self.activeCard, pickedObj)
@@ -324,19 +324,19 @@ class App (ShowBase, object):
                 targetIndex = self.playerFacedownNodes.index(target)
                 targetZone = Zone.facedown
             except ValueError as e:
-                print e
+                print(e)
         if target.getTag('zone') == 'enemy face-down':
             try:
                 targetIndex = self.enemyFacedownNodes.index(target)
                 targetZone = Zone.facedown
             except ValueError as e:
-                print e
+                print(e)
         elif target.getTag('zone') == 'face-up':
             try:
                 targetIndex = self.enemyFaceupNodes.index(target)
                 targetZone = Zone.faceup
             except ValueError as e:
-                print e
+                print(e)
 
         cardIndex = self.player.faceups.index(self.mouseHandler.targeting)
 
@@ -518,13 +518,13 @@ class App (ShowBase, object):
         try:
             index = self.playerFaceupNodes.index(card)
         except ValueError:
-            print "That card is not one of your faceups."
+            print("That card is not one of your faceups.")
             return
         targetIndex = 0
         zone = 0
         if target.getTag('zone') == 'face':
             if target == self.playerFaceNode:
-                print "Can't attack yourself."
+                print("Can't attack yourself.")
                 return
             zone = Zone.face
         elif target.getTag('zone') == 'enemy face-down':
@@ -532,7 +532,7 @@ class App (ShowBase, object):
             zone = Zone.facedown
         else:
             if target in self.playerFaceupNodes:
-                print "Can't attack your own faceups."
+                print("Can't attack your own faceups.")
                 return
             targetIndex = self.enemyFaceupNodes.index(target)
             zone = Zone.faceup

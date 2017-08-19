@@ -1,5 +1,5 @@
-from enums import *
-from player import Player
+from .enums import *
+from .player import Player
 
 
 class EndOfGame:

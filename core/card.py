@@ -1,6 +1,6 @@
 import types
 import inspect
-from enums import Zone
+from .enums import Zone
 
 
 class Card(object):
@@ -26,7 +26,7 @@ class Card(object):
         self.zone = None
         self.desc=""
 
-        for (key, value) in kwargs.iteritems():
+        for (key, value) in kwargs.items():
             setattr(self, key, value)
 
     @property

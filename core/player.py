@@ -7,7 +7,7 @@ A player has the following characteristics:
 """
 from copy import deepcopy
 from random import shuffle
-from enums import *
+from .enums import *
 
 startHandSize = 5
 maxManaCap = 15

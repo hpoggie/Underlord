@@ -23,7 +23,7 @@ class ServerNetworkManager (NetworkManager):
         operands = [int(x) for x in packet.split(":")]
         (opcode, operands) = (operands[0], operands[1:])
         if self.verbose:
-            print "got opcode, ", self.Opcodes.keys[opcode]
+            print("got opcode, ", self.Opcodes.keys[opcode])
         getattr(self.base, self.Opcodes.keys[opcode])(addr, *operands)
 
 class ClientNetworkManager (NetworkManager):
@@ -58,5 +58,5 @@ class ClientNetworkManager (NetworkManager):
         operands = [int(x) for x in packet.split(":")]
         (opcode, operands) = (operands[0], operands[1:])
         if self.verbose:
-            print "got opcode, ", self.Opcodes.keys[opcode]
+            print("got opcode, ", self.Opcodes.keys[opcode])
         getattr(self.base, self.Opcodes.keys[opcode])(*operands)
