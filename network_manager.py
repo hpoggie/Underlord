@@ -37,7 +37,7 @@ class NetworkManager (object):
         self.sock.setblocking(0)
 
     def send(self, data, target):
-        packet = str(data) + '\0'
+        packet = bytes(str(data) + '\0', 'utf-8')
 
         if self.verbose:
             print("Sent packet " + packet + " to ", target)
@@ -56,7 +56,7 @@ class NetworkManager (object):
 
         for conn in readers:
             c = next(x for x in self.connections if x.conn == conn)
-            newData = c.conn.recv(self.bufsize)
+            newData = c.conn.recv(self.bufsize).decode()
             c.buffer += newData
             data = c.buffer.split('\0')
             c.buffer = data[-1]
