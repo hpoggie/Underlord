@@ -77,6 +77,7 @@ class Card(object):
 
     def moveZone(self, zone):
         self.owner.moveCard(self, zone)
+        self.visibleWhileFacedown = False
 
 
 class TargetedAbility:
