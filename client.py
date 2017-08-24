@@ -265,8 +265,12 @@ class App (ShowBase, object):
             self.player.facedowns[i].owner = self.player
         self.redraw()
 
-    def updateEnemyFacedowns(self, size):
-        self.enemy.facedowns = [None] * size
+    def updateEnemyFacedowns(self, *cardIds):
+        self.enemy.facedowns = [None] * len(cardIds)
+        for i, x in enumerate(cardIds):
+            self.enemy.facedowns[i] = templars.Templars.deck[x] if x != -1 else None
+            if x != -1:
+                self.enemy.facedowns[i].owner = self.enemy
         self.redraw()
 
     def updatePlayerFaceups(self, *cardIds):
@@ -596,6 +600,15 @@ class App (ShowBase, object):
                     label = str(card.cost) + " " + str(card.rank)
                     self.cardStatsLabel.setText(label)
                     self.descLabel.setText(card.desc)
+                elif pickedObj.getTag('zone') == 'enemy face-down':
+                    card = self.enemy.facedowns[self.enemyFacedownNodes.index(pickedObj)]
+                    if card is not None:
+                        self._activeObj = pickedObj
+                        path = self.playerIconPath + "/" + card.image
+                        pickedObj.setTexture(loader.loadTexture(path))
+                        label = str(card.cost) + " " + str(card.rank)
+                        self.cardStatsLabel.setText(label)
+                        self.descLabel.setText(card.desc)
                 elif pickedObj.getTag('zone') == 'face-up':
                     if pickedObj in self.playerFaceupNodes:
                         card = self.player.faceups[self.playerFaceupNodes.index(pickedObj)]

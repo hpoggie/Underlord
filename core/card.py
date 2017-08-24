@@ -24,6 +24,7 @@ class Card(object):
         self.playsFaceUp = False
         self.owner = None
         self.zone = None
+        self.visibleWhileFacedown = False
         self.desc=""
 
         for (key, value) in kwargs.iteritems():
