@@ -24,6 +24,7 @@ class Card(object):
         self.playsFaceUp = False
         self.owner = None
         self.zone = None
+        self.visibleWhileFacedown = False
         self.desc=""
 
         for (key, value) in kwargs.iteritems():
@@ -76,6 +77,7 @@ class Card(object):
 
     def moveZone(self, zone):
         self.owner.moveCard(self, zone)
+        self.visibleWhileFacedown = False
 
 
 class TargetedAbility:

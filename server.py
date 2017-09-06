@@ -178,7 +178,7 @@ class OverlordService:
                 self.networkManager.sendInts(
                     addr,
                     ClientNetworkManager.Opcodes.updateEnemyFacedowns,
-                    len(enemyPlayer.facedowns)
+                    *(getCard(c) if c.visibleWhileFacedown else -1 for c in enemyPlayer.facedowns)
                 )
                 self.networkManager.sendInts(
                     addr,
