@@ -7,6 +7,20 @@ class EndOfGame:
         self.winner = winner
 
 
+def event(func):
+    def fooBeforeAfter(self, *args, **kwargs):
+        for pl in self.players:
+            for c in pl.faceups:
+                c.beforeEvent(func.__name__, *args, **kwargs)
+
+        func(self, *args, **kwargs)
+
+        for pl in self.players:
+            for c in pl.faceups:
+                c.afterEvent(func.__name__, *args, **kwargs)
+
+    return fooBeforeAfter
+
 class Game:
     def __init__(self, p1Faction, p2Faction):
         self.turn = Turn.p1
@@ -27,6 +41,7 @@ class Game:
     def activePlayer(self):
         return self.players[self.turn]
 
+    @event
     def fight(self, c1, c2):
         if c1.spell or c2.spell:
             return
@@ -44,9 +59,11 @@ class Game:
             self.destroy(c1)
             self.destroy(c2)
 
+    @event
     def destroy(self, card):
         card.moveZone(Zone.graveyard)
 
+    @event
     def endPhase(self):
         if self.phase == Phase.reveal:
             self.activePlayer.facedowns = []
@@ -60,6 +77,7 @@ class Game:
         elif self.phase > Phase.play:
             self.endTurn()
 
+    @event
     def endTurn(self):
         player = self.activePlayer
         player.manaCap += 1

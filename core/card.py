@@ -30,6 +30,12 @@ class Card(object):
         for (key, value) in kwargs.iteritems():
             setattr(self, key, value)
 
+    def beforeEvent(self, eventName, *args, **kwargs):
+        pass
+
+    def afterEvent(self, eventName, *args, **kwargs):
+        pass
+
     @property
     def cost(self):
         return self._cost
