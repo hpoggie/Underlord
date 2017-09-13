@@ -85,6 +85,20 @@ def miracle():
             desc="Draw until you have 5 cards in hand."
             )
 
+def crystalElemental():
+    class CrystalElemental(Card):
+        def afterEvent(self, eventName, *args, **kwargs):
+            if eventName == "destroy" and args[0].owner != self.owner:
+                self.owner.drawCard()
+
+    return CrystalElemental(
+            name="Crystal Elemental",
+            image="crystal-cluster.png",
+            cost=7,
+            rank=4,
+            desc="Whenever you destroy an enemy face-down card, draw a card."
+            )
+
 
 Templars = Faction(
     name="Templars",
@@ -96,6 +110,7 @@ Templars = Faction(
         holyHandGrenade(),
         wrathOfGod(),
         archangel(),
-        miracle()
+        miracle(),
+        crystalElemental()
         ] + base.deck,
     )
