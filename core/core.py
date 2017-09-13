@@ -26,7 +26,7 @@ class Game:
         self.turn = Turn.p1
         self.phase = Phase.reveal
 
-        self.players = (Player(p1Faction), Player(p2Faction))
+        self.players = (p1Faction.player(p1Faction), p2Faction.player(p2Faction))
         for player in self.players:
             player.game = self
             for card in player.deck:

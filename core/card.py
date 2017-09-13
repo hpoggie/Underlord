@@ -1,5 +1,6 @@
 import types
 import inspect
+import core
 from enums import Zone
 
 
@@ -111,5 +112,6 @@ class Faction:
         self.iconPath = "./my_faction_icons"
         self.cardBack = "my-faction-back.png"
         self.deck = []
+        self.player = core.Player
 
         vars(self).update(kwargs.copy())
