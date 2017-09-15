@@ -2,6 +2,7 @@ import base
 from core.card import Card, Faction, TargetedAbility
 from core.enums import Zone
 from core.core import IllegalMoveError
+from core.player import Player
 
 
 def equus():
@@ -114,3 +115,8 @@ Templars = Faction(
         crystalElemental()
         ] + base.deck,
     )
+
+
+class Templar(Player):
+    def __init__(self):
+        super(Templar, self).__init__(Templars)

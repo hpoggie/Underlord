@@ -4,13 +4,13 @@ Server script. Takes the client's actions and computes the results, then sends t
 
 from network import *
 from core.core import Game, EndOfGame
-from factions.templars import Templars
+from factions.templars import Templar
 import time
 from core.enums import IllegalMoveError, Zone
 import os
 import signal
 
-availableFactions = [Templars]
+availableFactions = [Templar]
 
 class OverlordService:
     def __init__(self):

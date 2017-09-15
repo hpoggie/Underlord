@@ -22,11 +22,15 @@ def event(func):
     return fooBeforeAfter
 
 class Game:
-    def __init__(self, p1Faction, p2Faction):
+    def __init__(self, p1Type, p2Type):
+        """
+        p1Type and p2Type are the classes of player 1 and player 2.
+        e.g. Templar and Thief
+        """
         self.turn = Turn.p1
         self.phase = Phase.reveal
 
-        self.players = (p1Faction.player(p1Faction), p2Faction.player(p2Faction))
+        self.players = (p1Type(), p2Type())
         for player in self.players:
             player.game = self
             for card in player.deck:
