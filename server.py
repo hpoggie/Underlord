@@ -12,7 +12,7 @@ import signal
 
 availableFactions = [Templar]
 
-class OverlordService:
+class OverlordService (object):
     def __init__(self):
         self.networkManager = ServerNetworkManager(self)
         self.networkManager.startServer()

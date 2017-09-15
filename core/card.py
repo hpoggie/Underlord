@@ -87,7 +87,7 @@ class Card(object):
         self.visibleWhileFacedown = False
 
 
-class TargetedAbility:
+class TargetedAbility(object):
     """
     An ability that has targets.
 
@@ -106,7 +106,7 @@ class TargetedAbility:
         self.func(*args)
 
 
-class Faction:
+class Faction(object):
     def __init__(self, **kwargs):
         self.name = "My Faction"
         self.iconPath = "./my_faction_icons"
