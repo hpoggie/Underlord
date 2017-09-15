@@ -18,6 +18,7 @@ class Player ():
         self.hand = []
         self.facedowns = []
         self.faceups = []
+        self.faction = faction
         self.deck = deepcopy(faction.deck)
         for card in self.deck:
             card.owner = self

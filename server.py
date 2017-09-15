@@ -33,9 +33,18 @@ class OverlordService:
             self.start()
 
     def start(self):
-        self.game = Game(Templars, Templars)
+        self.game = Game(*self.factions)
         self.game.start()
         self.players = dict([(conn[0], self.game.players[conn[1]]) for conn in self.connections])
+
+        # TODO: kludge
+        for i in range(len(self.factions)):
+            self.networkManager.sendInts(
+                    self.connections[(i + 1) % len(self.factions)][0],
+                    ClientNetworkManager.Opcodes.updateEnemyFaction,
+                    availableFactions.index(self.factions[i])
+                    )
+
         self.redraw()
 
     def revealFacedown(self, addr, index):
@@ -126,8 +135,8 @@ class OverlordService:
         )
 
     def redraw(self):
-        def getCard(c):
-            for i, tc in enumerate(Templars.deck):
+        def getCard(pl, c):
+            for i, tc in enumerate(pl.faction.deck):
                 if tc.name == c.name:
                     return i
 
@@ -140,17 +149,17 @@ class OverlordService:
             self.networkManager.sendInts(
                 addr,
                 ClientNetworkManager.Opcodes.updatePlayerHand,
-                *(getCard(c) for c in pl.hand)
+                *(getCard(pl, c) for c in pl.hand)
                 )
             self.networkManager.sendInts(
                 addr,
                 ClientNetworkManager.Opcodes.updatePlayerFacedowns,
-                *(getCard(c) for c in pl.facedowns)
+                *(getCard(pl, c) for c in pl.facedowns)
             )
             self.networkManager.sendInts(
                 addr,
                 ClientNetworkManager.Opcodes.updatePlayerFaceups,
-                *(getCard(c) for c in pl.faceups)
+                *(getCard(pl, c) for c in pl.faceups)
             )
             self.networkManager.sendInts(
                 addr,
@@ -178,12 +187,12 @@ class OverlordService:
                 self.networkManager.sendInts(
                     addr,
                     ClientNetworkManager.Opcodes.updateEnemyFacedowns,
-                    *(getCard(c) if c.visibleWhileFacedown else -1 for c in enemyPlayer.facedowns)
+                    *(getCard(enemyPlayer, c) if c.visibleWhileFacedown else -1 for c in enemyPlayer.facedowns)
                 )
                 self.networkManager.sendInts(
                     addr,
                     ClientNetworkManager.Opcodes.updateEnemyFaceups,
-                    *(getCard(c) for c in enemyPlayer.faceups)
+                    *(getCard(enemyPlayer, c) for c in enemyPlayer.faceups)
                 )
                 self.networkManager.sendInts(
                     addr,
