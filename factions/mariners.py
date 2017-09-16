@@ -31,11 +31,34 @@ def kraken():
         desc="Aquatic.")
 
 
+def nuisanceFlooding():
+    def _onSpawn(self):
+        self.remainingTurns = 4
+        self.game.flooded = True
+
+    class NuisanceFlooding(Card):
+        def afterEvent(self, eventName, *args, **kwargs):
+            if eventName == "endTurn" and self.owner.isActivePlayer():
+                self.remainingTurns -= 1
+                if self.remainingTurns <= 0:
+                    self.game.destroy(self)
+
+    return NuisanceFlooding(
+        name="Nuisance Flooding",
+        image="at-sea.png",
+        cost=3,
+        rank='s',
+        spell=True,
+        onSpawn=_onSpawn,
+        desc="Flood the battlefield for 4 turns.")
+
+
 Mariners = Faction(
     name="Mariners",
     iconPath="mariner_icons",
     cardBack="nautilus-shell.png",
-    deck=deck(kraken) + base.deck)
+    deck=deck(kraken,
+              nuisanceFlooding, 3) + base.deck)
 
 
 class Mariner(Player):
