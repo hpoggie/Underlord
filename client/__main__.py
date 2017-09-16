@@ -16,7 +16,7 @@ from gameServer import Zone
 from core.game import Game, Phase, Turn, EndOfGame
 from core.player import IllegalMoveError
 import core.card
-from factions import templars
+from factions import templars, mariners
 from client.mouse import MouseHandler
 from client.zoneMaker import ZoneMaker
 import client.hud as hud
@@ -64,7 +64,7 @@ class App (ShowBase):
         self.connectionManager.tryConnect()
         self.taskMgr.add(self.networkUpdateTask, "NetworkUpdateTask")
 
-        self.availableFactions = [templars.Templars]
+        self.availableFactions = [templars.Templars, mariners.Mariners]
 
     def onConnectedToServer(self):
         self.guiScene = hud.MainMenu()

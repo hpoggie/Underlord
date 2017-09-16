@@ -13,6 +13,7 @@ from core.game import Game, EndOfGame
 from core.player import IllegalMoveError
 from core.enums import numericEnum
 from factions.templars import Templar
+from factions.mariners import Mariner
 
 
 class ServerError(BaseException):
@@ -22,7 +23,7 @@ class ServerError(BaseException):
 Zone = numericEnum('face', 'faceup', 'facedown', 'hand', 'graveyard')
 
 
-availableFactions = [Templar]
+availableFactions = [Templar, Mariner]
 
 
 def getCard(player, card):
