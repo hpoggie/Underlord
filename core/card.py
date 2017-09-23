@@ -87,7 +87,7 @@ class Card(object):
         self.visibleWhileFacedown = False
 
 
-class Decision(object):
+class Decision():
     """
     An effect that requires a decision from a player.
 
