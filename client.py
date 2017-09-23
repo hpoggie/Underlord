@@ -333,12 +333,14 @@ class App (ShowBase, object):
         self.mouseHandler.targeting = True
 
     def acceptTarget(self, target):
+        targetsEnemy = True
         targetIndex = -1
         targetZone = -1
         if target.getTag('zone') == 'face-down':
             try:
                 targetIndex = self.playerFacedownNodes.index(target)
                 targetZone = Zone.facedown
+                targetsEnemy = False
             except ValueError as e:
                 print e
         if target.getTag('zone') == 'enemy face-down':
@@ -351,14 +353,21 @@ class App (ShowBase, object):
             try:
                 targetIndex = self.enemyFaceupNodes.index(target)
                 targetZone = Zone.faceup
+                targetsEnemy = False
             except ValueError as e:
                 print e
-
-        cardIndex = self.player.faceups.index(self.mouseHandler.targeting)
+        elif target.getTag('zone') == 'hand':
+            try:
+                targetIndex = self.playerHandNodes.index(target)
+                targetZone = Zone.hand
+                targetsEnemy = False
+            except ValueError as e:
+                print e
 
         self.networkManager.sendInts(
             self.serverAddr,
             ServerNetworkManager.Opcodes.acceptTarget,
+            int(targetsEnemy),
             targetZone,
             targetIndex
             )

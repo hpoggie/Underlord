@@ -111,10 +111,13 @@ class OverlordService (object):
             return
         self.redraw()
 
-    def acceptTarget(self, addr, targetZone, targetIndex):
+    def acceptTarget(self, addr, targetsEnemy, targetZone, targetIndex):
         pl = self.players[addr]
         try:
-            target = pl.getEnemy().getCard(targetZone, targetIndex)
+            if targetsEnemy:
+                target = pl.getEnemy().getCard(targetZone, targetIndex)
+            else:
+                target = pl.getCard(targetZone, targetIndex)
             self.waitingOnDecision.execute(target)
             self.waitingOnDecision = None
         except IllegalMoveError as e:
