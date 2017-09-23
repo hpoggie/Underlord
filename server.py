@@ -19,6 +19,8 @@ class OverlordService (object):
         self.connections = []
         self.factions = [None, None]
 
+        self.waitingOnDecision = None
+
     # actions
 
     def addPlayer(self, addr):
@@ -58,6 +60,7 @@ class OverlordService (object):
             print e
             return
         except Decision as d:
+            self.waitingOnDecision = d
             self.requestTarget(addr)
 
         self.redraw()
@@ -73,6 +76,7 @@ class OverlordService (object):
             print e
             return
         except Decision as d:
+            self.waitingOnDecision = d
             self.requestTarget(addr)
 
         self.redraw()
@@ -109,7 +113,9 @@ class OverlordService (object):
     def acceptTarget(self, addr, targetZone, targetIndex):
         pl = self.players[addr]
         try:
-            pl.acceptTarget(pl.getEnemy().getCard(targetZone, targetIndex))
+            target = pl.getEnemy().getCard(targetZone, targetIndex)
+            self.waitingOnDecision.execute(target)
+            self.waitingOnDecision = None
         except IllegalMoveError as e:
             print e
         except IndexError as e:

@@ -29,8 +29,6 @@ class Player (object):
         self.iconPath = faction.iconPath
         self.cardBack = faction.cardBack
 
-        self.activeAbility = None
-
     def shuffle(self):
         shuffle(self.deck)
 
@@ -166,17 +164,6 @@ class Player (object):
         self.getEnemy().manaCap += attacker.rank
         if self.getEnemy().manaCap > 15:
             self.win()
-
-    def acceptTarget(self, target):
-        self.failIfInactive()
-        self.activeAbility.execute(target)
-        self.activeAbility = None
-
-    def cancelTarget(self):
-        self.failIfInactive()
-        if self.activeAbility is not None:
-            self.activeAbility.execute(None)
-            self.activeAbility = None
 
     def endPhase(self):
         self.failIfInactive()
