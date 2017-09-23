@@ -57,9 +57,10 @@ class OverlordService (object):
         except IndexError as e:
             print e
             return
-        self.redraw()
-        if pl.activeAbility is not None:
+        except Decision as d:
             self.requestTarget(addr)
+
+        self.redraw()
 
     def playFaceup(self, addr, index):
         pl = self.players[addr]
@@ -71,9 +72,10 @@ class OverlordService (object):
         except IndexError as e:
             print e
             return
-        self.redraw()
-        if pl.activeAbility is not None:
+        except Decision as d:
             self.requestTarget(addr)
+
+        self.redraw()
 
     def attack(self, addr, cardIndex, targetIndex, targetZone):
         pl = self.players[addr]

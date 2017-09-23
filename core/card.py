@@ -67,7 +67,7 @@ class Card(object):
     @onSpawn.setter
     def onSpawn(self, func):
         if len(inspect.getargspec(func).args) > 1:
-            self._onSpawn = TargetedAbility(func, self)
+            self._onSpawn = Decision(func, self)
         else:
             self._onSpawn = types.MethodType(func, self)
 
@@ -87,20 +87,20 @@ class Card(object):
         self.visibleWhileFacedown = False
 
 
-class TargetedAbility(object):
+class Decision(object):
     """
-    An ability that has targets.
+    An effect that requires a decision from a player.
 
     Called just like a regular ability, but becomes the player's active ability instead of
     immediately executing. Then the player can execute it after getting targets.
     """
-    def __init__(self, func, card):
-        self.card = card
-        self.numTargets = len(inspect.getargspec(func).args)  # TODO: support multiple targets
-        self.func = types.MethodType(func, card)
+    def __init__(self, func, source):
+        self.source = source
+        self.numArgs = len(inspect.getargspec(func).args)  # TODO: support multiple targets
+        self.func = types.MethodType(func, source)
 
     def __call__(self):
-        self.card.owner.activeAbility = self
+        raise self
 
     def execute(self, *args):
         self.func(*args)
