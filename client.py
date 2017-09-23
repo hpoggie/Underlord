@@ -355,14 +355,14 @@ class App (ShowBase, object):
                 targetZone = Zone.faceup
                 targetsEnemy = False
             except ValueError as e:
-                print e
+                print(e)
         elif target.getTag('zone') == 'hand':
             try:
                 targetIndex = self.playerHandNodes.index(target)
                 targetZone = Zone.hand
                 targetsEnemy = False
             except ValueError as e:
-                print e
+                print(e)
 
         self.networkManager.sendInts(
             self.serverAddr,
