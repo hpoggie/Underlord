@@ -4,6 +4,7 @@ Server script. Takes the client's actions and computes the results, then sends t
 
 from network import *
 from core.core import Game, EndOfGame
+from core.card import Decision
 from factions.templars import Templar
 import time
 from core.enums import IllegalMoveError, Zone
