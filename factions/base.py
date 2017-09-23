@@ -1,4 +1,4 @@
-from core.card import Card, TargetedAbility
+from core.card import Card
 from core.enums import *
 
 

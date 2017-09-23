@@ -1,5 +1,5 @@
 import base
-from core.card import Card, Faction, TargetedAbility
+from core.card import Card, Faction
 from core.enums import Zone
 from core.core import IllegalMoveError
 from core.player import Player
