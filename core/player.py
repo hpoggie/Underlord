@@ -13,7 +13,7 @@ startHandSize = 5
 maxManaCap = 15
 
 
-class Player (object):
+class Player:
     def __init__(self, faction):
         self.hand = []
         self.facedowns = []

@@ -5,7 +5,7 @@ from . import player
 from .enums import Zone
 
 
-class Card(object):
+class Card:
     """
     A card has the following characteristics:
         Name
@@ -88,7 +88,7 @@ class Card(object):
         self.visibleWhileFacedown = False
 
 
-class Decision():
+class Decision:
     """
     An effect that requires a decision from a player.
 
@@ -107,7 +107,7 @@ class Decision():
         self.func(*args)
 
 
-class Faction(object):
+class Faction:
     def __init__(self, **kwargs):
         self.name = "My Faction"
         self.iconPath = "./my_faction_icons"

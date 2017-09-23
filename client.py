@@ -108,7 +108,7 @@ class MouseHandler (DirectObject):
         self.doClick()
 
 
-class App (ShowBase, object):
+class App (ShowBase):
     def __init__(self, argv):
         ShowBase.__init__(self)
 

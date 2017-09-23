@@ -3,7 +3,7 @@ import struct
 import select
 
 
-class Connection (object):
+class Connection:
     def __init__(self, conn, addr):
         self.conn, self.addr = conn, addr
         self.buffer = ''
@@ -12,7 +12,7 @@ class Connection (object):
         self.conn.close()
 
 
-class NetworkManager (object):
+class NetworkManager:
     def __init__(self):
         self.ip = "127.0.0.1"
         self.port = 9099

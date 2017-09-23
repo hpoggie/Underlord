@@ -2,7 +2,7 @@ from .enums import *
 from .player import Player
 
 
-class EndOfGame(object):
+class EndOfGame:
     def __init__(self, winner):
         self.winner = winner
 
@@ -21,7 +21,7 @@ def event(func):
 
     return fooBeforeAfter
 
-class Game(object):
+class Game:
     def __init__(self, p1Type, p2Type):
         """
         p1Type and p2Type are the classes of player 1 and player 2.
