@@ -1,7 +1,7 @@
 import types
 import inspect
 import core
-from enums import Zone
+from .enums import Zone
 
 
 class Card(object):
