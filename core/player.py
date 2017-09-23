@@ -98,8 +98,6 @@ class Player (object):
         if card.zone != Zone.hand:
             raise IllegalMoveError("Can't play a card that's not in your hand.")
 
-        self.cancelTarget()
-
         card.moveZone(Zone.facedown)
         card.hasAttacked = False
 
@@ -113,8 +111,6 @@ class Player (object):
 
         if card.zone != Zone.facedown:
             raise IllegalMoveError("Can't reveal a card that's not face-down.")
-
-        self.cancelTarget()
 
         self.mana -= card.cost
         card.moveZone(Zone.faceup)
@@ -132,8 +128,6 @@ class Player (object):
 
         if self.mana < card.cost:
             raise IllegalMoveError("Not enough mana.")
-
-        self.cancelTarget()
 
         self.mana -= card.cost
         card.moveZone(Zone.faceup)
