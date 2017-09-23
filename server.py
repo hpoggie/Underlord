@@ -106,7 +106,7 @@ class OverlordService (object):
             return
         self.redraw()
 
-    def acceptTarget(self, addr, cardIndex, targetZone, targetIndex):
+    def acceptTarget(self, addr, targetZone, targetIndex):
         pl = self.players[addr]
         try:
             pl.acceptTarget(pl.getEnemy().getCard(targetZone, targetIndex))
@@ -125,15 +125,9 @@ class OverlordService (object):
         self.redraw()
 
     def requestTarget(self, addr):
-        card = self.players[addr].activeAbility.card
-        zone = card.zone
-        index = self.players[addr].faceups.index(card)  # TODO: other zones
-
         self.networkManager.sendInts(
             addr,
-            ClientNetworkManager.Opcodes.requestTarget,
-            zone,
-            index
+            ClientNetworkManager.Opcodes.requestTarget
         )
 
     def redraw(self):

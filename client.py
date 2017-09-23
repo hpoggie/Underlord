@@ -53,7 +53,7 @@ class MouseHandler (DirectObject):
         base.disableMouse()
 
         self.activeCard = None
-        self.targeting = None
+        self.targeting = False
 
     def getObjectClickedOn(self):
         if base.mouseWatcherNode.hasMouse():
@@ -70,10 +70,10 @@ class MouseHandler (DirectObject):
     def doClick(self):
         pickedObj = self.getObjectClickedOn()
 
-        if self.targeting is not None:
+        if self.targeting:
             if pickedObj is not None:
                 base.acceptTarget(pickedObj)
-                self.targeting = None
+                self.targeting = False
             return
 
         if pickedObj and not pickedObj.isEmpty():
@@ -329,8 +329,8 @@ class App (ShowBase, object):
             scale=(0.5, 0.5, 0.5)
             )
 
-    def requestTarget(self, zone, index):
-        self.mouseHandler.targeting = self.player.getCard(zone, index)
+    def requestTarget(self):
+        self.mouseHandler.targeting = True
 
     def acceptTarget(self, target):
         targetIndex = -1
@@ -359,7 +359,6 @@ class App (ShowBase, object):
         self.networkManager.sendInts(
             self.serverAddr,
             ServerNetworkManager.Opcodes.acceptTarget,
-            cardIndex,
             targetZone,
             targetIndex
             )
