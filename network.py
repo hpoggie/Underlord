@@ -36,6 +36,7 @@ class ClientNetworkManager (NetworkManager):
         self.ip = ip
 
     Opcodes = numericEnum(
+        'updateEnemyFaction',
         'updatePlayerHand',
         'updateEnemyHand',
         'updatePlayerFacedowns',

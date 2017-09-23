@@ -8,6 +8,9 @@ class Connection (object):
         self.conn, self.addr = conn, addr
         self.buffer = ''
 
+    def close(self):
+        self.conn.close()
+
 
 class NetworkManager (object):
     def __init__(self):
@@ -24,11 +27,17 @@ class NetworkManager (object):
     def startServer(self):
         self.sock.bind(("", self.port))
         self.sock.listen(2)
+
+    def accept(self):
         self.connections = [
                 Connection(*self.sock.accept()),
                 Connection(*self.sock.accept())]
         if self.verbose: print("got 2 players. starting")
         self.sock.setblocking(0)
+
+    def close(self):
+        for conn in self.connections:
+            conn.close()
 
     def connect(self, addr):
         self.sock.connect(addr)

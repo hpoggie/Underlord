@@ -2,17 +2,35 @@ from .enums import *
 from .player import Player
 
 
-class EndOfGame:
+class EndOfGame(object):
     def __init__(self, winner):
         self.winner = winner
 
 
-class Game:
-    def __init__(self, p1Faction, p2Faction):
+def event(func):
+    def fooBeforeAfter(self, *args, **kwargs):
+        for pl in self.players:
+            for c in pl.faceups:
+                c.beforeEvent(func.__name__, *args, **kwargs)
+
+        func(self, *args, **kwargs)
+
+        for pl in self.players:
+            for c in pl.faceups:
+                c.afterEvent(func.__name__, *args, **kwargs)
+
+    return fooBeforeAfter
+
+class Game(object):
+    def __init__(self, p1Type, p2Type):
+        """
+        p1Type and p2Type are the classes of player 1 and player 2.
+        e.g. Templar and Thief
+        """
         self.turn = Turn.p1
         self.phase = Phase.reveal
 
-        self.players = (Player(p1Faction), Player(p2Faction))
+        self.players = (p1Type(), p2Type())
         for player in self.players:
             player.game = self
             for card in player.deck:
@@ -27,9 +45,16 @@ class Game:
     def activePlayer(self):
         return self.players[self.turn]
 
+    @event
     def fight(self, c1, c2):
         if c1.spell or c2.spell:
             return
+
+        if c1.zone == Zone.facedown:
+            c1.visibleWhileFacedown = True
+        if c2.zone == Zone.facedown:
+            c2.visibleWhileFacedown = True
+
         if c1.rank < c2.rank:
             self.destroy(c1)
         if c1.rank > c2.rank:
@@ -38,9 +63,11 @@ class Game:
             self.destroy(c1)
             self.destroy(c2)
 
+    @event
     def destroy(self, card):
         card.moveZone(Zone.graveyard)
 
+    @event
     def endPhase(self):
         if self.phase == Phase.reveal:
             self.activePlayer.facedowns = []
@@ -54,6 +81,7 @@ class Game:
         elif self.phase > Phase.play:
             self.endTurn()
 
+    @event
     def endTurn(self):
         player = self.activePlayer
         player.manaCap += 1

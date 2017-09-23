@@ -13,11 +13,12 @@ startHandSize = 5
 maxManaCap = 15
 
 
-class Player ():
+class Player (object):
     def __init__(self, faction):
         self.hand = []
         self.facedowns = []
         self.faceups = []
+        self.faction = faction
         self.deck = deepcopy(faction.deck)
         for card in self.deck:
             card.owner = self
@@ -27,8 +28,6 @@ class Player ():
 
         self.iconPath = faction.iconPath
         self.cardBack = faction.cardBack
-
-        self.activeAbility = None
 
     def shuffle(self):
         shuffle(self.deck)
@@ -99,8 +98,6 @@ class Player ():
         if card.zone != Zone.hand:
             raise IllegalMoveError("Can't play a card that's not in your hand.")
 
-        self.cancelTarget()
-
         card.moveZone(Zone.facedown)
         card.hasAttacked = False
 
@@ -114,8 +111,6 @@ class Player ():
 
         if card.zone != Zone.facedown:
             raise IllegalMoveError("Can't reveal a card that's not face-down.")
-
-        self.cancelTarget()
 
         self.mana -= card.cost
         card.moveZone(Zone.faceup)
@@ -133,8 +128,6 @@ class Player ():
 
         if self.mana < card.cost:
             raise IllegalMoveError("Not enough mana.")
-
-        self.cancelTarget()
 
         self.mana -= card.cost
         card.moveZone(Zone.faceup)
@@ -165,17 +158,6 @@ class Player ():
         self.getEnemy().manaCap += attacker.rank
         if self.getEnemy().manaCap > 15:
             self.win()
-
-    def acceptTarget(self, target):
-        self.failIfInactive()
-        self.activeAbility.execute(target)
-        self.activeAbility = None
-
-    def cancelTarget(self):
-        self.failIfInactive()
-        if self.activeAbility is not None:
-            self.activeAbility.execute(None)
-            self.activeAbility = None
 
     def endPhase(self):
         self.failIfInactive()
