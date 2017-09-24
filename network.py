@@ -4,7 +4,7 @@ from core.enums import numericEnum
 
 class ServerNetworkManager (NetworkManager):
     def __init__(self, base):
-        super(ServerNetworkManager, self).__init__()
+        super().__init__()
         self.base = base
 
     Opcodes = numericEnum(
@@ -26,12 +26,14 @@ class ServerNetworkManager (NetworkManager):
             print("got opcode, ", self.Opcodes.keys[opcode])
         getattr(self.base, self.Opcodes.keys[opcode])(addr, *operands)
 
+
 class ClientNetworkManager (NetworkManager):
     """
-    The ClientNetworkManager takes incoming network opcodes and turns them into calls to the client.
+    The ClientNetworkManager takes incoming network opcodes and turns them into
+    calls to the client.
     """
     def __init__(self, base, ip):
-        super(ClientNetworkManager, self).__init__()
+        super().__init__()
         self.base = base
         self.ip = ip
 

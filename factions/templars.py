@@ -1,13 +1,10 @@
 from . import base
 from core.card import Card, Faction
 from core.enums import Zone
-from core.core import IllegalMoveError
 from core.player import Player
 
 
 def equus():
-    import types
-
     class Equus(Card):
         @property
         def rank(self):
@@ -17,10 +14,12 @@ def equus():
         name="Equus",
         image="horse-head.png",
         cost=3,
-        desc="Has rank 2 if your mana cap is even and rank 5 if your mana cap is odd."
+        desc="""Has rank 2 if your mana cap is even and rank 5 if your mana cap
+        is odd."""
         )
 
     return equus
+
 
 def archangel():
     return Card(
@@ -29,6 +28,7 @@ def archangel():
             cost=13,
             rank=15
             )
+
 
 def holyHandGrenade():
     def _onSpawn(self, target):
@@ -47,6 +47,7 @@ def holyHandGrenade():
 
     return hhg
 
+
 def wrathOfGod():
     return Card(
             name="Wrath of God",
@@ -57,6 +58,7 @@ def wrathOfGod():
             onSpawn=base.sweepAbility,
             desc=base.sweep().desc
             )
+
 
 def corvus():
     def _onSpawn(self):
@@ -70,6 +72,7 @@ def corvus():
             onSpawn=_onSpawn,
             desc="When this spawns, add 1 to your mana cap."
             )
+
 
 def miracle():
     def _onSpawn(self):
@@ -85,6 +88,7 @@ def miracle():
             onSpawn=_onSpawn,
             desc="Draw until you have 5 cards in hand."
             )
+
 
 def crystalElemental():
     class CrystalElemental(Card):
@@ -119,4 +123,4 @@ Templars = Faction(
 
 class Templar(Player):
     def __init__(self):
-        super(Templar, self).__init__(Templars)
+        super().__init__(Templars)

@@ -1,5 +1,4 @@
 import socket
-import struct
 import select
 
 
@@ -18,7 +17,8 @@ class NetworkManager:
         self.port = 9099
         self.bufsize = 1024
 
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # internet, tcp
+        # internet, tcp
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.connections = []
         self.isClient = False
 
@@ -32,7 +32,8 @@ class NetworkManager:
         self.connections = [
                 Connection(*self.sock.accept()),
                 Connection(*self.sock.accept())]
-        if self.verbose: print("got 2 players. starting")
+        if self.verbose:
+            print("got 2 players. starting")
         self.sock.setblocking(0)
 
     def close(self):
@@ -54,7 +55,8 @@ class NetworkManager:
         if self.isClient:
             self.sock.sendall(packet)
         else:
-            next(x for x in self.connections if x.addr == target).conn.sendall(packet)
+            tgt = next(x for x in self.connections if x.addr == target)
+            tgt.conn.sendall(packet)
 
     def sendInts(self, target, *args):
         self.send(":".join(str(x) for x in args), target)
@@ -71,9 +73,10 @@ class NetworkManager:
             c.buffer = data[-1]
             data = data[:-1]
 
+            tgt = next(x for x in self.connections if x.conn == conn)
+
             for d in data:
-                self.onGotPacket(d,
-                        next(x for x in self.connections if x.conn == conn).addr)
+                self.onGotPacket(d, tgt.addr)
 
     def onGotPacket(self, packet, addr):
         print(packet)

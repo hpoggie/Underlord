@@ -1,5 +1,5 @@
 from core.card import Card
-from core.enums import *
+from core.enums import Zone
 
 
 def one():
@@ -46,6 +46,7 @@ def five():
         rank=5
         )
 
+
 def sweepAbility(self):
     for player in self.game.players:
         cards = player.faceups
@@ -56,6 +57,7 @@ def sweepAbility(self):
             c.moveZone(Zone.graveyard)
 
     self.moveZone(Zone.graveyard)
+
 
 def sweep():
     sweep = Card(
@@ -85,11 +87,12 @@ def spellBlade():
         rank="s",
         spell=True,
         playsFaceUp=True,
-        onSpawn = spellBladeAbility,
+        onSpawn=spellBladeAbility,
         desc="Destroy target face-down card."
     )
 
     return spellBlade
+
 
 deck = [one() for i in range(5)]\
     + [two() for i in range(4)]\

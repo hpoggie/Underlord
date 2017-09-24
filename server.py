@@ -1,8 +1,9 @@
 """
-Server script. Takes the client's actions and computes the results, then sends them back.
+Server script.
+Takes the client's actions and computes the results, then sends them back.
 """
 
-from network import *
+from network import ClientNetworkManager, ServerNetworkManager
 from core.core import Game, EndOfGame
 from core.card import Decision
 from factions.templars import Templar
@@ -12,6 +13,7 @@ import os
 import signal
 
 availableFactions = [Templar]
+
 
 class OverlordService:
     def __init__(self):
@@ -38,7 +40,9 @@ class OverlordService:
     def start(self):
         self.game = Game(*self.factions)
         self.game.start()
-        self.players = dict([(conn[0], self.game.players[conn[1]]) for conn in self.connections])
+        self.players = dict([
+            (conn[0], self.game.players[conn[1]])
+            for conn in self.connections])
 
         # TODO: kludge
         for i in range(len(self.factions)):
@@ -193,7 +197,8 @@ class OverlordService:
                 self.networkManager.sendInts(
                     addr,
                     ClientNetworkManager.Opcodes.updateEnemyFacedowns,
-                    *(getCard(enemyPlayer, c) if c.visibleWhileFacedown else -1 for c in enemyPlayer.facedowns)
+                    *(getCard(enemyPlayer, c) if c.visibleWhileFacedown else -1
+                        for c in enemyPlayer.facedowns)
                 )
                 self.networkManager.sendInts(
                     addr,
@@ -219,6 +224,7 @@ class OverlordService:
                 addr,
                 opcode
             )
+
 
 if __name__ == "__main__":
     signal.signal(signal.SIGCHLD, signal.SIG_IGN)

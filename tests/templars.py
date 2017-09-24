@@ -4,6 +4,7 @@ from factions.templars import *
 from core.core import Game
 from factions import base
 
+
 class TemplarTest(unittest.TestCase):
     def testEquus(self):
         game = Game(Faction(deck=[equus()]), Faction())
@@ -54,8 +55,8 @@ class TemplarTest(unittest.TestCase):
         self.failUnlessEqual(game.players[0].faceups, [])
 
     def testMiracle(self):
-        #TODO: be able to do something like [base.one()] * 10
-        #doesn't currently work because base.one() only evaluates once
+        # TODO: be able to do something like [base.one()] * 10
+        # doesn't currently work because base.one() only evaluates once
         game = Game(
                 Faction(deck=[
                     base.one(),

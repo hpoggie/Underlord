@@ -8,17 +8,15 @@ from direct.showbase.DirectObject import DirectObject
 from panda3d.core import CardMaker
 from panda3d.core import CollisionTraverser, CollisionHandlerQueue
 from panda3d.core import CollisionNode, GeomNode, CollisionRay, TextNode
-from direct.gui.DirectGui import *
+from direct.gui.DirectGui import DirectButton
 from direct.gui.OnscreenText import OnscreenText
 
-from network import *
-from core.enums import *
-from core.player import Player
+from network import ClientNetworkManager, ServerNetworkManager
+from core.enums import Phase, Zone
 
 from panda3d.core import loadPrcFileData
 from direct.task import Task
 from factions import templars
-import types
 
 import sys
 
@@ -143,7 +141,7 @@ class App (ShowBase):
         for i, faction in enumerate(self.availableFactions):
             self.factionButtons.append(DirectButton(
                     image=faction.iconPath + '/' + faction.cardBack,
-                    pos=(i * 0.2,0,0),
+                    pos=(i * 0.2, 0, 0),
                     scale=(0.1, 0.1, 0.1),
                     relief=None,
                     command=self.pickFaction,
@@ -280,7 +278,8 @@ class App (ShowBase):
     def updateEnemyFacedowns(self, *cardIds):
         self.enemy.facedowns = [None] * len(cardIds)
         for i, x in enumerate(cardIds):
-            self.enemy.facedowns[i] = self.enemyFaction.deck[x] if x != -1 else None
+            card = self.enemyFaction.deck[x]
+            self.enemy.facedowns[i] = card if x != -1 else None
             if x != -1:
                 self.enemy.facedowns[i].owner = self.enemy
         self.redraw()
@@ -587,7 +586,9 @@ class App (ShowBase):
         self.endPhaseLabel.setText(str(Phase.keys[self.phase]))
         self.turnLabel.setText("Your Turn" if self.active else "Enemy Turn")
         if self.phase == Phase.reveal:
-            self.playerManaCapLabel.setText(str(self.player.manaCap) + " (" + str(self.player.mana) + ")")
+            self.playerManaCapLabel.setText(
+                    str(self.player.manaCap)
+                    + " (" + str(self.player.mana) + ")")
         else:
             self.playerManaCapLabel.setText(str(self.player.manaCap))
         self.enemyManaCapLabel.setText(str(self.enemy.manaCap))
@@ -608,12 +609,16 @@ class App (ShowBase):
             pickedObj = self.mouseHandler.getObjectClickedOn()
             if pickedObj:
                 if pickedObj.getTag('zone') == 'hand':
-                    card = self.player.hand[self.playerHandNodes.index(pickedObj)]
+                    card = self.player.hand[
+                            self.playerHandNodes.index(pickedObj)]
                     label = str(card.cost) + " " + str(card.rank)
                     self.cardStatsLabel.setText(label)
-                    self.descLabel.setText(("Instant. " if card.playsFaceUp else "") + card.desc)
+                    self.descLabel.setText(
+                            ("Instant. " if card.playsFaceUp else "")
+                            + card.desc)
                 elif pickedObj.getTag('zone') == 'face-down':
-                    card = self.player.facedowns[self.playerFacedownNodes.index(pickedObj)]
+                    card = self.player.facedowns[
+                            self.playerFacedownNodes.index(pickedObj)]
                     self._activeObj = pickedObj
                     path = self.playerIconPath + "/" + card.image
                     pickedObj.setTexture(loader.loadTexture(path))
@@ -621,7 +626,8 @@ class App (ShowBase):
                     self.cardStatsLabel.setText(label)
                     self.descLabel.setText(card.desc)
                 elif pickedObj.getTag('zone') == 'enemy face-down':
-                    card = self.enemy.facedowns[self.enemyFacedownNodes.index(pickedObj)]
+                    card = self.enemy.facedowns[
+                            self.enemyFacedownNodes.index(pickedObj)]
                     if card is not None:
                         self._activeObj = pickedObj
                         path = self.playerIconPath + "/" + card.image
@@ -631,9 +637,11 @@ class App (ShowBase):
                         self.descLabel.setText(card.desc)
                 elif pickedObj.getTag('zone') == 'face-up':
                     if pickedObj in self.playerFaceupNodes:
-                        card = self.player.faceups[self.playerFaceupNodes.index(pickedObj)]
+                        card = self.player.faceups[
+                                self.playerFaceupNodes.index(pickedObj)]
                     else:
-                        card = self.enemy.faceups[self.enemyFaceupNodes.index(pickedObj)]
+                        card = self.enemy.faceups[
+                                self.enemyFaceupNodes.index(pickedObj)]
                     label = str(card.cost) + " " + str(card.rank)
                     self.cardStatsLabel.setText(label)
                     self.descLabel.setText(card.desc)
@@ -645,6 +653,7 @@ class App (ShowBase):
     def networkUpdateTask(self, task):
         self.networkManager.recv()
         return Task.cont
+
 
 app = App(sys.argv)
 app.camera.setPos(4, -20, 1.2)

@@ -1,6 +1,5 @@
 import types
 import inspect
-from . import core
 from . import player
 from .enums import Zone
 
@@ -27,7 +26,7 @@ class Card:
         self.owner = None
         self.zone = None
         self.visibleWhileFacedown = False
-        self.desc=""
+        self.desc = ""
 
         for (key, value) in kwargs.items():
             setattr(self, key, value)
@@ -92,12 +91,14 @@ class Decision:
     """
     An effect that requires a decision from a player.
 
-    Called just like a regular ability, but becomes the player's active ability instead of
-    immediately executing. Then the player can execute it after getting targets.
+    Called just like a regular ability, but becomes the player's active ability
+    instead of immediately executing. Then the player can execute it after
+    getting targets.
     """
     def __init__(self, func, source):
         self.source = source
-        self.numArgs = len(inspect.getargspec(func).args)  # TODO: support multiple targets
+        # TODO: support multiple targets
+        self.numArgs = len(inspect.getargspec(func).args)
         self.func = types.MethodType(func, source)
 
     def __call__(self):

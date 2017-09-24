@@ -143,8 +143,10 @@ class Player:
         if attacker.zone != Zone.faceup:
             raise IllegalMoveError("Can only attack with face-up cards.")
 
-        if target != Zone.face and target.zone not in [Zone.faceup, Zone.facedown]:
-            raise IllegalMoveError("Can only attack face-up / face-down targets or a player.")
+        if target != Zone.face and target.zone not in [
+                Zone.faceup, Zone.facedown]:
+            raise IllegalMoveError(
+                "Can only attack face-up / face-down targets or a player.")
 
         attacker.hasAttacked = True
 

@@ -1,5 +1,4 @@
 from .enums import *
-from .player import Player
 
 
 class EndOfGame:
@@ -20,6 +19,7 @@ def event(func):
                 c.afterEvent(func.__name__, *args, **kwargs)
 
     return fooBeforeAfter
+
 
 class Game:
     def __init__(self, p1Type, p2Type):
