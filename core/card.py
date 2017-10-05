@@ -78,7 +78,7 @@ class Card:
     @onDeath.setter
     def onDeath(self, func):
         if len(inspect.getargspec(func).args) > 1:
-            self._onDeath = TargetedAbility(func, self)
+            self._onDeath = Decision(func, self)
         else:
             self._onDeath = types.MethodType(func, self)
 
