@@ -1,8 +1,8 @@
 from core.player import Player
 from core.core import Game
-from core.card import Faction
 from factions import base
 from factions.templars import Templars
+from tests.dummyFaction import dummyFactionPlayer
 from core.enums import *
 
 
@@ -29,7 +29,8 @@ def testForDuplicatesBetweenPlayers():
 
 
 def testReveal():
-    game = Game(Faction(deck=[base.one()]), Faction())
+    dfp = dummyFactionPlayer([base.one()])
+    game = Game(dfp, dfp)
     player = game.players[0]
     player.endPhase()  # draw the card
     newCard = player.hand[0]
@@ -41,7 +42,8 @@ def testReveal():
 
 
 def testPlay():
-    game = Game(Faction(deck=[base.one()]), Faction())
+    dfp = dummyFactionPlayer([base.one()])
+    game = Game(dfp, dfp)
     player = game.players[0]
     player.endPhase()
     newCard = player.hand[0]
@@ -53,7 +55,8 @@ def testPlayFaceup():
     newCard = base.one()
     newCard.playsFaceUp = True
     newCard.cost = 0
-    game = Game(Faction(deck=[newCard]), Faction())
+    dfp = dummyFactionPlayer([newCard])
+    game = Game(dfp, dfp)
     player = game.players[0]
     player.drawCard()
     instance = player.hand[0]
@@ -65,7 +68,8 @@ def testAttackFace():
     newCard = base.one()
     newCard.playsFaceUp = True
     newCard.cost = 0
-    game = Game(Faction(deck=[newCard]), Faction())
+    dfp = dummyFactionPlayer([newCard])
+    game = Game(dfp, dfp)
     player = game.players[0]
     player.drawCard()
     player.playFaceup(player.hand[0])
@@ -78,8 +82,8 @@ def testAttackFacedown():
     newCard = base.one()
     newCard.playsFaceUp = True
     newCard.cost = 0
-    faction = Faction(deck=[newCard])
-    game = Game(faction, faction)
+    dfp = dummyFactionPlayer([newCard])
+    game = Game(dfp, dfp)
     game.start()
     # 1st player plays a facedown
     game.players[0].endPhase()
@@ -98,8 +102,8 @@ def testAttackFacedown():
     newCard = base.one()
     newCard.playsFaceUp = True
     newCard.cost = 0
-    faction = Faction(deck=[newCard])
-    game = Game(faction, faction)
+    dfp = dummyFactionPlayer([newCard])
+    game = Game(dfp, dfp)
     game.start()
     # 1st player plays a facedown
     game.players[0].playFaceup(game.players[0].hand[0])
