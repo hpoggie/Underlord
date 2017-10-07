@@ -1,10 +1,12 @@
 from factions.templars import *
 from core.core import Game
 from factions import base
+from tests.dummyFaction import dummyFactionPlayer
 
 
 def testEquus():
-    game = Game(Faction(deck=[equus()]), Faction())
+    dfp = dummyFactionPlayer([equus()])
+    game = Game(dfp, dfp)
     game.players[0].moveCard(game.players[0].deck[0], Zone.faceup)
     game.players[0].manaCap = 3
     assert game.players[0].faceups[0].rank == 5
@@ -13,9 +15,9 @@ def testEquus():
 
 
 def testHolyHandGrenade():
-    game = Game(
-            Faction(deck=[base.one(), base.one()]),
-            Faction(deck=[holyHandGrenade(), holyHandGrenade()]))
+    dfp1 = dummyFactionPlayer([base.one(), base.one()])
+    dfp2 = dummyFactionPlayer([holyHandGrenade(), holyHandGrenade()])
+    game = Game(dfp1, dfp2)
     game.players[0].mana = 5
     game.players[0].drawCard()
     game.players[0].hand[0].playsFaceUp = True
@@ -35,10 +37,9 @@ def testHolyHandGrenade():
 
 
 def testWrathOfGod():
-    game = Game(
-            Faction(deck=[base.one(), base.one()]),
-            Faction(deck=[wrathOfGod()])
-            )
+    dfp1 = dummyFactionPlayer([base.one(), base.one()])
+    dfp2 = dummyFactionPlayer([wrathOfGod()])
+    game = Game(dfp1, dfp2)
     game.players[0].drawCard()
     game.players[0].drawCard()
     game.players[0].hand[0].playsFaceUp = True
@@ -57,8 +58,7 @@ def testWrathOfGod():
 def testMiracle():
     # TODO: be able to do something like [base.one()] * 10
     # doesn't currently work because base.one() only evaluates once
-    game = Game(
-            Faction(deck=[
+    dfp1 = dummyFactionPlayer([
                 base.one(),
                 base.one(),
                 base.one(),
@@ -66,9 +66,9 @@ def testMiracle():
                 base.one(),
                 base.one(),
                 miracle()
-                ]),
-            Faction()
-            )
+                ])
+    dfp2 = dummyFactionPlayer([])
+    game = Game(dfp1, dfp2)
     game.players[0].drawCard()
     assert len(game.players[0].hand) == 1
     game.players[0].hand[0].playsFaceUp = True
@@ -78,14 +78,13 @@ def testMiracle():
 
 
 def testMiracleNotEnoughCards():
-    game = Game(
-            Faction(deck=[
+    dfp1 = dummyFactionPlayer([
                 base.one(),
                 base.one(),
                 miracle()
-                ]),
-            Faction()
-            )
+                ])
+    dfp2 = dummyFactionPlayer([])
+    game = Game(dfp1, dfp2)
     game.players[0].drawCard()
     assert len(game.players[0].hand) == 1
     game.players[0].hand[0].playsFaceUp = True
