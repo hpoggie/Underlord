@@ -5,7 +5,7 @@ Takes the client's actions and computes the results, then sends them back.
 
 from network import ClientNetworkManager, ServerNetworkManager
 from core.core import Game, EndOfGame
-from core.card import Decision
+from core.decision import Decision
 from factions.templars import Templar
 import time
 from core.enums import IllegalMoveError, Zone

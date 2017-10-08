@@ -1,5 +1,5 @@
 from core.player import Player
-from core.card import Faction
+from core.faction import Faction
 
 
 def dummyFactionPlayer(deck):

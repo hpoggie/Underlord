@@ -1,6 +1,6 @@
 import types
 import inspect
-from . import player
+from .decision import Decision
 from .enums import Zone
 
 
@@ -85,35 +85,3 @@ class Card:
     def moveZone(self, zone):
         self.owner.moveCard(self, zone)
         self.visibleWhileFacedown = False
-
-
-class Decision:
-    """
-    An effect that requires a decision from a player.
-
-    Called just like a regular ability, but becomes the player's active ability
-    instead of immediately executing. Then the player can execute it after
-    getting targets.
-    """
-    def __init__(self, func, source):
-        self.source = source
-        # TODO: support multiple targets
-        self.numArgs = len(inspect.getargspec(func).args)
-        self.func = types.MethodType(func, source)
-
-    def __call__(self):
-        raise self
-
-    def execute(self, *args):
-        self.func(*args)
-
-
-class Faction:
-    def __init__(self, **kwargs):
-        self.name = "My Faction"
-        self.iconPath = "./my_faction_icons"
-        self.cardBack = "my-faction-back.png"
-        self.deck = []
-        self.player = player.Player
-
-        vars(self).update(kwargs.copy())

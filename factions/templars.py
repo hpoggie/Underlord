@@ -1,5 +1,6 @@
 from . import base
-from core.card import Card, Faction
+from core.card import Card
+from core.faction import Faction
 from core.enums import Zone
 from core.player import Player
 
