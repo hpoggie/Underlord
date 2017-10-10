@@ -1,7 +1,7 @@
 from .enums import *
 
 
-class EndOfGame:
+class EndOfGame(BaseException):
     def __init__(self, winner):
         self.winner = winner
 

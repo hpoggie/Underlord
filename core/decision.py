@@ -2,7 +2,7 @@ import inspect
 import types
 
 
-class Decision:
+class Decision(BaseException):
     """
     An effect that requires a decision from a player.
 

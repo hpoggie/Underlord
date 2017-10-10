@@ -1,5 +1,6 @@
 from factions.templars import *
 from core.core import Game
+from core.decision import Decision
 from factions import base
 from tests.dummyFaction import dummyFactionPlayer
 
@@ -28,11 +29,19 @@ def testHolyHandGrenade():
     game.players[1].mana = 8
     game.players[1].drawCard()
     game.players[1].drawCard()
-    game.players[1].playFaceup(game.players[1].hand[0])
-    game.players[1].acceptTarget(game.players[0].facedowns[0])
+
+    try:
+        game.players[1].playFaceup(game.players[1].hand[0])
+    except Decision as d:
+        d.execute(game.players[0].facedowns[0])
+
     assert game.players[0].facedowns == []
-    game.players[1].playFaceup(game.players[1].hand[0])
-    game.players[1].acceptTarget(game.players[0].faceups[0])
+
+    try:
+        game.players[1].playFaceup(game.players[1].hand[0])
+    except Decision as d:
+        d.execute(game.players[0].faceups[0])
+
     assert game.players[0].facedowns == []
 
 
