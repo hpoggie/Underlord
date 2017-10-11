@@ -8,7 +8,7 @@ from core.enums import *
 
 def deckContainsDuplicates(deck):
     for i, card in enumerate(deck):
-        for card2 in deck[i+1:]:
+        for card2 in deck[i + 1:]:
             if card == card2:
                 return True
     return False

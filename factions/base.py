@@ -8,7 +8,7 @@ def one():
         image="dice-six-faces-one.png",
         cost=1,
         rank=1
-        )
+    )
 
 
 def two():
@@ -17,7 +17,7 @@ def two():
         image="dice-six-faces-two.png",
         cost=2,
         rank=2
-        )
+    )
 
 
 def three():
@@ -26,7 +26,7 @@ def three():
         image="dice-six-faces-three.png",
         cost=3,
         rank=3
-        )
+    )
 
 
 def four():
@@ -35,7 +35,7 @@ def four():
         image="dice-six-faces-four.png",
         cost=4,
         rank=4
-        )
+    )
 
 
 def five():
@@ -44,7 +44,7 @@ def five():
         image="dice-six-faces-five.png",
         cost=5,
         rank=5
-        )
+    )
 
 
 def sweepAbility(self):

@@ -30,8 +30,8 @@ class NetworkManager:
 
     def accept(self):
         self.connections = [
-                Connection(*self.sock.accept()),
-                Connection(*self.sock.accept())]
+            Connection(*self.sock.accept()),
+            Connection(*self.sock.accept())]
         if self.verbose:
             print("got 2 players. starting")
         self.sock.setblocking(0)
@@ -63,7 +63,7 @@ class NetworkManager:
 
     def recv(self):
         readers, writers, errors = select.select(
-                [c.conn for c in self.connections], [], [], 0)
+            [c.conn for c in self.connections], [], [], 0)
 
         for conn in readers:
             c = next(x for x in self.connections if x.conn == conn)

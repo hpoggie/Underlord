@@ -47,10 +47,9 @@ class OverlordService:
         # TODO: kludge
         for i in range(len(self.factions)):
             self.networkManager.sendInts(
-                    self.connections[(i + 1) % len(self.factions)][0],
-                    ClientNetworkManager.Opcodes.updateEnemyFaction,
-                    availableFactions.index(self.factions[i])
-                    )
+                self.connections[(i + 1) % len(self.factions)][0],
+                ClientNetworkManager.Opcodes.updateEnemyFaction,
+                availableFactions.index(self.factions[i]))
 
         self.redraw()
 
@@ -160,7 +159,7 @@ class OverlordService:
                 addr,
                 ClientNetworkManager.Opcodes.updatePlayerHand,
                 *(getCard(pl, c) for c in pl.hand)
-                )
+            )
             self.networkManager.sendInts(
                 addr,
                 ClientNetworkManager.Opcodes.updatePlayerFacedowns,

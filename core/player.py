@@ -93,10 +93,12 @@ class Player:
     def play(self, card):
         self.failIfInactive()
         if self.game.phase != Phase.play:
-            raise IllegalMoveError("Can only play facedowns during play phase.")
+            raise IllegalMoveError("""
+            Can only play facedowns during play phase.""")
 
         if card.zone != Zone.hand:
-            raise IllegalMoveError("Can't play a card that's not in your hand.")
+            raise IllegalMoveError("""
+            Can't play a card that's not in your hand.""")
 
         card.moveZone(Zone.facedown)
         card.hasAttacked = False
@@ -104,7 +106,8 @@ class Player:
     def revealFacedown(self, card):
         self.failIfInactive()
         if self.game.phase != Phase.reveal:
-            raise IllegalMoveError("Can only reveal facedowns during reveal phase.")
+            raise IllegalMoveError("""
+            Can only reveal facedowns during reveal phase.""")
 
         if self.mana < card.cost:
             raise IllegalMoveError("Not enough mana.")
@@ -118,10 +121,12 @@ class Player:
     def playFaceup(self, card):
         self.failIfInactive()
         if self.game.phase != Phase.reveal:
-            raise IllegalMoveError("Can only play faceups during reveal phase.")
+            raise IllegalMoveError("""
+                    Can only play faceups during reveal phase.""")
 
         if card not in self.hand:
-            raise IllegalMoveError("Can't play a card face-up that's not in hand.")
+            raise IllegalMoveError("""
+                    Can't play a card face-up that's not in hand.""")
 
         if not card.playsFaceUp:
             raise IllegalMoveError("That card does not play face-up.")

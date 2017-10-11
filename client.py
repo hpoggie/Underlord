@@ -26,8 +26,7 @@ loadPrcFileData(
     win-size 500 500
     window-title Overlord
     fullscreen 0
-    """
-    )
+    """)
 
 
 class IllegalMoveError (Exception):
@@ -120,18 +119,16 @@ class App (ShowBase):
         self.mouseHandler = MouseHandler()
 
         self.endPhaseLabel = OnscreenText(
-                text="faction select",
-                pos=(0, -0.7, 0),
-                scale=(0.1, 0.1, 0.1),
-                mayChange=True,
-                )
+            text="faction select",
+            pos=(0, -0.7, 0),
+            scale=(0.1, 0.1, 0.1),
+            mayChange=True)
         self.descLabel = OnscreenText(
-                text="",
-                pos=(-0.9, -0.8, 0),
-                align=TextNode.ALeft,
-                wordwrap=10,
-                mayChange=True,
-                )
+            text="",
+            pos=(-0.9, -0.8, 0),
+            align=TextNode.ALeft,
+            wordwrap=10,
+            mayChange=True)
         self.taskMgr.add(self.mouseOverTask, "MouseOverTask")
 
         self.availableFactions = [templars.Templars]
@@ -140,13 +137,12 @@ class App (ShowBase):
 
         for i, faction in enumerate(self.availableFactions):
             self.factionButtons.append(DirectButton(
-                    image=faction.iconPath + '/' + faction.cardBack,
-                    pos=(i * 0.2, 0, 0),
-                    scale=(0.1, 0.1, 0.1),
-                    relief=None,
-                    command=self.pickFaction,
-                    extraArgs=[i]
-                    ))
+                image=faction.iconPath + '/' + faction.cardBack,
+                pos=(i * 0.2, 0, 0),
+                scale=(0.1, 0.1, 0.1),
+                relief=None,
+                command=self.pickFaction,
+                extraArgs=[i]))
 
         self.serverIp = argv[1] if len(argv) > 1 else "174.138.119.84"
         self.networkManager = ClientNetworkManager(self, self.serverIp)
@@ -181,8 +177,7 @@ class App (ShowBase):
         self.networkManager.sendInts(
             self.serverAddr,
             ServerNetworkManager.Opcodes.selectFaction,
-            index
-            )
+            index)
 
         self.faction = self.availableFactions[index]
 
@@ -203,37 +198,32 @@ class App (ShowBase):
 
     def makeGameUi(self):
         self.turnLabel = OnscreenText(
-                text="",
-                pos=(0, -0.9, 0),
-                scale=(0.1, 0.1, 0.1),
-                mayChange=True,
-                )
+            text="",
+            pos=(0, -0.9, 0),
+            scale=(0.1, 0.1, 0.1),
+            mayChange=True)
 
         self.playerManaCapLabel = OnscreenText(
-                text=str(self.player.manaCap),
-                pos=(-0.4, -0.44, 0),
-                scale=(0.1, 0.1, 0.1),
-                mayChange=True,
-                )
+            text=str(self.player.manaCap),
+            pos=(-0.4, -0.44, 0),
+            scale=(0.1, 0.1, 0.1),
+            mayChange=True)
         self.enemyManaCapLabel = OnscreenText(
-                text=str(self.enemy.manaCap),
-                pos=(-0.5, 0.77),
-                scale=(0.1, 0.1, 0.1),
-                mayChange=True,
-                )
+            text=str(self.enemy.manaCap),
+            pos=(-0.5, 0.77),
+            scale=(0.1, 0.1, 0.1),
+            mayChange=True)
         self.cardStatsLabel = OnscreenText(
-                text="",
-                pos=(-0.7, -0.7, 0),
-                scale=(0.1, 0.1, 0.1),
-                mayChange=True,
-                )
+            text="",
+            pos=(-0.7, -0.7, 0),
+            scale=(0.1, 0.1, 0.1),
+            mayChange=True)
         self.endPhaseButton = DirectButton(
-                image="./end_phase.png",
-                pos=(0, 0, -0.5),
-                scale=(0.1, 0.1, 0.1),
-                relief=None,
-                command=self.endPhase
-                )
+            image="./end_phase.png",
+            pos=(0, 0, -0.5),
+            scale=(0.1, 0.1, 0.1),
+            relief=None,
+            command=self.endPhase)
 
         self.handPos = 0.0
         self.enemyHandPos = 0.0
@@ -319,14 +309,12 @@ class App (ShowBase):
     def winGame(self):
         self.winLabel = OnscreenText(
             text="Victory",
-            scale=(0.5, 0.5, 0.5)
-            )
+            scale=(0.5, 0.5, 0.5))
 
     def loseGame(self):
         self.winLabel = OnscreenText(
             text="Defeat",
-            scale=(0.5, 0.5, 0.5)
-            )
+            scale=(0.5, 0.5, 0.5))
 
     def requestTarget(self):
         self.mouseHandler.targeting = True
@@ -368,8 +356,7 @@ class App (ShowBase):
             ServerNetworkManager.Opcodes.acceptTarget,
             int(targetsEnemy),
             targetZone,
-            targetIndex
-            )
+            targetIndex)
 
     def makeHand(self):
         for i in self.playerHandNodes:
@@ -587,8 +574,7 @@ class App (ShowBase):
         self.turnLabel.setText("Your Turn" if self.active else "Enemy Turn")
         if self.phase == Phase.reveal:
             self.playerManaCapLabel.setText(
-                    str(self.player.manaCap)
-                    + " (" + str(self.player.mana) + ")")
+                str(self.player.manaCap) + " (" + str(self.player.mana) + ")")
         else:
             self.playerManaCapLabel.setText(str(self.player.manaCap))
         self.enemyManaCapLabel.setText(str(self.enemy.manaCap))
@@ -610,15 +596,14 @@ class App (ShowBase):
             if pickedObj:
                 if pickedObj.getTag('zone') == 'hand':
                     card = self.player.hand[
-                            self.playerHandNodes.index(pickedObj)]
+                        self.playerHandNodes.index(pickedObj)]
                     label = str(card.cost) + " " + str(card.rank)
                     self.cardStatsLabel.setText(label)
                     self.descLabel.setText(
-                            ("Instant. " if card.playsFaceUp else "")
-                            + card.desc)
+                        ("Instant. " if card.playsFaceUp else "") + card.desc)
                 elif pickedObj.getTag('zone') == 'face-down':
                     card = self.player.facedowns[
-                            self.playerFacedownNodes.index(pickedObj)]
+                        self.playerFacedownNodes.index(pickedObj)]
                     self._activeObj = pickedObj
                     path = self.playerIconPath + "/" + card.image
                     pickedObj.setTexture(loader.loadTexture(path))
@@ -627,7 +612,7 @@ class App (ShowBase):
                     self.descLabel.setText(card.desc)
                 elif pickedObj.getTag('zone') == 'enemy face-down':
                     card = self.enemy.facedowns[
-                            self.enemyFacedownNodes.index(pickedObj)]
+                        self.enemyFacedownNodes.index(pickedObj)]
                     if card is not None:
                         self._activeObj = pickedObj
                         path = self.playerIconPath + "/" + card.image
@@ -638,10 +623,10 @@ class App (ShowBase):
                 elif pickedObj.getTag('zone') == 'face-up':
                     if pickedObj in self.playerFaceupNodes:
                         card = self.player.faceups[
-                                self.playerFaceupNodes.index(pickedObj)]
+                            self.playerFaceupNodes.index(pickedObj)]
                     else:
                         card = self.enemy.faceups[
-                                self.enemyFaceupNodes.index(pickedObj)]
+                            self.enemyFaceupNodes.index(pickedObj)]
                     label = str(card.cost) + " " + str(card.rank)
                     self.cardStatsLabel.setText(label)
                     self.descLabel.setText(card.desc)

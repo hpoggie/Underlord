@@ -68,14 +68,14 @@ def testMiracle():
     # TODO: be able to do something like [base.one()] * 10
     # doesn't currently work because base.one() only evaluates once
     dfp1 = dummyFactionPlayer([
-                base.one(),
-                base.one(),
-                base.one(),
-                base.one(),
-                base.one(),
-                base.one(),
-                miracle()
-                ])
+        base.one(),
+        base.one(),
+        base.one(),
+        base.one(),
+        base.one(),
+        base.one(),
+        miracle()
+    ])
     dfp2 = dummyFactionPlayer([])
     game = Game(dfp1, dfp2)
     game.players[0].drawCard()
@@ -88,10 +88,10 @@ def testMiracle():
 
 def testMiracleNotEnoughCards():
     dfp1 = dummyFactionPlayer([
-                base.one(),
-                base.one(),
-                miracle()
-                ])
+        base.one(),
+        base.one(),
+        miracle()
+    ])
     dfp2 = dummyFactionPlayer([])
     game = Game(dfp1, dfp2)
     game.players[0].drawCard()
