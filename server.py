@@ -63,9 +63,6 @@ class OverlordService:
         except IndexError as e:
             print(e)
             return
-        except Decision as d:
-            self.waitingOnDecision = d
-            self.requestTarget(addr)
 
         self.redraw()
 
@@ -79,9 +76,6 @@ class OverlordService:
         except IndexError as e:
             print(e)
             return
-        except Decision as d:
-            self.waitingOnDecision = d
-            self.requestTarget(addr)
 
         self.redraw()
 
@@ -234,6 +228,9 @@ if __name__ == "__main__":
             while 1:
                 try:
                     service.networkManager.recv()
+                except Decision as d:
+                    self.waitingOnDecision = d
+                    self.requestTarget(addr)
                 except EndOfGame as e:
                     service.endGame(e.winner)
                     exit(0)
