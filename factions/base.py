@@ -1,5 +1,5 @@
-from core.card import Card, TargetedAbility
-from core.enums import *
+from core.card import Card
+from core.enums import Zone
 
 
 def one():
@@ -8,7 +8,7 @@ def one():
         image="dice-six-faces-one.png",
         cost=1,
         rank=1
-        )
+    )
 
 
 def two():
@@ -17,7 +17,7 @@ def two():
         image="dice-six-faces-two.png",
         cost=2,
         rank=2
-        )
+    )
 
 
 def three():
@@ -26,7 +26,7 @@ def three():
         image="dice-six-faces-three.png",
         cost=3,
         rank=3
-        )
+    )
 
 
 def four():
@@ -35,7 +35,7 @@ def four():
         image="dice-six-faces-four.png",
         cost=4,
         rank=4
-        )
+    )
 
 
 def five():
@@ -44,7 +44,8 @@ def five():
         image="dice-six-faces-five.png",
         cost=5,
         rank=5
-        )
+    )
+
 
 def sweepAbility(self):
     for player in self.game.players:
@@ -56,6 +57,7 @@ def sweepAbility(self):
             c.moveZone(Zone.graveyard)
 
     self.moveZone(Zone.graveyard)
+
 
 def sweep():
     sweep = Card(
@@ -85,11 +87,12 @@ def spellBlade():
         rank="s",
         spell=True,
         playsFaceUp=True,
-        onSpawn = spellBladeAbility,
-        desc="<b>Spead.</b> Destroy target face-down card."
+        onSpawn=spellBladeAbility,
+        desc="Destroy target face-down card."
     )
 
     return spellBlade
+
 
 deck = [one() for i in range(5)]\
     + [two() for i in range(4)]\

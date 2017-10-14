@@ -1,21 +1,24 @@
 import socket
-import struct
 import select
 
 
-class Connection (object):
+class Connection:
     def __init__(self, conn, addr):
         self.conn, self.addr = conn, addr
         self.buffer = ''
 
+    def close(self):
+        self.conn.close()
 
-class NetworkManager (object):
+
+class NetworkManager:
     def __init__(self):
         self.ip = "127.0.0.1"
         self.port = 9099
         self.bufsize = 1024
 
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # internet, tcp
+        # internet, tcp
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.connections = []
         self.isClient = False
 
@@ -24,11 +27,18 @@ class NetworkManager (object):
     def startServer(self):
         self.sock.bind(("", self.port))
         self.sock.listen(2)
+
+    def accept(self):
         self.connections = [
-                Connection(*self.sock.accept()),
-                Connection(*self.sock.accept())]
-        if self.verbose: print "got 2 players. starting"
+            Connection(*self.sock.accept()),
+            Connection(*self.sock.accept())]
+        if self.verbose:
+            print("got 2 players. starting")
         self.sock.setblocking(0)
+
+    def close(self):
+        for conn in self.connections:
+            conn.close()
 
     def connect(self, addr):
         self.sock.connect(addr)
@@ -37,34 +47,36 @@ class NetworkManager (object):
         self.sock.setblocking(0)
 
     def send(self, data, target):
-        packet = str(data) + '\0'
+        packet = bytes(str(data) + '\0', 'utf-8')
 
         if self.verbose:
-            print "Sent packet " + packet + " to ", target
+            print("Sent packet " + packet + " to ", target)
 
         if self.isClient:
             self.sock.sendall(packet)
         else:
-            next(x for x in self.connections if x.addr == target).conn.sendall(packet)
+            tgt = next(x for x in self.connections if x.addr == target)
+            tgt.conn.sendall(packet)
 
     def sendInts(self, target, *args):
         self.send(":".join(str(x) for x in args), target)
 
     def recv(self):
         readers, writers, errors = select.select(
-                [c.conn for c in self.connections], [], [], 0)
+            [c.conn for c in self.connections], [], [], 0)
 
         for conn in readers:
             c = next(x for x in self.connections if x.conn == conn)
-            newData = c.conn.recv(self.bufsize)
+            newData = c.conn.recv(self.bufsize).decode()
             c.buffer += newData
             data = c.buffer.split('\0')
             c.buffer = data[-1]
             data = data[:-1]
 
+            tgt = next(x for x in self.connections if x.conn == conn)
+
             for d in data:
-                self.onGotPacket(d,
-                        next(x for x in self.connections if x.conn == conn).addr)
+                self.onGotPacket(d, tgt.addr)
 
     def onGotPacket(self, packet, addr):
-        print packet
+        print(packet)

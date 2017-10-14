@@ -1,9 +1,10 @@
 import types
 import inspect
-from enums import Zone
+from .decision import Decision
+from .enums import Zone
 
 
-class Card(object):
+class Card:
     """
     A card has the following characteristics:
         Name
@@ -24,10 +25,17 @@ class Card(object):
         self.playsFaceUp = False
         self.owner = None
         self.zone = None
-        self.desc=""
+        self.visibleWhileFacedown = False
+        self.desc = ""
 
-        for (key, value) in kwargs.iteritems():
+        for (key, value) in kwargs.items():
             setattr(self, key, value)
+
+    def beforeEvent(self, eventName, *args, **kwargs):
+        pass
+
+    def afterEvent(self, eventName, *args, **kwargs):
+        pass
 
     @property
     def cost(self):
@@ -59,7 +67,7 @@ class Card(object):
     @onSpawn.setter
     def onSpawn(self, func):
         if len(inspect.getargspec(func).args) > 1:
-            self._onSpawn = TargetedAbility(func, self)
+            self._onSpawn = Decision(func, self)
         else:
             self._onSpawn = types.MethodType(func, self)
 
@@ -70,38 +78,10 @@ class Card(object):
     @onDeath.setter
     def onDeath(self, func):
         if len(inspect.getargspec(func).args) > 1:
-            self._onDeath = TargetedAbility(func, self)
+            self._onDeath = Decision(func, self)
         else:
             self._onDeath = types.MethodType(func, self)
 
     def moveZone(self, zone):
         self.owner.moveCard(self, zone)
-
-
-class TargetedAbility:
-    """
-    An ability that has targets.
-
-    Called just like a regular ability, but becomes the player's active ability instead of
-    immediately executing. Then the player can execute it after getting targets.
-    """
-    def __init__(self, func, card):
-        self.card = card
-        self.numTargets = len(inspect.getargspec(func).args)  # TODO: support multiple targets
-        self.func = types.MethodType(func, card)
-
-    def __call__(self):
-        self.card.owner.activeAbility = self
-
-    def execute(self, *args):
-        self.func(*args)
-
-
-class Faction:
-    def __init__(self, **kwargs):
-        self.name = "My Faction"
-        self.iconPath = "./my_faction_icons"
-        self.cardBack = "my-faction-back.png"
-        self.deck = []
-
-        vars(self).update(kwargs.copy())
+        self.visibleWhileFacedown = False

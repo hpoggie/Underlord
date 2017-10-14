@@ -3,3 +3,5 @@
 *.swp
 build/
 wheels/
+*.egg-info
+.cache/
