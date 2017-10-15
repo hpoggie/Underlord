@@ -238,7 +238,7 @@ class App (ShowBase):
         self.playerFaceupNodes = []
         self.enemyFaceupNodes = []
 
-        self.makeHand()
+        self.makePlayerHand()
         self.makeEnemyHand()
         self.makeBoard()
         self.makeEnemyBoard()
@@ -358,7 +358,7 @@ class App (ShowBase):
             targetZone,
             targetIndex)
 
-    def makeHand(self):
+    def makePlayerHand(self):
         """
         Redraw the player's hand.
         """
@@ -521,7 +521,7 @@ class App (ShowBase):
                 ServerNetworkManager.Opcodes.play,
                 self.playerHandNodes.index(handCard)
             )
-        self.makeHand()
+        self.makePlayerHand()
         self.makeBoard()
 
     def revealFacedown(self, card):
@@ -533,7 +533,7 @@ class App (ShowBase):
             ServerNetworkManager.Opcodes.revealFacedown,
             index
         )
-        self.makeHand()
+        self.makePlayerHand()
         self.makeBoard()
 
     def attack(self, card, target):
@@ -567,7 +567,7 @@ class App (ShowBase):
             zone
         )
 
-        self.makeHand()
+        self.makePlayerHand()
         self.makeBoard()
         self.makeEnemyBoard()
 
@@ -578,7 +578,7 @@ class App (ShowBase):
         )
 
     def redraw(self):
-        self.makeHand()
+        self.makePlayerHand()
         self.makeBoard()
         self.makeEnemyHand()
         self.makeEnemyBoard()
