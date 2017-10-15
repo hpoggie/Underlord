@@ -359,24 +359,54 @@ class App (ShowBase):
             targetIndex)
 
     def makeHand(self):
+        """
+        Redraw the player's hand.
+        """
+        # Destroy entire hand. This is slow and may need to be changed
         for i in self.playerHandNodes:
             i.detachNode()
-        self.handPosX = 0.0
-        self.handPosY = 0.0
-        self.handRot = -45.0
+
         self.playerHandNodes = []
+
+        posX = 0.0
+        posZ = 0.0
+        rot = -45.0
+
+        def addHandCard(card):
+            cardModel = self.loadCard(card)
+            cardModel.setPos(posX, 0, posZ)
+            cardModel.setHpr(0, 0, rot)
+            cardModel.setTag('zone', 'hand')
+            self.playerHandNodes.append(cardModel)
+
         for i in range(0, len(self.player.hand)):
-            self.addHandCard(self.player.hand[i])
+            addHandCard(self.player.hand[i])
+            posX += 0.5
+            posZ += 0.2
+            rot += 90. / (len(self.player.hand) - 1)
 
     def makeEnemyHand(self):
         for i in self.enemyHandNodes:
             i.detachNode()
-        self.handPosX = 0.0
-        self.handPosY = 0.0
-        self.handRot = -45.0
+
         self.enemyHandNodes = []
+
+        posX = 0.0
+        posZ = 3.1
+        rot = 225.0
+
+        def addEnemyHandCard():
+            cardModel = self.loadEnemyBlank()
+            cardModel.setPos(posX, 0, posZ)
+            cardModel.setHpr(0, 0, rot)
+            cardModel.setTag('zone', 'enemy hand')
+            self.enemyHandNodes.append(cardModel)
+
         for i in range(0, len(self.enemy.hand)):
-            self.addEnemyHandCard()
+            addEnemyHandCard()
+            posX += 0.5
+            posZ += 0.2
+            rot -= 90. / (len(self.enemy.hand) - 1)
 
     def makeBoard(self):
         for i in self.playerFacedownNodes:
@@ -429,26 +459,6 @@ class App (ShowBase):
     def loadEnemyBlank(self):
         path = self.enemyIconPath + "/" + self.enemyCardBack
         return self.loadBlank(path)
-
-    def addHandCard(self, card):
-        cardModel = self.loadCard(card)
-        cardModel.setPos(self.handPosX, 0, self.handPosY)
-        cardModel.setHpr(0, 0, self.handRot)
-        cardModel.setTag('zone', 'hand')
-        self.handPosX += 0.5
-        self.handPosY += 0.2
-        self.handRot += 90. / (len(self.player.hand) - 1)
-        self.playerHandNodes.append(cardModel)
-
-    def addEnemyHandCard(self):
-        cardModel = self.loadEnemyBlank()
-        cardModel.setPos(self.handPosX, 0, 3.1 + self.handPosY)
-        cardModel.setHpr(0, 0, 180 - self.handRot)
-        cardModel.setTag('zone', 'enemy hand')
-        self.handPosX += 0.5
-        self.handPosY += 0.2
-        self.handRot += 90. / (len(self.enemy.hand) - 1)
-        self.enemyHandNodes.append(cardModel)
 
     def addFdCard(self, card):
         cardModel = self.loadCard(card)
