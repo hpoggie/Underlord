@@ -411,7 +411,6 @@ class App (ShowBase):
             path = self.enemyIconPath + "/" + card.image
         tex = loader.loadTexture(path)
         cardModel.setTexture(tex)
-        cardModel.setTag('card', card.name)
         return cardModel
 
     def loadBlank(self, path):
@@ -419,7 +418,6 @@ class App (ShowBase):
         cardModel = self.render.attachNewNode(cm.generate())
         tex = loader.loadTexture(path)
         cardModel.setTexture(tex)
-        cardModel.setTag('card', 'blank')
         return cardModel
 
     def loadPlayerBlank(self):
@@ -494,10 +492,6 @@ class App (ShowBase):
         cardModel.setPos(0, 0, 5)
         cardModel.setTag('zone', 'face')
         self.enemyFaceNode = cardModel
-
-    def getCard(self, obj):
-        if obj.getTag('zone') == 'hand':
-            return obj.getTag('card')
 
     def playCard(self, handCard):
         if self.phase == Phase.reveal:
