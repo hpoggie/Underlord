@@ -368,7 +368,7 @@ class App (ShowBase):
 
         self.playerHandNodes = []
 
-        posX = 0.0
+        posX = 2.5
         posZ = 0.0
         rot = -45.0
 
@@ -391,7 +391,7 @@ class App (ShowBase):
 
         self.enemyHandNodes = []
 
-        posX = 0.0
+        posX = 3.5
         posZ = 3.1
         rot = 225.0
 
