@@ -402,15 +402,38 @@ class App (ShowBase):
         for i in range(0, len(self.enemy.facedowns)):
             self.addEnemyFdCard()
 
-    def addHandCard(self, card):
+    def loadCard(self, card):
         cm = CardMaker(card.name)
         cardModel = self.render.attachNewNode(cm.generate())
-        path = self.playerIconPath + "/" + card.image
+        if card.owner == self.player:
+            path = self.playerIconPath + "/" + card.image
+        else:
+            path = self.enemyIconPath + "/" + card.image
         tex = loader.loadTexture(path)
         cardModel.setTexture(tex)
+        cardModel.setTag('card', card.name)
+        return cardModel
+
+    def loadBlank(self, path):
+        cm = CardMaker('mysterious card')
+        cardModel = self.render.attachNewNode(cm.generate())
+        tex = loader.loadTexture(path)
+        cardModel.setTexture(tex)
+        cardModel.setTag('card', 'blank')
+        return cardModel
+
+    def loadPlayerBlank(self):
+        path = self.playerIconPath + "/" + self.playerCardBack
+        return self.loadBlank(path)
+
+    def loadEnemyBlank(self):
+        path = self.enemyIconPath + "/" + self.enemyCardBack
+        return self.loadBlank(path)
+
+    def addHandCard(self, card):
+        cardModel = self.loadCard(card)
         cardModel.setPos(self.handPosX, 0, self.handPosY)
         cardModel.setHpr(0, 0, self.handRot)
-        cardModel.setTag('card', card.name)
         cardModel.setTag('zone', 'hand')
         self.handPosX += 0.75
         self.handPosY += 0.1
@@ -418,61 +441,36 @@ class App (ShowBase):
         self.playerHandNodes.append(cardModel)
 
     def addEnemyHandCard(self):
-        cm = CardMaker('enemy hand card')
-        cardModel = self.render.attachNewNode(cm.generate())
-        path = self.enemyIconPath + "/" + self.enemyCardBack
-        tex = loader.loadTexture(path)
-        cardModel.setTexture(tex)
+        cardModel = self.loadEnemyBlank()
         cardModel.setPos(self.enemyHandPos, 0, 3.1)
-        cardModel.setTag('card', 'enemy hand card')
         cardModel.setTag('zone', 'enemy hand')
         self.enemyHandPos += 1.1
         self.enemyHandNodes.append(cardModel)
 
     def addFdCard(self, card):
-        cm = CardMaker('face-down card')
-        cardModel = self.render.attachNewNode(cm.generate())
-        path = self.playerIconPath + "/" + self.playerCardBack
-        tex = loader.loadTexture(path)
-        cardModel.setTexture(tex)
+        cardModel = self.loadCard(card)
         cardModel.setPos(self.fdPos, 0, 1.1)
-        cardModel.setTag('card', card.name)
         cardModel.setTag('zone', 'face-down')
         self.fdPos += 1.1
         self.playerFacedownNodes.append(cardModel)
 
     def addEnemyFdCard(self):
-        cm = CardMaker('face-down card')
-        cardModel = self.render.attachNewNode(cm.generate())
-        path = self.enemyIconPath + "/" + self.enemyCardBack
-        tex = loader.loadTexture(path)
-        cardModel.setTexture(tex)
+        cardModel = self.loadEnemyBlank()
         cardModel.setPos(self.enemyFdPos, 0, 2.1)
-        cardModel.setTag('card', 'enemy face-down card')
         cardModel.setTag('zone', 'enemy face-down')
         self.enemyFdPos += 1.1
         self.enemyFacedownNodes.append(cardModel)
 
     def addFaceupCard(self, card):
-        cm = CardMaker(card.name)
-        cardModel = self.render.attachNewNode(cm.generate())
-        path = self.playerIconPath + "/" + card.image
-        tex = loader.loadTexture(path)
-        cardModel.setTexture(tex)
+        cardModel = self.loadCard(card)
         cardModel.setPos(self.fdPos, 0, 1.1)
-        cardModel.setTag('card', card.name)
         cardModel.setTag('zone', 'face-up')
         self.fdPos += 1.1
         self.playerFaceupNodes.append(cardModel)
 
     def addEnemyFaceupCard(self, card):
-        cm = CardMaker(card.name)
-        cardModel = self.render.attachNewNode(cm.generate())
-        path = self.enemyIconPath + "/" + card.image
-        tex = loader.loadTexture(path)
-        cardModel.setTexture(tex)
+        cardModel = self.loadCard(card)
         cardModel.setPos(self.enemyFdPos, 0, 2.1)
-        cardModel.setTag('card', card.name)
         cardModel.setTag('zone', 'face-up')
         self.enemyFdPos += 1.1
         self.enemyFaceupNodes.append(cardModel)
