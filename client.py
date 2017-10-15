@@ -371,7 +371,9 @@ class App (ShowBase):
     def makeEnemyHand(self):
         for i in self.enemyHandNodes:
             i.detachNode()
-            self.enemyHandPos = 0.0
+        self.handPosX = 0.0
+        self.handPosY = 0.0
+        self.handRot = -45.0
         self.enemyHandNodes = []
         for i in range(0, len(self.enemy.hand)):
             self.addEnemyHandCard()
@@ -440,9 +442,12 @@ class App (ShowBase):
 
     def addEnemyHandCard(self):
         cardModel = self.loadEnemyBlank()
-        cardModel.setPos(self.enemyHandPos, 0, 3.1)
+        cardModel.setPos(self.handPosX, 0, 3.1 + self.handPosY)
+        cardModel.setHpr(0, 0, 180 - self.handRot)
         cardModel.setTag('zone', 'enemy hand')
-        self.enemyHandPos += 1.1
+        self.handPosX += 0.75
+        self.handPosY += 0.1
+        self.handRot += 90. / len(self.enemy.hand) - 1
         self.enemyHandNodes.append(cardModel)
 
     def addFdCard(self, card):
