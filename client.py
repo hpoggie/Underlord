@@ -435,9 +435,9 @@ class App (ShowBase):
         cardModel.setPos(self.handPosX, 0, self.handPosY)
         cardModel.setHpr(0, 0, self.handRot)
         cardModel.setTag('zone', 'hand')
-        self.handPosX += 0.75
-        self.handPosY += 0.1
-        self.handRot += 90. / len(self.player.hand) - 1
+        self.handPosX += 0.5
+        self.handPosY += 0.2
+        self.handRot += 90. / (len(self.player.hand) - 1)
         self.playerHandNodes.append(cardModel)
 
     def addEnemyHandCard(self):
@@ -445,9 +445,9 @@ class App (ShowBase):
         cardModel.setPos(self.handPosX, 0, 3.1 + self.handPosY)
         cardModel.setHpr(0, 0, 180 - self.handRot)
         cardModel.setTag('zone', 'enemy hand')
-        self.handPosX += 0.75
-        self.handPosY += 0.1
-        self.handRot += 90. / len(self.enemy.hand) - 1
+        self.handPosX += 0.5
+        self.handPosY += 0.2
+        self.handRot += 90. / (len(self.enemy.hand) - 1)
         self.enemyHandNodes.append(cardModel)
 
     def addFdCard(self, card):
