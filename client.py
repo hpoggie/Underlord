@@ -361,7 +361,9 @@ class App (ShowBase):
     def makeHand(self):
         for i in self.playerHandNodes:
             i.detachNode()
-            self.handPos = 0.0
+        self.handPosX = 0.0
+        self.handPosY = 0.0
+        self.handRot = -45.0
         self.playerHandNodes = []
         for i in range(0, len(self.player.hand)):
             self.addHandCard(self.player.hand[i])
@@ -406,10 +408,13 @@ class App (ShowBase):
         path = self.playerIconPath + "/" + card.image
         tex = loader.loadTexture(path)
         cardModel.setTexture(tex)
-        cardModel.setPos(self.handPos, 0, 0)
+        cardModel.setPos(self.handPosX, 0, self.handPosY)
+        cardModel.setHpr(0, 0, self.handRot)
         cardModel.setTag('card', card.name)
         cardModel.setTag('zone', 'hand')
-        self.handPos += 1.1
+        self.handPosX += 0.75
+        self.handPosY += 0.1
+        self.handRot += 90. / len(self.player.hand) - 1
         self.playerHandNodes.append(cardModel)
 
     def addEnemyHandCard(self):
