@@ -375,8 +375,7 @@ class App (ShowBase):
 
         def addHandCard(card):
             cardModel = self.loadCard(card)
-            cardModel.setPos(posX, posY, posZ)
-            cardModel.setHpr(0, 0, rot)
+            cardModel.setPosHpr(posX, posY, posZ, 0, 0, rot)
             cardModel.setTag('zone', 'hand')
             self.playerHandNodes.append(cardModel)
 
@@ -400,8 +399,7 @@ class App (ShowBase):
 
         def addEnemyHandCard():
             cardModel = self.loadEnemyBlank()
-            cardModel.setPos(posX, posY, posZ)
-            cardModel.setHpr(0, 0, rot)
+            cardModel.setPosHpr(posX, posY, posZ, 0, 0, rot)
             cardModel.setTag('zone', 'enemy hand')
             self.enemyHandNodes.append(cardModel)
 
