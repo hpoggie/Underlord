@@ -471,7 +471,7 @@ class App (ShowBase):
         return self.loadBlank(path)
 
     def addFdCard(self, card):
-        cardModel = self.loadCard(card)
+        cardModel = self.loadPlayerBlank()
         cardModel.setPos(self.fdPos, 0, 1.1)
         cardModel.setTag('zone', 'face-down')
         self.fdPos += 1.1
