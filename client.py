@@ -118,9 +118,14 @@ class App (ShowBase):
         self.handler = CollisionHandlerQueue()
         self.mouseHandler = MouseHandler()
 
-        self.endPhaseLabel = OnscreenText(
+        self.factionSelectLabel = OnscreenText(
             text="faction select",
             pos=(0, -0.7, 0),
+            scale=(0.1, 0.1, 0.1),
+            mayChange=True)
+        self.endPhaseLabel = OnscreenText(
+            text="",
+            pos=(0.7, -0.7, 0),
             scale=(0.1, 0.1, 0.1),
             mayChange=True)
         self.descLabel = OnscreenText(
@@ -181,6 +186,8 @@ class App (ShowBase):
 
         self.faction = self.availableFactions[index]
 
+        self.factionSelectLabel.detachNode()
+
     def startGame(self):
         self.player = self.faction.player(self.faction)
         self.enemy = self.enemyFaction.player(self.enemyFaction)
@@ -220,7 +227,7 @@ class App (ShowBase):
             mayChange=True)
         self.endPhaseButton = DirectButton(
             image="./end_phase.png",
-            pos=(0, 0, -0.5),
+            pos=(0.7, 0, -0.85),
             scale=(0.1, 0.1, 0.1),
             relief=None,
             command=self.endPhase)
@@ -370,7 +377,7 @@ class App (ShowBase):
 
         posX = 3
         posY = 0.0
-        posZ = 0.0
+        posZ = -2.0
         rot = -45.0
 
         def addHandCard(card):
@@ -398,7 +405,7 @@ class App (ShowBase):
 
         posX = 3
         posY = 0.0
-        posZ = 3.1
+        posZ = 5.1
         rot = 225.0
 
         def addEnemyHandCard():
@@ -472,7 +479,7 @@ class App (ShowBase):
 
     def addFdCard(self, card):
         cardModel = self.loadPlayerBlank()
-        cardModel.setPos(self.fdPos, 0, 1.1)
+        cardModel.setPos(self.fdPos, 0, 0)
         cardModel.setTag('zone', 'face-down')
         self.fdPos += 1.1
         self.playerFacedownNodes.append(cardModel)
