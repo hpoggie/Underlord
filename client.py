@@ -220,6 +220,11 @@ class App (ShowBase):
             pos=(-0.5, 0.77),
             scale=(0.1, 0.1, 0.1),
             mayChange=True)
+        self.cardNameLabel = OnscreenText(
+            text="",
+            pos=(-0.7, -0.6, 0),
+            scale=(0.1, 0.1, 0.1),
+            mayChange=True)
         self.cardStatsLabel = OnscreenText(
             text="",
             pos=(-0.7, -0.7, 0),
@@ -623,6 +628,9 @@ class App (ShowBase):
 
     def mouseOverTask(self, name):
         if self.mouseWatcherNode.hasMouse():
+            if hasattr(self, 'cardNameLabel'):
+                self.cardNameLabel.setText("")
+
             if hasattr(self, 'cardStatsLabel'):
                 self.cardStatsLabel.setText("")
 
@@ -639,6 +647,7 @@ class App (ShowBase):
                 if pickedObj.getTag('zone') == 'hand':
                     card = self.player.hand[
                         self.playerHandNodes.index(pickedObj)]
+                    self.cardNameLabel.setText(card.name)
                     label = str(card.cost) + " " + str(card.rank)
                     self.cardStatsLabel.setText(label)
                     self.descLabel.setText(
@@ -649,6 +658,7 @@ class App (ShowBase):
                     self._activeObj = pickedObj
                     path = self.playerIconPath + "/" + card.image
                     pickedObj.setTexture(loader.loadTexture(path))
+                    self.cardNameLabel.setText(card.name)
                     label = str(card.cost) + " " + str(card.rank)
                     self.cardStatsLabel.setText(label)
                     self.descLabel.setText(card.desc)
@@ -669,6 +679,7 @@ class App (ShowBase):
                     else:
                         card = self.enemy.faceups[
                             self.enemyFaceupNodes.index(pickedObj)]
+                    self.cardNameLabel.setText(card.name)
                     label = str(card.cost) + " " + str(card.rank)
                     self.cardStatsLabel.setText(label)
                     self.descLabel.setText(card.desc)
