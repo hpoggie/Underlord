@@ -426,17 +426,37 @@ class App (ShowBase):
             rot -= 90. / (len(self.enemy.hand) - 1)
 
     def makeBoard(self):
+        """
+        Show the player's faceups and facedowns
+        """
         for i in self.playerFacedownNodes:
             i.detachNode()
         self.playerFacedownNodes = []
         for i in self.playerFaceupNodes:
             i.detachNode()
         self.playerFaceupNodes = []
-        self.fdPos = 0.0
+
+        posX = 0.0
+        posZ = 0.55
+
+        def addFaceupCard(card):
+            cardModel = self.loadCard(card)
+            cardModel.setPos(posX, 0, posZ)
+            cardModel.setTag('zone', 'face-up')
+            self.playerFaceupNodes.append(cardModel)
+
+        def addFdCard(card):
+            cardModel = self.loadPlayerBlank()
+            cardModel.setPos(posX, 0, posZ)
+            cardModel.setTag('zone', 'face-down')
+            self.playerFacedownNodes.append(cardModel)
+
         for i in self.player.faceups:
-            self.addFaceupCard(i)
+            addFaceupCard(i)
+            posX += 1.1
         for i in self.player.facedowns:
-            self.addFdCard(i)
+            addFdCard(i)
+            posX += 1.1
 
     def makeEnemyBoard(self):
         for i in self.enemyFacedownNodes:
@@ -445,11 +465,28 @@ class App (ShowBase):
         for i in self.enemyFaceupNodes:
             i.detachNode()
         self.enemyFaceupNodes = []
-        self.enemyFdPos = 0.0
+
+        posX = 0.0
+        posZ = 2.1
+
+        def addEnemyFdCard():
+            cardModel = self.loadEnemyBlank()
+            cardModel.setPos(posX, 0, posZ)
+            cardModel.setTag('zone', 'enemy face-down')
+            self.enemyFacedownNodes.append(cardModel)
+
+        def addEnemyFaceupCard(card):
+            cardModel = self.loadCard(card)
+            cardModel.setPos(posX, 0, posZ)
+            cardModel.setTag('zone', 'face-up')
+            self.enemyFaceupNodes.append(cardModel)
+
         for i in self.enemy.faceups:
-            self.addEnemyFaceupCard(i)
+            addEnemyFaceupCard(i)
+            posX += 1.1
         for i in range(0, len(self.enemy.facedowns)):
-            self.addEnemyFdCard()
+            addEnemyFdCard()
+            posX += 1.1
 
     def loadCard(self, card):
         cm = CardMaker(card.name)
@@ -476,34 +513,6 @@ class App (ShowBase):
     def loadEnemyBlank(self):
         path = self.enemyIconPath + "/" + self.enemyCardBack
         return self.loadBlank(path)
-
-    def addFdCard(self, card):
-        cardModel = self.loadPlayerBlank()
-        cardModel.setPos(self.fdPos, 0, 0)
-        cardModel.setTag('zone', 'face-down')
-        self.fdPos += 1.1
-        self.playerFacedownNodes.append(cardModel)
-
-    def addEnemyFdCard(self):
-        cardModel = self.loadEnemyBlank()
-        cardModel.setPos(self.enemyFdPos, 0, 2.1)
-        cardModel.setTag('zone', 'enemy face-down')
-        self.enemyFdPos += 1.1
-        self.enemyFacedownNodes.append(cardModel)
-
-    def addFaceupCard(self, card):
-        cardModel = self.loadCard(card)
-        cardModel.setPos(self.fdPos, 0, 1.1)
-        cardModel.setTag('zone', 'face-up')
-        self.fdPos += 1.1
-        self.playerFaceupNodes.append(cardModel)
-
-    def addEnemyFaceupCard(self, card):
-        cardModel = self.loadCard(card)
-        cardModel.setPos(self.enemyFdPos, 0, 2.1)
-        cardModel.setTag('zone', 'face-up')
-        self.enemyFdPos += 1.1
-        self.enemyFaceupNodes.append(cardModel)
 
     def makePlayerFace(self):
         cm = CardMaker("face")
