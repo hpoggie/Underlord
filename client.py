@@ -610,6 +610,10 @@ class App (ShowBase):
         self.makeEnemyBoard()
         self.endPhaseLabel.setText(str(Phase.keys[self.phase]))
         self.turnLabel.setText("Your Turn" if self.active else "Enemy Turn")
+        if self.active:
+            self.endPhaseButton.show()
+        else:
+            self.endPhaseButton.hide()
         if self.phase == Phase.reveal:
             self.playerManaCapLabel.setText(
                 str(self.player.manaCap) + " (" + str(self.player.mana) + ")")
