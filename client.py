@@ -118,46 +118,23 @@ class App (ShowBase):
         self.handler = CollisionHandlerQueue()
         self.mouseHandler = MouseHandler()
 
-        self.factionSelectLabel = OnscreenText(
-            text="faction select",
-            pos=(0, -0.7, 0),
-            scale=(0.1, 0.1, 0.1),
-            mayChange=True)
-        self.endPhaseLabel = OnscreenText(
-            text="",
-            pos=(0.7, -0.7, 0),
-            scale=(0.1, 0.1, 0.1),
-            mayChange=True)
-        self.descLabel = OnscreenText(
-            text="",
-            pos=(-0.9, -0.8, 0),
-            align=TextNode.ALeft,
-            wordwrap=10,
-            mayChange=True)
         self.taskMgr.add(self.mouseOverTask, "MouseOverTask")
 
-        self.availableFactions = [templars.Templars]
+        # connect to the remote server if no arg given
+        self.connect(argv[1] if len(argv) > 1 else "174.138.119.84")
 
-        self.factionButtons = []
+        self._active = False
+        self._started = False
 
-        for i, faction in enumerate(self.availableFactions):
-            self.factionButtons.append(DirectButton(
-                image=faction.iconPath + '/' + faction.cardBack,
-                pos=(i * 0.2, 0, 0),
-                scale=(0.1, 0.1, 0.1),
-                relief=None,
-                command=self.pickFaction,
-                extraArgs=[i]))
+        self.makeFactionSelectUI()
 
-        self.serverIp = argv[1] if len(argv) > 1 else "174.138.119.84"
+    def connect(self, ip):
+        self.serverIp = ip
         self.networkManager = ClientNetworkManager(self, self.serverIp)
         self.serverAddr = (self.serverIp, self.port)
         self.taskMgr.add(self.networkUpdateTask, "NetworkUpdateTask")
         self.networkManager.connect(self.serverAddr)
         self.networkManager.send("0", self.serverAddr)
-
-        self._active = False
-        self._started = False
 
     def loadModel(self, name):
         try:
@@ -177,6 +154,26 @@ class App (ShowBase):
         if not self._started:
             self.startGame()
             self._started = True
+
+    def makeFactionSelectUI(self):
+        self.factionSelectLabel = OnscreenText(
+            text="faction select",
+            pos=(0, -0.7, 0),
+            scale=(0.1, 0.1, 0.1),
+            mayChange=True)
+
+        self.availableFactions = [templars.Templars]
+
+        self.factionButtons = []
+
+        for i, faction in enumerate(self.availableFactions):
+            self.factionButtons.append(DirectButton(
+                image=faction.iconPath + '/' + faction.cardBack,
+                pos=(i * 0.2, 0, 0),
+                scale=(0.1, 0.1, 0.1),
+                relief=None,
+                command=self.pickFaction,
+                extraArgs=[i]))
 
     def pickFaction(self, index):
         self.networkManager.sendInts(
@@ -225,9 +222,20 @@ class App (ShowBase):
             pos=(-0.7, -0.6, 0),
             scale=(0.1, 0.1, 0.1),
             mayChange=True)
+        self.descLabel = OnscreenText(
+            text="",
+            pos=(-0.9, -0.8, 0),
+            align=TextNode.ALeft,
+            wordwrap=10,
+            mayChange=True)
         self.cardStatsLabel = OnscreenText(
             text="",
             pos=(-0.7, -0.7, 0),
+            scale=(0.1, 0.1, 0.1),
+            mayChange=True)
+        self.endPhaseLabel = OnscreenText(
+            text="",
+            pos=(0.7, -0.7, 0),
             scale=(0.1, 0.1, 0.1),
             mayChange=True)
         self.endPhaseButton = DirectButton(
