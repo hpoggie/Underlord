@@ -621,7 +621,7 @@ class App (ShowBase):
             self.endPhaseButton.hide()
         if self.phase == Phase.reveal:
             self.playerManaCapLabel.setText(
-                str(self.player.manaCap) + " (" + str(self.player.mana) + ")")
+                str(self.player.mana) + " / " + str(self.player.manaCap))
         else:
             self.playerManaCapLabel.setText(str(self.player.manaCap))
         self.enemyManaCapLabel.setText(str(self.enemy.manaCap))
