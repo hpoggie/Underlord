@@ -120,13 +120,34 @@ class App (ShowBase):
 
         self.taskMgr.add(self.mouseOverTask, "MouseOverTask")
 
-        # connect to the remote server if no arg given
-        self.connect(argv[1] if len(argv) > 1 else "174.138.119.84")
-
         self._active = False
         self._started = False
 
-        self.makeFactionSelectUI()
+        try:
+            # connect to the remote server if no arg given
+            self.connect(argv[1] if len(argv) > 1 else "174.138.119.84")
+            self.makeFactionSelectUI()
+        except ConnectionRefusedError:
+            self.factionSelectLabel = OnscreenText(
+                text="Error. Could not connect to server",
+                pos=(0, 0, 0),
+                scale=(0.1, 0.1, 0.1))
+            self.reconnectButton = DirectButton(
+                pos=(0, 0, -0.25),
+                scale=(0.1, 0.1, 0.1),
+                image="./reconnect.png",
+                relief=None,
+                command=self.retryConnection)
+            return
+
+    def retryConnection(self):
+        try:
+            self.connect(self.serverIp)
+            self.factionSelectLabel.detachNode()
+            self.reconnectButton.detachNode()
+            self.makeFactionSelectUI()
+        except ConnectionRefusedError:
+            pass
 
     def connect(self, ip):
         self.serverIp = ip
