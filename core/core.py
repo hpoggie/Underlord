@@ -47,13 +47,13 @@ class Game:
 
     @event
     def fight(self, c1, c2):
-        if c1.spell or c2.spell:
-            return
-
         if c1.zone == Zone.facedown:
             c1.visibleWhileFacedown = True
         if c2.zone == Zone.facedown:
             c2.visibleWhileFacedown = True
+
+        if c1.spell or c2.spell:
+            return
 
         if c1.rank < c2.rank:
             self.destroy(c1)
