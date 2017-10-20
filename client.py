@@ -133,7 +133,7 @@ class App (ShowBase):
             self.connectingLabel.detachNode()
         except ConnectionRefusedError:
             self.connectingLabel.hide()
-            self.factionSelectLabel = OnscreenText(
+            self.connectionFailedLabel = OnscreenText(
                 text="Error. Could not connect to server",
                 pos=(0, 0, 0),
                 scale=(0.1, 0.1, 0.1))
@@ -150,7 +150,7 @@ class App (ShowBase):
             self.connectingLabel.show()
             self.connect(self.serverIp)
             self.connectingLabel.detachNode()
-            self.factionSelectLabel.detachNode()
+            self.connectionFailedLabel.detachNode()
             self.reconnectButton.detachNode()
             self.makeFactionSelectUI()
         except ConnectionRefusedError:
