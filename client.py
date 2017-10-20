@@ -715,8 +715,6 @@ class App (ShowBase):
 
         return Task.cont
 
-    lastTime = 0.0
-
     def networkUpdateTask(self, task):
         self.networkManager.recv()
         return Task.cont
