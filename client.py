@@ -273,14 +273,8 @@ class App (ShowBase):
             relief=None,
             command=self.endPhase)
 
-        self.handPos = 0.0
-        self.enemyHandPos = 0.0
-        self.playerFacePos = (0, 0, 1)
-        self.enemyFacePos = (0, 0, -1)
         self.playerHandNodes = []
         self.enemyHandNodes = []
-        self.fdPos = 0.0
-        self.enemyFdPos = 0.0
         self.playerFacedownNodes = []
         self.enemyFacedownNodes = []
         self.playerFaceupNodes = []
