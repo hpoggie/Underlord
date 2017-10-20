@@ -123,11 +123,16 @@ class App (ShowBase):
         self._active = False
         self._started = False
 
+        self.connectingLabel = OnscreenText(
+            text="connecting to server",
+            scale=(0.1, 0.1, 0.1))
         try:
             # connect to the remote server if no arg given
             self.connect(argv[1] if len(argv) > 1 else "174.138.119.84")
             self.makeFactionSelectUI()
+            self.connectingLabel.detachNode()
         except ConnectionRefusedError:
+            self.connectingLabel.hide()
             self.factionSelectLabel = OnscreenText(
                 text="Error. Could not connect to server",
                 pos=(0, 0, 0),
@@ -142,7 +147,9 @@ class App (ShowBase):
 
     def retryConnection(self):
         try:
+            self.connectingLabel.show()
             self.connect(self.serverIp)
+            self.connectingLabel.detachNode()
             self.factionSelectLabel.detachNode()
             self.reconnectButton.detachNode()
             self.makeFactionSelectUI()
