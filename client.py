@@ -19,6 +19,7 @@ from direct.task import Task
 from factions import templars
 
 import sys
+import math
 
 loadPrcFileData(
     "",
@@ -410,9 +411,10 @@ class App (ShowBase):
 
         self.playerHandNodes = []
 
+        minPosX = 3
         posX = 3
+        maxPosX = 5.8
         posY = 0.0
-        posZ = -2.0
         rot = -45.0
 
         def addHandCard(card):
@@ -426,10 +428,11 @@ class App (ShowBase):
             self.playerHandNodes.append(cardModel)
 
         for i in range(0, len(self.player.hand)):
+            curve = math.sin((posX - minPosX) / (maxPosX - minPosX) * math.pi)
+            posZ = 0.5 * curve - 2
             addHandCard(self.player.hand[i])
-            posX += 0.5
+            posX += (maxPosX - minPosX) / (len(self.player.hand) - 1)
             posY += 0.001
-            posZ += 0.02
             rot += 90. / (len(self.player.hand) - 1)
 
     def makeEnemyHand(self):
