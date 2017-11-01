@@ -432,9 +432,10 @@ class App (ShowBase):
             curve = math.sin((posX - minPosX) / (maxPosX - minPosX) * math.pi)
             posZ = 0.5 * curve - 2
             addHandCard(self.player.hand[i])
-            posX += (maxPosX - minPosX) / (len(self.player.hand) - 1)
-            posY += 0.001
-            rot += 90. / (len(self.player.hand) - 1)
+            if len(self.player.hand) > 1:
+                posX += (maxPosX - minPosX) / (len(self.player.hand) - 1)
+                posY += 0.001
+                rot += 90. / (len(self.player.hand) - 1)
 
     def makeEnemyHand(self):
         for i in self.enemyHandNodes:
@@ -463,9 +464,10 @@ class App (ShowBase):
             curve = math.sin((posX - minPosX) / (maxPosX - minPosX) * math.pi)
             posZ = maxPosZ - (0.5 * curve)
             addEnemyHandCard()
-            posX += (maxPosX - minPosX) / (len(self.enemy.hand) - 1)
-            posY += 0.001
-            rot -= 90. / (len(self.enemy.hand) - 1)
+            if len(self.enemy.hand) > 1:
+                posX += (maxPosX - minPosX) / (len(self.enemy.hand) - 1)
+                posY += 0.001
+                rot -= 90. / (len(self.enemy.hand) - 1)
 
     def makeBoard(self):
         """
