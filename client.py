@@ -19,7 +19,7 @@ from direct.task import Task
 from factions import templars
 
 import sys
-import math
+from fanHand import fanHand
 
 loadPrcFileData(
     "",
@@ -412,30 +412,19 @@ class App (ShowBase):
 
         self.playerHandNodes = []
 
-        minPosX = 3
-        posX = 3
-        maxPosX = 5.8
-        posY = 0.0
-        rot = -45.0
-
-        def addHandCard(card):
+        def addHandCard(card, tr):
             cardModel = self.loadCard(card)
             pivot = self.scene.attachNewNode('pivot')
             offset = cardModel.getScale() / 2
-            pivot.setPosHpr(posX, posY, posZ, 0, 0, rot)
+            pivot.setPosHpr(*tr)
             cardModel.reparentTo(pivot)
             cardModel.setPos(-offset)
             cardModel.setTag('zone', 'hand')
             self.playerHandNodes.append(cardModel)
 
-        for i in range(0, len(self.player.hand)):
-            curve = math.sin((posX - minPosX) / (maxPosX - minPosX) * math.pi)
-            posZ = 0.5 * curve - 2
-            addHandCard(self.player.hand[i])
-            if len(self.player.hand) > 1:
-                posX += (maxPosX - minPosX) / (len(self.player.hand) - 1)
-                posY += 0.001
-                rot += 90. / (len(self.player.hand) - 1)
+        fan = fanHand(len(self.player.hand))
+        for i, tr in enumerate(fan):
+            addHandCard(self.player.hand[i], tr)
 
     def makeEnemyHand(self):
         for i in self.enemyHandNodes:
@@ -443,31 +432,23 @@ class App (ShowBase):
 
         self.enemyHandNodes = []
 
-        minPosX = 3
-        posX = 3
-        maxPosX = 5.8
-        posY = 0.0
         maxPosZ = 5.1
-        rot = 225.0
 
-        def addEnemyHandCard():
+        def addEnemyHandCard(tr):
             cardModel = self.loadEnemyBlank()
             pivot = self.scene.attachNewNode('pivot')
             offset = cardModel.getScale() / 2
-            pivot.setPosHpr(posX, posY, posZ, 0, 0, rot)
+            pivot.setPosHpr(*tr)
             cardModel.reparentTo(pivot)
             cardModel.setPos(-offset)
             cardModel.setTag('zone', 'enemy hand')
             self.enemyHandNodes.append(cardModel)
 
-        for i in range(0, len(self.enemy.hand)):
-            curve = math.sin((posX - minPosX) / (maxPosX - minPosX) * math.pi)
-            posZ = maxPosZ - (0.5 * curve)
-            addEnemyHandCard()
-            if len(self.enemy.hand) > 1:
-                posX += (maxPosX - minPosX) / (len(self.enemy.hand) - 1)
-                posY += 0.001
-                rot -= 90. / (len(self.enemy.hand) - 1)
+        fan = fanHand(len(self.enemy.hand))
+        for i, tr in enumerate(fan):
+            # make position from top and flip rotation
+            tr = (tr[0], tr[1], maxPosZ - tr[2], 0, 0, 180 - tr[5])
+            addEnemyHandCard(tr)
 
     def makeBoard(self):
         """
