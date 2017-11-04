@@ -15,8 +15,8 @@ def equus():
         name="Equus",
         image="horse-head.png",
         cost=3,
-        desc="""Has rank 2 if your mana cap is even and rank 5 if your mana cap
-        is odd."""
+        desc="Has rank 2 if your mana cap is even and rank 5 if your mana cap "
+             "is odd."
     )
 
     return equus

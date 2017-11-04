@@ -19,6 +19,7 @@ from direct.task import Task
 from factions import templars
 
 import sys
+from fanHand import fanHand
 
 loadPrcFileData(
     "",
@@ -248,18 +249,19 @@ class App (ShowBase):
         self.cardNameLabel = OnscreenText(
             text="",
             pos=(-0.7, -0.6, 0),
-            scale=(0.1, 0.1, 0.1),
+            scale=0.07,
             mayChange=True)
         self.descLabel = OnscreenText(
             text="",
             pos=(-0.9, -0.8, 0),
+            scale=0.05,
             align=TextNode.ALeft,
             wordwrap=10,
             mayChange=True)
         self.cardStatsLabel = OnscreenText(
             text="",
             pos=(-0.7, -0.7, 0),
-            scale=(0.1, 0.1, 0.1),
+            scale=0.07,
             mayChange=True)
         self.endPhaseLabel = OnscreenText(
             text="",
@@ -410,27 +412,19 @@ class App (ShowBase):
 
         self.playerHandNodes = []
 
-        posX = 3
-        posY = 0.0
-        posZ = -2.0
-        rot = -45.0
-
-        def addHandCard(card):
+        def addHandCard(card, tr):
             cardModel = self.loadCard(card)
             pivot = self.scene.attachNewNode('pivot')
             offset = cardModel.getScale() / 2
-            pivot.setPosHpr(posX, posY, posZ, 0, 0, rot)
+            pivot.setPosHpr(*tr)
             cardModel.reparentTo(pivot)
             cardModel.setPos(-offset)
             cardModel.setTag('zone', 'hand')
             self.playerHandNodes.append(cardModel)
 
-        for i in range(0, len(self.player.hand)):
-            addHandCard(self.player.hand[i])
-            posX += 0.5
-            posY += 0.001
-            posZ += 0.02
-            rot += 90. / (len(self.player.hand) - 1)
+        fan = fanHand(len(self.player.hand))
+        for i, tr in enumerate(fan):
+            addHandCard(self.player.hand[i], tr)
 
     def makeEnemyHand(self):
         for i in self.enemyHandNodes:
@@ -438,27 +432,23 @@ class App (ShowBase):
 
         self.enemyHandNodes = []
 
-        posX = 3
-        posY = 0.0
-        posZ = 5.1
-        rot = 225.0
+        maxPosZ = 5.1
 
-        def addEnemyHandCard():
+        def addEnemyHandCard(tr):
             cardModel = self.loadEnemyBlank()
             pivot = self.scene.attachNewNode('pivot')
             offset = cardModel.getScale() / 2
-            pivot.setPosHpr(posX, posY, posZ, 0, 0, rot)
+            pivot.setPosHpr(*tr)
             cardModel.reparentTo(pivot)
             cardModel.setPos(-offset)
             cardModel.setTag('zone', 'enemy hand')
             self.enemyHandNodes.append(cardModel)
 
-        for i in range(0, len(self.enemy.hand)):
-            addEnemyHandCard()
-            posX += 0.5
-            posY += 0.001
-            posZ += 0.02
-            rot -= 90. / (len(self.enemy.hand) - 1)
+        fan = fanHand(len(self.enemy.hand))
+        for i, tr in enumerate(fan):
+            # make position from top and flip rotation
+            tr = (tr[0], tr[1], maxPosZ - tr[2], 0, 0, 180 - tr[5])
+            addEnemyHandCard(tr)
 
     def makeBoard(self):
         """
