@@ -432,7 +432,7 @@ class App (ShowBase):
 
         self.enemyHandNodes = []
 
-        maxPosZ = 5.1
+        maxPosZ = 3.1
 
         def addEnemyHandCard(tr):
             cardModel = self.loadEnemyBlank()

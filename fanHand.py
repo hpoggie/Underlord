@@ -2,8 +2,8 @@ import math
 
 
 def fanHand(n):
-    minPosX = 3
-    maxPosX = 5.8
+    minPosX = 2.5
+    maxPosX = 5.5
     minRot = -45.0
     maxRot = -minRot
 
