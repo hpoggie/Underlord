@@ -251,7 +251,7 @@ class App (ShowBase):
             pos=(-0.7, -0.6, 0),
             scale=0.07,
             mayChange=True)
-        self.descLabel = OnscreenText(
+        self.tooltipLabel = OnscreenText(
             text="",
             pos=(-0.9, -0.8, 0),
             scale=0.05,
@@ -654,8 +654,13 @@ class App (ShowBase):
             if hasattr(self, 'cardStatsLabel'):
                 self.cardStatsLabel.setText("")
 
-            if hasattr(self, 'descLabel'):
-                self.descLabel.setText("")
+            if hasattr(self, 'tooltipLabel'):
+                if hasattr(self, 'phase') and self.active:
+                    self.tooltipLabel.setText(
+                        "Reveal face-down cards" if self.phase == Phase.reveal
+                        else "Play face-down cards and attack")
+                else:
+                    self.tooltipLabel.setText("")
 
             if hasattr(self, '_activeObj') and self._activeObj is not None:
                 path = self.playerIconPath + "/" + self.playerCardBack
@@ -670,7 +675,7 @@ class App (ShowBase):
                     self.cardNameLabel.setText(card.name)
                     label = str(card.cost) + " " + str(card.rank)
                     self.cardStatsLabel.setText(label)
-                    self.descLabel.setText(
+                    self.tooltipLabel.setText(
                         ("Instant. " if card.playsFaceUp else "") + card.desc)
                 elif pickedObj.getTag('zone') == 'face-down':
                     card = self.player.facedowns[
@@ -681,7 +686,7 @@ class App (ShowBase):
                     self.cardNameLabel.setText(card.name)
                     label = str(card.cost) + " " + str(card.rank)
                     self.cardStatsLabel.setText(label)
-                    self.descLabel.setText(card.desc)
+                    self.tooltipLabel.setText(card.desc)
                 elif pickedObj.getTag('zone') == 'enemy face-down':
                     card = self.enemy.facedowns[
                         self.enemyFacedownNodes.index(pickedObj)]
@@ -691,7 +696,7 @@ class App (ShowBase):
                         pickedObj.setTexture(loader.loadTexture(path))
                         label = str(card.cost) + " " + str(card.rank)
                         self.cardStatsLabel.setText(label)
-                        self.descLabel.setText(card.desc)
+                        self.tooltipLabel.setText(card.desc)
                 elif pickedObj.getTag('zone') == 'face-up':
                     if pickedObj in self.playerFaceupNodes:
                         card = self.player.faceups[
@@ -702,7 +707,7 @@ class App (ShowBase):
                     self.cardNameLabel.setText(card.name)
                     label = str(card.cost) + " " + str(card.rank)
                     self.cardStatsLabel.setText(label)
-                    self.descLabel.setText(card.desc)
+                    self.tooltipLabel.setText(card.desc)
 
         return Task.cont
 
