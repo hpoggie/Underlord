@@ -229,8 +229,8 @@ if __name__ == "__main__":
                 try:
                     service.networkManager.recv()
                 except Decision as d:
-                    self.waitingOnDecision = d
-                    self.requestTarget(addr)
+                    service.waitingOnDecision = d
+                    service.requestTarget(d.addr)
                 except EndOfGame as e:
                     service.endGame(e.winner)
                     exit(0)

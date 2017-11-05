@@ -1,5 +1,6 @@
 from network_manager import NetworkManager
 from core.enums import numericEnum
+from core.decision import Decision
 
 
 class ServerNetworkManager (NetworkManager):
@@ -24,7 +25,11 @@ class ServerNetworkManager (NetworkManager):
         (opcode, operands) = (operands[0], operands[1:])
         if self.verbose:
             print("got opcode, ", self.Opcodes.keys[opcode])
-        getattr(self.base, self.Opcodes.keys[opcode])(addr, *operands)
+        try:
+            getattr(self.base, self.Opcodes.keys[opcode])(addr, *operands)
+        except Decision as d:
+            d.addr = addr
+            raise d
 
 
 class ClientNetworkManager (NetworkManager):
