@@ -112,7 +112,7 @@ class App (ShowBase):
 
         self.port = 9099
 
-        self.scene = self.loadModel("empty")
+        self.scene = self.render.attachNewNode('empty')
         self.scene.reparentTo(self.render)
 
         base.cTrav = CollisionTraverser()
