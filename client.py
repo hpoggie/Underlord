@@ -430,7 +430,7 @@ class App (ShowBase):
         for i, tr in enumerate(fan):
             addHandCard(self.player.hand[i], tr)
 
-        self.playerHand.setPosHpr(0, -1.0, 0, 0, 45.0, 0)
+        self.playerHand.setPosHpr(2.5, -1.0, 0, 0, 45.0, 0)
 
     def makeEnemyHand(self):
         for i in self.enemyHandNodes:
@@ -456,7 +456,7 @@ class App (ShowBase):
         for i, tr in enumerate(fan):
             addEnemyHandCard(tr)
 
-        self.enemyHand.setPosHpr(0, -1.0, 7.1, 0, 45.0, 0)
+        self.enemyHand.setPosHpr(2.5, -1.0, 7.1, 0, 45.0, 0)
 
     def makeBoard(self):
         """
