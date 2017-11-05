@@ -412,6 +412,9 @@ class App (ShowBase):
 
         self.playerHandNodes = []
 
+        if not hasattr(self, 'playerHand'):
+            self.playerHand = self.scene.attachNewNode('playerHand')
+
         def addHandCard(card, tr):
             cardModel = self.loadCard(card)
             pivot = self.scene.attachNewNode('pivot')
@@ -421,10 +424,13 @@ class App (ShowBase):
             cardModel.setPos(-offset)
             cardModel.setTag('zone', 'hand')
             self.playerHandNodes.append(cardModel)
+            pivot.reparentTo(self.playerHand)
 
         fan = fanHand(len(self.player.hand))
         for i, tr in enumerate(fan):
             addHandCard(self.player.hand[i], tr)
+
+        self.playerHand.setPosHpr(0, -1.0, 0, 0, 45.0, 0)
 
     def makeEnemyHand(self):
         for i in self.enemyHandNodes:
@@ -432,7 +438,8 @@ class App (ShowBase):
 
         self.enemyHandNodes = []
 
-        maxPosZ = 3.1
+        if not hasattr(self, 'enemyHand'):
+            self.enemyHand = self.scene.attachNewNode('enemyHand')
 
         def addEnemyHandCard(tr):
             cardModel = self.loadEnemyBlank()
@@ -443,12 +450,13 @@ class App (ShowBase):
             cardModel.setPos(-offset)
             cardModel.setTag('zone', 'enemy hand')
             self.enemyHandNodes.append(cardModel)
+            pivot.reparentTo(self.enemyHand)
 
         fan = fanHand(len(self.enemy.hand))
         for i, tr in enumerate(fan):
-            # make position from top and flip rotation
-            tr = (tr[0], tr[1], maxPosZ - tr[2], 0, 0, 180 - tr[5])
             addEnemyHandCard(tr)
+
+        self.enemyHand.setPosHpr(0, -1.0, 7.1, 0, 45.0, 0)
 
     def makeBoard(self):
         """
@@ -717,5 +725,5 @@ class App (ShowBase):
 
 
 app = App(sys.argv)
-app.camera.setPos(4, -20, 1.2)
+app.camera.setPosHpr(4, -15, -15, 0, 45, 0)
 app.run()
