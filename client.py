@@ -166,11 +166,7 @@ class App (ShowBase):
         self.networkManager.send("0", self.serverAddr)
 
     def loadModel(self, name):
-        try:
-            ret = self.loader.loadModel(name + ".bam")
-        except IOError:
-            ret = self.loader.loadModel(name + ".egg")
-
+        ret = self.loader.loadModel(name + ".bam")
         return ret
 
     @property

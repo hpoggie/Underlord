@@ -1,2 +1,2 @@
 -i https://archive.panda3d.org/branches/deploy-ng/
-panda3d==1.10.0.dev1146+deployng.112
+panda3d==1.10.0.dev1210+deployng.117
