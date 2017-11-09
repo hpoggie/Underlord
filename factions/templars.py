@@ -122,6 +122,34 @@ def invest():
     )
 
 
+class GrailTaunt(Card):
+    @property
+    def taunt(self):
+        return self.owner.manaCap % 2 == self.n
+
+
+def leftGrail():
+    return GrailTaunt(
+        name="Left Grail",
+        image="holy-grail.png",
+        cost=2,
+        rank=2,
+        desc="Has taunt if your mana cap is odd.",
+        n=1
+    )
+
+
+def rightGrail():
+    return GrailTaunt(
+        name="Left Grail",
+        image="holy-grail.png",
+        cost=2,
+        rank=2,
+        desc="Has taunt if your mana cap is even.",
+        n=0
+    )
+
+
 Templars = Faction(
     name="Templars",
     iconPath="./templar_icons",
@@ -134,7 +162,9 @@ Templars = Faction(
         archangel(),
         miracle(),
         crystalElemental(),
-        invest()
+        invest(),
+        leftGrail(),
+        rightGrail()
     ] + base.deck,
 )
 

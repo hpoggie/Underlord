@@ -3,6 +3,7 @@ from core.core import Game
 from core.decision import Decision
 from factions import base
 from tests.dummyFaction import dummyFactionPlayer
+from core.enums import *
 
 
 def testEquus():
@@ -100,3 +101,28 @@ def testMiracleNotEnoughCards():
     game.players[0].hand[0].cost = 0
     game.players[0].playFaceup(game.players[0].hand[0])
     assert len(game.players[0].hand) == 2
+
+
+def testGrail():
+    dfp1 = dummyFactionPlayer([])
+    dfp2 = dummyFactionPlayer([])
+    game = Game(dfp1, dfp2)
+    p1 = game.players[0]
+    p2 = game.players[1]
+    p1.faceups = [leftGrail()]
+    p1.faceups[0].owner = p1
+    p2.faceups = [base.one()]
+    p2.faceups[0].hasAttacked = False
+    p2.faceups[0].zone = Zone.faceup
+    game.turn = Turn.p2
+    game.phase = Phase.play
+    p1.manaCap = 3
+    # Should fail if attack works
+    try:
+        p2.attack(p2.faceups[0], Zone.face)
+        assert False
+    except IllegalMoveError:
+        pass
+    p1.manaCap = 2
+    # Should fail if attack doesn't work
+    p2.attack(p2.faceups[0], Zone.face)
