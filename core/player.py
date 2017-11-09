@@ -158,6 +158,10 @@ class Player:
         if attacker.zone != Zone.faceup:
             raise IllegalMoveError("Can only attack with face-up cards.")
 
+        taunts = [c for c in self.getEnemy().faceups if c.taunt]
+        if len(taunts) > 0 and target not in taunts:
+            raise IllegalMoveError("Must attack units with taunt first.")
+
         if target != Zone.face and target.zone not in [
                 Zone.faceup, Zone.facedown]:
             raise IllegalMoveError(

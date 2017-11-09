@@ -23,6 +23,7 @@ class Card:
         self._cost = 0
         self._rank = 0
         self.playsFaceUp = False
+        self._taunt = False
         self.owner = None
         self.zone = None
         self.visibleWhileFacedown = False
@@ -52,6 +53,14 @@ class Card:
     @rank.setter
     def rank(self, value):
         self._rank = value
+
+    @property
+    def taunt(self):
+        return self._taunt
+
+    @taunt.setter
+    def taunt(self, value):
+        self._taunt = value
 
     def _onSpawn(self):
         if self.spell:
