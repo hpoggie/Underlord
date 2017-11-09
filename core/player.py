@@ -23,11 +23,21 @@ class Player:
         for card in self.deck:
             card.owner = self
         self.graveyard = []
-        self.manaCap = 1
+        self._manaCap = 1
         self.mana = 1
 
         self.iconPath = faction.iconPath
         self.cardBack = faction.cardBack
+
+    @property
+    def manaCap(self):
+        return self._manaCap
+
+    @manaCap.setter
+    def manaCap(self, value):
+        self._manaCap = value
+        if self._manaCap > 15:
+            self.getEnemy().win()
 
     def shuffle(self):
         shuffle(self.deck)
@@ -163,8 +173,6 @@ class Player:
     def attackFace(self, attacker):
         self.failIfInactive()
         self.getEnemy().manaCap += attacker.rank
-        if self.getEnemy().manaCap > 15:
-            self.win()
 
     def endPhase(self):
         self.failIfInactive()
