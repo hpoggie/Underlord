@@ -98,14 +98,14 @@ def testAttackFacedown():
     assert len(game.players[1].faceups) == 0
 
 
-def testAttackFacedown():
+def testAttackFaceup():
     newCard = base.one()
     newCard.playsFaceUp = True
     newCard.cost = 0
     dfp = dummyFactionPlayer([newCard])
     game = Game(dfp, dfp)
     game.start()
-    # 1st player plays a facedown
+    # 1st player plays a faceup
     game.players[0].playFaceup(game.players[0].hand[0])
     game.players[0].endTurn()
     # 2nd player attacks it
