@@ -106,6 +106,22 @@ def crystalElemental():
     )
 
 
+def invest():
+    def _onSpawn(self):
+        self.owner.manaCap += 1
+        self.owner.drawCard()
+        self.moveZone(Zone.graveyard)
+
+    return Card(
+        name="Invest",
+        image="profit.png",
+        cost=1,
+        spell=True,
+        onSpawn=_onSpawn,
+        desc="Add 1 to your mana cap. Draw a card."
+    )
+
+
 Templars = Faction(
     name="Templars",
     iconPath="./templar_icons",
@@ -117,7 +133,8 @@ Templars = Faction(
         wrathOfGod(),
         archangel(),
         miracle(),
-        crystalElemental()
+        crystalElemental(),
+        invest()
     ] + base.deck,
 )
 
