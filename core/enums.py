@@ -6,7 +6,3 @@ def numericEnum(*items):
 
 Turn = numericEnum('p1', 'p2')
 Phase = numericEnum('reveal', 'play')
-
-
-class IllegalMoveError (Exception):
-    pass

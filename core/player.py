@@ -13,6 +13,10 @@ startHandSize = 5
 maxManaCap = 15
 
 
+class IllegalMoveError (Exception):
+    pass
+
+
 class Player:
     def __init__(self, faction):
         self.hand = []
