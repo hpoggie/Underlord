@@ -3,7 +3,6 @@ from core.core import Game
 from factions import base
 from factions.templars import Templars
 from tests.dummyFaction import dummyFactionPlayer
-from core.enums import *
 
 
 def deckContainsDuplicates(deck):
@@ -38,7 +37,7 @@ def testReveal():
     player.endPhase()
     game.players[1].endTurn()
     player.revealFacedown(newCard)
-    assert newCard.zone == Zone.faceup
+    assert newCard.zone == player.faceups
 
 
 def testPlay():
@@ -48,7 +47,7 @@ def testPlay():
     player.endPhase()
     newCard = player.hand[0]
     player.play(newCard)
-    assert newCard.zone == Zone.facedown
+    assert newCard.zone == player.facedowns
 
 
 def testPlayFaceup():
@@ -61,7 +60,7 @@ def testPlayFaceup():
     player.drawCard()
     instance = player.hand[0]
     player.playFaceup(instance)
-    assert instance.zone == Zone.faceup
+    assert instance.zone == player.faceups
 
 
 def testAttackFace():
