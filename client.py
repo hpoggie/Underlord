@@ -12,7 +12,8 @@ from direct.gui.DirectGui import DirectButton
 from direct.gui.OnscreenText import OnscreenText
 
 from network import ClientNetworkManager, ServerNetworkManager
-from core.enums import Phase, Zone
+from server import Zone
+from core.enums import Phase
 
 from panda3d.core import loadPrcFileData
 from direct.task import Task

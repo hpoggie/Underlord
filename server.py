@@ -8,9 +8,14 @@ from core.core import Game, EndOfGame
 from core.decision import Decision
 from factions.templars import Templar
 import time
-from core.enums import IllegalMoveError, Zone
+from core.player import IllegalMoveError
+from core.enums import numericEnum
 import os
 import signal
+
+
+Zone = numericEnum('face', 'faceup', 'facedown', 'hand', 'graveyard')
+
 
 availableFactions = [Templar]
 
@@ -43,6 +48,16 @@ class OverlordService:
         self.players = dict([
             (conn[0], self.game.players[conn[1]])
             for conn in self.connections])
+
+        # Add extra data so we can find zones by index
+        for pl in self.game.players:
+            pl.zones = [
+                pl.face,
+                pl.faceups,
+                pl.facedowns,
+                pl.hand,
+                pl.graveyard
+            ]
 
         # TODO: kludge
         for i in range(len(self.factions)):
@@ -87,9 +102,9 @@ class OverlordService:
             print(e)
             return
         if targetZone == Zone.face:
-            target = Zone.face
+            target = pl.getEnemy().face
         else:
-            target = pl.getEnemy().getCard(targetZone, targetIndex)
+            target = pl.getEnemy().zones[targetZone][targetIndex]
 
         try:
             pl.attack(attacker, target)
@@ -112,9 +127,9 @@ class OverlordService:
         pl = self.players[addr]
         try:
             if targetsEnemy:
-                target = pl.getEnemy().getCard(targetZone, targetIndex)
+                target = pl.getEnemy().zones[targetZone][targetIndex]
             else:
-                target = pl.getCard(targetZone, targetIndex)
+                target = pl.zones[targetZone][targetIndex]
             self.waitingOnDecision.execute(target)
             self.waitingOnDecision = None
         except IllegalMoveError as e:
