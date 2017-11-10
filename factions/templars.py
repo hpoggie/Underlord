@@ -149,6 +149,17 @@ def rightGrail():
     )
 
 
+def guardianAngel():
+    return GrailTaunt(
+        name="Guardian Angel",
+        image="winged-shield.png",
+        cost=4,
+        rank=3,
+        desc="Has taunt if your mana cap is odd.",
+        n=1
+    )
+
+
 Templars = Faction(
     name="Templars",
     iconPath="./templar_icons",
@@ -163,7 +174,8 @@ Templars = Faction(
         crystalElemental(),
         invest(),
         leftGrail(),
-        rightGrail()
+        rightGrail(),
+        guardianAngel()
     ] + base.deck,
 )
 
