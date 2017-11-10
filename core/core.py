@@ -70,7 +70,8 @@ class Game:
     @event
     def endPhase(self):
         if self.phase == Phase.reveal:
-            for c in self.activePlayer.facedowns:
+            l = list(self.activePlayer.facedowns)
+            for c in l:
                 c.zone = c.owner.graveyard
             self.activePlayer.drawCard()
 
