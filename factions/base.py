@@ -1,5 +1,4 @@
 from core.card import Card
-from core.enums import Zone
 
 
 def one():
@@ -49,14 +48,9 @@ def five():
 
 def sweepAbility(self):
     for player in self.game.players:
-        cards = player.faceups
-        player.faceups = []
-        for c in cards:
-            player.graveyard.append(c)
-            c.zone = Zone.graveyard
-            c.moveZone(Zone.graveyard)
-
-    self.moveZone(Zone.graveyard)
+        l = list(player.faceups)
+        for c in l:
+            c.zone = player.graveyard
 
 
 def sweep():
