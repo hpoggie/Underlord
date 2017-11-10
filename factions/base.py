@@ -72,7 +72,7 @@ def spellBlade():
         if target in self.owner.getEnemy().facedowns:
             self.game.destroy(target)
 
-        self.moveZone(Zone.graveyard)
+        self.zone = self.owner.graveyard
 
     spellBlade = Card(
         name="Spell Blade",

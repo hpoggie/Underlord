@@ -63,7 +63,7 @@ class Card:
 
     def _onSpawn(self):
         if self.spell:
-            self.moveZone(Zone.graveyard)
+            self.zone = self.owner.graveyard
 
     def _onDeath(self):
         pass
@@ -108,3 +108,5 @@ class Card:
 
         if self._zone == self.owner.faceups:
             self.onSpawn()
+            if self.spell:
+                self.zone = self.owner.graveyard
