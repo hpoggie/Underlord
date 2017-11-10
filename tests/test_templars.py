@@ -4,12 +4,13 @@ from core.decision import Decision
 from factions import base
 from tests.dummyFaction import dummyFactionPlayer
 from core.enums import *
+from core.player import IllegalMoveError
 
 
 def testEquus():
     dfp = dummyFactionPlayer([equus()])
     game = Game(dfp, dfp)
-    game.players[0].moveCard(game.players[0].deck[0], Zone.faceup)
+    game.players[0].deck[0].zone = game.players[0].faceups
     game.players[0].manaCap = 3
     assert game.players[0].faceups[0].rank == 5
     game.players[0].manaCap = 4
@@ -36,14 +37,14 @@ def testHolyHandGrenade():
     except Decision as d:
         d.execute(game.players[0].facedowns[0])
 
-    assert game.players[0].facedowns == []
+    assert len(game.players[0].facedowns) == 0
 
     try:
         game.players[1].playFaceup(game.players[1].hand[0])
     except Decision as d:
         d.execute(game.players[0].faceups[0])
 
-    assert game.players[0].facedowns == []
+    assert len(game.players[0].facedowns) == 0
 
 
 def testWrathOfGod():
@@ -62,7 +63,7 @@ def testWrathOfGod():
     game.players[1].drawCard()
     game.players[1].hand[0].cost = 0
     game.players[1].playFaceup(game.players[1].hand[0])
-    assert game.players[0].faceups == []
+    assert len(game.players[0].faceups) == 0
 
 
 def testMiracle():
@@ -109,20 +110,22 @@ def testGrail():
     game = Game(dfp1, dfp2)
     p1 = game.players[0]
     p2 = game.players[1]
-    p1.faceups = [leftGrail()]
-    p1.faceups[0].owner = p1
-    p2.faceups = [base.one()]
+    c = leftGrail()
+    c.owner = p1
+    c.zone = p1.faceups
+    c = base.one()
+    c.owner = p2
+    c.zone = p2.faceups
     p2.faceups[0].hasAttacked = False
-    p2.faceups[0].zone = Zone.faceup
     game.turn = Turn.p2
     game.phase = Phase.play
     p1.manaCap = 3
     # Should fail if attack works
     try:
-        p2.attack(p2.faceups[0], Zone.face)
+        p2.attack(p2.faceups[0], p1.face)
         assert False
     except IllegalMoveError:
         pass
     p1.manaCap = 2
     # Should fail if attack doesn't work
-    p2.attack(p2.faceups[0], Zone.face)
+    p2.attack(p2.faceups[0], p1.face)
