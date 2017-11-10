@@ -1,7 +1,6 @@
 from . import base
 from core.card import Card
 from core.faction import Faction
-from core.enums import Zone
 from core.player import Player
 
 
@@ -34,7 +33,7 @@ def archangel():
 def holyHandGrenade():
     def _onSpawn(self, target):
         self.game.destroy(target)
-        self.moveZone(Zone.graveyard)
+        self.zone = self.owner.graveyard
 
     hhg = Card(
         name="Holy Hand Grenade",
@@ -79,7 +78,7 @@ def miracle():
     def _onSpawn(self):
         while(len(self.owner.hand) < 5 and len(self.owner.deck) > 0):
             self.owner.drawCard()
-        self.moveZone(Zone.graveyard)
+        self.zone = self.owner.graveyard
 
     return Card(
         name="Miracle",
@@ -110,7 +109,7 @@ def invest():
     def _onSpawn(self):
         self.owner.manaCap += 1
         self.owner.drawCard()
-        self.moveZone(Zone.graveyard)
+        self.zone = self.owner.graveyard
 
     return Card(
         name="Invest",
