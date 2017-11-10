@@ -18,6 +18,7 @@ class Player:
         self.hand = []
         self.facedowns = []
         self.faceups = []
+        self.face = ["A human face."]  # Need to have a dummy zone to attack
         self.faction = faction
         self.deck = deepcopy(faction.deck)
         for card in self.deck:
@@ -49,7 +50,7 @@ class Player:
     def drawCard(self):
         if len(self.deck) != 0:
             c = self.deck.pop()
-            c.moveZone(Zone.hand)
+            c.zone = self.hand
 
     def isActivePlayer(self):
         return self.game.activePlayer == self
@@ -59,37 +60,7 @@ class Player:
         return self.game.players[index]
 
     def getCard(self, zone, index):
-        if zone == Zone.faceup:
-            return self.faceups[index]
-        elif zone == Zone.facedown:
-            return self.facedowns[index]
-
-    def moveCard(self, card, zone):
-        if card.zone == Zone.faceup:
-            self.faceups.remove(card)
-        elif card.zone == Zone.facedown:
-            self.facedowns.remove(card)
-        elif card.zone == Zone.hand:
-            self.hand.remove(card)
-        elif card.zone == Zone.graveyard:
-            self.graveyard.remove(card)
-
-        if zone == Zone.faceup:
-            self.faceups.append(card)
-            card.zone = Zone.faceup
-
-            card.onSpawn()
-        elif zone == Zone.facedown:
-            self.facedowns.append(card)
-            card.zone = Zone.facedown
-        elif zone == Zone.hand:
-            self.hand.append(card)
-            card.zone = Zone.hand
-        elif zone == Zone.graveyard:
-            if card.zone == Zone.faceup:
-                card.onDeath()
-            self.graveyard.append(card)
-            card.zone = Zone.graveyard
+        return zone[index]
 
     def win(self):
         self.game.end(winner=self)
@@ -106,11 +77,11 @@ class Player:
             raise IllegalMoveError("""
             Can only play facedowns during play phase.""")
 
-        if card.zone != Zone.hand:
+        if card.zone != self.hand:
             raise IllegalMoveError("""
             Can't play a card that's not in your hand.""")
 
-        card.moveZone(Zone.facedown)
+        card.zone = self.facedowns
         card.hasAttacked = False
 
     def revealFacedown(self, card):
@@ -122,11 +93,11 @@ class Player:
         if self.mana < card.cost:
             raise IllegalMoveError("Not enough mana.")
 
-        if card.zone != Zone.facedown:
+        if card.zone != self.facedowns:
             raise IllegalMoveError("Can't reveal a card that's not face-down.")
 
         self.mana -= card.cost
-        card.moveZone(Zone.faceup)
+        card.zone = self.faceups
 
     def playFaceup(self, card):
         self.failIfInactive()
@@ -145,7 +116,7 @@ class Player:
             raise IllegalMoveError("Not enough mana.")
 
         self.mana -= card.cost
-        card.moveZone(Zone.faceup)
+        card.zone = self.faceups
 
     def attack(self, attacker, target):
         self.failIfInactive()
@@ -155,21 +126,21 @@ class Player:
         if self.game.phase != Phase.play:
             raise IllegalMoveError("Can only attack during attack phase.")
 
-        if attacker.zone != Zone.faceup:
+        if attacker.zone != self.faceups:
             raise IllegalMoveError("Can only attack with face-up cards.")
 
         taunts = [c for c in self.getEnemy().faceups if c.taunt]
         if len(taunts) > 0 and target not in taunts:
             raise IllegalMoveError("Must attack units with taunt first.")
 
-        if target != Zone.face and target.zone not in [
-                Zone.faceup, Zone.facedown]:
+        if target != self.getEnemy().face and target.zone not in [
+                target.owner.faceups, target.owner.facedowns]:
             raise IllegalMoveError(
                 "Can only attack face-up / face-down targets or a player.")
 
         attacker.hasAttacked = True
 
-        if target == Zone.face:
+        if target == self.face:
             self.attackFace(attacker)
         else:
             self.game.fight(target, attacker)

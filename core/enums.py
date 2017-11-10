@@ -6,7 +6,6 @@ def numericEnum(*items):
 
 Turn = numericEnum('p1', 'p2')
 Phase = numericEnum('reveal', 'play')
-Zone = numericEnum('face', 'faceup', 'facedown', 'hand', 'graveyard')
 
 
 class IllegalMoveError (Exception):

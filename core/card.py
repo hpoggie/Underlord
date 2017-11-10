@@ -1,7 +1,6 @@
 import types
 import inspect
 from .decision import Decision
-from .enums import Zone
 
 
 class Card:
@@ -25,7 +24,7 @@ class Card:
         self.playsFaceUp = False
         self._taunt = False
         self.owner = None
-        self.zone = None
+        self._zone = None
         self.visibleWhileFacedown = False
         self.desc = ""
 
@@ -91,6 +90,21 @@ class Card:
         else:
             self._onDeath = types.MethodType(func, self)
 
-    def moveZone(self, zone):
-        self.owner.moveCard(self, zone)
+    @property
+    def zone(self):
+        return self._zone
+
+    @zone.setter
+    def zone(self, value):
+        if self._zone == self.owner.faceups and value == self.owner.graveyard:
+            self.onDeath()
+
+        if self._zone is not None:
+            self._zone.remove(self)
+        self._zone = value
+        self._zone.append(self)
         self.visibleWhileFacedown = False
+        self.hasAttacked = False
+
+        if self._zone == self.owner.faceups:
+            self.onSpawn()

@@ -47,9 +47,9 @@ class Game:
 
     @event
     def fight(self, c1, c2):
-        if c1.zone == Zone.facedown:
+        if c1.zone == c1.owner.facedowns:
             c1.visibleWhileFacedown = True
-        if c2.zone == Zone.facedown:
+        if c2.zone == c2.owner.facedowns:
             c2.visibleWhileFacedown = True
 
         if c1.spell or c2.spell:
@@ -65,12 +65,13 @@ class Game:
 
     @event
     def destroy(self, card):
-        card.moveZone(Zone.graveyard)
+        card.zone = card.owner.graveyard
 
     @event
     def endPhase(self):
         if self.phase == Phase.reveal:
-            self.activePlayer.facedowns = []
+            for c in self.activePlayer.facedowns:
+                c.zone = c.owner.graveyard
             self.activePlayer.drawCard()
 
         self.phase += 1
