@@ -5,3 +5,4 @@ build/
 wheels/
 *.egg-info
 .cache/
+.coverage
