@@ -381,7 +381,6 @@ class App (ShowBase):
             try:
                 targetIndex = self.enemyFaceupNodes.index(target)
                 targetZone = Zone.faceup
-                targetsEnemy = False
             except ValueError as e:
                 print(e)
         elif target.getTag('zone') == 'hand':
