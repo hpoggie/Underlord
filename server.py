@@ -36,7 +36,6 @@ class OverlordService:
     # actions
 
     def addPlayer(self, addr):
-        print(addr)
         if len(self.connections) < 2:
             self.connections.append((addr, len(self.connections)))
         else:
