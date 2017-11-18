@@ -643,7 +643,7 @@ class App (ShowBase):
             self.endPhaseButton.show()
         else:
             self.endPhaseButton.hide()
-        if self.phase == Phase.reveal:
+        if self.phase == Phase.reveal and self.active:
             self.playerManaCapLabel.setText(
                 str(self.player.mana) + " / " + str(self.player.manaCap))
         else:
