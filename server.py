@@ -14,6 +14,10 @@ import os
 import signal
 
 
+class ServerError(BaseException):
+    pass
+
+
 Zone = numericEnum('face', 'faceup', 'facedown', 'hand', 'graveyard')
 
 
@@ -32,15 +36,14 @@ class OverlordService:
     # actions
 
     def addPlayer(self, addr):
+        print(addr)
         if len(self.connections) < 2:
             self.connections.append((addr, len(self.connections)))
         else:
-            print("Cannot add more players.")
+            raise ServerError("Cannot add more players.")
 
     def selectFaction(self, addr, index):
         self.factions[dict(self.connections)[addr]] = availableFactions[index]
-        if None not in self.factions:
-            self.start()
 
     def start(self):
         self.game = Game(*self.factions)
@@ -243,6 +246,9 @@ if __name__ == "__main__":
             while 1:
                 try:
                     service.networkManager.recv()
+                    started = hasattr(service, 'game')
+                    if None not in service.factions and not started:
+                        service.start()
                 except Decision as d:
                     service.waitingOnDecision = d
                     service.requestTarget(d.addr)
