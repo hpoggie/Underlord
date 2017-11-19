@@ -87,14 +87,16 @@ class MouseHandler (DirectObject):
                         base.revealFacedown(pickedObj)
                     except IllegalMoveError as error:
                         print(error)
+                else:
+                    self.activeCard = None
             elif pickedObj.getTag('zone') == 'enemy face-down':
                 if self.activeCard:
                     base.attack(self.activeCard, pickedObj)
                     self.activeCard = None
             elif pickedObj.getTag('zone') == 'face-up':
-                if not self.activeCard:
+                if base.phase == Phase.play and not self.activeCard:
                     self.activeCard = pickedObj
-                else:
+                elif self.activeCard:
                     base.attack(self.activeCard, pickedObj)
                     self.activeCard = None
             elif pickedObj.getTag('zone') == 'face' and self.activeCard:
