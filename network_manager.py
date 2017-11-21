@@ -2,6 +2,11 @@ import socket
 import select
 
 
+class ConnectionClosed(BaseException):
+    def __init__(self, conn):
+        self.conn = conn
+
+
 class Connection:
     def __init__(self, conn, addr):
         self.conn, self.addr = conn, addr
@@ -71,6 +76,11 @@ class NetworkManager:
         for conn in readers:
             c = next(x for x in self.connections if x.conn == conn)
             newData = c.conn.recv(self.bufsize).decode()
+
+            if newData == "":
+                raise ConnectionClosed(c)
+                continue
+
             c.buffer += newData
             data = c.buffer.split('\0')
             c.buffer = data[-1]

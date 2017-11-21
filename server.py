@@ -3,6 +3,7 @@ Server script.
 Takes the client's actions and computes the results, then sends them back.
 """
 
+from network_manager import ConnectionClosed
 from network import ClientNetworkManager, ServerNetworkManager
 from core.core import Game, EndOfGame
 from core.decision import Decision
@@ -254,8 +255,12 @@ if __name__ == "__main__":
                 except EndOfGame as e:
                     service.endGame(e.winner)
                     exit(0)
+                except ConnectionClosed as c:
+                    # If you DC, your opponent wins
+                    print(c.conn)
+                    service.endGame(service.players[c.conn.addr].getEnemy())
+                    exit(0)
 
                 time.sleep(0.01)
         else:
-            service.networkManager.close()
             service.networkManager.sock.setblocking(1)
