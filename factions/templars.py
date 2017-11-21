@@ -141,7 +141,7 @@ def leftGrail():
 
 def rightGrail():
     return GrailTaunt(
-        name="Left Grail",
+        name="Right Grail",
         image="holy-grail.png",
         cost=2,
         rank=2,
