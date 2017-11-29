@@ -51,6 +51,12 @@ class Player:
         for i in range(0, startHandSize):
             self.drawCard()
 
+    def mulligan(self, *cards):
+        for i in range(len(cards)):
+            self.drawCard()
+        for c in cards:
+            c.zone = self.deck
+
     def drawCard(self):
         if len(self.deck) != 0:
             c = self.deck.pop()

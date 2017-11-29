@@ -1,3 +1,4 @@
+import core.player as player
 from core.player import Player
 from factions import base
 from factions.templars import Templars
@@ -101,3 +102,16 @@ def testAttackFaceup():
     p1.attack(p1.faceups[0], p0.faceups[0])
     assert len(p0.facedowns) == 0
     assert len(p1.faceups) == 0
+
+
+def testMulligan():
+    from copy import deepcopy
+
+    game, p0, p1 = newGame([base.one() for i in range(40)])
+    game.start()
+    hand0 = deepcopy(p0.hand)
+    assert len(hand0) == player.startHandSize
+    p0.mulligan(p0.hand[0])
+    hand1 = deepcopy(p0.hand)
+    assert len(hand1) == player.startHandSize
+    assert hand0 != hand1
