@@ -3,11 +3,9 @@ from .util import newGame
 
 
 def testSweep():
-    game = newGame(
+    game, p1, p2 = newGame(
         [sweep()],
         [one(), one(), one()])
-    p1 = game.players[0]
-    p2 = game.players[1]
 
     p1.endPhase()
     p1.play(p1.hand[0])

@@ -27,20 +27,18 @@ def testForDuplicatesBetweenPlayers():
 
 
 def testReveal():
-    game = newGame(base.one())
-    player = game.players[0]
+    game, player, p1 = newGame(base.one())
     player.endPhase()  # draw the card
     newCard = player.hand[0]
     player.play(newCard)
     player.endPhase()
-    game.players[1].endTurn()
+    p1.endTurn()
     player.revealFacedown(newCard)
     assert newCard.zone == player.faceups
 
 
 def testPlay():
-    game = newGame(base.one())
-    player = game.players[0]
+    game, player, _ = newGame(base.one())
     player.endPhase()
     newCard = player.hand[0]
     player.play(newCard)
@@ -51,8 +49,7 @@ def testPlayFaceup():
     newCard = base.one()
     newCard.playsFaceUp = True
     newCard.cost = 0
-    game = newGame(newCard)
-    player = game.players[0]
+    game, player, _ = newGame(newCard)
     player.drawCard()
     instance = player.hand[0]
     player.playFaceup(instance)
@@ -63,8 +60,7 @@ def testAttackFace():
     newCard = base.one()
     newCard.playsFaceUp = True
     newCard.cost = 0
-    game = newGame(newCard)
-    player = game.players[0]
+    game, player, _ = newGame(newCard)
     player.drawCard()
     player.playFaceup(player.hand[0])
     player.endPhase()
@@ -76,34 +72,32 @@ def testAttackFacedown():
     newCard = base.one()
     newCard.playsFaceUp = True
     newCard.cost = 0
-    game = newGame(newCard)
+    game, p0, p1 = newGame(newCard)
     game.start()
     # 1st player plays a facedown
-    game.players[0].endPhase()
-    game.players[0].play(game.players[0].hand[0])
-    game.players[0].endTurn()
+    p0.endPhase()
+    p0.play(game.players[0].hand[0])
+    p0.endTurn()
     # 2nd player attacks it
-    game.players[1].playFaceup(game.players[1].hand[0])
-    game.players[1].endPhase()
-    game.players[1].attack(game.players[1].faceups[0],
-                           game.players[0].facedowns[0])
-    assert len(game.players[0].facedowns) == 0
-    assert len(game.players[1].faceups) == 0
+    p1.playFaceup(p1.hand[0])
+    p1.endPhase()
+    p1.attack(p1.faceups[0], p0.facedowns[0])
+    assert len(p0.facedowns) == 0
+    assert len(p1.faceups) == 0
 
 
 def testAttackFaceup():
     newCard = base.one()
     newCard.playsFaceUp = True
     newCard.cost = 0
-    game = newGame(newCard)
+    game, p0, p1 = newGame(newCard)
     game.start()
     # 1st player plays a faceup
-    game.players[0].playFaceup(game.players[0].hand[0])
-    game.players[0].endTurn()
+    p0.playFaceup(p0.hand[0])
+    p0.endTurn()
     # 2nd player attacks it
-    game.players[1].playFaceup(game.players[1].hand[0])
-    game.players[1].endPhase()
-    game.players[1].attack(game.players[1].faceups[0],
-                           game.players[0].faceups[0])
-    assert len(game.players[0].facedowns) == 0
-    assert len(game.players[1].faceups) == 0
+    p1.playFaceup(p1.hand[0])
+    p1.endPhase()
+    p1.attack(p1.faceups[0], p0.faceups[0])
+    assert len(p0.facedowns) == 0
+    assert len(p1.faceups) == 0

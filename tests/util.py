@@ -29,14 +29,17 @@ def newGame(*args):
         players = [dummyFactionPlayer(arg)
                    if isinstance(arg, collections.Iterable)
                    else dummyFactionPlayer([arg]) for arg in args]
-        return Game(*players)
+        game = Game(*players)
     elif len(args) == 0:
         pl = dummyFactionPlayer([])
-        return Game(pl, pl)
+        game = Game(pl, pl)
     elif isinstance(args[0], collections.Iterable):
         # if we only got one list, treat that the same as a bunch of cards
         pl = dummyFactionPlayer(args[0])
-        return Game(pl, pl)
+        game = Game(pl, pl)
     else:
         pl = dummyFactionPlayer(args)
-        return Game(pl, pl)
+        game = Game(pl, pl)
+
+    # Return the players for convenience
+    return game, game.players[0], game.players[1]
