@@ -1,9 +1,7 @@
 from factions.templars import *
-from core.core import Game
 from core.decision import Decision
 from factions import base
 from .util import newGame
-from tests.util import dummyFactionPlayer
 from core.enums import *
 from core.player import IllegalMoveError
 
@@ -87,13 +85,11 @@ def testMiracle():
 
 
 def testMiracleNotEnoughCards():
-    dfp1 = dummyFactionPlayer([
+    game = newGame(
         base.one(),
         base.one(),
         miracle()
-    ])
-    dfp2 = dummyFactionPlayer([])
-    game = Game(dfp1, dfp2)
+    )
     game.players[0].drawCard()
     assert len(game.players[0].hand) == 1
     game.players[0].hand[0].playsFaceUp = True
@@ -103,9 +99,7 @@ def testMiracleNotEnoughCards():
 
 
 def testGrail():
-    dfp1 = dummyFactionPlayer([])
-    dfp2 = dummyFactionPlayer([])
-    game = Game(dfp1, dfp2)
+    game = newGame()
     p1 = game.players[0]
     p2 = game.players[1]
     c = leftGrail()
