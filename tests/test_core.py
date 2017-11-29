@@ -1,8 +1,7 @@
 from core.player import Player
-from core.core import Game
 from factions import base
 from factions.templars import Templars
-from tests.dummyFaction import dummyFactionPlayer
+from .util import newGame
 
 
 def deckContainsDuplicates(deck):
@@ -28,8 +27,7 @@ def testForDuplicatesBetweenPlayers():
 
 
 def testReveal():
-    dfp = dummyFactionPlayer([base.one()])
-    game = Game(dfp, dfp)
+    game = newGame(base.one())
     player = game.players[0]
     player.endPhase()  # draw the card
     newCard = player.hand[0]
@@ -41,8 +39,7 @@ def testReveal():
 
 
 def testPlay():
-    dfp = dummyFactionPlayer([base.one()])
-    game = Game(dfp, dfp)
+    game = newGame(base.one())
     player = game.players[0]
     player.endPhase()
     newCard = player.hand[0]
@@ -54,8 +51,7 @@ def testPlayFaceup():
     newCard = base.one()
     newCard.playsFaceUp = True
     newCard.cost = 0
-    dfp = dummyFactionPlayer([newCard])
-    game = Game(dfp, dfp)
+    game = newGame(newCard)
     player = game.players[0]
     player.drawCard()
     instance = player.hand[0]
@@ -67,8 +63,7 @@ def testAttackFace():
     newCard = base.one()
     newCard.playsFaceUp = True
     newCard.cost = 0
-    dfp = dummyFactionPlayer([newCard])
-    game = Game(dfp, dfp)
+    game = newGame(newCard)
     player = game.players[0]
     player.drawCard()
     player.playFaceup(player.hand[0])
@@ -81,8 +76,7 @@ def testAttackFacedown():
     newCard = base.one()
     newCard.playsFaceUp = True
     newCard.cost = 0
-    dfp = dummyFactionPlayer([newCard])
-    game = Game(dfp, dfp)
+    game = newGame(newCard)
     game.start()
     # 1st player plays a facedown
     game.players[0].endPhase()
@@ -101,8 +95,7 @@ def testAttackFaceup():
     newCard = base.one()
     newCard.playsFaceUp = True
     newCard.cost = 0
-    dfp = dummyFactionPlayer([newCard])
-    game = Game(dfp, dfp)
+    game = newGame(newCard)
     game.start()
     # 1st player plays a faceup
     game.players[0].playFaceup(game.players[0].hand[0])

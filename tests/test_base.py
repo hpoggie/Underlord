@@ -1,12 +1,11 @@
 from factions.base import *
-from tests.dummyFaction import dummyFactionPlayer
-from core.core import Game
+from .util import newGame
 
 
 def testSweep():
-    game = Game(
-        dummyFactionPlayer([sweep()]),
-        dummyFactionPlayer([one(), one(), one()]))
+    game = newGame(
+        [sweep()],
+        [one(), one(), one()])
     p1 = game.players[0]
     p2 = game.players[1]
 

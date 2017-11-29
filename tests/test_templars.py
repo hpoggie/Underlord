@@ -2,14 +2,14 @@ from factions.templars import *
 from core.core import Game
 from core.decision import Decision
 from factions import base
-from tests.dummyFaction import dummyFactionPlayer
+from .util import newGame
+from tests.util import dummyFactionPlayer
 from core.enums import *
 from core.player import IllegalMoveError
 
 
 def testEquus():
-    dfp = dummyFactionPlayer([equus()])
-    game = Game(dfp, dfp)
+    game = newGame(equus())
     game.players[0].deck[0].zone = game.players[0].faceups
     game.players[0].manaCap = 3
     assert game.players[0].faceups[0].rank == 5
@@ -18,9 +18,9 @@ def testEquus():
 
 
 def testHolyHandGrenade():
-    dfp1 = dummyFactionPlayer([base.one(), base.one()])
-    dfp2 = dummyFactionPlayer([holyHandGrenade(), holyHandGrenade()])
-    game = Game(dfp1, dfp2)
+    game = newGame(
+        [base.one(), base.one()],
+        [holyHandGrenade(), holyHandGrenade()])
     game.players[0].mana = 5
     game.players[0].drawCard()
     game.players[0].hand[0].playsFaceUp = True
@@ -48,9 +48,9 @@ def testHolyHandGrenade():
 
 
 def testWrathOfGod():
-    dfp1 = dummyFactionPlayer([base.one(), base.one()])
-    dfp2 = dummyFactionPlayer([wrathOfGod()])
-    game = Game(dfp1, dfp2)
+    game = newGame(
+        [base.one(), base.one()],
+        [wrathOfGod()])
     game.players[0].drawCard()
     game.players[0].drawCard()
     game.players[0].hand[0].playsFaceUp = True
@@ -69,7 +69,7 @@ def testWrathOfGod():
 def testMiracle():
     # TODO: be able to do something like [base.one()] * 10
     # doesn't currently work because base.one() only evaluates once
-    dfp1 = dummyFactionPlayer([
+    game = newGame([
         base.one(),
         base.one(),
         base.one(),
@@ -78,8 +78,6 @@ def testMiracle():
         base.one(),
         miracle()
     ])
-    dfp2 = dummyFactionPlayer([])
-    game = Game(dfp1, dfp2)
     game.players[0].drawCard()
     assert len(game.players[0].hand) == 1
     game.players[0].hand[0].playsFaceUp = True
