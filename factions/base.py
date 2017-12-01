@@ -48,8 +48,7 @@ def five():
 
 def sweepAbility(self):
     for player in self.game.players:
-        l = list(player.faceups)
-        for c in l:
+        for c in player.faceups[:]:
             c.zone = player.graveyard
 
 
