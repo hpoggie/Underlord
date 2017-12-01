@@ -1,6 +1,10 @@
 from .enums import *
 
 
+def destroy(card):
+    card.game.destroy(card)
+
+
 class EndOfGame(BaseException):
     def __init__(self, winner):
         self.winner = winner

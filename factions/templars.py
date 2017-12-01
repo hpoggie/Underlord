@@ -1,4 +1,5 @@
 from . import base
+from core.core import destroy
 from core.card import Card
 from core.faction import Faction
 from core.player import Player
@@ -32,7 +33,7 @@ def archangel():
 
 def holyHandGrenade():
     def _onSpawn(self, target):
-        self.game.destroy(target)
+        destroy(target)
         self.zone = self.owner.graveyard
 
     hhg = Card(

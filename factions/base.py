@@ -1,3 +1,4 @@
+from core.core import destroy
 from core.card import Card
 
 
@@ -49,7 +50,7 @@ def five():
 def sweepAbility(self):
     for player in self.game.players:
         for c in player.faceups[:]:
-            c.zone = player.graveyard
+            destroy(c)
 
 
 def sweep():
@@ -69,7 +70,7 @@ def sweep():
 def spellBlade():
     def spellBladeAbility(self, target):
         if target in self.owner.getEnemy().facedowns:
-            self.game.destroy(target)
+            destroy(target)
 
         self.zone = self.owner.graveyard
 
