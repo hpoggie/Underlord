@@ -9,13 +9,13 @@ class EndOfGame(BaseException):
 def event(func):
     def fooBeforeAfter(self, *args, **kwargs):
         for pl in self.players:
-            for c in pl.faceups:
+            for c in pl.faceups[:]:
                 c.beforeEvent(func.__name__, *args, **kwargs)
 
         func(self, *args, **kwargs)
 
         for pl in self.players:
-            for c in pl.faceups:
+            for c in pl.faceups[:]:
                 c.afterEvent(func.__name__, *args, **kwargs)
 
     return fooBeforeAfter
