@@ -1,5 +1,6 @@
 from direct.showbase.DirectObject import DirectObject
 from panda3d.core import CollisionNode, GeomNode, CollisionRay
+from core.enums import Phase
 
 
 class MouseHandler (DirectObject):
