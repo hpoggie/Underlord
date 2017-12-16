@@ -21,6 +21,7 @@ from factions import templars
 import sys
 from fanHand import fanHand
 from mouse import MouseHandler
+from connectionUI import ConnectionUI
 
 loadPrcFileData(
     "",
@@ -53,38 +54,9 @@ class App (ShowBase):
         self._active = False
         self._started = False
 
-        self.connectingLabel = OnscreenText(
-            text="connecting to server",
-            scale=(0.1, 0.1, 0.1))
-        try:
-            # connect to the remote server if no arg given
-            self.connect(argv[1] if len(argv) > 1 else "174.138.119.84")
-            self.makeFactionSelectUI()
-            self.connectingLabel.detachNode()
-        except ConnectionRefusedError:
-            self.connectingLabel.hide()
-            self.connectionFailedLabel = OnscreenText(
-                text="Error. Could not connect to server",
-                pos=(0, 0, 0),
-                scale=(0.1, 0.1, 0.1))
-            self.reconnectButton = DirectButton(
-                pos=(0, 0, -0.25),
-                scale=(0.1, 0.1, 0.1),
-                image="./reconnect.png",
-                relief=None,
-                command=self.retryConnection)
-            return
-
-    def retryConnection(self):
-        try:
-            self.connectingLabel.show()
-            self.connect(self.serverIp)
-            self.connectingLabel.detachNode()
-            self.connectionFailedLabel.detachNode()
-            self.reconnectButton.detachNode()
-            self.makeFactionSelectUI()
-        except ConnectionRefusedError:
-            pass
+        # Connect to the default server if no argument provided
+        ip = argv[1] if len(argv) > 1 else "174.138.119.84"
+        self.connectionUI = ConnectionUI(ip)
 
     def connect(self, ip):
         self.serverIp = ip
