@@ -1,6 +1,6 @@
 from direct.showbase.DirectObject import DirectObject
 from panda3d.core import CardMaker
-from fanHand import fanHand
+from .fanHand import fanHand
 
 
 class ZoneMaker(DirectObject):

@@ -18,9 +18,9 @@ from direct.task import Task
 from factions import templars
 
 import sys
-from mouse import MouseHandler
-from connectionUI import ConnectionUI
-from zoneMaker import ZoneMaker
+from client.mouse import MouseHandler
+from client.connectionUI import ConnectionUI
+from client.zoneMaker import ZoneMaker
 
 loadPrcFileData(
     "",
