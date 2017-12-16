@@ -4,7 +4,6 @@ It also takes user input and turns it into game actions.
 """
 
 from direct.showbase.ShowBase import ShowBase
-from panda3d.core import CardMaker
 from panda3d.core import CollisionTraverser, CollisionHandlerQueue
 from panda3d.core import TextNode
 from direct.gui.DirectGui import DirectButton
@@ -19,9 +18,9 @@ from direct.task import Task
 from factions import templars
 
 import sys
-from fanHand import fanHand
 from mouse import MouseHandler
 from connectionUI import ConnectionUI
+from zoneMaker import ZoneMaker
 
 loadPrcFileData(
     "",
@@ -172,19 +171,7 @@ class App (ShowBase):
             relief=None,
             command=self.endPhase)
 
-        self.playerHandNodes = []
-        self.enemyHandNodes = []
-        self.playerFacedownNodes = []
-        self.enemyFacedownNodes = []
-        self.playerFaceupNodes = []
-        self.enemyFaceupNodes = []
-
-        self.makePlayerHand()
-        self.makeEnemyHand()
-        self.makeBoard()
-        self.makeEnemyBoard()
-        self.makePlayerFace()
-        self.makeEnemyFace()
+        self.zoneMaker = ZoneMaker()
 
     def updateEnemyFaction(self, index):
         self.enemyFaction = self.availableFactions[index]
@@ -298,171 +285,6 @@ class App (ShowBase):
             targetZone,
             targetIndex)
 
-    def makePlayerHand(self):
-        """
-        Redraw the player's hand.
-        """
-        # Destroy entire hand. This is slow and may need to be changed
-        for i in self.playerHandNodes:
-            i.detachNode()
-
-        self.playerHandNodes = []
-
-        if not hasattr(self, 'playerHand'):
-            self.playerHand = self.scene.attachNewNode('playerHand')
-
-        def addHandCard(card, tr):
-            cardModel = self.loadCard(card)
-            pivot = self.scene.attachNewNode('pivot')
-            offset = cardModel.getScale() / 2
-            pivot.setPosHpr(*tr)
-            cardModel.reparentTo(pivot)
-            cardModel.setPos(-offset)
-            cardModel.setTag('zone', 'hand')
-            self.playerHandNodes.append(cardModel)
-            pivot.reparentTo(self.playerHand)
-
-        fan = fanHand(len(self.player.hand))
-        for i, tr in enumerate(fan):
-            addHandCard(self.player.hand[i], tr)
-
-        self.playerHand.setPosHpr(2.5, -1.0, 0, 0, 45.0, 0)
-
-    def makeEnemyHand(self):
-        for i in self.enemyHandNodes:
-            i.detachNode()
-
-        self.enemyHandNodes = []
-
-        if not hasattr(self, 'enemyHand'):
-            self.enemyHand = self.scene.attachNewNode('enemyHand')
-
-        def addEnemyHandCard(tr):
-            cardModel = self.loadEnemyBlank()
-            pivot = self.scene.attachNewNode('pivot')
-            offset = cardModel.getScale() / 2
-            pivot.setPosHpr(*tr)
-            cardModel.reparentTo(pivot)
-            cardModel.setPos(-offset)
-            cardModel.setTag('zone', 'enemy hand')
-            self.enemyHandNodes.append(cardModel)
-            pivot.reparentTo(self.enemyHand)
-
-        fan = fanHand(len(self.enemy.hand))
-        for i, tr in enumerate(fan):
-            addEnemyHandCard(tr)
-
-        self.enemyHand.setPosHpr(2.5, -1.0, 7.1, 0, 45.0, 0)
-
-    def makeBoard(self):
-        """
-        Show the player's faceups and facedowns
-        """
-        for i in self.playerFacedownNodes:
-            i.detachNode()
-        self.playerFacedownNodes = []
-        for i in self.playerFaceupNodes:
-            i.detachNode()
-        self.playerFaceupNodes = []
-
-        posX = 0.0
-        posZ = 0.55
-
-        def addFaceupCard(card):
-            cardModel = self.loadCard(card)
-            cardModel.setPos(posX, 0, posZ)
-            cardModel.setTag('zone', 'face-up')
-            self.playerFaceupNodes.append(cardModel)
-
-        def addFdCard(card):
-            cardModel = self.loadPlayerBlank()
-            cardModel.setPos(posX, 0, posZ)
-            cardModel.setTag('zone', 'face-down')
-            self.playerFacedownNodes.append(cardModel)
-
-        for i in self.player.faceups:
-            addFaceupCard(i)
-            posX += 1.1
-        for i in self.player.facedowns:
-            addFdCard(i)
-            posX += 1.1
-
-    def makeEnemyBoard(self):
-        for i in self.enemyFacedownNodes:
-            i.detachNode()
-        self.enemyFacedownNodes = []
-        for i in self.enemyFaceupNodes:
-            i.detachNode()
-        self.enemyFaceupNodes = []
-
-        posX = 0.0
-        posZ = 2.1
-
-        def addEnemyFdCard():
-            cardModel = self.loadEnemyBlank()
-            cardModel.setPos(posX, 0, posZ)
-            cardModel.setTag('zone', 'enemy face-down')
-            self.enemyFacedownNodes.append(cardModel)
-
-        def addEnemyFaceupCard(card):
-            cardModel = self.loadCard(card)
-            cardModel.setPos(posX, 0, posZ)
-            cardModel.setTag('zone', 'face-up')
-            self.enemyFaceupNodes.append(cardModel)
-
-        for i in self.enemy.faceups:
-            addEnemyFaceupCard(i)
-            posX += 1.1
-        for i in range(0, len(self.enemy.facedowns)):
-            addEnemyFdCard()
-            posX += 1.1
-
-    def loadCard(self, card):
-        cm = CardMaker(card.name)
-        cardModel = self.render.attachNewNode(cm.generate())
-        if card.owner == self.player:
-            path = self.playerIconPath + "/" + card.image
-        else:
-            path = self.enemyIconPath + "/" + card.image
-        tex = loader.loadTexture(path)
-        cardModel.setTexture(tex)
-        return cardModel
-
-    def loadBlank(self, path):
-        cm = CardMaker('mysterious card')
-        cardModel = self.render.attachNewNode(cm.generate())
-        tex = loader.loadTexture(path)
-        cardModel.setTexture(tex)
-        return cardModel
-
-    def loadPlayerBlank(self):
-        path = self.playerIconPath + "/" + self.playerCardBack
-        return self.loadBlank(path)
-
-    def loadEnemyBlank(self):
-        path = self.enemyIconPath + "/" + self.enemyCardBack
-        return self.loadBlank(path)
-
-    def makePlayerFace(self):
-        cm = CardMaker("face")
-        cardModel = self.render.attachNewNode(cm.generate())
-        path = self.playerIconPath + "/" + self.playerCardBack
-        tex = loader.loadTexture(path)
-        cardModel.setTexture(tex)
-        cardModel.setPos(0, 0, -1.5)
-        cardModel.setTag('zone', 'face')
-        self.playerFaceNode = cardModel
-
-    def makeEnemyFace(self):
-        cm = CardMaker("face")
-        cardModel = self.render.attachNewNode(cm.generate())
-        path = self.enemyIconPath + "/" + self.enemyCardBack
-        tex = loader.loadTexture(path)
-        cardModel.setTexture(tex)
-        cardModel.setPos(0, 0, 5)
-        cardModel.setTag('zone', 'face')
-        self.enemyFaceNode = cardModel
-
     def playCard(self, handCard):
         if self.phase == Phase.reveal:
             self.networkManager.sendInts(
@@ -476,8 +298,8 @@ class App (ShowBase):
                 ServerNetworkManager.Opcodes.play,
                 self.playerHandNodes.index(handCard)
             )
-        self.makePlayerHand()
-        self.makeBoard()
+        self.zoneMaker.makePlayerHand()
+        self.zoneMaker.makeBoard()
 
     def revealFacedown(self, card):
         if card not in self.playerFacedownNodes:
@@ -488,8 +310,8 @@ class App (ShowBase):
             ServerNetworkManager.Opcodes.revealFacedown,
             index
         )
-        self.makePlayerHand()
-        self.makeBoard()
+        self.zoneMaker.makePlayerHand()
+        self.zoneMaker.makeBoard()
 
     def attack(self, card, target):
         try:
@@ -522,9 +344,9 @@ class App (ShowBase):
             zone
         )
 
-        self.makePlayerHand()
-        self.makeBoard()
-        self.makeEnemyBoard()
+        self.zoneMaker.makePlayerHand()
+        self.zoneMaker.makeBoard()
+        self.zoneMaker.makeEnemyBoard()
 
     def endPhase(self):
         self.networkManager.sendInts(
@@ -533,10 +355,7 @@ class App (ShowBase):
         )
 
     def redraw(self):
-        self.makePlayerHand()
-        self.makeBoard()
-        self.makeEnemyHand()
-        self.makeEnemyBoard()
+        self.zoneMaker.redrawAll()
         self.endPhaseLabel.setText(str(Phase.keys[self.phase]))
         self.turnLabel.setText("Your Turn" if self.active else "Enemy Turn")
         if self.active:
