@@ -19,6 +19,7 @@ from client.mouse import MouseHandler
 from client.connectionUI import ConnectionUI
 from client.zoneMaker import ZoneMaker
 from client.hud import Hud
+import client.networkInstructions
 
 loadPrcFileData(
     "",
@@ -61,7 +62,8 @@ class App (ShowBase):
 
     def connect(self, ip):
         self.serverIp = ip
-        self.networkManager = ClientNetworkManager(self, self.serverIp)
+        self.networkManager = ClientNetworkManager(
+            client.networkInstructions.NetworkInstructions(), self.serverIp)
         self.serverAddr = (self.serverIp, self.port)
         self.taskMgr.add(self.networkUpdateTask, "NetworkUpdateTask")
         self.networkManager.connect(self.serverAddr)
@@ -98,76 +100,6 @@ class App (ShowBase):
 
         self.hud.makeGameUi()
         self.zoneMaker = ZoneMaker()
-
-    def updateEnemyFaction(self, index):
-        self.enemyFaction = self.availableFactions[index]
-
-    def updatePlayerHand(self, *cardIds):
-        self.player.hand = [None] * len(cardIds)
-        for i, x in enumerate(cardIds):
-            self.player.hand[i] = self.faction.deck[x]
-            self.player.hand[i].owner = self.player
-        self.redraw()
-
-    def updateEnemyHand(self, size):
-        self.enemy.hand = [None] * size
-
-    def updatePlayerFacedowns(self, *cardIds):
-        self.player.facedowns = [None] * len(cardIds)
-        for i, x in enumerate(cardIds):
-            self.player.facedowns[i] = self.faction.deck[x]
-            self.player.facedowns[i].owner = self.player
-        self.redraw()
-
-    def updateEnemyFacedowns(self, *cardIds):
-        self.enemy.facedowns = [None] * len(cardIds)
-        for i, x in enumerate(cardIds):
-            card = self.enemyFaction.deck[x]
-            self.enemy.facedowns[i] = card if x != -1 else None
-            if x != -1:
-                self.enemy.facedowns[i].owner = self.enemy
-        self.redraw()
-
-    def updatePlayerFaceups(self, *cardIds):
-        self.player.faceups = [None] * len(cardIds)
-        for i, x in enumerate(cardIds):
-            self.player.faceups[i] = self.faction.deck[x]
-            self.player.faceups[i].owner = self.player
-        self.redraw()
-
-    def updateEnemyFaceups(self, *cardIds):
-        self.enemy.faceups = [None] * len(cardIds)
-        for i, x in enumerate(cardIds):
-            self.enemy.faceups[i] = self.enemyFaction.deck[x]
-            self.enemy.faceups[i].owner = self.enemy
-        self.redraw()
-
-    def updatePlayerManaCap(self, manaCap):
-        self.player.manaCap = manaCap
-        self.redraw()
-
-    def updatePlayerMana(self, mana):
-        self.player.mana = mana
-        self.redraw()
-
-    def updateEnemyManaCap(self, manaCap):
-        self.enemy.manaCap = manaCap
-        self.redraw()
-
-    def updatePhase(self, phase):
-        self.phase = phase
-
-    def setActive(self, value):
-        self.active = bool(value)
-
-    def winGame(self):
-        self.hud.showBigMessage("Victory")
-
-    def loseGame(self):
-        self.hud.showBigMessage("Defeat")
-
-    def requestTarget(self):
-        self.mouseHandler.targeting = True
 
     def acceptTarget(self, target):
         targetsEnemy = True
