@@ -5,9 +5,6 @@ It also takes user input and turns it into game actions.
 
 from direct.showbase.ShowBase import ShowBase
 from panda3d.core import CollisionTraverser, CollisionHandlerQueue
-from panda3d.core import TextNode
-from direct.gui.DirectGui import DirectButton
-from direct.gui.OnscreenText import OnscreenText
 
 from network import ClientNetworkManager, ServerNetworkManager
 from server import Zone
@@ -21,6 +18,7 @@ import sys
 from client.mouse import MouseHandler
 from client.connectionUI import ConnectionUI
 from client.zoneMaker import ZoneMaker
+from client.hud import Hud
 
 loadPrcFileData(
     "",
@@ -53,6 +51,10 @@ class App (ShowBase):
         self._active = False
         self._started = False
 
+        self.availableFactions = [templars.Templars]
+
+        self.hud = Hud()
+
         # Connect to the default server if no argument provided
         ip = argv[1] if len(argv) > 1 else "174.138.119.84"
         self.connectionUI = ConnectionUI(ip)
@@ -80,26 +82,6 @@ class App (ShowBase):
             self.startGame()
             self._started = True
 
-    def makeFactionSelectUI(self):
-        self.factionSelectLabel = OnscreenText(
-            text="faction select",
-            pos=(0, -0.7, 0),
-            scale=(0.1, 0.1, 0.1),
-            mayChange=True)
-
-        self.availableFactions = [templars.Templars]
-
-        self.factionButtons = []
-
-        for i, faction in enumerate(self.availableFactions):
-            self.factionButtons.append(DirectButton(
-                image=faction.iconPath + '/' + faction.cardBack,
-                pos=(i * 0.2, 0, 0),
-                scale=(0.1, 0.1, 0.1),
-                relief=None,
-                command=self.pickFaction,
-                extraArgs=[i]))
-
     def pickFaction(self, index):
         self.networkManager.sendInts(
             self.serverAddr,
@@ -107,8 +89,6 @@ class App (ShowBase):
             index)
 
         self.faction = self.availableFactions[index]
-
-        self.factionSelectLabel.detachNode()
 
     def startGame(self):
         self.player = self.faction.player(self.faction)
@@ -119,58 +99,8 @@ class App (ShowBase):
         self.enemyIconPath = self.enemyFaction.iconPath
         self.playerCardBack = self.faction.cardBack
         self.enemyCardBack = self.enemyFaction.cardBack
-        self.makeGameUi()
 
-        for button in self.factionButtons:
-            button.destroy()
-        del self.factionButtons
-
-    def makeGameUi(self):
-        self.turnLabel = OnscreenText(
-            text="",
-            pos=(0, -0.9, 0),
-            scale=(0.1, 0.1, 0.1),
-            mayChange=True)
-
-        self.playerManaCapLabel = OnscreenText(
-            text=str(self.player.manaCap),
-            pos=(-0.4, -0.44, 0),
-            scale=(0.1, 0.1, 0.1),
-            mayChange=True)
-        self.enemyManaCapLabel = OnscreenText(
-            text=str(self.enemy.manaCap),
-            pos=(-0.5, 0.77),
-            scale=(0.1, 0.1, 0.1),
-            mayChange=True)
-        self.cardNameLabel = OnscreenText(
-            text="",
-            pos=(-0.7, -0.6, 0),
-            scale=0.07,
-            mayChange=True)
-        self.tooltipLabel = OnscreenText(
-            text="",
-            pos=(-0.9, -0.8, 0),
-            scale=0.05,
-            align=TextNode.ALeft,
-            wordwrap=10,
-            mayChange=True)
-        self.cardStatsLabel = OnscreenText(
-            text="",
-            pos=(-0.7, -0.7, 0),
-            scale=0.07,
-            mayChange=True)
-        self.endPhaseLabel = OnscreenText(
-            text="",
-            pos=(0.7, -0.7, 0),
-            scale=(0.1, 0.1, 0.1),
-            mayChange=True)
-        self.endPhaseButton = DirectButton(
-            image="./end_phase.png",
-            pos=(0.7, 0, -0.85),
-            scale=(0.1, 0.1, 0.1),
-            relief=None,
-            command=self.endPhase)
-
+        self.hud.makeGameUi()
         self.zoneMaker = ZoneMaker()
 
     def updateEnemyFaction(self, index):
@@ -235,14 +165,10 @@ class App (ShowBase):
         self.active = bool(value)
 
     def winGame(self):
-        self.winLabel = OnscreenText(
-            text="Victory",
-            scale=(0.5, 0.5, 0.5))
+        self.hud.showBigMessage("Victory")
 
     def loseGame(self):
-        self.winLabel = OnscreenText(
-            text="Defeat",
-            scale=(0.5, 0.5, 0.5))
+        self.hud.showBigMessage("Defeat")
 
     def requestTarget(self):
         self.mouseHandler.targeting = True
@@ -356,34 +282,11 @@ class App (ShowBase):
 
     def redraw(self):
         self.zoneMaker.redrawAll()
-        self.endPhaseLabel.setText(str(Phase.keys[self.phase]))
-        self.turnLabel.setText("Your Turn" if self.active else "Enemy Turn")
-        if self.active:
-            self.endPhaseButton.show()
-        else:
-            self.endPhaseButton.hide()
-        if self.phase == Phase.reveal and self.active:
-            self.playerManaCapLabel.setText(
-                str(self.player.mana) + " / " + str(self.player.manaCap))
-        else:
-            self.playerManaCapLabel.setText(str(self.player.manaCap))
-        self.enemyManaCapLabel.setText(str(self.enemy.manaCap))
+        self.hud.redraw()
 
     def mouseOverTask(self, name):
         if self.mouseWatcherNode.hasMouse():
-            if hasattr(self, 'cardNameLabel'):
-                self.cardNameLabel.setText("")
-
-            if hasattr(self, 'cardStatsLabel'):
-                self.cardStatsLabel.setText("")
-
-            if hasattr(self, 'tooltipLabel'):
-                if hasattr(self, 'phase') and self.active:
-                    self.tooltipLabel.setText(
-                        "Reveal face-down cards" if self.phase == Phase.reveal
-                        else "Play face-down cards and attack")
-                else:
-                    self.tooltipLabel.setText("")
+            self.hud.redrawTooltips()
 
             if hasattr(self, '_activeObj') and self._activeObj is not None:
                 path = self.playerIconPath + "/" + self.playerCardBack
@@ -395,21 +298,14 @@ class App (ShowBase):
                 if pickedObj.getTag('zone') == 'hand':
                     card = self.player.hand[
                         self.playerHandNodes.index(pickedObj)]
-                    self.cardNameLabel.setText(card.name)
-                    label = str(card.cost) + " " + str(card.rank)
-                    self.cardStatsLabel.setText(label)
-                    self.tooltipLabel.setText(
-                        ("Instant. " if card.playsFaceUp else "") + card.desc)
+                    self.hud.updateCardTooltip(card)
                 elif pickedObj.getTag('zone') == 'face-down':
                     card = self.player.facedowns[
                         self.playerFacedownNodes.index(pickedObj)]
                     self._activeObj = pickedObj
                     path = self.playerIconPath + "/" + card.image
                     pickedObj.setTexture(loader.loadTexture(path))
-                    self.cardNameLabel.setText(card.name)
-                    label = str(card.cost) + " " + str(card.rank)
-                    self.cardStatsLabel.setText(label)
-                    self.tooltipLabel.setText(card.desc)
+                    self.hud.updateCardTooltip(card)
                 elif pickedObj.getTag('zone') == 'enemy face-down':
                     card = self.enemy.facedowns[
                         self.enemyFacedownNodes.index(pickedObj)]
@@ -417,9 +313,7 @@ class App (ShowBase):
                         self._activeObj = pickedObj
                         path = self.playerIconPath + "/" + card.image
                         pickedObj.setTexture(loader.loadTexture(path))
-                        label = str(card.cost) + " " + str(card.rank)
-                        self.cardStatsLabel.setText(label)
-                        self.tooltipLabel.setText(card.desc)
+                        self.hud.updateCardTooltip(card)
                 elif pickedObj.getTag('zone') == 'face-up':
                     if pickedObj in self.playerFaceupNodes:
                         card = self.player.faceups[
@@ -427,10 +321,7 @@ class App (ShowBase):
                     else:
                         card = self.enemy.faceups[
                             self.enemyFaceupNodes.index(pickedObj)]
-                    self.cardNameLabel.setText(card.name)
-                    label = str(card.cost) + " " + str(card.rank)
-                    self.cardStatsLabel.setText(label)
-                    self.tooltipLabel.setText(card.desc)
+                    self.hud.updateCardTooltip(card)
 
         return Task.cont
 

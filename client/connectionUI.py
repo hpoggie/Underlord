@@ -12,7 +12,7 @@ class ConnectionUI(DirectObject):
         try:
             # connect to the remote server if no arg given
             base.connect(ip)
-            base.makeFactionSelectUI()
+            base.hud.makeFactionSelectUI()
             self.connectingLabel.detachNode()
         except ConnectionRefusedError:
             self.showConnectionError()
