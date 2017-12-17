@@ -46,7 +46,7 @@ class App (ShowBase):
         self.handler = CollisionHandlerQueue()
         self.mouseHandler = MouseHandler()
 
-        self.taskMgr.add(self.mouseOverTask, "MouseOverTask")
+        self.taskMgr.add(self.mouseHandler.mouseOverTask, "MouseOverTask")
 
         self._active = False
         self._started = False
@@ -279,47 +279,6 @@ class App (ShowBase):
     def redraw(self):
         self.zoneMaker.redrawAll()
         self.hud.redraw()
-
-    def mouseOverTask(self, name):
-        if self.mouseWatcherNode.hasMouse():
-            self.hud.redrawTooltips()
-
-            if hasattr(self, '_activeObj') and self._activeObj is not None:
-                path = self.playerIconPath + "/" + self.playerCardBack
-                self._activeObj.setTexture(loader.loadTexture(path))
-                self._activeObj = None
-
-            pickedObj = self.mouseHandler.getObjectClickedOn()
-            if pickedObj:
-                if pickedObj.getTag('zone') == 'hand':
-                    card = self.player.hand[
-                        self.playerHandNodes.index(pickedObj)]
-                    self.hud.updateCardTooltip(card)
-                elif pickedObj.getTag('zone') == 'face-down':
-                    card = self.player.facedowns[
-                        self.playerFacedownNodes.index(pickedObj)]
-                    self._activeObj = pickedObj
-                    path = self.playerIconPath + "/" + card.image
-                    pickedObj.setTexture(loader.loadTexture(path))
-                    self.hud.updateCardTooltip(card)
-                elif pickedObj.getTag('zone') == 'enemy face-down':
-                    card = self.enemy.facedowns[
-                        self.enemyFacedownNodes.index(pickedObj)]
-                    if card is not None:
-                        self._activeObj = pickedObj
-                        path = self.playerIconPath + "/" + card.image
-                        pickedObj.setTexture(loader.loadTexture(path))
-                        self.hud.updateCardTooltip(card)
-                elif pickedObj.getTag('zone') == 'face-up':
-                    if pickedObj in self.playerFaceupNodes:
-                        card = self.player.faceups[
-                            self.playerFaceupNodes.index(pickedObj)]
-                    else:
-                        card = self.enemy.faceups[
-                            self.enemyFaceupNodes.index(pickedObj)]
-                    self.hud.updateCardTooltip(card)
-
-        return Task.cont
 
     def networkUpdateTask(self, task):
         self.networkManager.recv()

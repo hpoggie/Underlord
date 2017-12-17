@@ -1,6 +1,7 @@
 from direct.showbase.DirectObject import DirectObject
 from panda3d.core import CollisionNode, GeomNode, CollisionRay
 from core.enums import Phase
+from direct.task import Task
 
 
 class MouseHandler (DirectObject):
@@ -75,3 +76,44 @@ class MouseHandler (DirectObject):
 
     def onMouse1(self):
         self.doClick()
+
+    def mouseOverTask(self, name):
+        if base.mouseWatcherNode.hasMouse():
+            base.hud.redrawTooltips()
+
+            if hasattr(self, '_activeObj') and self._activeObj is not None:
+                path = base.playerIconPath + "/" + base.playerCardBack
+                self._activeObj.setTexture(loader.loadTexture(path))
+                self._activeObj = None
+
+            pickedObj = self.getObjectClickedOn()
+            if pickedObj:
+                if pickedObj.getTag('zone') == 'hand':
+                    card = base.player.hand[
+                        base.playerHandNodes.index(pickedObj)]
+                    base.hud.updateCardTooltip(card)
+                elif pickedObj.getTag('zone') == 'face-down':
+                    card = base.player.facedowns[
+                        base.playerFacedownNodes.index(pickedObj)]
+                    self._activeObj = pickedObj
+                    path = base.playerIconPath + "/" + card.image
+                    pickedObj.setTexture(loader.loadTexture(path))
+                    base.hud.updateCardTooltip(card)
+                elif pickedObj.getTag('zone') == 'enemy face-down':
+                    card = base.enemy.facedowns[
+                        base.enemyFacedownNodes.index(pickedObj)]
+                    if card is not None:
+                        self._activeObj = pickedObj
+                        path = base.playerIconPath + "/" + card.image
+                        pickedObj.setTexture(loader.loadTexture(path))
+                        base.hud.updateCardTooltip(card)
+                elif pickedObj.getTag('zone') == 'face-up':
+                    if pickedObj in base.playerFaceupNodes:
+                        card = base.player.faceups[
+                            base.playerFaceupNodes.index(pickedObj)]
+                    else:
+                        card = base.enemy.faceups[
+                            base.enemyFaceupNodes.index(pickedObj)]
+                    base.hud.updateCardTooltip(card)
+
+        return Task.cont
