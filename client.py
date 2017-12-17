@@ -67,10 +67,6 @@ class App (ShowBase):
         self.networkManager.connect(self.serverAddr)
         self.networkManager.send("0", self.serverAddr)
 
-    def loadModel(self, name):
-        ret = self.loader.loadModel(name + ".bam")
-        return ret
-
     @property
     def active(self):
         return self._active
