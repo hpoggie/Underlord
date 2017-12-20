@@ -16,9 +16,9 @@ from factions import templars
 
 import sys
 from client.mouse import MouseHandler
-from client.connectionUI import ConnectionUI
 from client.zoneMaker import ZoneMaker
 from client.hud import Hud
+from client.connectionManager import ConnectionManager
 import client.networkInstructions
 
 loadPrcFileData(
@@ -38,8 +38,6 @@ class App (ShowBase):
     def __init__(self, argv):
         ShowBase.__init__(self)
 
-        self.port = 9099
-
         self.scene = self.render.attachNewNode('empty')
         self.scene.reparentTo(self.render)
 
@@ -58,16 +56,16 @@ class App (ShowBase):
 
         # Connect to the default server if no argument provided
         ip = argv[1] if len(argv) > 1 else "174.138.119.84"
-        self.connectionUI = ConnectionUI(ip)
+        port = 9099
+        self.serverAddr = (ip, port)
 
-    def connect(self, ip):
-        self.serverIp = ip
-        self.networkManager = ClientNetworkManager(
-            client.networkInstructions.NetworkInstructions(), self.serverIp)
-        self.serverAddr = (self.serverIp, self.port)
+        instr = client.networkInstructions.NetworkInstructions()
+
+        self.networkManager = ClientNetworkManager(instr, ip)
+
+        self.connectionManager = ConnectionManager(self.serverAddr, instr)
+        self.connectionManager.tryConnect()
         self.taskMgr.add(self.networkUpdateTask, "NetworkUpdateTask")
-        self.networkManager.connect(self.serverAddr)
-        self.networkManager.send("0", self.serverAddr)
 
     @property
     def active(self):

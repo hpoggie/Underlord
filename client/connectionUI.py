@@ -4,21 +4,12 @@ from direct.gui.OnscreenText import OnscreenText
 
 
 class ConnectionUI(DirectObject):
-    def __init__(self, ip):
+    def __init__(self):
         self.connectingLabel = OnscreenText(
             text="connecting to server",
             scale=(0.1, 0.1, 0.1))
 
-        try:
-            # connect to the remote server if no arg given
-            base.connect(ip)
-            base.hud.makeFactionSelectUI()
-            self.connectingLabel.detachNode()
-        except ConnectionRefusedError:
-            self.showConnectionError()
-            return
-
-    def showConnectionError(self):
+    def showConnectionError(self, callback):
         self.connectingLabel.hide()
         self.connectionFailedLabel = OnscreenText(
             text="Error. Could not connect to server",
@@ -29,15 +20,11 @@ class ConnectionUI(DirectObject):
             scale=(0.1, 0.1, 0.1),
             image="./reconnect.png",
             relief=None,
-            command=self.retryConnection)
+            command=callback)
 
-    def retryConnection(self):
-        try:
-            self.connectingLabel.show()
-            base.connect(self.serverIp)
-            self.connectingLabel.detachNode()
+    def destroy(self):
+        self.connectingLabel.detachNode()
+        if hasattr(self, 'connectionFailedLabel'):
             self.connectionFailedLabel.detachNode()
+        if hasattr(self, 'reconnectButton'):
             self.reconnectButton.detachNode()
-            base.makeFactionSelectUI()
-        except ConnectionRefusedError:
-            pass
