@@ -67,6 +67,9 @@ class App (ShowBase):
         self.connectionManager.tryConnect()
         self.taskMgr.add(self.networkUpdateTask, "NetworkUpdateTask")
 
+        # View the cards at an angle
+        self.camera.setPosHpr(4, -15, -15, 0, 45, 0)
+
     @property
     def active(self):
         return self._active
@@ -194,5 +197,4 @@ class App (ShowBase):
 
 
 app = App(sys.argv)
-app.camera.setPosHpr(4, -15, -15, 0, 45, 0)
 app.run()
