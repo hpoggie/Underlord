@@ -6,7 +6,7 @@ It also takes user input and turns it into game actions.
 from direct.showbase.ShowBase import ShowBase
 from panda3d.core import CollisionTraverser, CollisionHandlerQueue
 
-from network import ClientNetworkManager, ServerNetworkManager
+from network import ClientNetworkManager
 from server import Zone
 from core.enums import Phase
 
@@ -61,7 +61,7 @@ class App (ShowBase):
 
         instr = client.networkInstructions.NetworkInstructions()
 
-        self.networkManager = ClientNetworkManager(instr, ip)
+        self.networkManager = ClientNetworkManager(instr, ip, port)
 
         self.connectionManager = ConnectionManager(self.serverAddr, instr)
         self.connectionManager.tryConnect()
@@ -79,11 +79,7 @@ class App (ShowBase):
             self._started = True
 
     def pickFaction(self, index):
-        self.networkManager.sendInts(
-            self.serverAddr,
-            ServerNetworkManager.Opcodes.selectFaction,
-            index)
-
+        self.networkManager.selectFaction(index)
         self.faction = self.availableFactions[index]
 
     def startGame(self):
@@ -134,26 +130,18 @@ class App (ShowBase):
     def acceptTarget(self, target):
         targetZone, targetIndex, targetsEnemy = self.findCard(target)
 
-        self.networkManager.sendInts(
-            self.serverAddr,
-            ServerNetworkManager.Opcodes.acceptTarget,
+        self.networkManager.acceptTarget(
             int(targetsEnemy),
             targetZone,
             targetIndex)
 
     def playCard(self, handCard):
         if self.phase == Phase.reveal:
-            self.networkManager.sendInts(
-                self.serverAddr,
-                ServerNetworkManager.Opcodes.playFaceup,
-                self.playerHandNodes.index(handCard)
-            )
+            self.networkManager.playFaceup(
+                self.playerHandNodes.index(handCard))
         else:
-            self.networkManager.sendInts(
-                self.serverAddr,
-                ServerNetworkManager.Opcodes.play,
-                self.playerHandNodes.index(handCard)
-            )
+            self.networkManager.play(
+                self.playerHandNodes.index(handCard))
         self.zoneMaker.makePlayerHand()
         self.zoneMaker.makeBoard()
 
@@ -161,11 +149,7 @@ class App (ShowBase):
         if card not in self.playerFacedownNodes:
             raise IllegalMoveError("That card is not one of your facedowns.")
         index = self.playerFacedownNodes.index(card)
-        self.networkManager.sendInts(
-            self.serverAddr,
-            ServerNetworkManager.Opcodes.revealFacedown,
-            index
-        )
+        self.networkManager.revealFacedown(index)
         self.zoneMaker.makePlayerHand()
         self.zoneMaker.makeBoard()
 
@@ -191,23 +175,14 @@ class App (ShowBase):
             print("Not a valid attack target.")
             return
 
-        self.networkManager.sendInts(
-            self.serverAddr,
-            ServerNetworkManager.Opcodes.attack,
-            index,
-            targetIndex,
-            targetZone
-        )
+        self.networkManager.attack(index, targetIndex, targetZone)
 
         self.zoneMaker.makePlayerHand()
         self.zoneMaker.makeBoard()
         self.zoneMaker.makeEnemyBoard()
 
     def endPhase(self):
-        self.networkManager.sendInts(
-            self.serverAddr,
-            ServerNetworkManager.Opcodes.endPhase
-        )
+        self.networkManager.endPhase()
 
     def redraw(self):
         self.zoneMaker.redrawAll()

@@ -1,6 +1,7 @@
 from network_manager import NetworkManager
 from core.enums import numericEnum
 from core.decision import Decision
+import types
 
 
 class ServerNetworkManager (NetworkManager):
@@ -37,10 +38,26 @@ class ClientNetworkManager (NetworkManager):
     The ClientNetworkManager takes incoming network opcodes and turns them into
     calls to the client.
     """
-    def __init__(self, base, ip):
+    def __init__(self, base, ip, port):
         super().__init__()
         self.base = base
         self.ip = ip
+        self.port = port
+
+        # Make it so each server opcode is a function
+        for i, key in enumerate(ServerNetworkManager.Opcodes.keys):
+            class OpcodeFunc:
+                def __init__(self, opcode):
+                    self.opcode = opcode
+
+                def __call__(self, base, *args):
+                    base.sendInts(
+                        (base.ip, base.port),
+                        self.opcode,
+                        *args)
+
+            # Bind the OpcodeFunc as a method to the class
+            setattr(self, key, types.MethodType(OpcodeFunc(i), self))
 
     Opcodes = numericEnum(
         'updateEnemyFaction',
