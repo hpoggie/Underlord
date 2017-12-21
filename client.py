@@ -99,36 +99,42 @@ class App (ShowBase):
         self.hud.makeGameUi()
         self.zoneMaker = ZoneMaker()
 
+    def findCard(self, card):
+        enemy = True
+        index = -1
+        zone = -1
+        try:
+            if card.getTag('zone') == 'face-down':
+                index = self.playerFacedownNodes.index(card)
+                zone = Zone.facedown
+                enemy = False
+            elif card.getTag('zone') == 'enemy face-down':
+                index = self.enemyFacedownNodes.index(card)
+                zone = Zone.facedown
+            elif card.getTag('zone') == 'face-up':
+                # TODO: hack
+                # Search player faceup nodes to see if we own the card
+                if card in self.playerFaceupNodes:
+                    index = self.playerFaceupNodes.index(card)
+                    enemy = False
+                else:
+                    index = self.enemyFaceupNodes.index(card)
+                zone = Zone.faceup
+            elif card.getTag('zone') == 'hand':
+                index = self.playerHandNodes.index(card)
+                zone = Zone.hand
+                enemy = False
+            elif card.getTag('zone') == 'face':
+                zone = Zone.face
+                if card is self.playerFaceNode:  # TODO: hack
+                    enemy = False
+        except ValueError as e:
+            print(e)
+
+        return (zone, index, enemy)
+
     def acceptTarget(self, target):
-        targetsEnemy = True
-        targetIndex = -1
-        targetZone = -1
-        if target.getTag('zone') == 'face-down':
-            try:
-                targetIndex = self.playerFacedownNodes.index(target)
-                targetZone = Zone.facedown
-                targetsEnemy = False
-            except ValueError as e:
-                print(e)
-        if target.getTag('zone') == 'enemy face-down':
-            try:
-                targetIndex = self.enemyFacedownNodes.index(target)
-                targetZone = Zone.facedown
-            except ValueError as e:
-                print(e)
-        elif target.getTag('zone') == 'face-up':
-            try:
-                targetIndex = self.enemyFaceupNodes.index(target)
-                targetZone = Zone.faceup
-            except ValueError as e:
-                print(e)
-        elif target.getTag('zone') == 'hand':
-            try:
-                targetIndex = self.playerHandNodes.index(target)
-                targetZone = Zone.hand
-                targetsEnemy = False
-            except ValueError as e:
-                print(e)
+        targetZone, targetIndex, targetsEnemy = self.findCard(target)
 
         self.networkManager.sendInts(
             self.serverAddr,
@@ -166,34 +172,22 @@ class App (ShowBase):
         self.zoneMaker.makeBoard()
 
     def attack(self, card, target):
-        try:
-            index = self.playerFaceupNodes.index(card)
-        except ValueError:
-            print("That card is not one of your faceups.")
+        if target == self.playerFaceNode:
+            print("Can't attack yourself.")
             return
-        targetIndex = 0
-        zone = 0
-        if target.getTag('zone') == 'face':
-            if target == self.playerFaceNode:
-                print("Can't attack yourself.")
-                return
-            zone = Zone.face
-        elif target.getTag('zone') == 'enemy face-down':
-            targetIndex = self.enemyFacedownNodes.index(target)
-            zone = Zone.facedown
-        else:
-            if target in self.playerFaceupNodes:
-                print("Can't attack your own faceups.")
-                return
-            targetIndex = self.enemyFaceupNodes.index(target)
-            zone = Zone.faceup
+        if target in self.playerFaceupNodes:
+            print("Can't attack your own faceups.")
+            return
+
+        zone, index, enemy = self.findCard(target)
+        targetZone, targetIndex, targetsEnemy = self.findCard(target)
 
         self.networkManager.sendInts(
             self.serverAddr,
             ServerNetworkManager.Opcodes.attack,
             index,
             targetIndex,
-            zone
+            targetZone
         )
 
         self.zoneMaker.makePlayerHand()
