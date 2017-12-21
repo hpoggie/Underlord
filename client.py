@@ -103,33 +103,31 @@ class App (ShowBase):
         enemy = True
         index = -1
         zone = -1
-        try:
-            if card.getTag('zone') == 'face-down':
-                index = self.playerFacedownNodes.index(card)
-                zone = Zone.facedown
+
+        if card.getTag('zone') == 'face-down':
+            index = self.playerFacedownNodes.index(card)
+            zone = Zone.facedown
+            enemy = False
+        elif card.getTag('zone') == 'enemy face-down':
+            index = self.enemyFacedownNodes.index(card)
+            zone = Zone.facedown
+        elif card.getTag('zone') == 'face-up':
+            # TODO: hack
+            # Search player faceup nodes to see if we own the card
+            if card in self.playerFaceupNodes:
+                index = self.playerFaceupNodes.index(card)
                 enemy = False
-            elif card.getTag('zone') == 'enemy face-down':
-                index = self.enemyFacedownNodes.index(card)
-                zone = Zone.facedown
-            elif card.getTag('zone') == 'face-up':
-                # TODO: hack
-                # Search player faceup nodes to see if we own the card
-                if card in self.playerFaceupNodes:
-                    index = self.playerFaceupNodes.index(card)
-                    enemy = False
-                else:
-                    index = self.enemyFaceupNodes.index(card)
-                zone = Zone.faceup
-            elif card.getTag('zone') == 'hand':
-                index = self.playerHandNodes.index(card)
-                zone = Zone.hand
+            else:
+                index = self.enemyFaceupNodes.index(card)
+            zone = Zone.faceup
+        elif card.getTag('zone') == 'hand':
+            index = self.playerHandNodes.index(card)
+            zone = Zone.hand
+            enemy = False
+        elif card.getTag('zone') == 'face':
+            zone = Zone.face
+            if card is self.playerFaceNode:  # TODO: hack
                 enemy = False
-            elif card.getTag('zone') == 'face':
-                zone = Zone.face
-                if card is self.playerFaceNode:  # TODO: hack
-                    enemy = False
-        except ValueError as e:
-            print(e)
 
         return (zone, index, enemy)
 
@@ -172,15 +170,26 @@ class App (ShowBase):
         self.zoneMaker.makeBoard()
 
     def attack(self, card, target):
-        if target == self.playerFaceNode:
-            print("Can't attack yourself.")
-            return
-        if target in self.playerFaceupNodes:
-            print("Can't attack your own faceups.")
+        try:
+            zone, index, enemy = self.findCard(card)
+            targetZone, targetIndex, targetsEnemy = self.findCard(target)
+        except ValueError as e:
+            print("Card not found: " + e)
             return
 
-        zone, index, enemy = self.findCard(target)
-        targetZone, targetIndex, targetsEnemy = self.findCard(target)
+        if enemy:
+            print("Card is not yours.")
+            return
+        if zone is not Zone.faceup:
+            print("Can only attack with faceups.")
+            return
+
+        if not targetsEnemy:
+            print("Can't attack your own stuff.")
+            return
+        if targetZone not in (Zone.faceup, Zone.facedown, Zone.face):
+            print("Not a valid attack target.")
+            return
 
         self.networkManager.sendInts(
             self.serverAddr,
