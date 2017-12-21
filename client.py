@@ -45,7 +45,7 @@ class App (ShowBase):
         self.handler = CollisionHandlerQueue()
         self.mouseHandler = MouseHandler()
 
-        self.taskMgr.add(self.mouseHandler.mouseOverTask, "MouseOverTask")
+        self.taskMgr.add(self.inputTask, "InputTask")
 
         self._active = False
         self._started = False
@@ -165,18 +165,14 @@ class App (ShowBase):
             return
 
         if enemy:
-            print("Card is not yours.")
-            return
+            raise IllegalMoveError("Card is not yours.")
         if zone is not Zone.faceup:
-            print("Can only attack with faceups.")
-            return
+            raise IllegalMoveError("Can only attack with faceups.")
 
         if not targetsEnemy:
-            print("Can't attack your own stuff.")
-            return
+            raise IllegalMoveError("Can't attack your own stuff.")
         if targetZone not in (Zone.faceup, Zone.facedown, Zone.face):
-            print("Not a valid attack target.")
-            return
+            raise IllegalMoveError("Not a valid attack target.")
 
         self.networkManager.attack(index, targetIndex, targetZone)
 
@@ -190,6 +186,14 @@ class App (ShowBase):
     def redraw(self):
         self.zoneMaker.redrawAll()
         self.hud.redraw()
+
+    def inputTask(self, task):
+        try:
+            self.mouseHandler.mouseOverTask(task)
+        except IllegalMoveError as e:
+            print(e)
+
+        return Task.cont
 
     def networkUpdateTask(self, task):
         self.networkManager.recv()

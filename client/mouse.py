@@ -1,7 +1,6 @@
 from direct.showbase.DirectObject import DirectObject
 from panda3d.core import CollisionNode, GeomNode, CollisionRay
 from core.enums import Phase
-from direct.task import Task
 
 
 class MouseHandler (DirectObject):
@@ -77,7 +76,7 @@ class MouseHandler (DirectObject):
     def onMouse1(self):
         self.doClick()
 
-    def mouseOverTask(self, name):
+    def mouseOverTask(self):
         if base.mouseWatcherNode.hasMouse():
             base.hud.redrawTooltips()
 
@@ -115,5 +114,3 @@ class MouseHandler (DirectObject):
                         card = base.enemy.faceups[
                             base.enemyFaceupNodes.index(pickedObj)]
                     base.hud.updateCardTooltip(card)
-
-        return Task.cont
