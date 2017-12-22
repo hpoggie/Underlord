@@ -119,3 +119,31 @@ def testGrail():
     p0.manaCap = 2
     # Should fail if attack doesn't work
     p1.attack(p1.faceups[0], p0.face)
+
+
+def testCrystalElemental():
+    game, p0, p1 = newGame(
+        [crystalElemental()],
+        [base.one()])
+
+    # Cheat the elemental into play
+    p0.drawCard()
+    p0.hand[0].playsFaceUp = True
+    p0.mana = crystalElemental().cost
+    p0.playFaceup(p0.hand[0])
+    p0.endTurn()
+
+    p1.endPhase()  # Draws the card
+    p1.play(p1.hand[0])  # Play the card face-down
+    p1.endTurn()
+
+    p0.endPhase()
+    assert(len(p0.hand) == 0)
+
+    # give them a card to draw
+    c = crystalElemental()
+    c.owner = p0  # Need to have an owner or can't switch zones
+    p0.deck.append(c)
+
+    p0.attack(p0.faceups[0], p1.facedowns[0])
+    assert(len(p0.hand) == 1)

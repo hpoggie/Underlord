@@ -93,9 +93,9 @@ def miracle():
 
 def crystalElemental():
     class CrystalElemental(Card):
-        def afterEvent(self, eventName, *args, **kwargs):
-            fd = args[0].zone == args[0].owner.facedowns
-            if eventName == "destroy" and args[0].owner != self.owner and fd:
+        def beforeEvent(self, eventName, *args, **kwargs):
+            if eventName == "destroy" and args[0].owner != self.owner\
+                    and args[0].zone == args[0].owner.facedowns:
                 self.owner.drawCard()
 
     return CrystalElemental(
