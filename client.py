@@ -189,7 +189,7 @@ class App (ShowBase):
 
     def inputTask(self, task):
         try:
-            self.mouseHandler.mouseOverTask(task)
+            self.mouseHandler.mouseOverTask()
         except IllegalMoveError as e:
             print(e)
 
