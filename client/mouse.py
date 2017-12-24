@@ -75,7 +75,10 @@ class MouseHandler (DirectObject):
             self.activeCard = None
 
     def onMouse1(self):
-        self.doClick()
+        try:
+            self.doClick()
+        except IllegalMoveError as e:
+            print(e)
 
     def mouseOverTask(self):
         if base.mouseWatcherNode.hasMouse():
