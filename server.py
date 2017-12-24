@@ -64,9 +64,8 @@ class OverlordService:
 
         # TODO: kludge
         for i in range(len(self.factions)):
-            self.networkManager.sendInts(
-                self.connections[(i + 1) % len(self.factions)][0],
-                ClientNetworkManager.Opcodes.updateEnemyFaction,
+            self.networkManager.connections[self.connections[
+                (i + 1) % len(self.factions)][1]].updateEnemyFaction(
                 availableFactions.index(self.factions[i]))
 
         self.redraw()
