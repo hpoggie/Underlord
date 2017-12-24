@@ -9,6 +9,7 @@ from panda3d.core import CollisionTraverser, CollisionHandlerQueue
 from network import ClientNetworkManager
 from server import Zone
 from core.enums import Phase
+from core.player import IllegalMoveError
 
 from panda3d.core import loadPrcFileData
 from direct.task import Task
@@ -28,10 +29,6 @@ loadPrcFileData(
     window-title Overlord
     fullscreen 0
     """)
-
-
-class IllegalMoveError (Exception):
-    pass
 
 
 class App (ShowBase):

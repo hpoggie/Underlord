@@ -1,6 +1,7 @@
 from direct.showbase.DirectObject import DirectObject
 from panda3d.core import CollisionNode, GeomNode, CollisionRay
 from core.enums import Phase
+from core.player import IllegalMoveError
 
 
 class MouseHandler (DirectObject):
