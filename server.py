@@ -29,7 +29,7 @@ class OverlordService:
     def __init__(self):
         self.networkManager = ServerNetworkManager(self)
         self.networkManager.startServer()
-        self.connections = []
+        self.addrs = []
         self.factions = [None, None]
 
         self.waitingOnDecision = None
@@ -37,20 +37,20 @@ class OverlordService:
     # actions
 
     def addPlayer(self, addr):
-        if len(self.connections) < 2:
-            self.connections.append((addr, len(self.connections)))
+        if len(self.addrs) < 2:
+            self.addrs.append(addr)
         else:
             raise ServerError("Cannot add more players.")
 
     def selectFaction(self, addr, index):
-        self.factions[dict(self.connections)[addr]] = availableFactions[index]
+        self.factions[self.addrs.index(addr)] = availableFactions[index]
 
     def start(self):
         self.game = Game(*self.factions)
         self.game.start()
         self.players = dict([
-            (conn[0], self.game.players[conn[1]])
-            for conn in self.connections])
+            (addr, self.game.players[i])
+            for i, addr in enumerate(self.addrs)])
 
         # Add extra data so we can find zones by index
         for pl in self.game.players:
@@ -64,8 +64,8 @@ class OverlordService:
 
         # TODO: kludge
         for i in range(len(self.factions)):
-            self.networkManager.connections[self.connections[
-                (i + 1) % len(self.factions)][1]].updateEnemyFaction(
+            self.networkManager.connections[
+                (i + 1) % len(self.factions)].updateEnemyFaction(
                 availableFactions.index(self.factions[i]))
 
         self.redraw()
