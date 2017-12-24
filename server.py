@@ -76,80 +76,42 @@ class OverlordService:
 
     def revealFacedown(self, addr, index):
         pl = self.players[addr]
-        try:
-            pl.revealFacedown(pl.facedowns[index])
-        except IllegalMoveError as e:
-            print(e)
-            return
-        except IndexError as e:
-            print(e)
-            return
-
+        pl.revealFacedown(pl.facedowns[index])
         self.redraw()
 
     def playFaceup(self, addr, index):
         pl = self.players[addr]
-        try:
-            pl.playFaceup(pl.hand[index])
-        except IllegalMoveError as e:
-            print(e)
-            return
-        except IndexError as e:
-            print(e)
-            return
-
+        pl.playFaceup(pl.hand[index])
         self.redraw()
 
     def attack(self, addr, cardIndex, targetIndex, targetZone):
         pl = self.players[addr]
-        try:
-            attacker = pl.faceups[cardIndex]
-        except IndexError as e:
-            print(e)
-            return
+        attacker = pl.faceups[cardIndex]
         if targetZone == Zone.face:
             target = pl.getEnemy().face
         else:
             target = pl.getEnemy().zones[targetZone][targetIndex]
 
-        try:
-            pl.attack(attacker, target)
-        except IllegalMoveError as e:
-            print(e)
+        pl.attack(attacker, target)
         self.redraw()
 
     def play(self, addr, index):
         pl = self.players[addr]
-        try:
-            pl.play(pl.hand[index])
-        except IllegalMoveError as e:
-            print(e)
-        except IndexError as e:
-            print(e)
-            return
+        pl.play(pl.hand[index])
         self.redraw()
 
     def acceptTarget(self, addr, targetsEnemy, targetZone, targetIndex):
         pl = self.players[addr]
-        try:
-            if targetsEnemy:
-                target = pl.getEnemy().zones[targetZone][targetIndex]
-            else:
-                target = pl.zones[targetZone][targetIndex]
-            self.waitingOnDecision.execute(target)
-            self.waitingOnDecision = None
-        except IllegalMoveError as e:
-            print(e)
-        except IndexError as e:
-            print(e)
-            return
+        if targetsEnemy:
+            target = pl.getEnemy().zones[targetZone][targetIndex]
+        else:
+            target = pl.zones[targetZone][targetIndex]
+        self.waitingOnDecision.execute(target)
+        self.waitingOnDecision = None
         self.redraw()
 
     def endPhase(self, addr):
-        try:
-            self.players[addr].endPhase()
-        except IllegalMoveError as e:
-            print(e)
+        self.players[addr].endPhase()
         self.redraw()
 
     def requestTarget(self, addr):
@@ -171,19 +133,16 @@ class OverlordService:
             c.updatePlayerMana(pl.mana)
             c.updatePhase(self.game.phase)
 
-            try:
-                enemyPlayer = pl.getEnemy()
-                c.updateEnemyHand(len(enemyPlayer.hand))
-                c.updateEnemyFacedowns(
-                    *(getCard(enemyPlayer, c) if c.visibleWhileFacedown else -1
-                        for c in enemyPlayer.facedowns)
-                )
-                c.updateEnemyFaceups(
-                    *(getCard(enemyPlayer, c) for c in enemyPlayer.faceups)
-                )
-                c.updateEnemyManaCap(enemyPlayer.manaCap)
-            except IndexError:
-                pass
+            enemyPlayer = pl.getEnemy()
+            c.updateEnemyHand(len(enemyPlayer.hand))
+            c.updateEnemyFacedowns(
+                *(getCard(enemyPlayer, c) if c.visibleWhileFacedown else -1
+                    for c in enemyPlayer.facedowns)
+            )
+            c.updateEnemyFaceups(
+                *(getCard(enemyPlayer, c) for c in enemyPlayer.faceups)
+            )
+            c.updateEnemyManaCap(enemyPlayer.manaCap)
 
     def endGame(self, winner):
         for addr, pl in self.players.items():
@@ -205,6 +164,10 @@ if __name__ == "__main__":
                     started = hasattr(service, 'game')
                     if None not in service.factions and not started:
                         service.start()
+                except IndexError as e:
+                    print(e)
+                except IllegalMoveError as e:  # Client sent us an illegal move
+                    print(e)
                 except Decision as d:
                     service.waitingOnDecision = d
                     service.requestTarget(d.addr)
