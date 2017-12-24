@@ -26,7 +26,7 @@ loadPrcFileData(
     "",
     """
     win-size 500 500
-    window-title Overlord
+    window-title Underlord
     fullscreen 0
     """)
 

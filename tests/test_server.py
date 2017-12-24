@@ -1,7 +1,7 @@
 import server
 
 
-svc = server.OverlordService()
+svc = server.Server()
 
 
 addr0 = ('localhost', 99999)

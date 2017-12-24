@@ -25,7 +25,7 @@ Zone = numericEnum('face', 'faceup', 'facedown', 'hand', 'graveyard')
 availableFactions = [Templar]
 
 
-class OverlordService:
+class Server:
     def __init__(self):
         self.networkManager = ServerNetworkManager(self)
         self.networkManager.startServer()
@@ -154,7 +154,7 @@ class OverlordService:
 
 if __name__ == "__main__":
     signal.signal(signal.SIGCHLD, signal.SIG_IGN)
-    service = OverlordService()
+    service = Server()
     while 1:
         service.networkManager.accept()
         if os.fork() == 0:

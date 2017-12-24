@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    name="Overlord",
+    name="Underlord",
     options={
         'build_apps': {
             'copy_paths': [
@@ -22,7 +22,7 @@ setup(
                 'pandagl',
             ],
             'gui_apps': {
-                'Overlord': 'client.py',
+                'Underlord': 'client.py',
             },
             'deploy_platforms': [
                 'manylinux1_x86_64',  # 108
