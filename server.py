@@ -4,7 +4,7 @@ Takes the client's actions and computes the results, then sends them back.
 """
 
 from network_manager import ConnectionClosed
-from network import ClientNetworkManager, ServerNetworkManager
+from network import ServerNetworkManager
 from core.core import Game, EndOfGame
 from core.decision import Decision
 from factions.templars import Templar
@@ -50,6 +50,10 @@ class OverlordService:
         self.game.start()
         self.players = dict([
             (addr, self.game.players[i])
+            for i, addr in enumerate(self.addrs)])
+        # Make it easy to find connections by addr
+        self.connections = dict([
+            (addr, self.networkManager.connections[i])
             for i, addr in enumerate(self.addrs)])
 
         # Add extra data so we can find zones by index
@@ -149,10 +153,7 @@ class OverlordService:
         self.redraw()
 
     def requestTarget(self, addr):
-        self.networkManager.sendInts(
-            addr,
-            ClientNetworkManager.Opcodes.requestTarget
-        )
+        self.connections[addr].requestTarget()
 
     def redraw(self):
         def getCard(pl, c):
@@ -161,79 +162,35 @@ class OverlordService:
                     return i
 
         for addr, pl in self.players.items():
-            self.networkManager.sendInts(
-                addr,
-                ClientNetworkManager.Opcodes.setActive,
-                int(pl.isActivePlayer())
-            )
-            self.networkManager.sendInts(
-                addr,
-                ClientNetworkManager.Opcodes.updatePlayerHand,
-                *(getCard(pl, c) for c in pl.hand)
-            )
-            self.networkManager.sendInts(
-                addr,
-                ClientNetworkManager.Opcodes.updatePlayerFacedowns,
-                *(getCard(pl, c) for c in pl.facedowns)
-            )
-            self.networkManager.sendInts(
-                addr,
-                ClientNetworkManager.Opcodes.updatePlayerFaceups,
-                *(getCard(pl, c) for c in pl.faceups)
-            )
-            self.networkManager.sendInts(
-                addr,
-                ClientNetworkManager.Opcodes.updatePlayerManaCap,
-                pl.manaCap
-            )
-            self.networkManager.sendInts(
-                addr,
-                ClientNetworkManager.Opcodes.updatePlayerMana,
-                pl.mana
-            )
-            self.networkManager.sendInts(
-                addr,
-                ClientNetworkManager.Opcodes.updatePhase,
-                self.game.phase
-            )
+            c = self.connections[addr]
+            c.setActive(int(pl.isActivePlayer()))
+            c.updatePlayerHand(*(getCard(pl, c) for c in pl.hand))
+            c.updatePlayerFacedowns(*(getCard(pl, c) for c in pl.facedowns))
+            c.updatePlayerFaceups(*(getCard(pl, c) for c in pl.faceups))
+            c.updatePlayerManaCap(pl.manaCap)
+            c.updatePlayerMana(pl.mana)
+            c.updatePhase(self.game.phase)
 
             try:
                 enemyPlayer = pl.getEnemy()
-                self.networkManager.sendInts(
-                    addr,
-                    ClientNetworkManager.Opcodes.updateEnemyHand,
-                    len(enemyPlayer.hand)
-                )
-                self.networkManager.sendInts(
-                    addr,
-                    ClientNetworkManager.Opcodes.updateEnemyFacedowns,
+                c.updateEnemyHand(len(enemyPlayer.hand))
+                c.updateEnemyFacedowns(
                     *(getCard(enemyPlayer, c) if c.visibleWhileFacedown else -1
                         for c in enemyPlayer.facedowns)
                 )
-                self.networkManager.sendInts(
-                    addr,
-                    ClientNetworkManager.Opcodes.updateEnemyFaceups,
+                c.updateEnemyFaceups(
                     *(getCard(enemyPlayer, c) for c in enemyPlayer.faceups)
                 )
-                self.networkManager.sendInts(
-                    addr,
-                    ClientNetworkManager.Opcodes.updateEnemyManaCap,
-                    enemyPlayer.manaCap
-                )
+                c.updateEnemyManaCap(enemyPlayer.manaCap)
             except IndexError:
                 pass
 
     def endGame(self, winner):
         for addr, pl in self.players.items():
             if pl == winner:
-                opcode = ClientNetworkManager.Opcodes.winGame
+                self.connections[addr].winGame()
             else:
-                opcode = ClientNetworkManager.Opcodes.loseGame
-
-            self.networkManager.sendInts(
-                addr,
-                opcode
-            )
+                self.connections[addr].loseGame()
 
 
 if __name__ == "__main__":
