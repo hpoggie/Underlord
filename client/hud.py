@@ -7,11 +7,13 @@ from core.enums import Phase
 
 class Hud(DirectObject):
     def __init__(self):
-        pass
+        self.font = loader.loadFont("Ubuntu-Regular.ttf")
+        self.font.setPixelsPerUnit(60)
 
     def makeFactionSelectUI(self):
         self.factionSelectLabel = OnscreenText(
             text="faction select",
+            font=self.font,
             pos=(0, -0.7, 0),
             scale=(0.1, 0.1, 0.1),
             mayChange=True)
@@ -35,27 +37,32 @@ class Hud(DirectObject):
 
         self.turnLabel = OnscreenText(
             text="",
+            font=self.font,
             pos=(0, -0.9, 0),
             scale=(0.1, 0.1, 0.1),
             mayChange=True)
 
         self.playerManaCapLabel = OnscreenText(
             text=str(base.player.manaCap),
+            font=self.font,
             pos=(-0.4, -0.44, 0),
             scale=(0.1, 0.1, 0.1),
             mayChange=True)
         self.enemyManaCapLabel = OnscreenText(
             text=str(base.enemy.manaCap),
+            font=self.font,
             pos=(-0.5, 0.77),
             scale=(0.1, 0.1, 0.1),
             mayChange=True)
         self.cardNameLabel = OnscreenText(
             text="",
+            font=self.font,
             pos=(-0.7, -0.6, 0),
             scale=0.07,
             mayChange=True)
         self.tooltipLabel = OnscreenText(
             text="",
+            font=self.font,
             pos=(-0.9, -0.8, 0),
             scale=0.05,
             align=TextNode.ALeft,
@@ -63,11 +70,13 @@ class Hud(DirectObject):
             mayChange=True)
         self.cardStatsLabel = OnscreenText(
             text="",
+            font=self.font,
             pos=(-0.7, -0.7, 0),
             scale=0.07,
             mayChange=True)
         self.endPhaseLabel = OnscreenText(
             text="",
+            font=self.font,
             pos=(0.7, -0.7, 0),
             scale=(0.1, 0.1, 0.1),
             mayChange=True)
@@ -84,6 +93,7 @@ class Hud(DirectObject):
         """
         self.winLabel = OnscreenText(
             text=message,
+            font=self.font,
             scale=(0.5, 0.5, 0.5))
 
     def redrawTooltips(self):
