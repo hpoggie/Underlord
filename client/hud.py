@@ -10,6 +10,40 @@ class Hud(DirectObject):
         self.font = loader.loadFont("Ubuntu-Regular.ttf")
         self.font.setPixelsPerUnit(60)
 
+    def makeMainMenu(self):
+        # Put everything under one node to make it easy to destroy
+        self.menu = base.aspect2d.attachNewNode(name="Menu")
+
+        OnscreenText(
+            text="UNDERLORD",
+            font=self.font,
+            parent=self.menu,  # Doesn't affect pos/scale
+            scale=0.3,
+            pos=(0, 0.3, 0))
+
+        def connect():
+            base.connect()
+            self.menu.detachNode()
+
+        def quit():
+            base.userExit()
+
+        buttons = (
+            ("Play", connect),
+            ("Quit", quit))
+        buttonPos = iter([
+            (0, 0, len(buttons) * 0.15 - i * 0.15 - 0.3)
+            for i in range(len(buttons))])
+        for b in buttons:
+            DirectButton(
+                text=b[0],
+                text_font=self.font,
+                command=b[1],
+                parent=self.menu,
+                pos=next(buttonPos),
+                scale=0.1,
+                frameSize=(-1.5, 1.5, -0.5, 1))
+
     def makeFactionSelectUI(self):
         self.factionSelectLabel = OnscreenText(
             text="faction select",
