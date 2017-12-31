@@ -37,11 +37,9 @@ class NetworkManager:
         self.sock.listen(2)
 
     def accept(self):
-        self.connections = [
-            Connection(*self.sock.accept()),
-            Connection(*self.sock.accept())]
-        if self.verbose:
-            print("got 2 players. starting")
+        # Wait for a connection
+        self.sock.setblocking(1)
+        self.connections.append(Connection(*self.sock.accept()))
         self.sock.setblocking(0)
 
     def close(self):

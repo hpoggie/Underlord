@@ -156,7 +156,8 @@ if __name__ == "__main__":
     signal.signal(signal.SIGCHLD, signal.SIG_IGN)
     service = Server()
     while 1:
-        service.networkManager.accept()
+        for i in range(2):
+            service.networkManager.accept()
         if os.fork() == 0:
             while 1:
                 try:
