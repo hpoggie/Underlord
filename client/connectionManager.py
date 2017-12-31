@@ -22,7 +22,7 @@ class ConnectionManager(DirectObject):
 
     def connect(self):
         base.networkManager.connect(self.addr)
-        base.networkManager.send("0", self.addr)
+        base.networkManager.addPlayer()
 
     def retryConnection(self):
         self.connectionUI.connectingLabel.show()
