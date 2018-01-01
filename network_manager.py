@@ -39,7 +39,9 @@ class NetworkManager:
     def accept(self):
         # Wait for a connection
         self.sock.setblocking(1)
-        self.connections.append(Connection(*self.sock.accept()))
+        conn = Connection(*self.sock.accept())
+        self.connections.append(conn)
+        self.onClientConnected(conn)  # Do callback
         self.sock.setblocking(0)
 
     def close(self):
@@ -88,6 +90,12 @@ class NetworkManager:
 
             for d in data:
                 self.onGotPacket(d, tgt.addr)
+
+    def onClientConnected(self, conn):
+        """
+        Callback for when the client connects. Override this
+        """
+        print(conn)
 
     def onGotPacket(self, packet, addr):
         print(packet)
