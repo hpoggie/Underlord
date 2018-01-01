@@ -5,6 +5,11 @@ class NetworkInstructions(DirectObject):
     """
     Handles instructions from the server.
     """
+    def updateNumPlayers(self, n):
+        # numPlayersLabel is set by hud
+        if hasattr(base, 'numPlayersLabel') and base.numPlayersLabel:
+            base.numPlayersLabel.setText(str(n))
+
     def updateEnemyFaction(self, index):
         base.enemyFaction = base.availableFactions[index]
 

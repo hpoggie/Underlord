@@ -80,6 +80,7 @@ class ClientNetworkManager (NetworkManager):
             setattr(self, key, types.MethodType(OpcodeFunc(i), self))
 
     Opcodes = numericEnum(
+        'updateNumPlayers',
         'updateEnemyFaction',
         'updatePlayerHand',
         'updateEnemyHand',

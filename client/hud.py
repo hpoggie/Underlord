@@ -21,6 +21,14 @@ class Hud(DirectObject):
             scale=0.3,
             pos=(0, 0.3, 0))
 
+        base.numPlayersLabel = OnscreenText(
+            text="Getting server info...",
+            font=self.font,
+            parent=self.menu,
+            scale=0.1,
+            pos=(0, 0.2, 0),
+            mayChange=True)
+
         def connect():
             base.connectionManager.startGame()
             self.menu.detachNode()
