@@ -151,6 +151,31 @@ class Server:
             else:
                 self.connections[addr].loseGame()
 
+    def run(self):
+        while 1:
+            try:
+                self.networkManager.recv()
+                started = hasattr(self, 'game')
+                if None not in self.factions and not started:
+                    self.start()
+            except IndexError as e:
+                print(e)
+            except IllegalMoveError as e:  # Client sent us an illegal move
+                print(e)
+            except Decision as d:
+                self.waitingOnDecision = d
+                self.requestTarget(d.addr)
+            except EndOfGame as e:
+                self.endGame(e.winner)
+                exit(0)
+            except ConnectionClosed as c:
+                # If you DC, your opponent wins
+                print(c.conn)
+                self.endGame(self.players[c.conn.addr].getEnemy())
+                exit(0)
+
+            time.sleep(0.01)
+
 
 if __name__ == "__main__":
     signal.signal(signal.SIGCHLD, signal.SIG_IGN)
@@ -159,28 +184,6 @@ if __name__ == "__main__":
         for i in range(2):
             service.networkManager.accept()
         if os.fork() == 0:
-            while 1:
-                try:
-                    service.networkManager.recv()
-                    started = hasattr(service, 'game')
-                    if None not in service.factions and not started:
-                        service.start()
-                except IndexError as e:
-                    print(e)
-                except IllegalMoveError as e:  # Client sent us an illegal move
-                    print(e)
-                except Decision as d:
-                    service.waitingOnDecision = d
-                    service.requestTarget(d.addr)
-                except EndOfGame as e:
-                    service.endGame(e.winner)
-                    exit(0)
-                except ConnectionClosed as c:
-                    # If you DC, your opponent wins
-                    print(c.conn)
-                    service.endGame(service.players[c.conn.addr].getEnemy())
-                    exit(0)
-
-                time.sleep(0.01)
+            service.run()
         else:
             service.networkManager.sock.setblocking(1)
