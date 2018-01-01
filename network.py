@@ -20,29 +20,6 @@ class ServerNetworkManager (NetworkManager):
         'acceptTarget',
         'endPhase')
 
-    def accept(self):
-        """
-        Accept the connection and give it the client methods
-        """
-        super().accept()
-
-        for conn in self.connections:
-            # Make it so each client opcode is a function
-            for i, key in enumerate(ClientNetworkManager.Opcodes.keys):
-                class OpcodeFunc:
-                    def __init__(self, manager, opcode):
-                        self.manager = manager
-                        self.opcode = opcode
-
-                    def __call__(self, base, *args):
-                        self.manager.sendInts(
-                            base.addr,
-                            self.opcode,
-                            *args)
-
-                # Bind the OpcodeFunc as a method to the class
-                setattr(conn, key, types.MethodType(OpcodeFunc(self, i), conn))
-
     def onGotPacket(self, packet, addr):
         if packet == '':
             return
@@ -55,6 +32,25 @@ class ServerNetworkManager (NetworkManager):
         except Decision as d:
             d.addr = addr
             raise d
+
+    def onClientConnected(self, conn):
+        # Make it so each client opcode is a function
+        for i, key in enumerate(ClientNetworkManager.Opcodes.keys):
+            class OpcodeFunc:
+                def __init__(self, manager, opcode):
+                    self.manager = manager
+                    self.opcode = opcode
+
+                def __call__(self, base, *args):
+                    self.manager.sendInts(
+                        base.addr,
+                        self.opcode,
+                        *args)
+
+            # Bind the OpcodeFunc as a method to the class
+            setattr(conn, key, types.MethodType(OpcodeFunc(self, i), conn))
+
+        self.base.onClientConnected(conn)
 
 
 class ClientNetworkManager (NetworkManager):
