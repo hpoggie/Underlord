@@ -27,6 +27,8 @@ class NetworkManager:
         # SO_REUSEADDR will allow us to quickly restart the server if it dies
         # (useful for testing)
         self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        # Use non blocking socket
+        self.sock.setblocking(0)
         self.connections = []
         self.isClient = False
 
@@ -37,18 +39,22 @@ class NetworkManager:
         self.sock.listen(2)
 
     def accept(self):
-        # Wait for a connection
-        self.sock.setblocking(1)
-        conn = Connection(*self.sock.accept())
-        self.connections.append(conn)
-        self.onClientConnected(conn)  # Do callback
-        self.sock.setblocking(0)
+        """
+        Accept connections. Does not block
+        """
+        readers, writers, errors = select.select([self.sock], [], [], 0)
+        if len(readers) > 0:
+            # Get connection
+            conn = Connection(*self.sock.accept())
+            self.connections.append(conn)
+            self.onClientConnected(conn)  # Do callback
 
     def close(self):
         for conn in self.connections:
             conn.close()
 
     def connect(self, addr):
+        self.sock.setblocking(1)
         self.sock.connect(addr)
         self.connections = [Connection(self.sock, addr)]
         self.isClient = True

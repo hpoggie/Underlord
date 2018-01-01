@@ -181,9 +181,9 @@ if __name__ == "__main__":
     signal.signal(signal.SIGCHLD, signal.SIG_IGN)
     service = Server()
     while 1:
-        for i in range(2):
-            service.networkManager.accept()
-        if os.fork() == 0:
-            service.run()
-        else:
-            service.networkManager.sock.setblocking(1)
+        service.networkManager.accept()
+        if len(service.networkManager.connections) == 2:
+            if os.fork() == 0:
+                service.run()
+            else:
+                service.networkManager.connections = []

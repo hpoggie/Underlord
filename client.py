@@ -197,7 +197,10 @@ class App (ShowBase):
         return Task.cont
 
     def networkUpdateTask(self, task):
-        self.networkManager.recv()
+        try:
+            self.networkManager.recv()
+        except ConnectionClosed:
+            return Task.done
         return Task.cont
 
 
