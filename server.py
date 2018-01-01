@@ -13,6 +13,7 @@ from core.player import IllegalMoveError
 from core.enums import numericEnum
 import os
 import signal
+import copy
 
 
 class ServerError(BaseException):
@@ -25,22 +26,50 @@ Zone = numericEnum('face', 'faceup', 'facedown', 'hand', 'graveyard')
 availableFactions = [Templar]
 
 
-class Server:
+class LobbyServer:
     def __init__(self):
         self.networkManager = ServerNetworkManager(self)
-        self.networkManager.startServer()
-        self.addrs = []
+        self.readyPlayers = []
+        self.verbose = False
+
+    def onClientConnected(self, conn):
+        for conn in self.networkManager.connections:
+            conn.updateNumPlayers(len(self.networkManager.connections))
+        if self.verbose:
+            print("Client connected from " + str(conn.addr))
+
+    def addPlayer(self, addr):
+        conn = next(
+            conn for conn in self.networkManager.connections
+            if conn.addr == addr)
+        self.readyPlayers.append(conn)
+
+    def acceptConnections(self):
+        self.networkManager.accept()
+        self.networkManager.recv()
+        if len(self.readyPlayers) == 2:
+            if self.verbose:
+                print("Game time started. Forking subprocess.")
+            if os.fork() == 0:
+                GameServer(self.networkManager, *self.readyPlayers).run()
+            else:
+                self.readyPlayers = []
+                # TODO: know which players are in game
+                self.networkManager.connections = []
+
+
+class GameServer:
+    def __init__(self, netman, *connections):
+        self.networkManager = copy.copy(netman)
+        self.networkManager.base = self
+        # We need only the players for the game we're currently serving
+        self.networkManager.connections = connections
+        self.addrs = [c.addr for c in self.networkManager.connections]
         self.factions = [None, None]
 
         self.waitingOnDecision = None
 
     # actions
-
-    def addPlayer(self, addr):
-        if len(self.addrs) < 2:
-            self.addrs.append(addr)
-        else:
-            raise ServerError("Cannot add more players.")
 
     def selectFaction(self, addr, index):
         self.factions[self.addrs.index(addr)] = availableFactions[index]
@@ -179,11 +208,6 @@ class Server:
 
 if __name__ == "__main__":
     signal.signal(signal.SIGCHLD, signal.SIG_IGN)
-    service = Server()
+    lobby = LobbyServer()
     while 1:
-        service.networkManager.accept()
-        if len(service.networkManager.connections) == 2:
-            if os.fork() == 0:
-                service.run()
-            else:
-                service.networkManager.connections = []
+        lobby.acceptConnections()

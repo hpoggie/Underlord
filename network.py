@@ -7,6 +7,7 @@ import types
 class ServerNetworkManager (NetworkManager):
     def __init__(self, base):
         super().__init__()
+        self.startServer()
         self.base = base
 
     Opcodes = numericEnum(

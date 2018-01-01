@@ -22,7 +22,7 @@ class Hud(DirectObject):
             pos=(0, 0.3, 0))
 
         def connect():
-            base.connect()
+            base.connectionManager.startGame()
             self.menu.detachNode()
 
         def quit():

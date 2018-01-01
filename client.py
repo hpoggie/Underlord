@@ -60,16 +60,18 @@ class App (ShowBase):
 
         self.networkManager = ClientNetworkManager(instr, ip, port)
 
+        self.connectionManager = ConnectionManager(
+            self.serverAddr, self.networkManager.base)
+        self.connectionManager.tryConnect()
+        self.taskMgr.add(self.networkUpdateTask, "NetworkUpdateTask")
+
         self.hud.makeMainMenu()
 
         # View the cards at an angle
         self.camera.setPosHpr(4, -15, -15, 0, 45, 0)
 
     def connect(self):
-        self.connectionManager = ConnectionManager(
-            self.serverAddr, self.networkManager.base)
-        self.connectionManager.tryConnect()
-        self.taskMgr.add(self.networkUpdateTask, "NetworkUpdateTask")
+        self.connectionManager.startGame()
 
     @property
     def active(self):

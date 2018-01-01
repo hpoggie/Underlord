@@ -22,6 +22,8 @@ class ConnectionManager(DirectObject):
 
     def connect(self):
         base.networkManager.connect(self.addr)
+
+    def startGame(self):
         base.networkManager.addPlayer()
 
     def retryConnection(self):

@@ -11,6 +11,7 @@ class Connection:
     def __init__(self, conn, addr):
         self.conn, self.addr = conn, addr
         self.buffer = ''
+        self.receiving = True
 
     def close(self):
         self.conn.close()
@@ -77,7 +78,7 @@ class NetworkManager:
 
     def recv(self):
         readers, writers, errors = select.select(
-            [c.conn for c in self.connections], [], [], 0)
+            [c.conn for c in self.connections if c.receiving], [], [], 0)
 
         for conn in readers:
             c = next(x for x in self.connections if x.conn == conn)
