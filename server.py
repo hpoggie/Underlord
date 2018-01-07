@@ -12,7 +12,6 @@ import time
 from core.player import IllegalMoveError
 from core.enums import numericEnum
 import os
-import signal
 import copy
 
 
@@ -30,6 +29,7 @@ class LobbyServer:
     def __init__(self):
         self.networkManager = ServerNetworkManager(self)
         self.readyPlayers = []
+        self.gameServerProcs = {}
         self.verbose = False
 
     def onClientConnected(self, conn):
@@ -46,16 +46,42 @@ class LobbyServer:
 
     def acceptConnections(self):
         self.networkManager.accept()
-        self.networkManager.recv()
+        try:
+            self.networkManager.recv()
+        except ConnectionClosed as c:
+            self.networkManager.connections.remove(c.conn)
+
         if len(self.readyPlayers) == 2:
             if self.verbose:
                 print("Game time started. Forking subprocess.")
-            if os.fork() == 0:
+            f = os.fork()
+            if f == 0:
                 GameServer(self.networkManager, *self.readyPlayers).run()
-            else:
-                self.readyPlayers = []
-                # TODO: know which players are in game
                 self.networkManager.connections = []
+            else:
+                self.networkManager.connections = []
+                self.gameServerProcs[f] = self.readyPlayers
+                self.readyPlayers = []
+
+        while len(self.gameServerProcs) > 0:
+            # Clean up when the game server finishes
+            pid = os.waitpid(-1, os.WNOHANG)[0]
+            if pid != 0:
+                self.onGameServerFinished(pid)
+            else:
+                break
+
+    def onGameServerFinished(self, procid):
+        """
+        Send the player back to the lobby when the child proc finishes
+        """
+        for pl in self.gameServerProcs[procid]:
+            self.networkManager.connections.append(pl)
+
+        self.gameServerProcs.pop(procid)
+
+        print(
+            "n. of connections: " + str(len(self.networkManager.connections)))
 
 
 class GameServer:
@@ -207,7 +233,6 @@ class GameServer:
 
 
 if __name__ == "__main__":
-    signal.signal(signal.SIGCHLD, signal.SIG_IGN)
     lobby = LobbyServer()
     while 1:
         lobby.acceptConnections()

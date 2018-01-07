@@ -21,6 +21,7 @@ from client.zoneMaker import ZoneMaker
 from client.hud import Hud
 from client.connectionManager import ConnectionManager
 import client.networkInstructions
+from network_manager import ConnectionClosed
 
 loadPrcFileData(
     "",
