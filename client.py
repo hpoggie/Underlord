@@ -71,9 +71,6 @@ class App (ShowBase):
         # View the cards at an angle
         self.camera.setPosHpr(4, -15, -15, 0, 45, 0)
 
-    def connect(self):
-        self.connectionManager.startGame()
-
     @property
     def active(self):
         return self._active
