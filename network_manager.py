@@ -65,7 +65,7 @@ class NetworkManager:
         packet = bytes(str(data) + '\0', 'utf-8')
 
         if self.verbose:
-            print("Sent packet " + packet + " to ", target)
+            print("Sent packet " + str(packet) + " to " + str(target))
 
         if self.isClient:
             self.sock.sendall(packet)
