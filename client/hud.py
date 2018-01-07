@@ -138,6 +138,9 @@ class Hud(DirectObject):
             font=self.font,
             scale=(0.5, 0.5, 0.5))
 
+    def hideBigMessage(self):
+        self.winLabel.detachNode()
+
     def redrawTooltips(self):
         if hasattr(self, 'cardNameLabel'):
             self.cardNameLabel.setText("")
@@ -174,3 +177,13 @@ class Hud(DirectObject):
         self.enemyManaCapLabel.setText(str(base.enemy.manaCap))
         self.endPhaseLabel.setText(str(Phase.keys[base.phase]))
         self.turnLabel.setText("Your Turn" if base.active else "Enemy Turn")
+
+    def unmakeGameUI(self):
+        self.turnLabel.detachNode()
+        self.playerManaCapLabel.detachNode()
+        self.enemyManaCapLabel.detachNode()
+        self.cardNameLabel.detachNode()
+        self.tooltipLabel.detachNode()
+        self.cardStatsLabel.detachNode()
+        self.endPhaseLabel.detachNode()
+        self.endPhaseButton.detachNode()

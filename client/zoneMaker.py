@@ -189,3 +189,17 @@ class ZoneMaker(DirectObject):
         self.makeBoard()
         self.makeEnemyHand()
         self.makeEnemyBoard()
+
+    def unmake(self):
+        arr = base.playerHandNodes +\
+            base.enemyHandNodes +\
+            base.playerFacedownNodes +\
+            base.enemyFacedownNodes +\
+            base.playerFaceupNodes +\
+            base.enemyFaceupNodes
+
+        for c in arr:
+            c.detachNode()
+
+        base.playerFaceNode.detachNode()
+        base.enemyFaceNode.detachNode()

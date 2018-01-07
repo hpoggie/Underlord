@@ -85,6 +85,8 @@ class App (ShowBase):
     def pickFaction(self, index):
         self.networkManager.selectFaction(index)
         self.faction = self.availableFactions[index]
+        self._active = False
+        self._started = False
 
     def startGame(self):
         self.player = self.faction.player(self.faction)
@@ -187,6 +189,17 @@ class App (ShowBase):
     def redraw(self):
         self.zoneMaker.redrawAll()
         self.hud.redraw()
+
+    def quitToMainMenu(self):
+        self.taskMgr.doMethodLater(
+            1, self._quitToMainMenuTask, "QuitToMainMenu")
+
+    def _quitToMainMenuTask(self, task):
+        self.zoneMaker.unmake()
+        self.hud.unmakeGameUI()
+        self.hud.hideBigMessage()
+        self.hud.makeMainMenu()
+        return Task.done
 
     def inputTask(self, task):
         try:

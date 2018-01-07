@@ -73,6 +73,7 @@ class NetworkInstructions(DirectObject):
 
     def winGame(self):
         base.hud.showBigMessage("Victory")
+        base.quitToMainMenu()
 
     def loseGame(self):
         base.hud.showBigMessage("Defeat")

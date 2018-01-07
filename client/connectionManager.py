@@ -15,7 +15,6 @@ class ConnectionManager(DirectObject):
             # connect to the remote server if no arg given
             self.connect()
             self.connectionUI.destroy()
-            base.hud.makeFactionSelectUI()
         except ConnectionRefusedError:
             self.connectionUI.showConnectionError(self.retryConnection)
             return
@@ -25,6 +24,7 @@ class ConnectionManager(DirectObject):
 
     def startGame(self):
         base.networkManager.addPlayer()
+        base.hud.makeFactionSelectUI()
 
     def retryConnection(self):
         self.connectionUI.connectingLabel.show()
