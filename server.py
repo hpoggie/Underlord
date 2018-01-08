@@ -215,6 +215,10 @@ class GameServer:
             else:
                 self.connections[addr].loseGame()
 
+    def kickEveryone(self):
+        for c in self.networkManager.connections:
+            c.loseGame()
+
     def run(self):
         while 1:
             try:
@@ -234,7 +238,10 @@ class GameServer:
                 exit(0)
             except ConnectionClosed as c:
                 # If you DC, your opponent wins
-                self.endGame(self.players[c.conn.addr].getEnemy())
+                if hasattr(self, 'players'):
+                    self.endGame(self.players[c.conn.addr].getEnemy())
+                else:
+                    self.kickEveryone()
                 exit(0)
 
             time.sleep(0.01)

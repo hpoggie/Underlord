@@ -90,10 +90,20 @@ class FactionSelect(Scene):
                 command=base.pickFaction,
                 extraArgs=[i]))
 
+    def showBigMessage(self, message):
+        """
+        Put huge text on the screen that obscures stuff
+        """
+        self.winLabel = OnscreenText(
+            text=message,
+            font=self.font,
+            scale=(0.5, 0.5, 0.5))
+
     def unmake(self):
         self.factionSelectLabel.detachNode()
         for btn in self.factionButtons:
             btn.destroy()
+        self.winLabel.detachNode()
 
 
 class GameHud(Scene):

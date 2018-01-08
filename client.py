@@ -211,7 +211,8 @@ class App (ShowBase):
             1, self._quitToMainMenuTask, "QuitToMainMenu")
 
     def _quitToMainMenuTask(self, task):
-        self.zoneMaker.unmake()
+        if hasattr(self, 'zoneMaker'):  # TODO: kludge
+            self.zoneMaker.unmake()
         self.guiScene = hud.MainMenu()
         self.networkManager.requestNumPlayers()
         return Task.done
