@@ -55,17 +55,25 @@ class LobbyServer:
         except ConnectionClosed as c:
             self.networkManager.connections.remove(c.conn)
 
-        if len(self.readyPlayers) == 2:
+        # Get the first 2 ready players
+        readyPlayers = self.readyPlayers[:2]
+
+        if len(readyPlayers) == 2:
             if self.verbose:
                 print("Game time started. Forking subprocess.")
             f = os.fork()
             if f == 0:
-                GameServer(self.networkManager, *self.readyPlayers).run()
-                self.networkManager.connections = []
+                GameServer(self.networkManager, *readyPlayers).run()
+                self.networkManager.connections = [
+                    c for c in self.networkManager.connections
+                    if c not in readyPlayers]
             else:
-                self.networkManager.connections = []
-                self.gameServerProcs[f] = self.readyPlayers
-                self.readyPlayers = []
+                self.networkManager.connections = [
+                    c for c in self.networkManager.connections
+                    if c not in readyPlayers]
+                self.gameServerProcs[f] = readyPlayers
+                # Remove the 2 players from the list of ready players
+                self.readyPlayers = self.readyPlayers[2:]
 
         while len(self.gameServerProcs) > 0:
             # Clean up when the game server finishes
