@@ -11,6 +11,7 @@ class ServerNetworkManager (NetworkManager):
         self.base = base
 
     Opcodes = numericEnum(
+        'requestNumPlayers',
         'addPlayer',
         'selectFaction',
         'revealFacedown',

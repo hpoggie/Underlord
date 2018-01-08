@@ -38,6 +38,10 @@ class LobbyServer:
         if self.verbose:
             print("Client connected from " + str(conn.addr))
 
+    def requestNumPlayers(self, addr):
+        for conn in self.networkManager.connections:
+            conn.updateNumPlayers(len(self.networkManager.connections))
+
     def addPlayer(self, addr):
         conn = next(
             conn for conn in self.networkManager.connections

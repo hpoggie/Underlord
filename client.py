@@ -211,6 +211,7 @@ class App (ShowBase):
     def _quitToMainMenuTask(self, task):
         self.zoneMaker.unmake()
         self.guiScene = hud.MainMenu()
+        self.networkManager.requestNumPlayers()
         return Task.done
 
     def inputTask(self, task):
