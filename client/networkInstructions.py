@@ -72,11 +72,11 @@ class NetworkInstructions(DirectObject):
         base.mouseHandler.targeting = True
 
     def winGame(self):
-        base.hud.showBigMessage("Victory")
+        base.guiScene.showBigMessage("Victory")
         base.quitToMainMenu()
 
     def loseGame(self):
-        base.hud.showBigMessage("Defeat")
+        base.guiScene.showBigMessage("Defeat")
 
     def setActive(self, value):
         base.active = bool(value)

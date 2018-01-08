@@ -5,12 +5,24 @@ from direct.gui.OnscreenText import OnscreenText
 from core.enums import Phase
 
 
-class Hud(DirectObject):
+class Fonts(DirectObject):
     def __init__(self):
         self.font = loader.loadFont("Ubuntu-Regular.ttf")
         self.font.setPixelsPerUnit(60)
 
-    def makeMainMenu(self):
+
+class Scene(DirectObject):
+    def __init__(self):
+        self.font = base.fonts.font
+
+    def unmake(self):
+        pass
+
+
+class MainMenu(Scene):
+    def __init__(self):
+        super().__init__()
+
         # Put everything under one node to make it easy to destroy
         self.menu = base.aspect2d.attachNewNode(name="Menu")
 
@@ -52,7 +64,14 @@ class Hud(DirectObject):
                 scale=0.1,
                 frameSize=(-1.5, 1.5, -0.5, 1))
 
-    def makeFactionSelectUI(self):
+    def unmake(self):
+        self.menu.detachNode()
+
+
+class FactionSelect(Scene):
+    def __init__(self):
+        super().__init__()
+
         self.factionSelectLabel = OnscreenText(
             text="faction select",
             font=self.font,
@@ -71,11 +90,15 @@ class Hud(DirectObject):
                 command=base.pickFaction,
                 extraArgs=[i]))
 
-    def makeGameUi(self):
+    def unmake(self):
         self.factionSelectLabel.detachNode()
-        for button in self.factionButtons:
-            button.destroy()
-        del self.factionButtons
+        for btn in self.factionButtons:
+            btn.destroy()
+
+
+class GameHud(Scene):
+    def __init__(self):
+        super().__init__()
 
         self.turnLabel = OnscreenText(
             text="",
@@ -139,7 +162,8 @@ class Hud(DirectObject):
             scale=(0.5, 0.5, 0.5))
 
     def hideBigMessage(self):
-        self.winLabel.detachNode()
+        if hasattr(self, 'winLabel') and self.winLabel is not None:
+            self.winLabel.detachNode()
 
     def redrawTooltips(self):
         if hasattr(self, 'cardNameLabel'):
@@ -178,7 +202,8 @@ class Hud(DirectObject):
         self.endPhaseLabel.setText(str(Phase.keys[base.phase]))
         self.turnLabel.setText("Your Turn" if base.active else "Enemy Turn")
 
-    def unmakeGameUI(self):
+    def unmake(self):
+        self.hideBigMessage()
         self.turnLabel.detachNode()
         self.playerManaCapLabel.detachNode()
         self.enemyManaCapLabel.detachNode()

@@ -18,7 +18,7 @@ from factions import templars
 import sys
 from client.mouse import MouseHandler
 from client.zoneMaker import ZoneMaker
-from client.hud import Hud
+import client.hud as hud
 from client.connectionManager import ConnectionManager
 import client.networkInstructions
 from network_manager import ConnectionClosed
@@ -50,8 +50,6 @@ class App (ShowBase):
 
         self.availableFactions = [templars.Templars]
 
-        self.hud = Hud()
-
         # Connect to the default server if no argument provided
         ip = argv[1] if len(argv) > 1 else "174.138.119.84"
         port = 9099
@@ -61,12 +59,14 @@ class App (ShowBase):
 
         self.networkManager = ClientNetworkManager(instr, ip, port)
 
+        self.fonts = hud.Fonts()
+
         self.connectionManager = ConnectionManager(
             self.serverAddr, self.networkManager.base)
         self.connectionManager.tryConnect()
         self.taskMgr.add(self.networkUpdateTask, "NetworkUpdateTask")
 
-        self.hud.makeMainMenu()
+        self._guiScene = hud.MainMenu()
 
         # View the cards at an angle
         self.camera.setPosHpr(4, -15, -15, 0, 45, 0)
@@ -81,6 +81,20 @@ class App (ShowBase):
         if not self._started:
             self.startGame()
             self._started = True
+
+    @property
+    def guiScene(self):
+        return self._guiScene
+
+    @guiScene.setter
+    def guiScene(self, value):
+        if self._guiScene:
+            self._guiScene.unmake()
+        self._guiScene = value
+
+    def readyUp(self):
+        self.networkManager.addPlayer()
+        self.guiScene = hud.FactionSelect()
 
     def pickFaction(self, index):
         self.networkManager.selectFaction(index)
@@ -98,7 +112,7 @@ class App (ShowBase):
         self.playerCardBack = self.faction.cardBack
         self.enemyCardBack = self.enemyFaction.cardBack
 
-        self.hud.makeGameUi()
+        self.guiScene = hud.GameHud()
         self.zoneMaker = ZoneMaker()
 
     def findCard(self, card):
@@ -188,7 +202,7 @@ class App (ShowBase):
 
     def redraw(self):
         self.zoneMaker.redrawAll()
-        self.hud.redraw()
+        self.guiScene.redraw()
 
     def quitToMainMenu(self):
         self.taskMgr.doMethodLater(
@@ -196,9 +210,7 @@ class App (ShowBase):
 
     def _quitToMainMenuTask(self, task):
         self.zoneMaker.unmake()
-        self.hud.unmakeGameUI()
-        self.hud.hideBigMessage()
-        self.hud.makeMainMenu()
+        self.guiScene = hud.MainMenu()
         return Task.done
 
     def inputTask(self, task):

@@ -23,8 +23,7 @@ class ConnectionManager(DirectObject):
         base.networkManager.connect(self.addr)
 
     def startGame(self):
-        base.networkManager.addPlayer()
-        base.hud.makeFactionSelectUI()
+        base.readyUp()
 
     def retryConnection(self):
         self.connectionUI.connectingLabel.show()
