@@ -217,7 +217,7 @@ class GameServer:
 
     def kickEveryone(self):
         for c in self.networkManager.connections:
-            c.loseGame()
+            c.kick()
 
     def run(self):
         while 1:

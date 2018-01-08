@@ -96,7 +96,8 @@ class ClientNetworkManager (NetworkManager):
         'requestTarget',
         'winGame',
         'loseGame',
-        'setActive')
+        'setActive',
+        'kick')
 
     def onGotPacket(self, packet, addr):
         if packet == '':

@@ -79,5 +79,9 @@ class NetworkInstructions(DirectObject):
         base.guiScene.showBigMessage("Defeat")
         base.quitToMainMenu()
 
+    def kick(self):
+        base.guiScene.showBigMessage("Kicked")
+        base.quitToMainMenu()
+
     def setActive(self, value):
         base.active = bool(value)
