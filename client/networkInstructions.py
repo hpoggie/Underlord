@@ -77,6 +77,7 @@ class NetworkInstructions(DirectObject):
 
     def loseGame(self):
         base.guiScene.showBigMessage("Defeat")
+        base.quitToMainMenu()
 
     def setActive(self, value):
         base.active = bool(value)
