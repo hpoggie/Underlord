@@ -59,6 +59,8 @@ class App (ShowBase):
 
         self.networkManager = ClientNetworkManager(instr, ip, port)
 
+        self.networkManager.verbose = '-v' in argv
+
         self.fonts = hud.Fonts()
 
         self.connectionManager = ConnectionManager(

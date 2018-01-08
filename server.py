@@ -13,6 +13,7 @@ from core.player import IllegalMoveError
 from core.enums import numericEnum
 import os
 import copy
+import sys
 
 
 class ServerError(BaseException):
@@ -26,11 +27,11 @@ availableFactions = [Templar]
 
 
 class LobbyServer:
-    def __init__(self):
+    def __init__(self, argv):
         self.networkManager = ServerNetworkManager(self)
         self.readyPlayers = []
         self.gameServerProcs = {}
-        self.verbose = False
+        self.verbose = self.networkManager.verbose = '-v' in argv
 
     def onClientConnected(self, conn):
         for conn in self.networkManager.connections:
@@ -238,6 +239,6 @@ class GameServer:
 
 
 if __name__ == "__main__":
-    lobby = LobbyServer()
+    lobby = LobbyServer(sys.argv)
     while 1:
         lobby.acceptConnections()
