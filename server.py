@@ -55,6 +55,8 @@ class LobbyServer:
             self.networkManager.recv()
         except ConnectionClosed as c:
             self.networkManager.connections.remove(c.conn)
+        except AttributeError as e:
+            print("Client probably sending stuff it shouldn't: " + str(e))
 
         # Get the first 2 ready players
         readyPlayers = self.readyPlayers[:2]
