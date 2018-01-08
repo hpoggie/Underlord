@@ -64,9 +64,6 @@ class LobbyServer:
             f = os.fork()
             if f == 0:
                 GameServer(self.networkManager, *readyPlayers).run()
-                self.networkManager.connections = [
-                    c for c in self.networkManager.connections
-                    if c not in readyPlayers]
             else:
                 self.networkManager.connections = [
                     c for c in self.networkManager.connections
@@ -91,9 +88,6 @@ class LobbyServer:
             self.networkManager.connections.append(pl)
 
         self.gameServerProcs.pop(procid)
-
-        print(
-            "n. of connections: " + str(len(self.networkManager.connections)))
 
 
 class GameServer:
@@ -237,7 +231,6 @@ class GameServer:
                 exit(0)
             except ConnectionClosed as c:
                 # If you DC, your opponent wins
-                print(c.conn)
                 self.endGame(self.players[c.conn.addr].getEnemy())
                 exit(0)
 
