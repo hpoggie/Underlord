@@ -15,35 +15,35 @@ class Scene(DirectObject):
     def __init__(self):
         self.font = base.fonts.font
 
+        # Put everything under one node to make it easy to destroy
+        self.root = base.aspect2d.attachNewNode(name="GuiScene")
+
     def unmake(self):
-        pass
+        self.root.detachNode()
 
 
 class MainMenu(Scene):
     def __init__(self):
         super().__init__()
 
-        # Put everything under one node to make it easy to destroy
-        self.menu = base.aspect2d.attachNewNode(name="Menu")
-
         OnscreenText(
             text="UNDERLORD",
             font=self.font,
-            parent=self.menu,  # Doesn't affect pos/scale
+            parent=self.root,  # Doesn't affect pos/scale
             scale=0.3,
             pos=(0, 0.3, 0))
 
         base.numPlayersLabel = OnscreenText(
             text="Getting server info...",
             font=self.font,
-            parent=self.menu,
+            parent=self.root,
             scale=0.1,
             pos=(0, 0.2, 0),
             mayChange=True)
 
         def connect():
             base.connectionManager.startGame()
-            self.menu.detachNode()
+            self.root.detachNode()
 
         def quit():
             base.userExit()
@@ -59,51 +59,43 @@ class MainMenu(Scene):
                 text=b[0],
                 text_font=self.font,
                 command=b[1],
-                parent=self.menu,
+                parent=self.root,
                 pos=next(buttonPos),
                 scale=0.1,
                 frameSize=(-1.5, 1.5, -0.5, 1))
-
-    def unmake(self):
-        self.menu.detachNode()
 
 
 class FactionSelect(Scene):
     def __init__(self):
         super().__init__()
 
-        self.factionSelectLabel = OnscreenText(
+        OnscreenText(
             text="faction select",
             font=self.font,
+            parent=self.root,
             pos=(0, -0.7, 0),
             scale=(0.1, 0.1, 0.1),
             mayChange=True)
 
-        self.factionButtons = []
-
         for i, faction in enumerate(base.availableFactions):
-            self.factionButtons.append(DirectButton(
+            DirectButton(
                 image=faction.iconPath + '/' + faction.cardBack,
+                parent=self.root,
                 pos=(i * 0.2, 0, 0),
                 scale=(0.1, 0.1, 0.1),
                 relief=None,
                 command=base.pickFaction,
-                extraArgs=[i]))
+                extraArgs=[i])
 
     def showBigMessage(self, message):
         """
         Put huge text on the screen that obscures stuff
         """
-        self.winLabel = OnscreenText(
+        OnscreenText(
             text=message,
             font=self.font,
+            parent=self.root,
             scale=(0.5, 0.5, 0.5))
-
-    def unmake(self):
-        self.factionSelectLabel.detachNode()
-        for btn in self.factionButtons:
-            btn.destroy()
-        self.winLabel.detachNode()
 
 
 class GameHud(Scene):
@@ -113,6 +105,7 @@ class GameHud(Scene):
         self.turnLabel = OnscreenText(
             text="",
             font=self.font,
+            parent=self.root,
             pos=(0, -0.9, 0),
             scale=(0.1, 0.1, 0.1),
             mayChange=True)
@@ -120,24 +113,28 @@ class GameHud(Scene):
         self.playerManaCapLabel = OnscreenText(
             text=str(base.player.manaCap),
             font=self.font,
+            parent=self.root,
             pos=(-0.4, -0.44, 0),
             scale=(0.1, 0.1, 0.1),
             mayChange=True)
         self.enemyManaCapLabel = OnscreenText(
             text=str(base.enemy.manaCap),
             font=self.font,
+            parent=self.root,
             pos=(-0.5, 0.77),
             scale=(0.1, 0.1, 0.1),
             mayChange=True)
         self.cardNameLabel = OnscreenText(
             text="",
             font=self.font,
+            parent=self.root,
             pos=(-0.7, -0.6, 0),
             scale=0.07,
             mayChange=True)
         self.tooltipLabel = OnscreenText(
             text="",
             font=self.font,
+            parent=self.root,
             pos=(-0.9, -0.8, 0),
             scale=0.05,
             align=TextNode.ALeft,
@@ -146,17 +143,20 @@ class GameHud(Scene):
         self.cardStatsLabel = OnscreenText(
             text="",
             font=self.font,
+            parent=self.root,
             pos=(-0.7, -0.7, 0),
             scale=0.07,
             mayChange=True)
         self.endPhaseLabel = OnscreenText(
             text="",
             font=self.font,
+            parent=self.root,
             pos=(0.7, -0.7, 0),
             scale=(0.1, 0.1, 0.1),
             mayChange=True)
         self.endPhaseButton = DirectButton(
             image="./end_phase.png",
+            parent=self.root,
             pos=(0.7, 0, -0.85),
             scale=(0.1, 0.1, 0.1),
             relief=None,
@@ -169,6 +169,7 @@ class GameHud(Scene):
         self.winLabel = OnscreenText(
             text=message,
             font=self.font,
+            parent=self.root,
             scale=(0.5, 0.5, 0.5))
 
     def hideBigMessage(self):
@@ -211,14 +212,3 @@ class GameHud(Scene):
         self.enemyManaCapLabel.setText(str(base.enemy.manaCap))
         self.endPhaseLabel.setText(str(Phase.keys[base.phase]))
         self.turnLabel.setText("Your Turn" if base.active else "Enemy Turn")
-
-    def unmake(self):
-        self.hideBigMessage()
-        self.turnLabel.detachNode()
-        self.playerManaCapLabel.detachNode()
-        self.enemyManaCapLabel.detachNode()
-        self.cardNameLabel.detachNode()
-        self.tooltipLabel.detachNode()
-        self.cardStatsLabel.detachNode()
-        self.endPhaseLabel.detachNode()
-        self.endPhaseButton.detachNode()
