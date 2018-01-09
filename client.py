@@ -34,42 +34,40 @@ loadPrcFileData(
 
 class App (ShowBase):
     def __init__(self, argv):
-        ShowBase.__init__(self)
+        super().__init__()
 
+        # Set up the root node
         self.scene = self.render.attachNewNode('empty')
         self.scene.reparentTo(self.render)
 
+        # Set up mouse input
         base.cTrav = CollisionTraverser()
         self.handler = CollisionHandlerQueue()
         self.mouseHandler = MouseHandler()
-
         self.taskMgr.add(self.inputTask, "InputTask")
 
-        self._active = False
-        self._started = False
+        # Set up the UI
+        self.fonts = hud.Fonts()
 
-        self.availableFactions = [templars.Templars]
+        # View the cards at an angle
+        self.camera.setPosHpr(4, -15, -15, 0, 45, 0)
 
         # Connect to the default server if no argument provided
         ip = argv[1] if len(argv) > 1 else "174.138.119.84"
         port = 9099
         self.serverAddr = (ip, port)
 
+        # Set up the NetworkManager
         instr = client.networkInstructions.NetworkInstructions()
-
         self.networkManager = ClientNetworkManager(instr, ip, port)
-
         self.networkManager.verbose = '-v' in argv
 
-        self.fonts = hud.Fonts()
-
-        self.connectionManager = ConnectionManager(
-            self.serverAddr, self.networkManager.base)
+        # Connect to the server
+        self.connectionManager = ConnectionManager(self.serverAddr, self)
         self.connectionManager.tryConnect()
         self.taskMgr.add(self.networkUpdateTask, "NetworkUpdateTask")
 
-        # View the cards at an angle
-        self.camera.setPosHpr(4, -15, -15, 0, 45, 0)
+        self.availableFactions = [templars.Templars]
 
     def onConnectedToServer(self):
         self.guiScene = hud.MainMenu()
@@ -80,9 +78,12 @@ class App (ShowBase):
 
     @active.setter
     def active(self, value):
+        """
+        Update whose turn it is. If we haven't started the game, start it.
+        """
         self._active = value
         if not self._started:
-            self.startGame()
+            self.onGameStarted()
             self._started = True
 
     @property
@@ -91,34 +92,44 @@ class App (ShowBase):
 
     @guiScene.setter
     def guiScene(self, value):
+        """
+        Used to control which menu is being shown
+        """
         if hasattr(self, '_guiScene') and self._guiScene:  # TODO: kludge
             self._guiScene.unmake()
         self._guiScene = value
 
     def readyUp(self):
+        """
+        We are ready to play a game. Send us into the faction select screen.
+        """
         self.networkManager.addPlayer()
         self.guiScene = hud.FactionSelect()
 
     def pickFaction(self, index):
+        """
+        Tell the server we've picked a faction and are ready to start the game.
+        """
         self.networkManager.selectFaction(index)
         self.faction = self.availableFactions[index]
         self._active = False
-        self._started = False
+        self._started = False  # Don't show game yet; it hasn't started
 
-    def startGame(self):
+    def onGameStarted(self):
+        # Set up game state information
         self.player = self.faction.player(self.faction)
         self.enemy = self.enemyFaction.player(self.enemyFaction)
         self.phase = Phase.reveal
 
-        self.playerIconPath = self.faction.iconPath
-        self.enemyIconPath = self.enemyFaction.iconPath
-        self.playerCardBack = self.faction.cardBack
-        self.enemyCardBack = self.enemyFaction.cardBack
-
+        # Set up the game UI
         self.guiScene = hud.GameHud()
         self.zoneMaker = ZoneMaker()
 
     def findCard(self, card):
+        """
+        Given a card node, get its zone, index in that zone, and whether we
+        control it
+        """
         enemy = True
         index = -1
         zone = -1
@@ -151,6 +162,9 @@ class App (ShowBase):
         return (zone, index, enemy)
 
     def acceptTarget(self, target):
+        """
+        Give the server the target for the currently active ability
+        """
         targetZone, targetIndex, targetsEnemy = self.findCard(target)
 
         self.networkManager.acceptTarget(
@@ -159,6 +173,10 @@ class App (ShowBase):
             targetIndex)
 
     def playCard(self, handCard):
+        """
+        If it's our reveal phase and the card is fast, play it face-up,
+        otherwise play it face-down.
+        """
         if self.phase == Phase.reveal:
             self.networkManager.playFaceup(
                 self.playerHandNodes.index(handCard))

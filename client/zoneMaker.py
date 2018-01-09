@@ -5,6 +5,11 @@ from .fanHand import fanHand
 
 class ZoneMaker(DirectObject):
     def __init__(self):
+        base.playerIconPath = base.faction.iconPath
+        base.enemyIconPath = base.enemyFaction.iconPath
+        base.playerCardBack = base.faction.cardBack
+        base.enemyCardBack = base.enemyFaction.cardBack
+
         base.playerHandNodes = []
         base.enemyHandNodes = []
         base.playerFacedownNodes = []
