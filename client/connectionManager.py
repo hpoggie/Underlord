@@ -7,14 +7,14 @@ class ConnectionManager(DirectObject):
     Handles the task of connecting to the server.
     """
     def __init__(self, addr, networkInstructions):
-        self.connectionUI = ConnectionUI()
+        self.connectionUI = base.guiScene = ConnectionUI()
         self.addr, self.networkInstructions = (addr, networkInstructions)
 
     def tryConnect(self):
         try:
             # connect to the remote server if no arg given
             self.connect()
-            self.connectionUI.destroy()
+            base.onConnectedToServer()
         except ConnectionRefusedError:
             self.connectionUI.showConnectionError(self.retryConnection)
             return

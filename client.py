@@ -68,10 +68,11 @@ class App (ShowBase):
         self.connectionManager.tryConnect()
         self.taskMgr.add(self.networkUpdateTask, "NetworkUpdateTask")
 
-        self._guiScene = hud.MainMenu()
-
         # View the cards at an angle
         self.camera.setPosHpr(4, -15, -15, 0, 45, 0)
+
+    def onConnectedToServer(self):
+        self.guiScene = hud.MainMenu()
 
     @property
     def active(self):
@@ -90,7 +91,7 @@ class App (ShowBase):
 
     @guiScene.setter
     def guiScene(self, value):
-        if self._guiScene:
+        if hasattr(self, '_guiScene') and self._guiScene:  # TODO: kludge
             self._guiScene.unmake()
         self._guiScene = value
 

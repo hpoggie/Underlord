@@ -1,9 +1,9 @@
-from direct.showbase.DirectObject import DirectObject
 from direct.gui.DirectGui import DirectButton
 from direct.gui.OnscreenText import OnscreenText
+from . import hud
 
 
-class ConnectionUI(DirectObject):
+class ConnectionUI(hud.Scene):
     def __init__(self):
         self.connectingLabel = OnscreenText(
             text="connecting to server",
@@ -22,7 +22,7 @@ class ConnectionUI(DirectObject):
             relief=None,
             command=callback)
 
-    def destroy(self):
+    def unmake(self):
         self.connectingLabel.detachNode()
         if hasattr(self, 'connectionFailedLabel'):
             self.connectionFailedLabel.detachNode()
