@@ -28,6 +28,16 @@ class Scene(DirectObject):
         kwargs = {**defaultArgs, **kwargs}  # Merge the 2 dicts; prefer kwargs
         return OnscreenText(**kwargs)
 
+    def button(self, **kwargs):
+        defaultArgs = {}
+        # Attach the label to the root.
+        # Note that this does not affect pos/scale for OnscreenText
+        defaultArgs['parent'] = self.root
+        defaultArgs['text_font'] = self.font  # Use the default font
+        defaultArgs['scale'] = 0.1
+        kwargs = {**defaultArgs, **kwargs}  # Merge the 2 dicts; prefer kwargs
+        return DirectButton(**kwargs)
+
     def unmake(self):
         self.root.detachNode()
 
@@ -60,13 +70,10 @@ class MainMenu(Scene):
             (0, 0, len(buttons) * 0.15 - i * 0.15 - 0.3)
             for i in range(len(buttons))])
         for b in buttons:
-            DirectButton(
+            self.button(
                 text=b[0],
-                text_font=self.font,
                 command=b[1],
-                parent=self.root,
                 pos=next(buttonPos),
-                scale=0.1,
                 frameSize=(-1.5, 1.5, -0.5, 1))
 
 
@@ -80,11 +87,10 @@ class FactionSelect(Scene):
             mayChange=True)
 
         for i, faction in enumerate(base.availableFactions):
-            DirectButton(
+            self.button(
                 image=faction.iconPath + '/' + faction.cardBack,
                 parent=self.root,
                 pos=(i * 0.2, 0, 0),
-                scale=(0.1, 0.1, 0.1),
                 relief=None,
                 command=base.pickFaction,
                 extraArgs=[i])
@@ -136,11 +142,9 @@ class GameHud(Scene):
             text="",
             pos=(0.7, -0.7, 0),
             mayChange=True)
-        self.endPhaseButton = DirectButton(
+        self.endPhaseButton = self.button(
             image="./end_phase.png",
-            parent=self.root,
             pos=(0.7, 0, -0.85),
-            scale=(0.1, 0.1, 0.1),
             relief=None,
             command=base.endPhase)
 
