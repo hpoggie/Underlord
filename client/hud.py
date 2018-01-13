@@ -18,6 +18,16 @@ class Scene(DirectObject):
         # Put everything under one node to make it easy to destroy
         self.root = base.aspect2d.attachNewNode(name="GuiScene")
 
+    def label(self, **kwargs):
+        defaultArgs = {}
+        # Attach the label to the root.
+        # Note that this does not affect pos/scale for OnscreenText
+        defaultArgs['parent'] = self.root
+        defaultArgs['font'] = self.font  # Use the default font
+        defaultArgs['scale'] = 0.1
+        kwargs = {**defaultArgs, **kwargs}  # Merge the 2 dicts; prefer kwargs
+        return OnscreenText(**kwargs)
+
     def unmake(self):
         self.root.detachNode()
 
@@ -26,18 +36,13 @@ class MainMenu(Scene):
     def __init__(self):
         super().__init__()
 
-        OnscreenText(
+        self.label(
             text="UNDERLORD",
-            font=self.font,
-            parent=self.root,  # Doesn't affect pos/scale
             scale=0.3,
             pos=(0, 0.3, 0))
 
-        base.numPlayersLabel = OnscreenText(
+        base.numPlayersLabel = self.label(
             text="Getting server info...",
-            font=self.font,
-            parent=self.root,
-            scale=0.1,
             pos=(0, 0.2, 0),
             mayChange=True)
 
@@ -69,12 +74,9 @@ class FactionSelect(Scene):
     def __init__(self):
         super().__init__()
 
-        OnscreenText(
+        self.label(
             text="faction select",
-            font=self.font,
-            parent=self.root,
             pos=(0, -0.7, 0),
-            scale=(0.1, 0.1, 0.1),
             mayChange=True)
 
         for i, faction in enumerate(base.availableFactions):
@@ -91,10 +93,8 @@ class FactionSelect(Scene):
         """
         Put huge text on the screen that obscures stuff
         """
-        OnscreenText(
+        self.label(
             text=message,
-            font=self.font,
-            parent=self.root,
             scale=(0.5, 0.5, 0.5))
 
 
@@ -102,57 +102,39 @@ class GameHud(Scene):
     def __init__(self):
         super().__init__()
 
-        self.turnLabel = OnscreenText(
+        self.turnLabel = self.label(
             text="",
-            font=self.font,
-            parent=self.root,
             pos=(0, -0.9, 0),
-            scale=(0.1, 0.1, 0.1),
             mayChange=True)
 
-        self.playerManaCapLabel = OnscreenText(
+        self.playerManaCapLabel = self.label(
             text=str(base.player.manaCap),
-            font=self.font,
-            parent=self.root,
             pos=(-0.4, -0.44, 0),
-            scale=(0.1, 0.1, 0.1),
             mayChange=True)
-        self.enemyManaCapLabel = OnscreenText(
+        self.enemyManaCapLabel = self.label(
             text=str(base.enemy.manaCap),
-            font=self.font,
-            parent=self.root,
             pos=(-0.5, 0.77),
-            scale=(0.1, 0.1, 0.1),
             mayChange=True)
-        self.cardNameLabel = OnscreenText(
+        self.cardNameLabel = self.label(
             text="",
-            font=self.font,
-            parent=self.root,
             pos=(-0.7, -0.6, 0),
             scale=0.07,
             mayChange=True)
-        self.tooltipLabel = OnscreenText(
+        self.tooltipLabel = self.label(
             text="",
-            font=self.font,
-            parent=self.root,
             pos=(-0.9, -0.8, 0),
             scale=0.05,
             align=TextNode.ALeft,
             wordwrap=10,
             mayChange=True)
-        self.cardStatsLabel = OnscreenText(
+        self.cardStatsLabel = self.label(
             text="",
-            font=self.font,
-            parent=self.root,
             pos=(-0.7, -0.7, 0),
             scale=0.07,
             mayChange=True)
-        self.endPhaseLabel = OnscreenText(
+        self.endPhaseLabel = self.label(
             text="",
-            font=self.font,
-            parent=self.root,
             pos=(0.7, -0.7, 0),
-            scale=(0.1, 0.1, 0.1),
             mayChange=True)
         self.endPhaseButton = DirectButton(
             image="./end_phase.png",
@@ -166,10 +148,8 @@ class GameHud(Scene):
         """
         Put huge text on the screen that obscures stuff
         """
-        self.winLabel = OnscreenText(
+        self.winLabel = self.label(
             text=message,
-            font=self.font,
-            parent=self.root,
             scale=(0.5, 0.5, 0.5))
 
     def hideBigMessage(self):
