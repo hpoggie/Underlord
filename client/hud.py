@@ -44,29 +44,17 @@ class Scene(DirectObject):
 
 class ConnectionUI(Scene):
     def __init__(self):
-        self.connectingLabel = OnscreenText(
-            text="connecting to server",
-            scale=(0.1, 0.1, 0.1))
+        super().__init__()
+        self.connectingLabel = self.label(text="connecting to server")
 
     def showConnectionError(self, callback):
         self.connectingLabel.hide()
-        self.connectionFailedLabel = OnscreenText(
-            text="Error. Could not connect to server",
-            pos=(0, 0, 0),
-            scale=(0.1, 0.1, 0.1))
-        self.reconnectButton = DirectButton(
+        self.connectionFailedLabel = self.label(text="Error. Could not connect to server")
+        self.reconnectButton = self.button(
             pos=(0, 0, -0.25),
-            scale=(0.1, 0.1, 0.1),
             image="./reconnect.png",
             relief=None,
             command=callback)
-
-    def unmake(self):
-        self.connectingLabel.detachNode()
-        if hasattr(self, 'connectionFailedLabel'):
-            self.connectionFailedLabel.detachNode()
-        if hasattr(self, 'reconnectButton'):
-            self.reconnectButton.detachNode()
 
 
 class MainMenu(Scene):
