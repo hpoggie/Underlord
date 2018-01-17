@@ -66,7 +66,10 @@ class LobbyServer:
                 print("Game time started. Forking subprocess.")
             f = os.fork()
             if f == 0:
-                GameServer(self.networkManager, *readyPlayers).run()
+                netman = copy.copy(self.networkManager)
+                # We need only the players for the game we're currently serving
+                netman.connections = self.readyPlayers
+                GameServer(netman).run()
             else:
                 self.networkManager.connections = [
                     c for c in self.networkManager.connections
@@ -94,11 +97,9 @@ class LobbyServer:
 
 
 class GameServer:
-    def __init__(self, netman, *connections):
-        self.networkManager = copy.copy(netman)
+    def __init__(self, netman):
+        self.networkManager = netman
         self.networkManager.base = self
-        # We need only the players for the game we're currently serving
-        self.networkManager.connections = connections
         self.addrs = [c.addr for c in self.networkManager.connections]
         self.factions = [None, None]
 
