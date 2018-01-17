@@ -1,24 +1,21 @@
 import server
+import network
+from client.networkInstructions import NetworkInstructions
 
 
-svc = server.Server()
+lobbyServer = server.LobbyServer("-v")
+port = lobbyServer.networkManager.port
+netman0 = network.ClientNetworkManager(
+    NetworkInstructions(), "localhost", port)
+netman0.connect(("localhost", port))
+netman1 = network.ClientNetworkManager(
+    NetworkInstructions(), "localhost", port)
+netman1.connect(("localhost", port))
 
-
-addr0 = ('localhost', 99999)
-addr1 = ('localhost', 99998)
-
-
-def testAddTooManyPlayers():
-    svc.addPlayer(addr0)
-    svc.addPlayer(addr1)
-    try:
-        svc.addPlayer('localhost')
-        assert False
-    except server.ServerError:
-        pass
+netman0.addPlayer()
+netman1.addPlayer()
 
 
 def testSelectFaction():
-    svc.selectFaction(addr0, 0)
-    svc.selectFaction(addr1, 0)
-    assert None not in svc.factions
+    netman0.selectFaction(0)
+    netman1.selectFaction(0)
