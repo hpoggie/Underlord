@@ -109,6 +109,10 @@ class GameServer:
 
     def selectFaction(self, addr, index):
         self.factions[self.addrs.index(addr)] = availableFactions[index]
+        # If both players have selected their faction, start the game
+        started = hasattr(self, 'game')
+        if None not in self.factions and not started:
+            self.start()
 
     def start(self):
         self.game = Game(*self.factions)
@@ -224,9 +228,6 @@ class GameServer:
         while 1:
             try:
                 self.networkManager.recv()
-                started = hasattr(self, 'game')
-                if None not in self.factions and not started:
-                    self.start()
             except IndexError as e:
                 print(e)
             except IllegalMoveError as e:  # Client sent us an illegal move
