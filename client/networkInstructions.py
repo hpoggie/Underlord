@@ -8,7 +8,7 @@ class NetworkInstructions(DirectObject):
     def updateNumPlayers(self, n):
         # numPlayersLabel is set by hud
         if hasattr(base, 'numPlayersLabel') and base.numPlayersLabel:
-            base.numPlayersLabel.setText(str(n))
+            base.numPlayersLabel.setText(str(n) + " players in lobby.")
 
     def updateEnemyFaction(self, index):
         base.enemyFaction = base.availableFactions[index]
