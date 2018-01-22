@@ -36,10 +36,6 @@ class App (ShowBase):
     def __init__(self, argv):
         super().__init__()
 
-        # Set up the root node
-        self.scene = self.render.attachNewNode('empty')
-        self.scene.reparentTo(self.render)
-
         # Set up mouse input
         base.cTrav = CollisionTraverser()
         self.handler = CollisionHandlerQueue()

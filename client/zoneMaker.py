@@ -5,6 +5,9 @@ from .fanHand import fanHand
 
 class ZoneMaker(DirectObject):
     def __init__(self):
+        # Set up the root node
+        self.scene = base.render.attachNewNode('empty')
+
         base.playerIconPath = base.faction.iconPath
         base.enemyIconPath = base.enemyFaction.iconPath
         base.playerCardBack = base.faction.cardBack
@@ -35,11 +38,11 @@ class ZoneMaker(DirectObject):
         base.playerHandNodes = []
 
         if not hasattr(self, 'playerHand'):
-            self.playerHand = base.scene.attachNewNode('playerHand')
+            self.playerHand = self.scene.attachNewNode('playerHand')
 
         def addHandCard(card, tr):
             cardModel = self.loadCard(card)
-            pivot = base.scene.attachNewNode('pivot')
+            pivot = self.scene.attachNewNode('pivot')
             offset = cardModel.getScale() / 2
             pivot.setPosHpr(*tr)
             cardModel.reparentTo(pivot)
@@ -61,11 +64,11 @@ class ZoneMaker(DirectObject):
         base.enemyHandNodes = []
 
         if not hasattr(self, 'enemyHand'):
-            self.enemyHand = base.scene.attachNewNode('enemyHand')
+            self.enemyHand = self.scene.attachNewNode('enemyHand')
 
         def addEnemyHandCard(tr):
             cardModel = self.loadEnemyBlank()
-            pivot = base.scene.attachNewNode('pivot')
+            pivot = self.scene.attachNewNode('pivot')
             offset = cardModel.getScale() / 2
             pivot.setPosHpr(*tr)
             cardModel.reparentTo(pivot)
@@ -145,7 +148,7 @@ class ZoneMaker(DirectObject):
 
     def loadCard(self, card):
         cm = CardMaker(card.name)
-        cardModel = base.render.attachNewNode(cm.generate())
+        cardModel = self.scene.attachNewNode(cm.generate())
         if card.owner == base.player:
             path = base.playerIconPath + "/" + card.image
         else:
@@ -156,7 +159,7 @@ class ZoneMaker(DirectObject):
 
     def loadBlank(self, path):
         cm = CardMaker('mysterious card')
-        cardModel = base.render.attachNewNode(cm.generate())
+        cardModel = self.scene.attachNewNode(cm.generate())
         tex = loader.loadTexture(path)
         cardModel.setTexture(tex)
         return cardModel
@@ -171,7 +174,7 @@ class ZoneMaker(DirectObject):
 
     def makePlayerFace(self):
         cm = CardMaker("face")
-        cardModel = base.render.attachNewNode(cm.generate())
+        cardModel = self.scene.attachNewNode(cm.generate())
         path = base.playerIconPath + "/" + base.playerCardBack
         tex = loader.loadTexture(path)
         cardModel.setTexture(tex)
@@ -181,7 +184,7 @@ class ZoneMaker(DirectObject):
 
     def makeEnemyFace(self):
         cm = CardMaker("face")
-        cardModel = base.render.attachNewNode(cm.generate())
+        cardModel = self.scene.attachNewNode(cm.generate())
         path = base.enemyIconPath + "/" + base.enemyCardBack
         tex = loader.loadTexture(path)
         cardModel.setTexture(tex)
@@ -196,15 +199,4 @@ class ZoneMaker(DirectObject):
         self.makeEnemyBoard()
 
     def unmake(self):
-        arr = base.playerHandNodes +\
-            base.enemyHandNodes +\
-            base.playerFacedownNodes +\
-            base.enemyFacedownNodes +\
-            base.playerFaceupNodes +\
-            base.enemyFaceupNodes
-
-        for c in arr:
-            c.detachNode()
-
-        base.playerFaceNode.detachNode()
-        base.enemyFaceNode.detachNode()
+        self.scene.detachNode()
