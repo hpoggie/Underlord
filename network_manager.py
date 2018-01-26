@@ -81,7 +81,12 @@ class NetworkManager:
 
         for conn in readers:
             c = next(x for x in self.connections if x.conn == conn)
-            newData = c.conn.recv(self.bufsize).decode()
+
+            try:
+                newData = c.conn.recv(self.bufsize).decode()
+            except ConnectionResetError:
+                raise ConnectionClosed(c)
+                continue
 
             if newData == "":
                 raise ConnectionClosed(c)
