@@ -105,6 +105,9 @@ class GameServer:
 
         self.waitingOnDecision = None
 
+        for conn in self.networkManager.connections:
+            conn.onEnteredGame()
+
     # actions
 
     def selectFaction(self, addr, index):

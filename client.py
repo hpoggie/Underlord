@@ -97,9 +97,12 @@ class App (ShowBase):
 
     def readyUp(self):
         """
-        We are ready to play a game. Send us into the faction select screen.
+        We are ready to play a game.
         """
         self.networkManager.addPlayer()
+        self.guiScene.showWaitMessage()
+
+    def onEnteredGame(self):
         self.guiScene = hud.FactionSelect()
 
     def pickFaction(self, index):

@@ -73,7 +73,6 @@ class MainMenu(Scene):
 
         def connect():
             base.connectionManager.startGame()
-            self.root.detachNode()
 
         def quit():
             base.userExit()
@@ -90,6 +89,11 @@ class MainMenu(Scene):
                 command=b[1],
                 pos=next(buttonPos),
                 frameSize=(-1.5, 1.5, -0.5, 1))
+
+    def showWaitMessage(self):
+        self.label(
+            text="Waiting for another player.",
+            pos=(0, -0.5, 0))
 
 
 class FactionSelect(Scene):
