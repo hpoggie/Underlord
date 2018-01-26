@@ -122,6 +122,11 @@ class FactionSelect(Scene):
             text=message,
             scale=(0.5, 0.5, 0.5))
 
+    def showWaitMessage(self):
+        self.label(
+            text="Waiting for opponent.",
+            pos=(0, -0.5, 0))
+
 
 class GameHud(Scene):
     def __init__(self):

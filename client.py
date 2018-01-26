@@ -113,6 +113,7 @@ class App (ShowBase):
         self.faction = self.availableFactions[index]
         self._active = False
         self._started = False  # Don't show game yet; it hasn't started
+        self.guiScene.showWaitMessage() # Tell the user we're waiting for opponent
 
     def onGameStarted(self):
         # Set up game state information
