@@ -248,6 +248,10 @@ class GameServer:
                 else:
                     self.kickEveryone()
                 exit(0)
+            except Exception as e:  # We died due to some other error
+                print(e)
+                self.kickEveryone()
+                exit(1)
 
             time.sleep(0.01)
 
