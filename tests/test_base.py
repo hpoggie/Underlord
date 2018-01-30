@@ -1,3 +1,4 @@
+from .dummyCards import *
 from factions.base import *
 from .util import newGame
 

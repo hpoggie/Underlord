@@ -17,7 +17,7 @@ def testEquus():
 
 def testHolyHandGrenade():
     game, p0, p1 = newGame(
-        [base.one(), base.one()],
+        [corvus(), corvus()],
         [holyHandGrenade(), holyHandGrenade()])
     p0.mana = 5
     p0.drawCard()
@@ -47,7 +47,7 @@ def testHolyHandGrenade():
 
 def testWrathOfGod():
     game, p0, p1 = newGame(
-        [base.one(), base.one()],
+        [corvus(), corvus()],
         [wrathOfGod()])
     p0.drawCard()
     p0.drawCard()
@@ -65,17 +65,9 @@ def testWrathOfGod():
 
 
 def testMiracle():
-    # TODO: be able to do something like [base.one()] * 10
-    # doesn't currently work because base.one() only evaluates once
-    game, p0, p1 = newGame([
-        base.one(),
-        base.one(),
-        base.one(),
-        base.one(),
-        base.one(),
-        base.one(),
-        miracle()
-    ])
+    game, p0, p1 = newGame(
+        [corvus() for i in range(6)]
+        + [miracle()])
     p0.drawCard()
     assert len(p0.hand) == 1
     p0.hand[0].playsFaceUp = True
@@ -86,8 +78,8 @@ def testMiracle():
 
 def testMiracleNotEnoughCards():
     game, p0, p1 = newGame(
-        base.one(),
-        base.one(),
+        corvus(),
+        corvus(),
         miracle()
     )
     p0.drawCard()
@@ -103,7 +95,7 @@ def testGrail():
     c = leftGrail()
     c.owner = p0
     c.zone = p0.faceups
-    c = base.one()
+    c = corvus()
     c.owner = p1
     c.zone = p1.faceups
     p1.faceups[0].hasAttacked = False
@@ -124,7 +116,7 @@ def testGrail():
 def testCrystalElemental():
     game, p0, p1 = newGame(
         [crystalElemental()],
-        [base.one()])
+        [corvus()])
 
     # Cheat the elemental into play
     p0.drawCard()

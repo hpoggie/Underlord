@@ -3,6 +3,7 @@ from core.player import Player
 from factions import base
 from factions.templars import Templars
 from .util import newGame
+from .dummyCards import *
 
 
 def deckContainsDuplicates(deck):
@@ -28,7 +29,7 @@ def testForDuplicatesBetweenPlayers():
 
 
 def testReveal():
-    game, player, p1 = newGame(base.one())
+    game, player, p1 = newGame(one())
     player.endPhase()  # draw the card
     newCard = player.hand[0]
     player.play(newCard)
@@ -39,7 +40,7 @@ def testReveal():
 
 
 def testPlay():
-    game, player, _ = newGame(base.one())
+    game, player, _ = newGame(one())
     player.endPhase()
     newCard = player.hand[0]
     player.play(newCard)
@@ -47,7 +48,7 @@ def testPlay():
 
 
 def testPlayFaceup():
-    newCard = base.one()
+    newCard = one()
     newCard.playsFaceUp = True
     newCard.cost = 0
     game, player, _ = newGame(newCard)
@@ -58,7 +59,7 @@ def testPlayFaceup():
 
 
 def testAttackFace():
-    newCard = base.one()
+    newCard = one()
     newCard.playsFaceUp = True
     newCard.cost = 0
     game, player, _ = newGame(newCard)
@@ -70,7 +71,7 @@ def testAttackFace():
 
 
 def testAttackFacedown():
-    newCard = base.one()
+    newCard = one()
     newCard.playsFaceUp = True
     newCard.cost = 0
     game, p0, p1 = newGame(newCard)
@@ -88,7 +89,7 @@ def testAttackFacedown():
 
 
 def testAttackFaceup():
-    newCard = base.one()
+    newCard = one()
     newCard.playsFaceUp = True
     newCard.cost = 0
     game, p0, p1 = newGame(newCard)
@@ -107,7 +108,7 @@ def testAttackFaceup():
 def testMulligan():
     from copy import deepcopy
 
-    game, p0, p1 = newGame([base.one() for i in range(40)])
+    game, p0, p1 = newGame([one() for i in range(40)])
     game.start()
     hand0 = deepcopy(p0.hand)
     assert len(hand0) == player.startHandSize
