@@ -51,6 +51,9 @@ class Game:
 
     @event
     def fight(self, c1, c2):
+        c1.onFight(c2)
+        c2.onFight(c1)
+
         if c1.zone == c1.owner.facedowns:
             c1.visibleWhileFacedown = True
         if c2.zone == c2.owner.facedowns:

@@ -68,6 +68,9 @@ class Card:
     def _onDeath(self):
         pass
 
+    def _onFight(self, enemy):
+        pass
+
     @property
     def onSpawn(self):
         return self._onSpawn
@@ -89,6 +92,14 @@ class Card:
             self._onDeath = Decision(func, self)
         else:
             self._onDeath = types.MethodType(func, self)
+
+    @property
+    def onFight(self):
+        return self._onFight
+
+    @onFight.setter
+    def onFight(self, func):
+        self._onFight = types.MethodType(func, self)
 
     @property
     def zone(self):
