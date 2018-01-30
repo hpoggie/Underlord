@@ -26,3 +26,26 @@ def testSweep():
 
     assert len(p2.faceups) == 0
     assert len(p2.facedowns) == 1
+
+
+def testMindControlTrap():
+    game, p1, p2, = newGame(
+        [one()],
+        [mindControlTrap()])
+
+    p1.endPhase()
+    p1.play(p1.hand[0])
+    p1.endPhase()
+
+    p2.endPhase()
+    p2.play(p2.hand[0])
+    p2.endPhase()
+
+    p1.revealFacedown(p1.facedowns[0])
+    p1.endPhase()
+
+    attacker = p1.faceups[0]
+    p1.attack(p1.faceups[0], p2.facedowns[0])
+
+    assert(len(p1.faceups) == 0)
+    assert(p2.faceups[0] == attacker)

@@ -57,6 +57,8 @@ def mindControlTrap():
         self.owner.drawCard()
 
     def mctOnFight(self, enemy):
+        enemy.owner.faceups.remove(enemy)
+        self.owner.faceups.append(enemy)
         enemy.owner = self.owner
 
     return Card(
@@ -66,6 +68,7 @@ def mindControlTrap():
         rank="s",
         spell=True,
         onSpawn=mctAbility,
+        onFight=mctOnFight,
         desc="""
             Draw a card.\nIf this is attacked while face-down,
             gain control of the attacking unit.""")
