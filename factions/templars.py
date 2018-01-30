@@ -1,7 +1,7 @@
 from . import base
 from core.core import destroy
 from core.card import Card
-from core.faction import Faction
+from core.faction import Faction, deck
 from core.player import Player
 
 
@@ -166,19 +166,19 @@ Templars = Faction(
     name="Templars",
     iconPath="./templar_icons",
     cardBack="templar-shield.png",
-    deck=[
-        equus(), equus(),
-        corvus(),
-        holyHandGrenade(),
-        wrathOfGod(),
-        archangel(),
-        miracle(),
-        crystalElemental(),
-        invest(),
-        leftGrail(),
-        rightGrail(),
-        guardianAngel()
-    ] + base.deck,
+    deck=deck(
+        corvus, 5,
+        leftGrail, 2,
+        rightGrail, 2,
+        equus, 3,
+        guardianAngel, 2,
+        base.elephant,
+        holyHandGrenade,
+        wrathOfGod,
+        archangel,
+        miracle,
+        crystalElemental,
+        invest) + base.deck
 )
 
 
