@@ -88,6 +88,25 @@ def spellBlade():
     return spellBlade
 
 
+def mindControlTrap():
+    def mctAbility(self):
+        self.owner.drawCard()
+
+    def mctOnFight(self, enemy):
+        enemy.owner = self.owner
+
+    return Card(
+        name="Mind Control Trap",
+        image="magic-swirl.png",
+        cost=2,
+        rank="s",
+        spell=True,
+        onSpawn=mctAbility,
+        desc="""
+            Draw a card.\nIf this is attacked while face-down,
+            gain control of the attacking unit.""")
+
+
 deck = [one() for i in range(5)]\
     + [two() for i in range(4)]\
     + [three() for i in range(3)]\
