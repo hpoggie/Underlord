@@ -84,7 +84,7 @@ def miracle():
     return Card(
         name="Miracle",
         image="sundial.png",
-        cost=6,
+        cost=8,
         spell=True,
         onSpawn=_onSpawn,
         desc="Draw until you have 5 cards in hand."
@@ -123,42 +123,48 @@ def invest():
     )
 
 
-class GrailTaunt(Card):
-    @property
-    def taunt(self):
-        return self.owner.manaCap % 2 == self.n
-
-
 def leftGrail():
-    return GrailTaunt(
+    class LeftGrail(Card):
+        @property
+        def rank(self):
+            return 2 if (self.owner.manaCap % 2 == 0) else 3
+
+    return LeftGrail(
         name="Left Grail",
         image="holy-grail.png",
         cost=2,
-        rank=2,
+        taunt=True,
         desc="Has taunt if your mana cap is odd.",
-        n=1
     )
 
 
 def rightGrail():
-    return GrailTaunt(
+    class RightGrail(Card):
+        @property
+        def rank(self):
+            return 3 if (self.owner.manaCap % 2 == 0) else 2
+
+    return RightGrail(
         name="Right Grail",
         image="holy-grail.png",
         cost=2,
-        rank=2,
+        taunt=True,
         desc="Has taunt if your mana cap is even.",
-        n=0
     )
 
 
 def guardianAngel():
-    return GrailTaunt(
+    class GuardianAngel(Card):
+        @property
+        def rank(self):
+            return 5 if (self.owner.manaCap % 2 == 0) else 3
+
+    return GuardianAngel(
         name="Guardian Angel",
         image="winged-shield.png",
         cost=4,
-        rank=3,
+        taunt=True,
         desc="Has taunt if your mana cap is odd.",
-        n=1
     )
 
 

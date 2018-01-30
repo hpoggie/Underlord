@@ -101,16 +101,12 @@ def testGrail():
     p1.faceups[0].hasAttacked = False
     game.turn = Turn.p2
     game.phase = Phase.play
-    p0.manaCap = 3
     # Should fail if attack works
     try:
         p1.attack(p1.faceups[0], p0.face)
         assert False
     except IllegalMoveError:
         pass
-    p0.manaCap = 2
-    # Should fail if attack doesn't work
-    p1.attack(p1.faceups[0], p0.face)
 
 
 def testCrystalElemental():
