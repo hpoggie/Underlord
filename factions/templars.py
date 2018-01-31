@@ -168,6 +168,53 @@ def guardianAngel():
     )
 
 
+def crystalLance():
+    def _onSpawn(self, target):
+        if target in self.owner.getEnemy().facedowns:
+            destroy(target)
+
+        self.zone = self.owner.graveyard
+
+    class CrystalLance(Card):
+        def onFight(self, enemy):
+            destroy(enemy)
+            self.owner.drawCard()
+
+    return CrystalLance(
+        name="Crystal Lance",
+        image="ice-spear.png",
+        cost=5,
+        rank="s",
+        spell=True,
+        onSpawn=_onSpawn,
+        desc="""Destroy target face-down card.\n
+                If this is attacked while face-down,
+                destroy the attacking unit and draw a card.""")
+
+
+def crystalRain():
+    def _onSpawn(self, target):
+        if target in self.owner.getEnemy().facedowns:
+            destroy(target)
+
+        self.zone = self.owner.graveyard
+
+    class CrystalRain(Card):
+        def onFight(self, enemy):
+            base.sweepAbility(self)
+
+    return CrystalRain(
+        name="Crystal Rain",
+        image="crystal-bars.png",
+        cost=5,
+        rank="s",
+        spell=True,
+        onSpawn=_onSpawn,
+        desc="""Destroy target face-down card.\n
+                If this is attacked while face-down,
+                destroy all face-up units.""")
+
+
 Templars = Faction(
     name="Templars",
     iconPath="./templar_icons",
@@ -183,6 +230,8 @@ Templars = Faction(
         wrathOfGod,
         archangel,
         miracle,
+        crystalLance,
+        crystalRain,
         crystalElemental,
         invest) + base.deck
 )
