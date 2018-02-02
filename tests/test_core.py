@@ -113,10 +113,13 @@ def testMulligan():
     game.turn = None
     hand0 = deepcopy(p0.hand)
     assert len(hand0) == player.startHandSize
-    p0.mulligan(p0.hand[0])
+    c = p0.hand[0]
+    p0.mulligan(c)
     hand1 = deepcopy(p0.hand)
     assert len(hand1) == player.startHandSize
     assert hand0 != hand1
+
+    assert c in p0.deck  # Has the card been returned to the deck
 
     # Can't mulligan twice
     try:
