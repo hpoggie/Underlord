@@ -83,7 +83,11 @@ class Player:
         for i in range(len(cards)):
             self.drawCard()
         for c in cards:
-            c.zone = self.deck
+            # TODO: Jank AF. Deck is not a zone.
+            self.hand.remove(c)
+            self.deck.append(c)
+            c._zone = None
+        self.shuffle()
 
         self.hasMulliganed = True
         if self.getEnemy().hasMulliganed:
