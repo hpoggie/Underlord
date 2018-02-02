@@ -1,5 +1,5 @@
 import core.player as player
-from core.player import Player
+from core.player import Player, IllegalMoveError
 from factions import base
 from factions.templars import Templars
 from .util import newGame
@@ -110,9 +110,17 @@ def testMulligan():
 
     game, p0, p1 = newGame([one() for i in range(40)])
     game.start()
+    game.turn = None
     hand0 = deepcopy(p0.hand)
     assert len(hand0) == player.startHandSize
     p0.mulligan(p0.hand[0])
     hand1 = deepcopy(p0.hand)
     assert len(hand1) == player.startHandSize
     assert hand0 != hand1
+
+    # Can't mulligan twice
+    try:
+        p0.mulligan(p0.hand[0])
+        assert False
+    except IllegalMoveError:
+        pass

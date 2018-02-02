@@ -31,7 +31,7 @@ class Game:
         p1Type and p2Type are the classes of player 1 and player 2.
         e.g. Templar and Thief
         """
-        self.turn = Turn.p1
+        self.turn = None  # It's no one's turn until both players have mulliganed
         self.phase = Phase.reveal
 
         self.players = (p1Type(), p2Type())
@@ -44,6 +44,9 @@ class Game:
         for player in self.players:
             player.shuffle()
             player.drawOpeningHand()
+
+    def finishMulligans(self):
+        self.turn = Turn.p1
 
     @property
     def activePlayer(self):

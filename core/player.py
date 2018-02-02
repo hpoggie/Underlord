@@ -34,6 +34,8 @@ class Player:
         self.iconPath = faction.iconPath
         self.cardBack = faction.cardBack
 
+        self.hasMulliganed = False
+
     @property
     def manaCap(self):
         return self._manaCap
@@ -50,12 +52,6 @@ class Player:
     def drawOpeningHand(self):
         for i in range(0, startHandSize):
             self.drawCard()
-
-    def mulligan(self, *cards):
-        for i in range(len(cards)):
-            self.drawCard()
-        for c in cards:
-            c.zone = self.deck
 
     def drawCard(self):
         if len(self.deck) != 0:
@@ -76,6 +72,22 @@ class Player:
         self.game.end(winner=self)
 
     # Actions
+
+    def mulligan(self, *cards):
+        if self.hasMulliganed:
+            raise IllegalMoveError("Can't mulligan twice.")
+
+        if self.game.turn is not None:
+            raise IllegalMoveError("Can only mulligan before the game has started.")
+
+        for i in range(len(cards)):
+            self.drawCard()
+        for c in cards:
+            c.zone = self.deck
+
+        self.hasMulliganed = True
+        if self.getEnemy().hasMulliganed:
+            self.game.finishMulligans()
 
     def failIfInactive(self, *args):
         if not self.isActivePlayer():

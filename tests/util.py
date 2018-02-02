@@ -1,6 +1,7 @@
 from core.player import Player
 from core.faction import Faction
 from core.core import Game
+from core.enums import Turn
 import collections
 
 
@@ -40,6 +41,9 @@ def newGame(*args):
     else:
         pl = dummyFactionPlayer(args)
         game = Game(pl, pl)
+
+    # Disable mulligans by default
+    game.turn = Turn.p1
 
     # Return the players for convenience
     return game, game.players[0], game.players[1]
