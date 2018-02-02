@@ -14,6 +14,7 @@ class ServerNetworkManager (NetworkManager):
         'requestNumPlayers',
         'addPlayer',
         'selectFaction',
+        'mulligan',
         'revealFacedown',
         'playFaceup',
         'attack',

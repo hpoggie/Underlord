@@ -46,10 +46,14 @@ class MouseHandler (DirectObject):
 
         if pickedObj and not pickedObj.isEmpty():
             if pickedObj.getTag('zone') == 'hand':
-                try:
-                    base.playCard(pickedObj)
-                except IllegalMoveError as error:
-                    print(error)
+                if not base.hasMulliganed:
+                    print("Added card to mulligan")
+                    base.toMulligan.append(pickedObj)
+                else:
+                    try:
+                        base.playCard(pickedObj)
+                    except IllegalMoveError as error:
+                        print(error)
             elif pickedObj.getTag('zone') == 'face-down':
                 if not self.activeCard:
                     try:

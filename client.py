@@ -120,10 +120,19 @@ class App (ShowBase):
         self.player = self.faction.player(self.faction)
         self.enemy = self.enemyFaction.player(self.enemyFaction)
         self.phase = Phase.reveal
+        self.hasMulliganed = False
+        self.toMulligan = []
 
         # Set up the game UI
         self.guiScene = hud.GameHud()
         self.zoneMaker = ZoneMaker()
+
+    def mulligan(self):
+        print("Mulligan")
+        self.networkManager.mulligan(
+            *[self.playerHandNodes.index(card) for card in self.toMulligan])
+        self.hasMulliganed = True
+        self.toMulligan = []  # These get GC'd
 
     def findCard(self, card):
         """

@@ -170,7 +170,13 @@ class GameHud(Scene):
             image="./end_phase.png",
             pos=(0.7, 0, -0.85),
             relief=None,
-            command=base.endPhase)
+            command=self.onEndPhaseButton)
+
+    def onEndPhaseButton(self):
+        if base.hasMulliganed:
+            base.endPhase()
+        else:
+            base.mulligan()
 
     def showBigMessage(self, message):
         """
@@ -207,7 +213,7 @@ class GameHud(Scene):
             ("Instant. " if card.playsFaceUp else "") + card.desc)
 
     def redraw(self):
-        if base.active:
+        if base.active or not base.hasMulliganed:
             self.endPhaseButton.show()
         else:
             self.endPhaseButton.hide()
@@ -218,5 +224,8 @@ class GameHud(Scene):
         else:
             self.playerManaCapLabel.setText(str(base.player.manaCap))
         self.enemyManaCapLabel.setText(str(base.enemy.manaCap))
-        self.endPhaseLabel.setText(str(Phase.keys[base.phase]))
+        if not base.hasMulliganed:
+            self.endPhaseLabel.setText("Mulligan")
+        else:
+            self.endPhaseLabel.setText(str(Phase.keys[base.phase]))
         self.turnLabel.setText("Your Turn" if base.active else "Enemy Turn")
