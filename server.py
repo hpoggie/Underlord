@@ -146,6 +146,11 @@ class GameServer:
 
         self.redraw()
 
+    def mulligan(self, addr, *indices):
+        print(indices)
+        pl = self.players[addr]
+        pl.mulligan([pl.hand[index] for index in indices])
+
     def revealFacedown(self, addr, index):
         pl = self.players[addr]
         pl.revealFacedown(pl.facedowns[index])
@@ -242,6 +247,8 @@ class GameServer:
                 self.endGame(e.winner)
                 exit(0)
             except ConnectionClosed as c:
+                if c in self.networkManager.connections:
+                    self.networkManager.connections.remove(c)
                 # If you DC, your opponent wins
                 if hasattr(self, 'players'):
                     self.endGame(self.players[c.conn.addr].getEnemy())
