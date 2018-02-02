@@ -50,7 +50,7 @@ class Game:
 
     @property
     def activePlayer(self):
-        return self.players[self.turn]
+        return None if self.turn is None else self.players[self.turn]
 
     @event
     def fight(self, c1, c2):
