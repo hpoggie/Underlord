@@ -14,6 +14,7 @@ from core.enums import numericEnum
 import os
 import copy
 import sys
+import traceback
 
 
 class ServerError(BaseException):
@@ -257,6 +258,7 @@ class GameServer:
                 exit(0)
             except Exception as e:  # We died due to some other error
                 print(e)
+                print(traceback.format_exc())
                 self.kickEveryone()
                 exit(1)
 
