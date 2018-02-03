@@ -167,9 +167,9 @@ class GameServer:
         pl = self.players[addr]
         attacker = pl.faceups[cardIndex]
         if targetZone == Zone.face:
-            target = pl.getEnemy().face
+            target = pl.opponent.face
         else:
-            target = pl.getEnemy().zones[targetZone][targetIndex]
+            target = pl.opponent.zones[targetZone][targetIndex]
 
         pl.attack(attacker, target)
         self.redraw()
@@ -182,7 +182,7 @@ class GameServer:
     def acceptTarget(self, addr, targetsEnemy, targetZone, targetIndex):
         pl = self.players[addr]
         if targetsEnemy:
-            target = pl.getEnemy().zones[targetZone][targetIndex]
+            target = pl.opponent.zones[targetZone][targetIndex]
         else:
             target = pl.zones[targetZone][targetIndex]
         self.waitingOnDecision.execute(target)
@@ -212,7 +212,7 @@ class GameServer:
             c.updatePlayerMana(pl.mana)
             c.updatePhase(self.game.phase)
 
-            enemyPlayer = pl.getEnemy()
+            enemyPlayer = pl.opponent
             c.updateEnemyHand(len(enemyPlayer.hand))
             c.updateEnemyFacedowns(
                 *(getCard(enemyPlayer, c) if c.visibleWhileFacedown else -1
@@ -253,7 +253,7 @@ class GameServer:
                     self.networkManager.connections.remove(c)
                 # If you DC, your opponent wins
                 if hasattr(self, 'players'):
-                    self.endGame(self.players[c.conn.addr].getEnemy())
+                    self.endGame(self.players[c.conn.addr].opponent)
                 else:
                     self.kickEveryone()
                 exit(0)

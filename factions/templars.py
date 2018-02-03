@@ -170,7 +170,7 @@ def guardianAngel():
 
 def crystalLance():
     def _onSpawn(self, target):
-        if target in self.owner.getEnemy().facedowns:
+        if target in self.owner.opponent.facedowns:
             destroy(target)
 
         self.zone = self.owner.graveyard
@@ -194,7 +194,7 @@ def crystalLance():
 
 def crystalRain():
     def _onSpawn(self, target):
-        if target in self.owner.getEnemy().facedowns:
+        if target in self.owner.opponent.facedowns:
             destroy(target)
 
         self.zone = self.owner.graveyard

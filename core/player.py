@@ -45,7 +45,7 @@ class Player:
     def manaCap(self, value):
         self._manaCap = value
         if self._manaCap > 15:
-            self.getEnemy().win()
+            self.opponent.win()
 
     def shuffle(self):
         shuffle(self.deck)
@@ -61,7 +61,8 @@ class Player:
     def isActivePlayer(self):
         return self.game.activePlayer == self
 
-    def getEnemy(self):
+    @property
+    def opponent(self):
         index = 1 if self.game.players[0] == self else 0
         return self.game.players[index]
 
@@ -87,7 +88,7 @@ class Player:
         self.shuffle()
 
         self.hasMulliganed = True
-        if self.getEnemy().hasMulliganed:
+        if self.opponent.hasMulliganed:
             self.game.finishMulligans()
 
     def failIfInactive(self, *args):
@@ -152,11 +153,11 @@ class Player:
         if attacker.zone != self.faceups:
             raise IllegalMoveError("Can only attack with face-up cards.")
 
-        taunts = [c for c in self.getEnemy().faceups if c.taunt]
+        taunts = [c for c in self.opponent.faceups if c.taunt]
         if len(taunts) > 0 and target not in taunts:
             raise IllegalMoveError("Must attack units with taunt first.")
 
-        if target != self.getEnemy().face and target.zone not in [
+        if target != self.opponent.face and target.zone not in [
                 target.owner.faceups, target.owner.facedowns]:
             raise IllegalMoveError(
                 "Can only attack face-up / face-down targets or a player.")
@@ -170,7 +171,7 @@ class Player:
 
     def attackFace(self, attacker):
         self.failIfInactive()
-        self.getEnemy().manaCap += attacker.rank
+        self.opponent.manaCap += attacker.rank
 
     def endPhase(self):
         self.failIfInactive()

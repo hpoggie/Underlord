@@ -97,8 +97,8 @@ class Game:
         player = self.activePlayer
         player.manaCap += 1
         if player.manaCap > 15:
-            player.getEnemy().win()
-        player.getEnemy().mana = player.getEnemy().manaCap
+            player.opponent.win()
+        player.opponent.mana = player.opponent.manaCap
         self.turn = Turn.p2 if self.turn == Turn.p1 else Turn.p1
         self.phase = Phase.reveal
 

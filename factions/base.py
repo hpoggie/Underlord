@@ -33,7 +33,7 @@ def sweep():
 
 def spellBlade():
     def spellBladeAbility(self, target):
-        if target in self.owner.getEnemy().facedowns:
+        if target in self.owner.opponent.facedowns:
             destroy(target)
 
         self.zone = self.owner.graveyard
