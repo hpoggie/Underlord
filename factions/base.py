@@ -36,8 +36,6 @@ def spellBlade():
         if target in self.owner.opponent.facedowns:
             destroy(target)
 
-        self.zone = self.owner.graveyard
-
     spellBlade = Card(
         name="Spell Blade",
         image="wave-strike.png",

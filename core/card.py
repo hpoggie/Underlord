@@ -3,6 +3,27 @@ import inspect
 from .decision import Decision
 
 
+class Ability:
+    """
+    Used for any event that can raise a Decision
+    """
+    def __init__(self, func, source):
+        # Bind the method to the source so we can invoke it later
+        self.func = types.MethodType(func, source)
+        self.source = source
+
+    def __call__(self):
+        if len(inspect.getargspec(self.func).args) > 1:
+            raise Decision(self.execute, self)
+        else:
+            self.execute()
+
+    def execute(self, *args):
+        self.func(*args)
+        if self.source.spell:
+            self.source.zone = self.source.owner.graveyard
+
+
 class Card:
     """
     A card has the following characteristics:
@@ -77,10 +98,7 @@ class Card:
 
     @onSpawn.setter
     def onSpawn(self, func):
-        if len(inspect.getargspec(func).args) > 1:
-            self._onSpawn = Decision(func, self)
-        else:
-            self._onSpawn = types.MethodType(func, self)
+        self._onSpawn = Ability(func, self)
 
     @property
     def onDeath(self):
@@ -88,10 +106,7 @@ class Card:
 
     @onDeath.setter
     def onDeath(self, func):
-        if len(inspect.getargspec(func).args) > 1:
-            self._onDeath = Decision(func, self)
-        else:
-            self._onDeath = types.MethodType(func, self)
+        self._onSpawn = Ability(func, self)
 
     @property
     def onFight(self):
@@ -119,5 +134,3 @@ class Card:
 
         if self._zone == self.owner.faceups:
             self.onSpawn()
-            if self.spell:
-                self.zone = self.owner.graveyard

@@ -34,7 +34,6 @@ def archangel():
 def holyHandGrenade():
     def _onSpawn(self, target):
         destroy(target)
-        self.zone = self.owner.graveyard
 
     hhg = Card(
         name="Holy Hand Grenade",
@@ -79,7 +78,6 @@ def miracle():
     def _onSpawn(self):
         while(len(self.owner.hand) < 5 and len(self.owner.deck) > 0):
             self.owner.drawCard()
-        self.zone = self.owner.graveyard
 
     return Card(
         name="Miracle",
@@ -111,7 +109,6 @@ def invest():
     def _onSpawn(self):
         self.owner.manaCap += 1
         self.owner.drawCard()
-        self.zone = self.owner.graveyard
 
     return Card(
         name="Invest",
@@ -176,8 +173,6 @@ def crystalLance():
         if target in self.owner.opponent.facedowns:
             destroy(target)
 
-        self.zone = self.owner.graveyard
-
     class CrystalLance(Card):
         def onFight(self, enemy):
             destroy(enemy)
@@ -199,8 +194,6 @@ def crystalRain():
     def _onSpawn(self, target):
         if target in self.owner.opponent.facedowns:
             destroy(target)
-
-        self.zone = self.owner.graveyard
 
     class CrystalRain(Card):
         def onFight(self, enemy):

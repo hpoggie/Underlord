@@ -1,5 +1,4 @@
 import inspect
-import types
 
 
 class Decision(BaseException):
@@ -14,7 +13,7 @@ class Decision(BaseException):
         self.source = source
         # TODO: support multiple targets
         self.numArgs = len(inspect.getargspec(func).args)
-        self.func = types.MethodType(func, source)
+        self.func = func
 
     def __call__(self):
         raise self
