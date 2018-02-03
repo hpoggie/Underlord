@@ -92,7 +92,7 @@ class Player:
 
     def failIfInactive(self, *args):
         if not self.isActivePlayer():
-            raise IllegalMoveError("Can only play facedowns during your turn.")
+            raise IllegalMoveError("It is not your turn.")
 
     def play(self, card):
         self.failIfInactive()
