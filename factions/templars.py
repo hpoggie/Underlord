@@ -134,7 +134,8 @@ def leftGrail():
         image="holy-grail.png",
         cost=2,
         taunt=True,
-        desc="Has taunt if your mana cap is odd.",
+        desc="""Taunt. Has rank 2 if your mana cap is even and rank 3 if your
+                mana cap is odd.""",
     )
 
 
@@ -149,7 +150,8 @@ def rightGrail():
         image="holy-grail.png",
         cost=2,
         taunt=True,
-        desc="Has taunt if your mana cap is even.",
+        desc="""Taunt. Has rank 3 if your mana cap is even and rank 5 if your
+                mana cap is odd.""",
     )
 
 
@@ -164,7 +166,8 @@ def guardianAngel():
         image="winged-shield.png",
         cost=4,
         taunt=True,
-        desc="Has taunt if your mana cap is odd.",
+        desc="""Taunt. Has rank 5 if your mana cap is even and rank 3 if your
+                mana cap is odd.""",
     )
 
 
