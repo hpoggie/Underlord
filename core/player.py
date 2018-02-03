@@ -27,6 +27,7 @@ class Player:
         self.deck = deepcopy(faction.deck)
         for card in self.deck:
             card.owner = self
+            card._zone = self.deck
         self.graveyard = []
         self._manaCap = 1
         self.mana = 1
@@ -55,8 +56,7 @@ class Player:
 
     def drawCard(self):
         if len(self.deck) != 0:
-            c = self.deck.pop()
-            c.zone = self.hand
+            self.deck[-1].zone = self.hand
 
     def isActivePlayer(self):
         return self.game.activePlayer == self
@@ -83,10 +83,7 @@ class Player:
         for i in range(len(cards)):
             self.drawCard()
         for c in cards:
-            # TODO: Jank AF. Deck is not a zone.
-            self.hand.remove(c)
-            self.deck.append(c)
-            c._zone = None
+            c.zone = self.deck
         self.shuffle()
 
         self.hasMulliganed = True
