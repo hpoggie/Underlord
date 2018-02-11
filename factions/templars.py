@@ -239,7 +239,7 @@ class Templar(Player):
         super().__init__(Templars)
 
     def templarAbility(self, card):
-        if card:
+        if card and card in self.hand:
             card.zone = self.graveyard
             self.manaCap += 1
 

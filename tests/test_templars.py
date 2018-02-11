@@ -32,6 +32,14 @@ def testTemplarAbility():
     assert len(p1.hand) == 6
     assert p1.manaCap == 2
 
+    # Try discarding something not in your hand
+    try:
+        p0.endTurn()
+    except Decision as d:
+        d.execute(p1.hand[0])
+        assert len(p1.hand) == 6
+        assert p0.manaCap == 4
+
 def testEquus():
     game, p0, p1 = newGame(equus())
     p0.deck[0].zone = p0.faceups
