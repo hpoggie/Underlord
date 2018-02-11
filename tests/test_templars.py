@@ -4,7 +4,27 @@ from factions import base
 from .util import newGame
 from core.enums import *
 from core.player import IllegalMoveError
+from core.core import Game
 
+
+def testTemplarAbility():
+    game = Game(Templar, Templar)
+    p0 = game.players[0]
+    p1 = game.players[1]
+    game.start()
+    # empty mulligans
+    p0.mulligan()
+    p1.mulligan()
+
+    m = p0.manaCap
+
+    try:
+        p0.endTurn()
+    except Decision as d:
+        d.execute(p0.hand[0])
+
+    assert len(p0.hand) == 5  # Still need to implement 1st player penalty
+    assert p0.manaCap == m + 2
 
 def testEquus():
     game, p0, p1 = newGame(equus())

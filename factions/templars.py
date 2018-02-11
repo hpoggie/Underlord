@@ -3,6 +3,7 @@ from core.core import destroy
 from core.card import Card
 from core.faction import Faction, deck
 from core.player import Player
+from core.decision import Decision
 
 
 def equus():
@@ -236,3 +237,12 @@ Templars = Faction(
 class Templar(Player):
     def __init__(self):
         super().__init__(Templars)
+
+    def templarAbility(self, card):
+        if card:
+            card.zone = self.graveyard
+            self.manaCap += 1
+
+    def afterEvent(self, name, *args, **kwargs):
+        if name == 'endTurn' and not self.active:
+            raise Decision(self.templarAbility, self)

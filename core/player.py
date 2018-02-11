@@ -73,6 +73,12 @@ class Player:
     def win(self):
         self.game.end(winner=self)
 
+    def beforeEvent(self, name, *args, **kwargs):
+        pass
+
+    def afterEvent(self, name, *args, **kwargs):
+        pass
+
     # Actions
 
     def mulligan(self, *cards):
