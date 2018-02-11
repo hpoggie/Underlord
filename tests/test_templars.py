@@ -16,15 +16,21 @@ def testTemplarAbility():
     p0.mulligan()
     p1.mulligan()
 
-    m = p0.manaCap
-
     try:
         p0.endTurn()
     except Decision as d:
         d.execute(p0.hand[0])
 
     assert len(p0.hand) == 5  # Still need to implement 1st player penalty
-    assert p0.manaCap == m + 2
+    assert p0.manaCap == 3
+
+    try:
+        p1.endTurn()
+    except Decision as d:
+        d.execute(None)
+
+    assert len(p1.hand) == 6
+    assert p1.manaCap == 2
 
 def testEquus():
     game, p0, p1 = newGame(equus())
