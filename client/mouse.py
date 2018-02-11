@@ -6,7 +6,8 @@ from core.player import IllegalMoveError
 
 class MouseHandler (DirectObject):
     def __init__(self):
-        self.accept('mouse1', self.onMouse1, [])
+        self.accept('mouse1', self.onMouse1, [])  # Left click
+        self.accept('mouse3', self.onMouse3, [])  # Right click
 
         self.showCollisions = False
 
@@ -83,6 +84,10 @@ class MouseHandler (DirectObject):
             self.doClick()
         except IllegalMoveError as e:
             print(e)
+
+    def onMouse3(self):
+        if self.targeting:
+            base.acceptTarget(None)
 
     def mouseOverTask(self):
         if base.mouseWatcherNode.hasMouse():

@@ -174,7 +174,7 @@ class App (ShowBase):
         """
         Give the server the target for the currently active ability
         """
-        targetZone, targetIndex, targetsEnemy = self.findCard(target)
+        targetZone, targetIndex, targetsEnemy = self.findCard(target) if target is not None else (-1, -1, False)
 
         self.networkManager.acceptTarget(
             int(targetsEnemy),

@@ -181,10 +181,15 @@ class GameServer:
 
     def acceptTarget(self, addr, targetsEnemy, targetZone, targetIndex):
         pl = self.players[addr]
-        if targetsEnemy:
-            target = pl.opponent.zones[targetZone][targetIndex]
-        else:
-            target = pl.zones[targetZone][targetIndex]
+
+        try:
+            if targetsEnemy:
+                target = pl.opponent.zones[targetZone][targetIndex]
+            else:
+                target = pl.zones[targetZone][targetIndex]
+        except IndexError:
+            target = None
+
         self.waitingOnDecision.execute(target)
         self.waitingOnDecision = None
         self.redraw()
