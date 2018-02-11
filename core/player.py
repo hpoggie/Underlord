@@ -58,7 +58,8 @@ class Player:
         if len(self.deck) != 0:
             self.deck[-1].zone = self.hand
 
-    def isActivePlayer(self):
+    @property
+    def active(self):
         return self.game.activePlayer == self
 
     @property
@@ -92,7 +93,7 @@ class Player:
             self.game.finishMulligans()
 
     def failIfInactive(self, *args):
-        if not self.isActivePlayer():
+        if not self.active:
             raise IllegalMoveError("It is not your turn.")
 
     def play(self, card):
@@ -179,5 +180,5 @@ class Player:
 
     def endTurn(self):
         self.failIfInactive()
-        while self.isActivePlayer():
+        while self.active:
             self.endPhase()

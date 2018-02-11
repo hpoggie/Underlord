@@ -204,7 +204,7 @@ class GameServer:
 
         for addr, pl in self.players.items():
             c = self.connections[addr]
-            c.setActive(int(pl.isActivePlayer()))
+            c.setActive(int(pl.active))
             c.updatePlayerHand(*(getCard(pl, c) for c in pl.hand))
             c.updatePlayerFacedowns(*(getCard(pl, c) for c in pl.facedowns))
             c.updatePlayerFaceups(*(getCard(pl, c) for c in pl.faceups))
