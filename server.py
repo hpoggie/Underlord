@@ -190,9 +190,12 @@ class GameServer:
         except IndexError:
             target = None
 
-        self.waitingOnDecision.execute(target)
-        self.waitingOnDecision = None
-        self.redraw()
+        if self.waitingOnDecision is not None:
+            self.waitingOnDecision.execute(target)
+            self.waitingOnDecision = None
+            self.redraw()
+        else:
+            print("No decision to execute.")
 
     def endPhase(self, addr):
         self.players[addr].endPhase()
