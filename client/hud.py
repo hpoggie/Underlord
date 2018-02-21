@@ -2,7 +2,9 @@ from direct.showbase.DirectObject import DirectObject
 from panda3d.core import TextNode
 from direct.gui.DirectGui import DirectButton
 from direct.gui.OnscreenText import OnscreenText
+from direct.gui.OnscreenImage import OnscreenImage
 from core.enums import Phase
+from panda3d.core import TransparencyAttrib
 
 
 class Fonts(DirectObject):
@@ -37,6 +39,15 @@ class Scene(DirectObject):
         defaultArgs['scale'] = 0.1
         kwargs = {**defaultArgs, **kwargs}  # Merge the 2 dicts; prefer kwargs
         return DirectButton(**kwargs)
+
+    def image(self, **kwargs):
+        defaultArgs = {}
+        defaultArgs['parent'] = self.root
+        defaultArgs['scale'] = 0.1
+        kwargs = {**defaultArgs, **kwargs}
+        image = OnscreenImage(**kwargs)
+        image.setTransparency(TransparencyAttrib.MAlpha)  # Enable alpha
+        return image
 
     def unmake(self):
         self.root.detachNode()
@@ -189,6 +200,23 @@ class GameHud(Scene):
     def hideBigMessage(self):
         if hasattr(self, 'winLabel') and self.winLabel is not None:
             self.winLabel.detachNode()
+
+    def showTargeting(self):
+        if not hasattr(self, 'targetingLabel'):
+            self.targetingLabel = self.label(
+                text="Select target",
+                pos=(0, -0.7, 0))
+            self.targetingGradient = self.image(
+                image="gradient.png",
+                pos=(0, -0.7, 0),
+                scale=(10, 1, 3))
+        else:
+            self.targetingLabel.show()
+            self.targetingGradient.show()
+
+    def hideTargeting(self):
+        self.targetingLabel.hide()
+        self.targetingGradient.hide()
 
     def redrawTooltips(self):
         if hasattr(self, 'cardNameLabel'):

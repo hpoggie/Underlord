@@ -22,7 +22,19 @@ class MouseHandler (DirectObject):
         base.disableMouse()
 
         self.activeCard = None
-        self.targeting = False
+        self._targeting = False
+
+    @property
+    def targeting(self):
+        return self._targeting
+
+    @targeting.setter
+    def targeting(self, value):
+        self._targeting = value
+        if self._targeting:
+            base.guiScene.showTargeting()
+        else:
+            base.guiScene.hideTargeting()
 
     def getObjectClickedOn(self):
         if base.mouseWatcherNode.hasMouse():
