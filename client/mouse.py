@@ -88,6 +88,7 @@ class MouseHandler (DirectObject):
     def onMouse3(self):
         if self.targeting:
             base.acceptTarget(None)
+            self.targeting = False
 
     def mouseOverTask(self):
         if base.mouseWatcherNode.hasMouse():
