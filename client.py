@@ -128,7 +128,6 @@ class App (ShowBase):
         self.zoneMaker = ZoneMaker()
 
     def mulligan(self):
-        print("Mulligan")
         self.networkManager.mulligan(
             *[self.playerHandNodes.index(card) for card in self.toMulligan])
         self.hasMulliganed = True

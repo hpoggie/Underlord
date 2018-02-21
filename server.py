@@ -148,7 +148,6 @@ class GameServer:
         self.redraw()
 
     def mulligan(self, addr, *indices):
-        print(indices)
         pl = self.players[addr]
         pl.mulligan(*[pl.hand[index] for index in indices])
         self.redraw()
