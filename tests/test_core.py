@@ -127,3 +127,24 @@ def testMulligan():
         assert False
     except IllegalMoveError:
         pass
+
+
+def testActionsWithIndices():
+    game, p0, p1 = newGame([one() for i in range(40)])
+    game.start()
+
+    print(p0.hand)
+    p0.hand[0].playsFaceUp = True  # Cheat
+    p0.playFaceup(0)
+    p0.endPhase()
+    p0.play(0)
+    p0.attackFace(0)
+    p0.endPhase()
+
+    p1.endPhase()
+    p1.play(0)
+    p1.endPhase()
+
+    p0.revealFacedown(0)
+    p0.endPhase()
+    p0.attackFacedown(0, 0)

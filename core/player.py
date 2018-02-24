@@ -104,6 +104,11 @@ class Player:
 
     def play(self, card):
         self.failIfInactive()
+
+        # Overload
+        if isinstance(card, int):
+            card = self.hand[card]
+
         if self.game.phase != Phase.play:
             raise IllegalMoveError("""
             Can only play facedowns during play phase.""")
@@ -117,6 +122,11 @@ class Player:
 
     def revealFacedown(self, card):
         self.failIfInactive()
+
+        # Overload
+        if isinstance(card, int):
+            card = self.facedowns[card]
+
         if self.game.phase != Phase.reveal:
             raise IllegalMoveError("""
             Can only reveal facedowns during reveal phase.""")
@@ -132,6 +142,11 @@ class Player:
 
     def playFaceup(self, card):
         self.failIfInactive()
+
+        # Overload
+        if isinstance(card, int):
+            card = self.hand[card]
+
         if self.game.phase != Phase.reveal:
             raise IllegalMoveError("""
                     Can only play faceups during reveal phase.""")
@@ -151,6 +166,11 @@ class Player:
 
     def attack(self, attacker, target):
         self.failIfInactive()
+
+        # Overload
+        if isinstance(attacker, int):
+            attacker = self.faceups[attacker]
+
         if attacker.hasAttacked:
             raise IllegalMoveError("Can only attack once per turn.")
 
@@ -176,8 +196,19 @@ class Player:
         else:
             self.game.fight(target, attacker)
 
+    def attackFacedown(self, attacker, targetIndex):
+        self.attack(attacker, self.opponent.facedowns[targetIndex])
+
+    def attackFaceup(self, attacker, targetIndex):
+        self.attack(attacker, self.opponent.faceups[targetIndex])
+
     def attackFace(self, attacker):
         self.failIfInactive()
+
+        # Overload
+        if isinstance(attacker, int):
+            attacker = self.faceups[attacker]
+
         self.opponent.manaCap += attacker.rank
 
     def endPhase(self):
