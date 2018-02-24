@@ -48,7 +48,8 @@ class LobbyServer:
         conn = next(
             conn for conn in self.networkManager.connections
             if conn.addr == addr)
-        self.readyPlayers.append(conn)
+        if conn not in self.readyPlayers:
+            self.readyPlayers.append(conn)
 
     def acceptConnections(self):
         self.networkManager.accept()
