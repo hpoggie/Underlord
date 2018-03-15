@@ -252,7 +252,7 @@ class GameServer:
                 print(e)
             except Decision as d:
                 self.waitingOnDecision = d
-                self.requestTarget(d.addr)
+                # Client should send us a decision now
             except EndOfGame as e:
                 self.endGame(e.winner)
                 exit(0)

@@ -1,4 +1,5 @@
 from direct.showbase.DirectObject import DirectObject
+import copy
 
 
 class NetworkInstructions(DirectObject):
@@ -16,44 +17,51 @@ class NetworkInstructions(DirectObject):
     def updateEnemyFaction(self, index):
         base.enemyFaction = base.availableFactions[index]
 
+    def moveCard(self, index, zone):
+        playerZones = [base.player.facedowns,
+                       base.player.faceups,
+                       base.player.hand,
+                       base.player.deck]
+
+        # TODO: hack. also enemy faction
+        c = copy.copy(base.faction.deck[index])
+        c.owner = base.player if zone in playerZones else base.enemy
+        c.zone = zone
+
     def updatePlayerHand(self, *cardIds):
-        base.player.hand = [None] * len(cardIds)
-        for i, x in enumerate(cardIds):
-            base.player.hand[i] = base.faction.deck[x]
-            base.player.hand[i].owner = base.player
+        base.player.hand = []
+        for x in cardIds:
+            self.moveCard(x, base.player.hand)
         base.redraw()
 
     def updateEnemyHand(self, size):
         base.enemy.hand = [None] * size
 
     def updatePlayerFacedowns(self, *cardIds):
-        base.player.facedowns = [None] * len(cardIds)
-        for i, x in enumerate(cardIds):
-            base.player.facedowns[i] = base.faction.deck[x]
-            base.player.facedowns[i].owner = base.player
+        base.player.facedowns = []
+        for x in cardIds:
+            self.moveCard(x, base.player.facedowns)
         base.redraw()
 
     def updateEnemyFacedowns(self, *cardIds):
-        base.enemy.facedowns = [None] * len(cardIds)
-        for i, x in enumerate(cardIds):
-            card = base.enemyFaction.deck[x]
-            base.enemy.facedowns[i] = card if x != -1 else None
-            if x != -1:
-                base.enemy.facedowns[i].owner = base.enemy
+        base.enemy.facedowns = []
+        for x in cardIds:
+            if x == -1:
+                base.enemy.facedowns.append(None)
+            else:
+                self.moveCard(x, base.enemy.facedowns)
         base.redraw()
 
     def updatePlayerFaceups(self, *cardIds):
-        base.player.faceups = [None] * len(cardIds)
-        for i, x in enumerate(cardIds):
-            base.player.faceups[i] = base.faction.deck[x]
-            base.player.faceups[i].owner = base.player
+        base.player.faceups = []
+        for x in cardIds:
+            self.moveCard(x, base.player.faceups)
         base.redraw()
 
     def updateEnemyFaceups(self, *cardIds):
-        base.enemy.faceups = [None] * len(cardIds)
+        base.enemy.faceups = []
         for i, x in enumerate(cardIds):
-            base.enemy.faceups[i] = base.enemyFaction.deck[x]
-            base.enemy.faceups[i].owner = base.enemy
+            self.moveCard(x, base.enemy.faceups)
         base.redraw()
 
     def updatePlayerManaCap(self, manaCap):
@@ -72,7 +80,7 @@ class NetworkInstructions(DirectObject):
         base.phase = phase
 
     def requestTarget(self):
-        base.mouseHandler.targeting = True
+        pass
 
     def winGame(self):
         base.guiScene.showBigMessage("Victory")

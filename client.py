@@ -8,8 +8,11 @@ from panda3d.core import CollisionTraverser, CollisionHandlerQueue
 
 from network import ClientNetworkManager
 from server import Zone
-from core.enums import Phase
+
+from core.core import Game
+from core.enums import Phase, Turn
 from core.player import IllegalMoveError
+from core.decision import Decision
 
 from panda3d.core import loadPrcFileData
 from direct.task import Task
@@ -64,23 +67,40 @@ class App (ShowBase):
         self.taskMgr.add(self.networkUpdateTask, "NetworkUpdateTask")
 
         self.availableFactions = [templars.Templars]
+        # Client chooses decisions before doing a thing
+        # and sends decision / other thing at once
+        self._activeDecision = None
 
     def onConnectedToServer(self):
         self.guiScene = hud.MainMenu()
 
     @property
     def active(self):
-        return self._active
+        return self.player.active
 
     @active.setter
     def active(self, value):
         """
         Update whose turn it is. If we haven't started the game, start it.
         """
-        self._active = value
         if not self._started:
             self.onGameStarted()
             self._started = True
+
+        # Ignore setting active before mulligans
+        # b/c the opcode is False instead of None
+        # TODO: change this
+        if self.hasMulliganed:
+            self.game.turn = Turn.p1 if value else Turn.p2
+
+    @property
+    def activeDecision(self):
+        return self._activeDecision
+
+    @activeDecision.setter
+    def activeDecision(self, value):
+        self._activeDecision = value
+        self.mouseHandler.targeting = value is not None
 
     @property
     def guiScene(self):
@@ -117,9 +137,9 @@ class App (ShowBase):
 
     def onGameStarted(self):
         # Set up game state information
-        self.player = self.faction.player(self.faction)
-        self.enemy = self.enemyFaction.player(self.enemyFaction)
-        self.phase = Phase.reveal
+        self.game = Game(templars.Templar, templars.Templar)
+        self.player, self.enemy = self.game.players
+        self.game.start()
         self.hasMulliganed = False
         self.toMulligan = []
 
@@ -127,9 +147,18 @@ class App (ShowBase):
         self.guiScene = hud.GameHud()
         self.zoneMaker = ZoneMaker()
 
+    @property
+    def phase(self):
+        return self.game.phase
+
+    @phase.setter
+    def phase(self, value):
+        self.game.phase = value
+
     def mulligan(self):
-        self.networkManager.mulligan(
-            *[self.playerHandNodes.index(card) for card in self.toMulligan])
+        indices = [self.playerHandNodes.index(card) for card in self.toMulligan]
+        self.player.mulligan(*[self.player.hand[i] for i in indices])
+        self.networkManager.mulligan(*indices)
         self.hasMulliganed = True
         self.toMulligan = []  # These get GC'd
 
@@ -185,12 +214,18 @@ class App (ShowBase):
         If it's our reveal phase and the card is fast, play it face-up,
         otherwise play it face-down.
         """
+        idx = self.playerHandNodes.index(handCard)
+
         if self.phase == Phase.reveal:
-            self.networkManager.playFaceup(
-                self.playerHandNodes.index(handCard))
+            try:
+                self.player.playFaceup(idx)
+            except Decision as d:
+                self.activeDecision = d
+
+            self.networkManager.playFaceup(idx)
         else:
-            self.networkManager.play(
-                self.playerHandNodes.index(handCard))
+            self.player.play(idx)
+            self.networkManager.play(idx)
         self.zoneMaker.makePlayerHand()
         self.zoneMaker.makeBoard()
 
@@ -198,6 +233,12 @@ class App (ShowBase):
         if card not in self.playerFacedownNodes:
             raise IllegalMoveError("That card is not one of your facedowns.")
         index = self.playerFacedownNodes.index(card)
+
+        try:
+            self.player.revealFacedown(index)
+        except Decision as d:
+            self.activeDecision = d
+
         self.networkManager.revealFacedown(index)
         self.zoneMaker.makePlayerHand()
         self.zoneMaker.makeBoard()
@@ -227,6 +268,11 @@ class App (ShowBase):
         self.zoneMaker.makeEnemyBoard()
 
     def endPhase(self):
+        try:
+            self.player.endPhase()
+        except Decision as d:
+            self.activeDecision = d
+
         self.networkManager.endPhase()
 
     def redraw(self):
