@@ -209,6 +209,9 @@ class App (ShowBase):
             targetZone,
             targetIndex)
 
+        self.activeDecision = None
+        self.mouseHandler.targeting = False
+
     def playCard(self, handCard):
         """
         If it's our reveal phase and the card is fast, play it face-up,

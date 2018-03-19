@@ -54,7 +54,6 @@ class MouseHandler (DirectObject):
         if self.targeting:
             if pickedObj is not None:
                 base.acceptTarget(pickedObj)
-                self.targeting = False
             return
 
         if pickedObj and not pickedObj.isEmpty():
@@ -100,7 +99,6 @@ class MouseHandler (DirectObject):
     def onMouse3(self):
         if self.targeting:
             base.acceptTarget(None)
-            self.targeting = False
 
     def mouseOverTask(self):
         if base.mouseWatcherNode.hasMouse():

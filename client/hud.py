@@ -5,6 +5,7 @@ from direct.gui.OnscreenText import OnscreenText
 from direct.gui.OnscreenImage import OnscreenImage
 from core.enums import Phase
 from panda3d.core import TransparencyAttrib
+import factions.templars
 
 
 class Fonts(DirectObject):
@@ -178,12 +179,27 @@ class GameHud(Scene):
             pos=(0.7, -0.7, 0),
             mayChange=True)
         self.endPhaseButton = self.button(
-            image="./end_phase.png",
+            text="End Phase",
             pos=(0.7, 0, -0.85),
-            relief=None,
             command=self.onEndPhaseButton)
 
+        if isinstance(base.player, factions.templars.Templar):
+            self.templarEndPhaseButton = self.button(
+                text="Faction Ability",
+                pos=(0.7, 0, -1),
+                command=self.onTemplarEndPhaseButton)
+
     def onEndPhaseButton(self):
+        if base.hasMulliganed:
+            base.endPhase()
+            if base.activeDecision is not None:
+                base.acceptTarget(None)
+                base.mouseHandler.targeting = False
+                base.activeDecision = None
+        else:
+            base.mulligan()
+
+    def onTemplarEndPhaseButton(self):
         if base.hasMulliganed:
             base.endPhase()
         else:
