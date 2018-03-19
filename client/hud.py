@@ -182,28 +182,31 @@ class GameHud(Scene):
             text="End Phase",
             pos=(0.7, 0, -0.85),
             command=self.onEndPhaseButton)
+        self.mulliganButton = self.button(
+            text="Mulligan",
+            pos=(0.7, 0, -0.85),
+            command=self.onMulliganButton)
 
         if isinstance(base.player, factions.templars.Templar):
             self.templarEndPhaseButton = self.button(
                 text="Faction Ability",
-                pos=(0.7, 0, -1),
+                scale=1,
+                pos=(0, 0, -1),
+                parent=self.endPhaseButton,
                 command=self.onTemplarEndPhaseButton)
 
+    def onMulliganButton(self):
+        base.mulligan()
+
     def onEndPhaseButton(self):
-        if base.hasMulliganed:
-            base.endPhase()
-            if base.activeDecision is not None:
-                base.acceptTarget(None)
-                base.mouseHandler.targeting = False
-                base.activeDecision = None
-        else:
-            base.mulligan()
+        base.endPhase()
+        if base.activeDecision is not None:
+            base.acceptTarget(None)
+            base.mouseHandler.targeting = False
+            base.activeDecision = None
 
     def onTemplarEndPhaseButton(self):
-        if base.hasMulliganed:
-            base.endPhase()
-        else:
-            base.mulligan()
+        base.endPhase()
 
     def showBigMessage(self, message):
         """
@@ -257,10 +260,18 @@ class GameHud(Scene):
             ("Instant. " if card.playsFaceUp else "") + card.desc)
 
     def redraw(self):
-        if base.active or not base.hasMulliganed:
+        if base.hasMulliganed:
+            self.mulliganButton.detachNode()
+
+        if base.active:
             self.endPhaseButton.show()
         else:
             self.endPhaseButton.hide()
+
+        if base.phase == Phase.play and base.active and hasattr(self, 'templarEndPhaseButton'):
+            self.templarEndPhaseButton.show()
+        else:
+            self.templarEndPhaseButton.hide()
 
         if base.phase == Phase.reveal and base.active:
             self.playerManaCapLabel.setText(
