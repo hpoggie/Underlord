@@ -13,6 +13,7 @@ class ServerNetworkManager (NetworkManager):
     Opcodes = numericEnum(
         'requestNumPlayers',
         'addPlayer',
+        'decideWhetherToGoFirst',
         'selectFaction',
         'mulligan',
         'revealFacedown',
@@ -83,6 +84,7 @@ class ClientNetworkManager (NetworkManager):
 
     Opcodes = numericEnum(
         'onEnteredGame',
+        'requestGoingFirstDecision',
         'updateNumPlayers',
         'updateEnemyFaction',
         'updatePlayerHand',

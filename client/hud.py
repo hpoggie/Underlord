@@ -53,6 +53,14 @@ class Scene(DirectObject):
     def unmake(self):
         self.root.detachNode()
 
+    def showBigMessage(self, message):
+        """
+        Put huge text on the screen that obscures stuff
+        """
+        self.label(
+            text=message,
+            scale=(0.5, 0.5, 0.5))
+
 
 class ConnectionUI(Scene):
     def __init__(self):
@@ -126,18 +134,30 @@ class FactionSelect(Scene):
                 command=base.pickFaction,
                 extraArgs=[i])
 
-    def showBigMessage(self, message):
-        """
-        Put huge text on the screen that obscures stuff
-        """
-        self.label(
-            text=message,
-            scale=(0.5, 0.5, 0.5))
-
     def showWaitMessage(self):
         self.label(
             text="Waiting for opponent.",
             pos=(0, -0.5, 0))
+
+
+class GoingFirstDecision(Scene):
+    def __init__(self):
+        super().__init__()
+
+        def goFirst():
+            base.networkManager.decideWhetherToGoFirst(1)
+
+        def goSecond():
+            base.networkManager.decideWhetherToGoFirst(0)
+
+        self.button(
+            text="Go first",
+            pos=(0, 0, 0.1),
+            command=goFirst)
+        self.button(
+            text="Go second",
+            pos=(0, 0, -0.1),
+            command=goSecond)
 
 
 class GameHud(Scene):
@@ -207,14 +227,6 @@ class GameHud(Scene):
 
     def onTemplarEndPhaseButton(self):
         base.endPhase()
-
-    def showBigMessage(self, message):
-        """
-        Put huge text on the screen that obscures stuff
-        """
-        self.winLabel = self.label(
-            text=message,
-            scale=(0.5, 0.5, 0.5))
 
     def hideBigMessage(self):
         if hasattr(self, 'winLabel') and self.winLabel is not None:

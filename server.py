@@ -15,6 +15,7 @@ import os
 import copy
 import sys
 import traceback
+import random
 
 
 class ServerError(BaseException):
@@ -68,6 +69,7 @@ class LobbyServer:
                 print("Game time started. Forking subprocess.")
             f = os.fork()
             if f == 0:
+                random.seed()  # Regenerate the random seed for this game
                 netman = copy.copy(self.networkManager)
                 # We need only the players for the game we're currently serving
                 netman.connections = self.readyPlayers
@@ -117,14 +119,30 @@ class GameServer:
         # If both players have selected their faction, start the game
         started = hasattr(self, 'game')
         if None not in self.factions and not started:
-            self.start()
+            self.waitOnGoingFirstDecision()
 
-    def start(self):
+    def waitOnGoingFirstDecision(self):
+        self.decidingPlayer = random.randint(0, 1)
+        self.notDecidingPlayer = (self.decidingPlayer + 1) % 2
+        conn = self.networkManager.connections[self.decidingPlayer]
+        conn.requestGoingFirstDecision()
+
+    def decideWhetherToGoFirst(self, addr, value):
+        if value:
+            firstPlayer = self.decidingPlayer
+        else:
+            firstPlayer = self.notDecidingPlayer
+
+        self.start(firstPlayer)
+
+    def start(self, firstPlayer):
+        secondPlayer = (firstPlayer + 1) % 2
+
         self.game = Game(*self.factions)
         self.game.start()
         self.players = dict([
-            (addr, self.game.players[i])
-            for i, addr in enumerate(self.addrs)])
+            (self.addrs[firstPlayer], self.game.players[0]),
+            (self.addrs[secondPlayer], self.game.players[1])])
         # Make it easy to find connections by addr
         self.connections = dict([
             (addr, self.networkManager.connections[i])

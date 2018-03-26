@@ -147,6 +147,9 @@ class App (ShowBase):
         self.guiScene = hud.GameHud()
         self.zoneMaker = ZoneMaker()
 
+    def decideWhetherToGoFirst(self):
+        self.guiScene = hud.GoingFirstDecision()
+
     @property
     def phase(self):
         return self.game.phase

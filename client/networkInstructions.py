@@ -14,6 +14,9 @@ class NetworkInstructions(DirectObject):
         if hasattr(base, 'numPlayersLabel') and base.numPlayersLabel:
             base.numPlayersLabel.setText(str(n) + " players in lobby.")
 
+    def requestGoingFirstDecision(self):
+        base.decideWhetherToGoFirst()
+
     def updateEnemyFaction(self, index):
         base.enemyFaction = base.availableFactions[index]
 
