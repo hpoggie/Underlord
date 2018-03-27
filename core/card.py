@@ -74,7 +74,8 @@ class Card:
 
     @property
     def onSpawn(self):
-        self._onSpawn.bind(self)
+        if hasattr(self._onSpawn, 'bind'):
+            self._onSpawn.bind(self)
         return self._onSpawn
 
     @onSpawn.setter
