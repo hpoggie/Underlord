@@ -36,6 +36,7 @@ class Player:
         self.cardBack = faction.cardBack
 
         self.hasMulliganed = False
+        self.hasFirstPlayerPenalty = False
 
     @property
     def manaCap(self):
