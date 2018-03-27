@@ -21,7 +21,7 @@ def testTemplarAbility():
     except Decision as d:
         d.execute(p0.hand[0])
 
-    assert len(p0.hand) == 5  # Still need to implement 1st player penalty
+    assert len(p0.hand) == 4  # First player penalty
     assert p0.manaCap == 3
 
     try:
