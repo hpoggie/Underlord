@@ -89,7 +89,12 @@ class Card:
 
             def __call__(self):
                 if len(inspect.getargspec(self.func).args) > 1:
-                    raise Decision(self.execute, self)
+                    if hasattr(self.source, 'targetDesc'):
+                        desc = self.source.targetDesc
+                    else:
+                        desc = self.source.desc
+
+                    raise Decision(self.execute, self, desc)
                 else:
                     self.execute()
 

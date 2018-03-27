@@ -188,7 +188,8 @@ def crystalLance():
         onSpawn=_onSpawn,
         desc="""Destroy target face-down card.\n
                 If this is attacked while face-down,
-                destroy the attacking unit and draw a card.""")
+                destroy the attacking unit and draw a card.""",
+        targetDesc="Destroy target face-down card.")
 
 
 def crystalRain():
@@ -209,7 +210,8 @@ def crystalRain():
         onSpawn=_onSpawn,
         desc="""Destroy target face-down card.\n
                 If this is attacked while face-down,
-                destroy all face-up units.""")
+                destroy all face-up units.""",
+        targetDesc="Destroy target face-down card.")
 
 
 Templars = Faction(
@@ -245,4 +247,7 @@ class Templar(Player):
 
     def afterEvent(self, name, *args, **kwargs):
         if name == 'endTurn' and not self.active:
-            raise Decision(self.templarAbility, self)
+            raise Decision(
+                self.templarAbility,
+                self,
+                "Choose a card to discard.")

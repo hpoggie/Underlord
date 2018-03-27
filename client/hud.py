@@ -235,8 +235,8 @@ class GameHud(Scene):
     def showTargeting(self):
         if not hasattr(self, 'targetingLabel'):
             self.targetingLabel = self.label(
-                text="Select target",
-                pos=(0, -0.7, 0))
+                pos=(0, -0.7, 0),
+                mayChange=True)
             self.targetingGradient = self.image(
                 image="gradient.png",
                 pos=(0, -0.7, 0),
@@ -244,6 +244,8 @@ class GameHud(Scene):
         else:
             self.targetingLabel.show()
             self.targetingGradient.show()
+
+        self.targetingLabel.setText(base.activeDecision.desc)
 
     def hideTargeting(self):
         self.targetingLabel.hide()
