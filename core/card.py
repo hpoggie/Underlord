@@ -74,6 +74,7 @@ class Card:
 
     @property
     def onSpawn(self):
+        self._onSpawn.bind(self)
         return self._onSpawn
 
     @onSpawn.setter
@@ -82,10 +83,17 @@ class Card:
             """
             Helps discard spells after abilities happen
             """
-            def __init__(self, func, source):
-                # Bind the method to the source so we can invoke it later
-                self.func = types.MethodType(func, source)
-                self.source = source
+            def __init__(self, func):
+                self.baseFunc = func
+
+            def bind(self, source):
+                """
+                Bind the method to the source so we can invoke it
+                Done when the property is retrieved to prevent copying problems
+                """
+                if not hasattr(self, 'source'):
+                    self.func = types.MethodType(func, source)
+                    self.source = source
 
             def __call__(self):
                 if len(inspect.getargspec(self.func).args) > 1:
@@ -103,7 +111,7 @@ class Card:
                 if self.source.spell:
                     self.source.zone = self.source.owner.graveyard
 
-        self._onSpawn = SpawnAbility(func, self)
+        self._onSpawn = SpawnAbility(func)
 
     @property
     def onDeath(self):
