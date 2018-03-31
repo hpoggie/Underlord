@@ -1,12 +1,12 @@
-from .dummyCards import *
-from factions.base import *
+import factions.base
+from . import dummyCards
 from .util import newGame
 
 
 def testSweep():
     game, p1, p2 = newGame(
-        [sweep()],
-        [one(), one(), one()])
+        [factions.base.sweep()],
+        [dummyCards.one(), dummyCards.one(), dummyCards.one()])
 
     p1.endPhase()
     p1.play(p1.hand[0])
@@ -30,8 +30,8 @@ def testSweep():
 
 def testMindControlTrap():
     game, p1, p2, = newGame(
-        [one()],
-        [mindControlTrap()])
+        [dummyCards.one()],
+        [factions.base.mindControlTrap()])
 
     p1.endPhase()
     p1.play(p1.hand[0])

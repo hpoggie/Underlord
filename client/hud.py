@@ -3,7 +3,7 @@ from panda3d.core import TextNode
 from direct.gui.DirectGui import DirectButton
 from direct.gui.OnscreenText import OnscreenText
 from direct.gui.OnscreenImage import OnscreenImage
-from core.enums import Phase
+from core.core import Phase
 from panda3d.core import TransparencyAttrib
 import factions.templars
 

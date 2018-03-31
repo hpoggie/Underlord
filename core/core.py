@@ -1,5 +1,7 @@
-from .enums import *
+from . import enums
 
+Turn = enums.numericEnum('p1', 'p2')
+Phase = enums.numericEnum('reveal', 'play')
 
 def destroy(card):
     card.game.destroy(card)

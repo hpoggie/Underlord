@@ -1,7 +1,6 @@
 from core.player import Player
 from core.faction import Faction
-from core.core import Game
-from core.enums import Turn
+from core.core import Game, Turn
 import collections
 
 

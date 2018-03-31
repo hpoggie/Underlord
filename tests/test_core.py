@@ -1,9 +1,8 @@
-import core.player as player
+import core.player
 from core.player import Player, IllegalMoveError
-from factions import base
 from factions.templars import Templars
-from .util import newGame
-from .dummyCards import *
+from . import util
+from . import dummyCards
 
 
 def deckContainsDuplicates(deck):
@@ -29,7 +28,7 @@ def testForDuplicatesBetweenPlayers():
 
 
 def testReveal():
-    game, player, p1 = newGame(one())
+    game, player, p1 = util.newGame(dummyCards.one())
     player.endPhase()  # draw the card
     newCard = player.hand[0]
     player.play(newCard)
@@ -40,7 +39,7 @@ def testReveal():
 
 
 def testPlay():
-    game, player, _ = newGame(one())
+    game, player, _ = util.newGame(dummyCards.one())
     player.endPhase()
     newCard = player.hand[0]
     player.play(newCard)
@@ -48,10 +47,10 @@ def testPlay():
 
 
 def testPlayFaceup():
-    newCard = one()
+    newCard = dummyCards.one()
     newCard.playsFaceUp = True
     newCard.cost = 0
-    game, player, _ = newGame(newCard)
+    game, player, _ = util.newGame(newCard)
     player.drawCard()
     instance = player.hand[0]
     player.playFaceup(instance)
@@ -59,10 +58,10 @@ def testPlayFaceup():
 
 
 def testAttackFace():
-    newCard = one()
+    newCard = dummyCards.one()
     newCard.playsFaceUp = True
     newCard.cost = 0
-    game, player, _ = newGame(newCard)
+    game, player, _ = util.newGame(newCard)
     player.drawCard()
     player.playFaceup(player.hand[0])
     player.endPhase()
@@ -71,10 +70,10 @@ def testAttackFace():
 
 
 def testAttackFacedown():
-    newCard = one()
+    newCard = dummyCards.one()
     newCard.playsFaceUp = True
     newCard.cost = 0
-    game, p0, p1 = newGame(newCard)
+    game, p0, p1 = util.newGame(newCard)
     game.start()
     # 1st player plays a facedown
     p0.endPhase()
@@ -89,10 +88,10 @@ def testAttackFacedown():
 
 
 def testAttackFaceup():
-    newCard = one()
+    newCard = dummyCards.one()
     newCard.playsFaceUp = True
     newCard.cost = 0
-    game, p0, p1 = newGame(newCard)
+    game, p0, p1 = util.newGame(newCard)
     game.start()
     # 1st player plays a faceup
     p0.playFaceup(p0.hand[0])
@@ -108,15 +107,15 @@ def testAttackFaceup():
 def testMulligan():
     from copy import deepcopy
 
-    game, p0, p1 = newGame([one() for i in range(40)])
+    game, p0, p1 = util.newGame([dummyCards.one() for i in range(40)])
     game.start()
     game.turn = None
     hand0 = deepcopy(p0.hand)
-    assert len(hand0) == player.startHandSize
+    assert len(hand0) == core.player.startHandSize
     c = p0.hand[0]
     p0.mulligan(c)
     hand1 = deepcopy(p0.hand)
-    assert len(hand1) == player.startHandSize
+    assert len(hand1) == core.player.startHandSize
     assert hand0 != hand1
 
     assert c in p0.deck  # Has the card been returned to the deck
@@ -130,7 +129,7 @@ def testMulligan():
 
 
 def testActionsWithIndices():
-    game, p0, p1 = newGame([one() for i in range(40)])
+    game, p0, p1 = util.newGame([dummyCards.one() for i in range(40)])
     game.start()
 
     print(p0.hand)

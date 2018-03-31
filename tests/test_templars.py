@@ -1,14 +1,12 @@
-from factions.templars import *
+import factions.templars as templars
 from core.decision import Decision
-from factions import base
 from .util import newGame
-from core.enums import *
 from core.player import IllegalMoveError
-from core.core import Game
+from core.core import Game, Turn, Phase
 
 
 def testTemplarAbility():
-    game = Game(Templar, Templar)
+    game = Game(templars.Templar, templars.Templar)
     p0 = game.players[0]
     p1 = game.players[1]
     game.start()
@@ -41,7 +39,7 @@ def testTemplarAbility():
         assert p0.manaCap == 4
 
 def testEquus():
-    game, p0, p1 = newGame(equus())
+    game, p0, p1 = newGame(templars.equus())
     p0.deck[0].zone = p0.faceups
     p0.manaCap = 3
     assert p0.faceups[0].rank == 5
@@ -51,8 +49,8 @@ def testEquus():
 
 def testHolyHandGrenade():
     game, p0, p1 = newGame(
-        [corvus(), corvus()],
-        [holyHandGrenade(), holyHandGrenade()])
+        [templars.corvus(), templars.corvus()],
+        [templars.holyHandGrenade(), templars.holyHandGrenade()])
     p0.mana = 5
     p0.drawCard()
     p0.hand[0].playsFaceUp = True
@@ -81,8 +79,8 @@ def testHolyHandGrenade():
 
 def testWrathOfGod():
     game, p0, p1 = newGame(
-        [corvus(), corvus()],
-        [wrathOfGod()])
+        [templars.corvus(), templars.corvus()],
+        [templars.wrathOfGod()])
     p0.drawCard()
     p0.drawCard()
     p0.hand[0].playsFaceUp = True
@@ -100,8 +98,8 @@ def testWrathOfGod():
 
 def testMiracle():
     game, p0, p1 = newGame(
-        [corvus() for i in range(6)]
-        + [miracle()])
+        [templars.corvus() for i in range(6)]
+        + [templars.miracle()])
     p0.drawCard()
     assert len(p0.hand) == 1
     p0.hand[0].playsFaceUp = True
@@ -112,9 +110,9 @@ def testMiracle():
 
 def testMiracleNotEnoughCards():
     game, p0, p1 = newGame(
-        corvus(),
-        corvus(),
-        miracle()
+        templars.corvus(),
+        templars.corvus(),
+        templars.miracle()
     )
     p0.drawCard()
     assert len(p0.hand) == 1
@@ -126,10 +124,10 @@ def testMiracleNotEnoughCards():
 
 def testGrail():
     game, p0, p1 = newGame()
-    c = leftGrail()
+    c = templars.leftGrail()
     c.owner = p0
     c.zone = p0.faceups
-    c = corvus()
+    c = templars.corvus()
     c.owner = p1
     c.zone = p1.faceups
     p1.faceups[0].hasAttacked = False
@@ -145,13 +143,13 @@ def testGrail():
 
 def testCrystalElemental():
     game, p0, p1 = newGame(
-        [crystalElemental()],
-        [corvus()])
+        [templars.crystalElemental()],
+        [templars.corvus()])
 
     # Cheat the elemental into play
     p0.drawCard()
     p0.hand[0].playsFaceUp = True
-    p0.mana = crystalElemental().cost
+    p0.mana = templars.crystalElemental().cost
     p0.playFaceup(p0.hand[0])
     p0.endTurn()
 
@@ -163,7 +161,7 @@ def testCrystalElemental():
     assert(len(p0.hand) == 0)
 
     # give them a card to draw
-    c = crystalElemental()
+    c = templars.crystalElemental()
     c.owner = p0  # Need to have an owner or can't switch zones
     p0.deck.append(c)
 

@@ -9,8 +9,7 @@ from panda3d.core import CollisionTraverser, CollisionHandlerQueue
 from network import ClientNetworkManager
 from server import Zone
 
-from core.core import Game
-from core.enums import Phase, Turn
+from core.core import Game, Phase, Turn
 from core.player import IllegalMoveError
 from core.decision import Decision
 
