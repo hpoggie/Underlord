@@ -3,27 +3,25 @@ This is the client script. It takes game data and draws it on the screen.
 It also takes user input and turns it into game actions.
 """
 
+import sys
+
 from direct.showbase.ShowBase import ShowBase
 from panda3d.core import CollisionTraverser, CollisionHandlerQueue
+from panda3d.core import loadPrcFileData
+from direct.task import Task
 
+from network_manager import ConnectionClosed
 from network import ClientNetworkManager
 from server import Zone
-
 from core.core import Game, Phase, Turn
 from core.player import IllegalMoveError
 from core.decision import Decision
-
-from panda3d.core import loadPrcFileData
-from direct.task import Task
 from factions import templars
-
-import sys
 from client.mouse import MouseHandler
 from client.zoneMaker import ZoneMaker
 import client.hud as hud
 from client.connectionManager import ConnectionManager
 import client.networkInstructions
-from network_manager import ConnectionClosed
 
 loadPrcFileData(
     "",

@@ -1,5 +1,6 @@
-from direct.showbase.DirectObject import DirectObject
 import copy
+
+from direct.showbase.DirectObject import DirectObject
 
 
 class NetworkInstructions(DirectObject):

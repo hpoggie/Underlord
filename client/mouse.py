@@ -1,5 +1,6 @@
-from direct.showbase.DirectObject import DirectObject
 from panda3d.core import CollisionNode, GeomNode, CollisionRay
+from direct.showbase.DirectObject import DirectObject
+
 from core.core import Phase
 from core.player import IllegalMoveError
 

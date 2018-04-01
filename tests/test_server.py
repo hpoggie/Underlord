@@ -1,7 +1,8 @@
-import server
-import network
-from client.networkInstructions import NetworkInstructions
 import types
+
+import network
+import server
+from client.networkInstructions import NetworkInstructions
 
 
 lobbyServer = server.LobbyServer("-v")

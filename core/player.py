@@ -7,6 +7,7 @@ A player has the following characteristics:
 """
 from copy import deepcopy
 from random import shuffle
+
 from .core import Turn, Phase
 
 startHandSize = 5

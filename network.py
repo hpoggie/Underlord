@@ -1,7 +1,8 @@
+import types
+
 from network_manager import NetworkManager
 from core.enums import numericEnum
 from core.decision import Decision
-import types
 
 
 class ServerNetworkManager (NetworkManager):

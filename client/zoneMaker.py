@@ -1,5 +1,6 @@
-from direct.showbase.DirectObject import DirectObject
 from panda3d.core import CardMaker
+from direct.showbase.DirectObject import DirectObject
+
 from .fanHand import fanHand
 
 

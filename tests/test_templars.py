@@ -1,8 +1,8 @@
-import factions.templars as templars
-from core.decision import Decision
 from .util import newGame
+from core.decision import Decision
 from core.player import IllegalMoveError
 from core.core import Game, Turn, Phase
+import factions.templars as templars
 
 
 def testTemplarAbility():

@@ -1,8 +1,8 @@
+from . import util
+from . import dummyCards
 import core.player
 from core.player import Player, IllegalMoveError
 from factions.templars import Templars
-from . import util
-from . import dummyCards
 
 
 def deckContainsDuplicates(deck):

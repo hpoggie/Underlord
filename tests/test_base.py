@@ -1,6 +1,6 @@
-import factions.base
 from . import dummyCards
 from .util import newGame
+import factions.base
 
 
 def testSweep():

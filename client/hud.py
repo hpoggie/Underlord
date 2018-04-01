@@ -1,10 +1,11 @@
-from direct.showbase.DirectObject import DirectObject
+from panda3d.core import TransparencyAttrib
 from panda3d.core import TextNode
+from direct.showbase.DirectObject import DirectObject
 from direct.gui.DirectGui import DirectButton
 from direct.gui.OnscreenText import OnscreenText
 from direct.gui.OnscreenImage import OnscreenImage
+
 from core.core import Phase
-from panda3d.core import TransparencyAttrib
 import factions.templars
 
 

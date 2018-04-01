@@ -3,19 +3,20 @@ Server script.
 Takes the client's actions and computes the results, then sends them back.
 """
 
+import os
+import sys
+import copy
+import traceback
+import random
+import time
+
 from network_manager import ConnectionClosed
 from network import ServerNetworkManager
 from core.core import Game, EndOfGame
-from core.decision import Decision
-from factions.templars import Templar
-import time
 from core.player import IllegalMoveError
 from core.enums import numericEnum
-import os
-import copy
-import sys
-import traceback
-import random
+from core.decision import Decision
+from factions.templars import Templar
 
 
 class ServerError(BaseException):
