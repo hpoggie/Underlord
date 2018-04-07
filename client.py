@@ -130,7 +130,9 @@ class App (ShowBase):
         self.faction = self.availableFactions[index]
         self._active = False
         self._started = False  # Don't show game yet; it hasn't started
-        self.guiScene.showWaitMessage() # Tell the user we're waiting for opponent
+
+        # Tell the user we're waiting for opponent
+        self.guiScene.showWaitMessage()
 
     def onGameStarted(self):
         # Set up game state information
@@ -156,9 +158,11 @@ class App (ShowBase):
         self.game.phase = value
 
     def mulligan(self):
-        indices = [self.playerHandNodes.index(card) for card in self.toMulligan]
+        indices = [self.playerHandNodes.index(card)
+                   for card in self.toMulligan]
         self.player.mulligan(*[self.player.hand[i] for i in indices])
-        self.enemy.mulligan()  # Don't know what their cards are but do this to trigger effects
+        # Don't know what their cards are but do this to trigger effects
+        self.enemy.mulligan()
         self.networkManager.mulligan(*indices)
         self.hasMulliganed = True
         self.toMulligan = []  # These get GC'd
@@ -168,6 +172,9 @@ class App (ShowBase):
         Given a card node, get its zone, index in that zone, and whether we
         control it
         """
+        if card is None:
+            return (-1, -1, False)
+
         enemy = True
         index = -1
         zone = -1
@@ -203,7 +210,7 @@ class App (ShowBase):
         """
         Give the server the target for the currently active ability
         """
-        targetZone, targetIndex, targetsEnemy = self.findCard(target) if target is not None else (-1, -1, False)
+        targetZone, targetIndex, targetsEnemy = self.findCard(target)
 
         self.networkManager.acceptTarget(
             int(targetsEnemy),

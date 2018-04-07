@@ -38,6 +38,7 @@ def testTemplarAbility():
         assert len(p1.hand) == 6
         assert p0.manaCap == 4
 
+
 def testEquus():
     game, p0, p1 = newGame(templars.equus())
     p0.deck[0].zone = p0.faceups
@@ -98,8 +99,7 @@ def testWrathOfGod():
 
 def testMiracle():
     game, p0, p1 = newGame(
-        [templars.corvus() for i in range(6)]
-        + [templars.miracle()])
+        [templars.corvus() for i in range(6)] + [templars.miracle()])
     p0.drawCard()
     assert len(p0.hand) == 1
     p0.hand[0].playsFaceUp = True

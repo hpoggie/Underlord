@@ -4,7 +4,6 @@ import inspect
 from .decision import Decision
 
 
-
 class Card:
     """
     A card has the following characteristics:

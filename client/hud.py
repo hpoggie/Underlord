@@ -70,7 +70,8 @@ class ConnectionUI(Scene):
 
     def showConnectionError(self, callback):
         self.connectingLabel.hide()
-        self.connectionFailedLabel = self.label(text="Error. Could not connect to server")
+        self.connectionFailedLabel = self.label(
+            text="Error. Could not connect to server")
         self.reconnectButton = self.button(
             pos=(0, 0, -0.25),
             image="./reconnect.png",
@@ -283,7 +284,9 @@ class GameHud(Scene):
         else:
             self.endPhaseButton.hide()
 
-        if base.phase == Phase.play and base.active and hasattr(self, 'templarEndPhaseButton'):
+        # If we're not Templars, don't worry about it
+        hasTemplarButton = hasattr(self, 'templarEndPhaseButton')
+        if base.phase == Phase.play and base.active and hasTemplarButton:
             self.templarEndPhaseButton.show()
         else:
             self.templarEndPhaseButton.hide()

@@ -8,7 +8,7 @@ A player has the following characteristics:
 from copy import deepcopy
 from random import shuffle
 
-from .core import Turn, Phase
+from .core import Phase
 
 startHandSize = 5
 maxManaCap = 15
@@ -88,7 +88,8 @@ class Player:
             raise IllegalMoveError("Can't mulligan twice.")
 
         if self.game.turn is not None:
-            raise IllegalMoveError("Can only mulligan before the game has started.")
+            raise IllegalMoveError(
+                "Can only mulligan before the game has started.")
 
         for i in range(len(cards)):
             self.drawCard()

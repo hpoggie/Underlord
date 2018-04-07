@@ -3,6 +3,7 @@ from . import enums
 Turn = enums.numericEnum('p1', 'p2')
 Phase = enums.numericEnum('reveal', 'play')
 
+
 def destroy(card):
     card.game.destroy(card)
 
@@ -35,7 +36,8 @@ class Game:
         p1Type and p2Type are the classes of player 1 and player 2.
         e.g. Templar and Thief
         """
-        self.turn = None  # It's no one's turn until both players have mulliganed
+        # It's no one's turn until both players have mulliganed
+        self.turn = None
         self.phase = Phase.reveal
 
         self.players = (p1Type(), p2Type())
