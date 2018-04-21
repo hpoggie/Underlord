@@ -13,7 +13,7 @@ from direct.task import Task
 from network_manager import ConnectionClosed
 from network import ClientNetworkManager
 from server import Zone
-from core.core import Game, Phase, Turn
+from core.core import Game, Phase, Turn, EndOfGame
 from core.player import IllegalMoveError
 from core.decision import Decision
 from factions import templars
@@ -249,6 +249,8 @@ class App (ShowBase):
             self.player.revealFacedown(index)
         except Decision as d:
             self.activeDecision = d
+        except EndOfGame:
+            pass
 
         self.networkManager.revealFacedown(index)
         self.zoneMaker.makePlayerHand()
@@ -283,6 +285,8 @@ class App (ShowBase):
             self.player.endPhase()
         except Decision as d:
             self.activeDecision = d
+        except EndOfGame:
+            pass
 
         self.networkManager.endPhase()
 
