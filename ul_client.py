@@ -158,9 +158,8 @@ class App (ShowBase):
         self.game.phase = value
 
     def mulligan(self):
-        indices = [self.playerHandNodes.index(card)
-                   for card in self.toMulligan]
-        self.player.mulligan(*[self.player.hand[i] for i in indices])
+        indices = [self.player.hand.index(c) for c in self.toMulligan]
+        self.player.mulligan(*self.toMulligan)
         # Don't know what their cards are but do this to trigger effects
         self.enemy.mulligan()
         self.networkManager.mulligan(*indices)

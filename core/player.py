@@ -84,6 +84,8 @@ class Player:
     # Actions
 
     def mulligan(self, *cards):
+        cards = set(cards)  # Remove duplicates
+
         if self.hasMulliganed:
             raise IllegalMoveError("Can't mulligan twice.")
 
