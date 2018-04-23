@@ -60,8 +60,10 @@ class MouseHandler (DirectObject):
         if pickedObj and not pickedObj.isEmpty():
             if pickedObj.getTag('zone') == 'hand':
                 if not base.hasMulliganed:
-                    print("Added card to mulligan")
-                    base.toMulligan.append(pickedObj)
+                    if pickedObj in base.toMulligan:
+                        base.toMulligan.remove(pickedObj)
+                    else:
+                        base.toMulligan.append(pickedObj)
                 else:
                     try:
                         base.playCard(pickedObj)
