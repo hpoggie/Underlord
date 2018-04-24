@@ -65,6 +65,7 @@ class MouseHandler (DirectObject):
                         base.toMulligan.remove(c)
                     else:
                         base.toMulligan.append(c)
+                    base.zoneMaker.makePlayerHand()
                 else:
                     try:
                         base.playCard(pickedObj)

@@ -55,6 +55,9 @@ class ZoneMaker(DirectObject):
         fan = fanHand(len(base.player.hand))
         for i, tr in enumerate(fan):
             addHandCard(base.player.hand[i], tr)
+            if base.player.hand[i] in base.toMulligan:
+                tex = loader.loadTexture(base.playerIconPath + '/' + base.playerCardBack)
+                base.playerHandNodes[i].setTexture(tex)
 
         self.playerHand.setPosHpr(2.5, -1.0, 0, 0, 45.0, 0)
 
