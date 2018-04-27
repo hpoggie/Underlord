@@ -32,6 +32,11 @@ class Card:
         for (key, value) in kwargs.items():
             setattr(self, key, value)
 
+    def __repr__(self):
+        return "%s at 0x%x owned by %s" % (self.name,
+                id(self),
+                self.owner)
+
     def beforeEvent(self, eventName, *args, **kwargs):
         pass
 

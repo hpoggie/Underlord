@@ -39,6 +39,12 @@ class Player:
         self.hasMulliganed = False
         self.hasFirstPlayerPenalty = False
 
+    def __repr__(self):
+        if hasattr(self, 'game'):
+            return "Player %d" % self.game.players.index(self)
+        else:
+            return "Player at 0x%x" % id(self)
+
     @property
     def manaCap(self):
         return self._manaCap

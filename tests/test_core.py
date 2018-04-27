@@ -147,3 +147,12 @@ def testActionsWithIndices():
     p0.revealFacedown(0)
     p0.endPhase()
     p0.attackFacedown(0, 0)
+
+
+def testRepr():
+    """
+    Make sure repr() isn't broken
+    """
+    t = Player(Templars)
+    print(repr(t.deck))
+    print(repr(Templars))

@@ -23,3 +23,6 @@ class Faction:
         self.player = player.Player
 
         vars(self).update(kwargs.copy())
+
+    def __repr__(self):
+        return "Faction " + self.name + " at 0x%x" %  id(self)
