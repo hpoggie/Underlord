@@ -216,7 +216,7 @@ def crystalRain():
 
 Templars = Faction(
     name="Templars",
-    iconPath="./templar_icons",
+    iconPath="templar_icons",
     cardBack="templar-shield.png",
     deck=deck(
         corvus, 5,

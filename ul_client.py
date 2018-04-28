@@ -29,6 +29,7 @@ loadPrcFileData(
     win-size 500 500
     window-title Underlord
     fullscreen 0
+    model-path assets
     """)
 
 
