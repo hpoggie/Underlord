@@ -55,9 +55,7 @@ class MouseHandler (DirectObject):
         if self.targeting:
             if pickedObj is not None:
                 base.acceptTarget(pickedObj)
-            return
-
-        if pickedObj and not pickedObj.isEmpty():
+        elif pickedObj and not pickedObj.isEmpty():
             if pickedObj.getTag('zone') == 'hand':
                 if not base.hasMulliganed:
                     c = base.player.hand[base.playerHandNodes.index(pickedObj)]
@@ -67,18 +65,12 @@ class MouseHandler (DirectObject):
                         base.toMulligan.append(c)
                     base.zoneMaker.makePlayerHand()
                 else:
-                    try:
-                        base.playCard(pickedObj)
-                    except IllegalMoveError as error:
-                        print(error)
+                    base.playCard(pickedObj)
             elif pickedObj.getTag('zone') == 'face-down':
-                if not self.activeCard:
-                    try:
-                        base.revealFacedown(pickedObj)
-                    except IllegalMoveError as error:
-                        print(error)
-                else:
+                if self.activeCard:
                     self.activeCard = None
+                else:
+                    base.revealFacedown(pickedObj)
             elif pickedObj.getTag('zone') == 'enemy face-down':
                 if self.activeCard:
                     base.attack(self.activeCard, pickedObj)
