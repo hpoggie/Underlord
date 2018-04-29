@@ -111,6 +111,8 @@ class ZoneMaker(DirectObject):
             cardModel = self.loadPlayerBlank()
             cardModel.setPos(posX, 0, posZ)
             cardModel.setTag('zone', 'face-down')
+            # Give this a card ref so we can see it
+            cardModel.setPythonTag('card', card)
             base.playerFacedownNodes.append(cardModel)
 
         for i in base.player.faceups:
@@ -159,6 +161,7 @@ class ZoneMaker(DirectObject):
             path = base.enemyIconPath + "/" + card.image
         tex = loader.loadTexture(path)
         cardModel.setTexture(tex)
+        cardModel.setPythonTag('card', card)
         return cardModel
 
     def loadBlank(self, path):

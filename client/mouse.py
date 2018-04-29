@@ -58,7 +58,7 @@ class MouseHandler (DirectObject):
         elif pickedObj and not pickedObj.isEmpty():
             if pickedObj.getTag('zone') == 'hand':
                 if not base.hasMulliganed:
-                    c = base.player.hand[base.playerHandNodes.index(pickedObj)]
+                    c = pickedObj.getPythonTag('card')
                     if c in base.toMulligan:
                         base.toMulligan.remove(c)
                     else:
@@ -109,30 +109,19 @@ class MouseHandler (DirectObject):
 
             pickedObj = self.getObjectClickedOn()
             if pickedObj:
-                if pickedObj.getTag('zone') == 'hand':
-                    card = base.player.hand[
-                        base.playerHandNodes.index(pickedObj)]
-                    base.guiScene.updateCardTooltip(card)
-                elif pickedObj.getTag('zone') == 'face-down':
-                    card = base.player.facedowns[
-                        base.playerFacedownNodes.index(pickedObj)]
-                    self._activeObj = pickedObj
-                    path = base.playerIconPath + "/" + card.image
-                    pickedObj.setTexture(loader.loadTexture(path))
-                    base.guiScene.updateCardTooltip(card)
-                elif pickedObj.getTag('zone') == 'enemy face-down':
-                    card = base.enemy.facedowns[
-                        base.enemyFacedownNodes.index(pickedObj)]
-                    if card is not None:
+                card = pickedObj.getPythonTag('card')
+                if card is not None:
+                    if pickedObj.getTag('zone') == 'hand':
+                        base.guiScene.updateCardTooltip(card)
+                    elif pickedObj.getTag('zone') == 'face-down':
                         self._activeObj = pickedObj
                         path = base.playerIconPath + "/" + card.image
                         pickedObj.setTexture(loader.loadTexture(path))
                         base.guiScene.updateCardTooltip(card)
-                elif pickedObj.getTag('zone') == 'face-up':
-                    if pickedObj in base.playerFaceupNodes:
-                        card = base.player.faceups[
-                            base.playerFaceupNodes.index(pickedObj)]
-                    else:
-                        card = base.enemy.faceups[
-                            base.enemyFaceupNodes.index(pickedObj)]
-                    base.guiScene.updateCardTooltip(card)
+                    elif pickedObj.getTag('zone') == 'enemy face-down':
+                        self._activeObj = pickedObj
+                        path = base.playerIconPath + "/" + card.image
+                        pickedObj.setTexture(loader.loadTexture(path))
+                        base.guiScene.updateCardTooltip(card)
+                    elif pickedObj.getTag('zone') == 'face-up':
+                        base.guiScene.updateCardTooltip(card)
