@@ -46,17 +46,16 @@ class MouseHandler (DirectObject):
             if (base.handler.getNumEntries() > 0):
                 base.handler.sortEntries()
                 pickedObj = base.handler.getEntry(0).getIntoNodePath()
-                pickedObj = pickedObj.findNetTag('zone')
+                pickedObj = pickedObj.findNetPythonTag('zone')
                 return pickedObj
 
     def doClick(self):
         pickedObj = self.getObjectClickedOn()
 
-        if self.targeting:
-            if pickedObj is not None:
-                base.acceptTarget(pickedObj)
+        if self.targeting and pickedObj is not None:
+            base.acceptTarget(pickedObj)
         elif pickedObj and not pickedObj.isEmpty():
-            if pickedObj.getTag('zone') == 'hand':
+            if pickedObj.getPythonTag('zone') is base.player.hand:
                 if not base.hasMulliganed:
                     c = pickedObj.getPythonTag('card')
                     if c in base.toMulligan:
@@ -66,24 +65,24 @@ class MouseHandler (DirectObject):
                     base.zoneMaker.makePlayerHand()
                 else:
                     base.playCard(pickedObj)
-            elif pickedObj.getTag('zone') == 'face-down':
+            elif pickedObj.getPythonTag('zone') is base.player.facedowns:
                 if self.activeCard:
                     self.activeCard = None
                 else:
                     base.revealFacedown(pickedObj)
-            elif pickedObj.getTag('zone') == 'enemy face-down':
+            elif pickedObj.getPythonTag('zone') is base.enemy.facedowns:
                 if self.activeCard:
                     base.attack(self.activeCard, pickedObj)
                     self.activeCard = None
-            elif pickedObj.getTag('zone') == 'face-up':
+            elif pickedObj.getPythonTag('zone') is base.player.faceups or pickedObj.getPythonTag('zone') == base.enemy.faceups:
                 if base.phase == Phase.play and not self.activeCard:
                     self.activeCard = pickedObj
                 elif self.activeCard:
                     base.attack(self.activeCard, pickedObj)
                     self.activeCard = None
-            elif pickedObj.getTag('zone') == 'face' and self.activeCard:
-                    base.attack(self.activeCard, pickedObj)
-                    self.activeCard = None
+            elif pickedObj.getPythonTag('zone') is base.enemy.face and self.activeCard:
+                base.attack(self.activeCard, pickedObj)
+                self.activeCard = None
         else:
             self.activeCard = None
 
@@ -111,17 +110,10 @@ class MouseHandler (DirectObject):
             if pickedObj:
                 card = pickedObj.getPythonTag('card')
                 if card is not None:
-                    if pickedObj.getTag('zone') == 'hand':
-                        base.guiScene.updateCardTooltip(card)
-                    elif pickedObj.getTag('zone') == 'face-down':
+                    if card.zone is base.player.facedowns or card.zone is base.enemy.facedowns:
                         self._activeObj = pickedObj
+                        # TODO: use enemy icon path when that's a thing
                         path = base.playerIconPath + "/" + card.image
                         pickedObj.setTexture(loader.loadTexture(path))
-                        base.guiScene.updateCardTooltip(card)
-                    elif pickedObj.getTag('zone') == 'enemy face-down':
-                        self._activeObj = pickedObj
-                        path = base.playerIconPath + "/" + card.image
-                        pickedObj.setTexture(loader.loadTexture(path))
-                        base.guiScene.updateCardTooltip(card)
-                    elif pickedObj.getTag('zone') == 'face-up':
-                        base.guiScene.updateCardTooltip(card)
+
+                    base.guiScene.updateCardTooltip(card)

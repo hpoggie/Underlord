@@ -179,30 +179,30 @@ class App (ShowBase):
         index = -1
         zone = -1
 
-        if card.getTag('zone') == 'face-down':
-            index = self.playerFacedownNodes.index(card)
+        if card.getPythonTag('zone') is self.player.facedowns:
             zone = Zone.facedown
             enemy = False
-        elif card.getTag('zone') == 'enemy face-down':
-            index = self.enemyFacedownNodes.index(card)
+        elif card.getPythonTag('zone') is self.enemy.facedowns:
             zone = Zone.facedown
-        elif card.getTag('zone') == 'face-up':
-            # TODO: hack
-            # Search player faceup nodes to see if we own the card
-            if card in self.playerFaceupNodes:
-                index = self.playerFaceupNodes.index(card)
-                enemy = False
-            else:
-                index = self.enemyFaceupNodes.index(card)
+        elif card.getPythonTag('zone') is self.player.faceups:
             zone = Zone.faceup
-        elif card.getTag('zone') == 'hand':
-            index = self.playerHandNodes.index(card)
+            enemy = False
+        elif card.getPythonTag('zone') is self.enemy.faceups:
+            zone = Zone.faceup
+        elif card.getPythonTag('zone') is self.player.hand:
             zone = Zone.hand
             enemy = False
-        elif card.getTag('zone') == 'face':
+        elif card.getPythonTag('zone') is self.player.face:
             zone = Zone.face
-            if card is self.playerFaceNode:  # TODO: hack
-                enemy = False
+            enemy = False
+        elif card.getPythonTag('zone') is self.enemy.face:
+            zone = Zone.face
+
+        try:
+            c = card.getPythonTag('card')
+            index = card.getPythonTag('zone').index(c)
+        except ValueError:
+            pass
 
         return (zone, index, enemy)
 

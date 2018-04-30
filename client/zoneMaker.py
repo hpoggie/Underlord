@@ -48,7 +48,7 @@ class ZoneMaker(DirectObject):
             pivot.setPosHpr(*tr)
             cardModel.reparentTo(pivot)
             cardModel.setPos(-offset)
-            cardModel.setTag('zone', 'hand')
+            cardModel.setPythonTag('zone', base.player.hand)
             base.playerHandNodes.append(cardModel)
             pivot.reparentTo(self.playerHand)
 
@@ -77,7 +77,7 @@ class ZoneMaker(DirectObject):
             pivot.setPosHpr(*tr)
             cardModel.reparentTo(pivot)
             cardModel.setPos(-offset)
-            cardModel.setTag('zone', 'enemy hand')
+            cardModel.setPythonTag('zone', base.enemy.hand)
             base.enemyHandNodes.append(cardModel)
             pivot.reparentTo(self.enemyHand)
 
@@ -104,13 +104,13 @@ class ZoneMaker(DirectObject):
         def addFaceupCard(card):
             cardModel = self.loadCard(card)
             cardModel.setPos(posX, 0, posZ)
-            cardModel.setTag('zone', 'face-up')
+            cardModel.setPythonTag('zone', base.player.faceups)
             base.playerFaceupNodes.append(cardModel)
 
         def addFdCard(card):
             cardModel = self.loadPlayerBlank()
             cardModel.setPos(posX, 0, posZ)
-            cardModel.setTag('zone', 'face-down')
+            cardModel.setPythonTag('zone', base.player.facedowns)
             # Give this a card ref so we can see it
             cardModel.setPythonTag('card', card)
             base.playerFacedownNodes.append(cardModel)
@@ -136,13 +136,13 @@ class ZoneMaker(DirectObject):
         def addEnemyFdCard():
             cardModel = self.loadEnemyBlank()
             cardModel.setPos(posX, 0, posZ)
-            cardModel.setTag('zone', 'enemy face-down')
+            cardModel.setPythonTag('zone', base.enemy.facedowns)
             base.enemyFacedownNodes.append(cardModel)
 
         def addEnemyFaceupCard(card):
             cardModel = self.loadCard(card)
             cardModel.setPos(posX, 0, posZ)
-            cardModel.setTag('zone', 'face-up')
+            cardModel.setPythonTag('zone', base.enemy.faceups)
             base.enemyFaceupNodes.append(cardModel)
 
         for i in base.enemy.faceups:
@@ -186,7 +186,7 @@ class ZoneMaker(DirectObject):
         tex = loader.loadTexture(path)
         cardModel.setTexture(tex)
         cardModel.setPos(0, 0, -1.5)
-        cardModel.setTag('zone', 'face')
+        cardModel.setPythonTag('zone', base.player.face)
         base.playerFaceNode = cardModel
 
     def makeEnemyFace(self):
@@ -196,7 +196,7 @@ class ZoneMaker(DirectObject):
         tex = loader.loadTexture(path)
         cardModel.setTexture(tex)
         cardModel.setPos(0, 0, 5)
-        cardModel.setTag('zone', 'face')
+        cardModel.setPythonTag('zone', base.enemy.face)
         base.enemyFaceNode = cardModel
 
     def redrawAll(self):
