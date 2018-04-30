@@ -29,6 +29,7 @@ class NetworkInstructions(DirectObject):
 
         # TODO: hack. also enemy faction
         c = copy.copy(base.faction.deck[index])
+        c.game = base.player.game
         c.owner = base.player if zone in playerZones else base.enemy
         c.zone = zone
 
