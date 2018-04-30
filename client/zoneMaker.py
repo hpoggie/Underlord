@@ -133,10 +133,12 @@ class ZoneMaker(DirectObject):
         posX = 0.0
         posZ = 2.1
 
-        def addEnemyFdCard():
+        def addEnemyFdCard(card):
             cardModel = self.loadEnemyBlank()
             cardModel.setPos(posX, 0, posZ)
             cardModel.setPythonTag('zone', base.enemy.facedowns)
+            # Give this a card ref so we can see it
+            cardModel.setPythonTag('card', card)
             base.enemyFacedownNodes.append(cardModel)
 
         def addEnemyFaceupCard(card):
@@ -148,8 +150,8 @@ class ZoneMaker(DirectObject):
         for i in base.enemy.faceups:
             addEnemyFaceupCard(i)
             posX += 1.1
-        for i in range(0, len(base.enemy.facedowns)):
-            addEnemyFdCard()
+        for i in base.enemy.facedowns:
+            addEnemyFdCard(i)
             posX += 1.1
 
     def loadCard(self, card):
