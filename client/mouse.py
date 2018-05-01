@@ -55,32 +55,30 @@ class MouseHandler (DirectObject):
         if self.targeting and pickedObj is not None:
             base.acceptTarget(pickedObj)
         elif pickedObj and not pickedObj.isEmpty():
-            if pickedObj.getPythonTag('zone') is base.player.hand:
-                if not base.hasMulliganed:
-                    c = pickedObj.getPythonTag('card')
-                    if c in base.toMulligan:
-                        base.toMulligan.remove(c)
-                    else:
-                        base.toMulligan.append(c)
-                    base.zoneMaker.makePlayerHand()
+            zone = pickedObj.getPythonTag('zone')
+            if zone is base.player.hand and not base.hasMulliganed:
+                c = pickedObj.getPythonTag('card')
+                if c in base.toMulligan:
+                    base.toMulligan.remove(c)
                 else:
-                    base.playCard(pickedObj)
-            elif pickedObj.getPythonTag('zone') is base.player.facedowns:
+                    base.toMulligan.append(c)
+                base.zoneMaker.makePlayerHand()
+            elif zone is base.player.hand:
+                base.playCard(pickedObj)
+            elif zone is base.player.facedowns:
                 if self.activeCard:
                     self.activeCard = None
                 else:
                     base.revealFacedown(pickedObj)
-            elif pickedObj.getPythonTag('zone') is base.enemy.facedowns:
-                if self.activeCard:
-                    base.attack(self.activeCard, pickedObj)
-                    self.activeCard = None
-            elif pickedObj.getPythonTag('zone') is base.player.faceups or pickedObj.getPythonTag('zone') == base.enemy.faceups:
-                if base.phase == Phase.play and not self.activeCard:
-                    self.activeCard = pickedObj
-                elif self.activeCard:
-                    base.attack(self.activeCard, pickedObj)
-                    self.activeCard = None
-            elif pickedObj.getPythonTag('zone') is base.enemy.face and self.activeCard:
+            elif zone is base.player.faceups and base.phase == Phase.play:
+                self.activeCard = pickedObj
+            elif zone is base.enemy.facedowns and self.activeCard:
+                base.attack(self.activeCard, pickedObj)
+                self.activeCard = None
+            elif zone == base.enemy.faceups and self.activeCard:
+                base.attack(self.activeCard, pickedObj)
+                self.activeCard = None
+            elif zone is base.enemy.face and self.activeCard:
                 base.attack(self.activeCard, pickedObj)
                 self.activeCard = None
         else:
