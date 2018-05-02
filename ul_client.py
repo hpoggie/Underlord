@@ -241,8 +241,6 @@ class App (ShowBase):
         self.zoneMaker.makeBoard()
 
     def revealFacedown(self, card):
-        if card not in self.playerFacedownNodes:
-            raise IllegalMoveError("That card is not one of your facedowns.")
         index = self.playerFacedownNodes.index(card)
 
         try:
@@ -263,16 +261,6 @@ class App (ShowBase):
         except ValueError as e:
             print("Card not found: " + e)
             return
-
-        if enemy:
-            raise IllegalMoveError("Card is not yours.")
-        if zone is not Zone.faceup:
-            raise IllegalMoveError("Can only attack with faceups.")
-
-        if not targetsEnemy:
-            raise IllegalMoveError("Can't attack your own stuff.")
-        if targetZone not in (Zone.faceup, Zone.facedown, Zone.face):
-            raise IllegalMoveError("Not a valid attack target.")
 
         self.networkManager.attack(index, targetIndex, targetZone)
 
