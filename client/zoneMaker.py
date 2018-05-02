@@ -82,7 +82,7 @@ class ZoneMaker(DirectObject):
             pivot.reparentTo(self.enemyHand)
 
         fan = fanHand(len(base.enemy.hand))
-        for i, tr in enumerate(fan):
+        for tr in fan:
             addEnemyHandCard(tr)
 
         self.enemyHand.setPosHpr(2.5, -1.0, 7.1, 0, 45.0, 0)
@@ -115,11 +115,11 @@ class ZoneMaker(DirectObject):
             cardModel.setPythonTag('card', card)
             base.playerFacedownNodes.append(cardModel)
 
-        for i in base.player.faceups:
-            addFaceupCard(i)
+        for c in base.player.faceups:
+            addFaceupCard(c)
             posX += 1.1
-        for i in base.player.facedowns:
-            addFdCard(i)
+        for c in base.player.facedowns:
+            addFdCard(c)
             posX += 1.1
 
     def makeEnemyBoard(self):
@@ -147,11 +147,11 @@ class ZoneMaker(DirectObject):
             cardModel.setPythonTag('zone', base.enemy.faceups)
             base.enemyFaceupNodes.append(cardModel)
 
-        for i in base.enemy.faceups:
-            addEnemyFaceupCard(i)
+        for c in base.enemy.faceups:
+            addEnemyFaceupCard(c)
             posX += 1.1
-        for i in base.enemy.facedowns:
-            addEnemyFdCard(i)
+        for c in base.enemy.facedowns:
+            addEnemyFdCard(c)
             posX += 1.1
 
     def loadCard(self, card):
