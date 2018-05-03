@@ -2,6 +2,9 @@ import math
 
 
 def fanHand(n):
+    """
+    Return a list of transforms for a fanned hand of n cards
+    """
     minPosX = 0
     maxPosX = 3
     minRot = -45.0
