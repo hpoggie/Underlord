@@ -220,12 +220,12 @@ class App (ShowBase):
         self.activeDecision = None
         self.mouseHandler.targeting = False
 
-    def playCard(self, handCard):
+    def playCard(self, card):
         """
         If it's our reveal phase and the card is fast, play it face-up,
         otherwise play it face-down.
         """
-        idx = self.playerHandNodes.index(handCard)
+        idx = self.playerHandNodes.index(card)
 
         if self.phase == Phase.reveal:
             try:
@@ -264,7 +264,6 @@ class App (ShowBase):
 
         self.networkManager.attack(index, targetIndex, targetZone)
 
-        self.zoneMaker.makePlayerHand()
         self.zoneMaker.makeBoard()
         self.zoneMaker.makeEnemyBoard()
 
