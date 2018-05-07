@@ -9,6 +9,18 @@ from core.core import Phase
 import factions.templars
 
 
+commit_hash = ''
+
+
+try:
+    import git
+    repo = git.Repo('.')
+    # Get the hash of the latest commit
+    commit_hash = repo.git.rev_parse('--short', 'HEAD')
+except:  # If it doesn't work, don't worry about it
+    pass
+
+
 class Fonts(DirectObject):
     def __init__(self):
         self.font = loader.loadFont("Ubuntu-Regular.ttf")
@@ -86,6 +98,10 @@ class MainMenu(Scene):
         self.label(
             text="UNDERLORD",
             scale=0.3,
+            pos=(0, 0.4, 0))
+
+        self.label(
+            text='latest commit: ' + commit_hash,
             pos=(0, 0.3, 0))
 
         base.numPlayersLabel = self.label(
