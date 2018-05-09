@@ -74,7 +74,7 @@ class App (ShowBase):
 
     @property
     def active(self):
-        return self.player.active
+        return self.player.active if hasattr(self, 'player') else False
 
     @active.setter
     def active(self, value):
