@@ -39,6 +39,10 @@ class MouseHandler (DirectObject):
 
         self._dragging = None
 
+        # Counts down between clicks to detect double click
+        self.doubleClickTimer = -1.0
+        self.doubleClickInterval = 1.0
+
     @property
     def targeting(self):
         return self._targeting
@@ -65,6 +69,9 @@ class MouseHandler (DirectObject):
 
     def doClick(self):
         pickedObj = self.getObjectClickedOn()
+
+        if self.dragging:
+            return
 
         if self.targeting and pickedObj is not None:
             base.acceptTarget(pickedObj)
@@ -110,26 +117,37 @@ class MouseHandler (DirectObject):
         else:
             obj.reparentTo(base.zoneMaker.scene)
 
+    def stopDragging(self):
+        """
+        Stop dragging the card and play it if it's in the drop zone
+        """
+        # Borders of the drop zone
+        # If you drop the card outside the drop zone,
+        # the action is cancelled
+        pos = self._dragging.getPos()
+        inX = pos.x > 0 and pos.x < 8
+        inZ = pos.z > 0 and pos.z < 6
+        if inX and inZ:
+            try:
+                base.playCard(self._dragging)
+            except IllegalMoveError as e:
+                print(e)
+        self.dragging = None
+
     def onMouse1Down(self):
-        try:
-            self.doClick()
-        except IllegalMoveError as e:
-            print(e)
+        if self._dragging is not None:
+            self.stopDragging()
+            self.doubleClickTimer = -1
+        elif self.doubleClickTimer <= 0:
+            self.doubleClickTimer = 0.2
+            try:
+                self.doClick()
+            except IllegalMoveError as e:
+                print(e)
 
     def onMouse1Up(self):
-        if self._dragging:
-            # Borders of the drop zone
-            # If you drop the card outside the drop zone,
-            # the action is cancelled
-            pos = self._dragging.getPos()
-            inX = pos.x > 0 and pos.x < 8
-            inZ = pos.z > 0 and pos.z < 6
-            if inX and inZ:
-                try:
-                    base.playCard(self._dragging)
-                except IllegalMoveError as e:
-                    print(e)
-            self.dragging = None
+        if self._dragging and self.doubleClickTimer <= 0:
+            self.stopDragging()
 
     def onMouse3Down(self):
         if self.targeting:
@@ -140,6 +158,10 @@ class MouseHandler (DirectObject):
 
     def mouseOverTask(self):
         if base.mouseWatcherNode.hasMouse():
+            if self.doubleClickTimer > 0:
+                # Count down based on how long it took to draw the last frame
+                self.doubleClickTimer -= globalClock.getDt()
+
             if hasattr(base.guiScene, 'redrawTooltips'):
                 base.guiScene.redrawTooltips()
 
