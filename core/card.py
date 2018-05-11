@@ -101,8 +101,21 @@ class Card:
                     self.func = types.MethodType(func, source)
                     self.source = source
 
+            @property
+            def requiresTarget(self):
+                return len(inspect.getargspec(self.func).args) > 1
+
+            @property
+            def decision(self):
+                if hasattr(self.source, 'targetDesc'):
+                    desc = self.source.targetDesc
+                else:
+                    desc = self.source.desc
+
+                return Decision(self.execute, self, desc)
+
             def __call__(self):
-                if len(inspect.getargspec(self.func).args) > 1:
+                if self.requiresTarget:
                     if hasattr(self.source, 'targetDesc'):
                         desc = self.source.targetDesc
                     else:

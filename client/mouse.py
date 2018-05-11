@@ -131,7 +131,17 @@ class MouseHandler (DirectObject):
         inZ = pos.z > 0 and pos.z < 6
         if inX and inZ:
             try:
-                base.playCard(self._dragging)
+                target = None
+                pickedObj = self.getObjectClickedOn()
+                onSpawn = self.dragging.getPythonTag('card').onSpawn
+                if pickedObj is not None and pickedObj != self.dragging:
+                    target = pickedObj
+                elif hasattr(onSpawn, 'requiresTarget') and onSpawn.requiresTarget:
+                    # don't fizzle if no valid target
+                    self.dragging = None
+                    return
+
+                base.playCard(self._dragging, target)
             except IllegalMoveError as e:
                 print(e)
         self.dragging = None
