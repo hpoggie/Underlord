@@ -111,11 +111,13 @@ class MouseHandler (DirectObject):
 
     @dragging.setter
     def dragging(self, obj):
-        self._dragging = obj
         if obj is None:
+            self._dragging.detachNode()
             base.zoneMaker.makePlayerHand()  # Put the card back
         else:
             obj.reparentTo(base.zoneMaker.scene)
+
+        self._dragging = obj
 
     def stopDragging(self):
         """
