@@ -101,6 +101,15 @@ class LobbyServer:
         self.gameServerProcs.pop(procid)
 
 
+def getCard(player, card):
+    """
+    Convert card to index
+    """
+    for i, tc in enumerate(player.faction.deck):
+        if tc.name == card.name:
+            return i
+
+
 class GameServer:
     def __init__(self, netman):
         self.networkManager = netman
@@ -170,7 +179,12 @@ class GameServer:
     def mulligan(self, addr, *indices):
         pl = self.players[addr]
         pl.mulligan(*[pl.hand[index] for index in indices])
-        self.redraw()
+
+        if pl.opponent.hasMulliganed:
+            self.redraw()
+        else:
+            self.connections[addr].updatePlayerHand(
+                *(getCard(pl, c) for c in pl.hand))
 
     def revealFacedown(self, addr, index):
         pl = self.players[addr]
@@ -224,11 +238,6 @@ class GameServer:
         self.connections[addr].requestTarget()
 
     def redraw(self):
-        def getCard(pl, c):
-            for i, tc in enumerate(pl.faction.deck):
-                if tc.name == c.name:
-                    return i
-
         for addr, pl in self.players.items():
             c = self.connections[addr]
             c.setActive(int(pl.active))
