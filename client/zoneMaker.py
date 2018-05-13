@@ -1,7 +1,22 @@
+import textwrap
+
+import panda3d.core
 from panda3d.core import CardMaker
 from direct.showbase.DirectObject import DirectObject
 
 from .fanHand import fanHand
+
+
+def hideCard(card):
+    for ch in card.children:
+        if ch.name != 'frame':
+            ch.hide()
+
+
+def showCard(card):
+    for ch in card.children:
+        if ch.name != 'frame':
+            ch.show()
 
 
 class ZoneMaker(DirectObject):
@@ -57,7 +72,9 @@ class ZoneMaker(DirectObject):
             addHandCard(base.player.hand[i], tr)
             if base.player.hand[i] in base.toMulligan:
                 tex = loader.loadTexture(base.playerIconPath + '/' + base.playerCardBack)
-                base.playerHandNodes[i].setTexture(tex)
+                hideCard(base.playerHandNodes[i])
+            else:
+                showCard(base.playerHandNodes[i])
 
         self.playerHand.setPosHpr(2.5, -1.0, 0, 0, 45.0, 0)
 
@@ -108,7 +125,8 @@ class ZoneMaker(DirectObject):
             base.playerFaceupNodes.append(cardModel)
 
         def addFdCard(card):
-            cardModel = self.loadPlayerBlank()
+            cardModel = self.loadCard(card)
+            hideCard(cardModel)
             cardModel.setPos(posX, 0, posZ)
             cardModel.setPythonTag('zone', base.player.facedowns)
             # Give this a card ref so we can see it
@@ -134,7 +152,11 @@ class ZoneMaker(DirectObject):
         posZ = 2.1
 
         def addEnemyFdCard(card):
-            cardModel = self.loadEnemyBlank()
+            if card is None:
+                cardModel = self.loadEnemyBlank()
+            else:
+                cardModel = self.loadCard(card)
+                hideCard(cardModel)
             cardModel.setPos(posX, 0, posZ)
             cardModel.setPythonTag('zone', base.enemy.facedowns)
             # Give this a card ref so we can see it
@@ -155,23 +177,62 @@ class ZoneMaker(DirectObject):
             posX += 1.1
 
     def loadCard(self, card):
+        cardBase = self.scene.attachNewNode(card.name)
+
         cm = CardMaker(card.name)
-        cardModel = self.scene.attachNewNode(cm.generate())
+
+        cardFrame = cardBase.attachNewNode(cm.generate())
+        tex = loader.loadTexture('ul_frame_alt.png')
+        cardFrame.setTexture(tex)
+        cardFrame.setScale(1, 1, 509 / 364)
+        cardFrame.setTransparency(True)
+        cardFrame.setName('frame')
+
+        cardImage = cardBase.attachNewNode(cm.generate())
         if card.owner == base.player:
             path = base.playerIconPath + "/" + card.image
         else:
             path = base.enemyIconPath + "/" + card.image
         tex = loader.loadTexture(path)
-        cardModel.setTexture(tex)
-        cardModel.setPythonTag('card', card)
-        return cardModel
+        cardImage.setTexture(tex)
+        cardImage.setScale(0.8)
+        cardImage.setPos(0.1, -0.05, 0.5)
+        cardImage.setName('image')
+
+        cost = panda3d.core.TextNode('cost')
+        cost.setText(str(card.cost))
+        textNodePath = cardBase.attachNewNode(cost)
+        textNodePath.setScale(0.1)
+        textNodePath.setPos(0.08, -0.05, 1.275)
+
+        rank = panda3d.core.TextNode('rank')
+        rank.setText(str(card.rank))
+        textNodePath = cardBase.attachNewNode(rank)
+        textNodePath.setScale(0.1)
+        textNodePath.setPos(0.08, -0.05, 1.125)
+
+        desc = panda3d.core.TextNode('desc')
+        desc.setText(textwrap.fill(card.desc, width=40))
+        textNodePath = cardBase.attachNewNode(desc)
+        textNodePath.setScale(0.045)
+        textNodePath.setPos(0.09, -0.05, 0.4)
+
+        cardBase.setPythonTag('card', card)
+
+        return cardBase
 
     def loadBlank(self, path):
+        cardBase = self.scene.attachNewNode('mysterious card')
+
         cm = CardMaker('mysterious card')
-        cardModel = self.scene.attachNewNode(cm.generate())
-        tex = loader.loadTexture(path)
-        cardModel.setTexture(tex)
-        return cardModel
+
+        cardFrame = cardBase.attachNewNode(cm.generate())
+        tex = loader.loadTexture('ul_frame_alt.png')
+        cardFrame.setTexture(tex)
+        cardFrame.setScale(1, 1, 509 / 364)
+        cardFrame.setTransparency(True)
+        cardFrame.setName('frame')
+        return cardBase
 
     def loadPlayerBlank(self):
         path = base.playerIconPath + "/" + base.playerCardBack

@@ -4,6 +4,8 @@ from direct.showbase.DirectObject import DirectObject
 from core.core import Phase
 from core.player import IllegalMoveError
 
+import client.zoneMaker as zoneMaker
+
 
 # Adapted from the asteroids panda3d example
 # This function, given a line (vector plus origin point) and a desired y value,
@@ -179,8 +181,7 @@ class MouseHandler (DirectObject):
                 base.guiScene.redrawTooltips()
 
             if hasattr(self, '_activeObj') and self._activeObj is not None:
-                path = base.playerIconPath + "/" + base.playerCardBack
-                self._activeObj.setTexture(loader.loadTexture(path))
+                zoneMaker.hideCard(self._activeObj)
                 self._activeObj = None
 
             if self.dragging is not None:
@@ -203,8 +204,6 @@ class MouseHandler (DirectObject):
                     if card is not None:
                         if card.zone is base.player.facedowns or card.zone is base.enemy.facedowns:
                             self._activeObj = pickedObj
-                            # TODO: use enemy icon path when that's a thing
-                            path = base.playerIconPath + "/" + card.image
-                            pickedObj.setTexture(loader.loadTexture(path))
+                            zoneMaker.showCard(pickedObj)
 
                         base.guiScene.updateCardTooltip(card)
