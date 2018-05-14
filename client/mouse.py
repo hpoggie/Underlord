@@ -181,7 +181,11 @@ class MouseHandler (DirectObject):
                 base.guiScene.redrawTooltips()
 
             if hasattr(self, '_activeObj') and self._activeObj is not None:
-                zoneMaker.hideCard(self._activeObj)
+                zone = self._activeObj.getPythonTag('card').zone
+                if zone is base.player.facedowns or zone is base.enemy.facedowns:
+                    zoneMaker.hideCard(self._activeObj)
+
+                base.zoneMaker.unfocusCard()
                 self._activeObj = None
 
             if self.dragging is not None:
@@ -202,8 +206,10 @@ class MouseHandler (DirectObject):
                 if pickedObj:
                     card = pickedObj.getPythonTag('card')
                     if card is not None:
+                        self._activeObj = pickedObj
                         if card.zone is base.player.facedowns or card.zone is base.enemy.facedowns:
-                            self._activeObj = pickedObj
                             zoneMaker.showCard(pickedObj)
+
+                        base.zoneMaker.focusCard(pickedObj)
 
                         base.guiScene.updateCardTooltip(card)

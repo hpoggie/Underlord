@@ -43,6 +43,10 @@ class ZoneMaker(DirectObject):
         self.makePlayerFace()
         self.makeEnemyFace()
 
+        # For showing a big version of a card on mouse over
+        self.focusedCard = base.camera.attachNewNode('focused card')
+        self.focusedCard.setPos(-0.5, 6, 0.1)
+
     def makePlayerHand(self):
         """
         Redraw the player's hand.
@@ -175,6 +179,27 @@ class ZoneMaker(DirectObject):
         for c in base.enemy.facedowns:
             addEnemyFdCard(c)
             posX += 1.1
+
+    def focusCard(self, card):
+        """
+        Draws a big version of the card so the player can read the text
+        easily.
+        """
+        # If the node path is pointing to the right card, don't rebuild
+        if card != self.focusedCard:
+            self.focusedCard.unstash()
+            if len(self.focusedCard.children) > 0:
+                self.focusedCard.children[0].detachNode()
+            # Make a duplicate of the node. Actually a different node path
+            # pointing to the same node
+            card.copyTo(self.focusedCard)
+            self.focusedCard.children[0].setPos(0, 0, 0)
+
+    def unfocusCard(self):
+        # Stash the enlarged card image so it won't collide or be visible.
+        # This is different from using hide() because it also prevents
+        # collision.
+        self.focusedCard.stash()
 
     def loadCard(self, card):
         cardBase = self.scene.attachNewNode(card.name)
