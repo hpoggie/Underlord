@@ -284,13 +284,6 @@ class GameHud(Scene):
             else:
                 self.tooltipLabel.setText("")
 
-    def updateCardTooltip(self, card):
-        self.cardNameLabel.setText(card.name)
-        label = str(card.cost) + " " + str(card.rank)
-        self.cardStatsLabel.setText(label)
-        self.tooltipLabel.setText(
-            ("Instant. " if card.playsFaceUp else "") + card.desc)
-
     def redraw(self):
         if base.hasMulliganed:
             self.mulliganButton.detachNode()

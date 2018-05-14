@@ -177,9 +177,6 @@ class MouseHandler (DirectObject):
                 # Count down based on how long it took to draw the last frame
                 self.doubleClickTimer -= globalClock.getDt()
 
-            if hasattr(base.guiScene, 'redrawTooltips'):
-                base.guiScene.redrawTooltips()
-
             if hasattr(self, '_activeObj') and self._activeObj is not None:
                 zone = self._activeObj.getPythonTag('card').zone
                 if zone is base.player.facedowns or zone is base.enemy.facedowns:
@@ -211,5 +208,3 @@ class MouseHandler (DirectObject):
                             zoneMaker.showCard(pickedObj)
 
                         base.zoneMaker.focusCard(pickedObj)
-
-                        base.guiScene.updateCardTooltip(card)
