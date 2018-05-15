@@ -202,7 +202,7 @@ class MouseHandler (DirectObject):
                 pickedObj = self.getObjectClickedOn()
                 if pickedObj:
                     card = pickedObj.getPythonTag('card')
-                    if card is not None:
+                    if card is not None and card not in base.toMulligan:
                         self._activeObj = pickedObj
                         if card.zone is base.player.facedowns or card.zone is base.enemy.facedowns:
                             zoneMaker.showCard(pickedObj)
