@@ -130,7 +130,7 @@ class MouseHandler (DirectObject):
         # the action is cancelled
         pos = self._dragging.getPos()
         inX = pos.x > 0 and pos.x < 8
-        inZ = pos.z > 0 and pos.z < 6
+        inZ = pos.z > -5 and pos.z < 6
         if inX and inZ:
             try:
                 target = None

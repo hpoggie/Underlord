@@ -45,7 +45,7 @@ class ZoneMaker(DirectObject):
 
         # For showing a big version of a card on mouse over
         self.focusedCard = base.camera.attachNewNode('focused card')
-        self.focusedCard.setPos(-0.5, 6, 0.1)
+        self.focusedCard.setPos(-0.5, 6, -0.3)
 
     def makePlayerHand(self):
         """
@@ -80,7 +80,7 @@ class ZoneMaker(DirectObject):
             else:
                 showCard(base.playerHandNodes[i])
 
-        self.playerHand.setPosHpr(2.5, -1.0, 0, 0, 45.0, 0)
+        self.playerHand.setPosHpr(2.5, 0, -2, 0, 45.0, 0)
 
     def makeEnemyHand(self):
         for i in base.enemyHandNodes:
@@ -120,7 +120,7 @@ class ZoneMaker(DirectObject):
         base.playerFaceupNodes = []
 
         posX = 0.0
-        posZ = 0.55
+        posZ = -2
 
         def addFaceupCard(card):
             cardModel = self.loadCard(card)
@@ -273,7 +273,7 @@ class ZoneMaker(DirectObject):
         path = base.playerIconPath + "/" + base.playerCardBack
         tex = loader.loadTexture(path)
         cardModel.setTexture(tex)
-        cardModel.setPos(0, 0, -1.5)
+        cardModel.setPos(0, 0, -5)
         cardModel.setPythonTag('zone', base.player.face)
         base.playerFaceNode = cardModel
 
