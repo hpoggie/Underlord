@@ -221,8 +221,15 @@ class ZoneMaker(DirectObject):
         tex = loader.loadTexture(path)
         cardImage.setTexture(tex)
         cardImage.setScale(0.7)
-        cardImage.setPos(0.15, -0.05, 0.6)
+        cardImage.setPos(0.15, -0.05, 0.5)
         cardImage.setName('image')
+
+        name = panda3d.core.TextNode('name')
+        name.setAlign(panda3d.core.TextNode.ARight)
+        name.setText(card.name)
+        textNodePath = cardBase.attachNewNode(name)
+        textNodePath.setScale(0.08)
+        textNodePath.setPos(0.92, -0.05, 1.275)
 
         cost = panda3d.core.TextNode('cost')
         cost.setText(str(card.cost))
