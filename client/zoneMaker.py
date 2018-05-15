@@ -220,8 +220,8 @@ class ZoneMaker(DirectObject):
             path = base.enemyIconPath + "/" + card.image
         tex = loader.loadTexture(path)
         cardImage.setTexture(tex)
-        cardImage.setScale(0.8)
-        cardImage.setPos(0.1, -0.05, 0.5)
+        cardImage.setScale(0.7)
+        cardImage.setPos(0.15, -0.05, 0.6)
         cardImage.setName('image')
 
         cost = panda3d.core.TextNode('cost')
