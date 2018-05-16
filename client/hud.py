@@ -294,6 +294,9 @@ class GameHud(Scene):
     def redraw(self):
         if base.hasMulliganed:
             self.mulliganButton.detachNode()
+            self.endPhaseLabel.setText(str(Phase.keys[base.phase]))
+        else:
+            self.endPhaseLabel.setText("Mulligan")
 
         if base.active:
             self.endPhaseButton.show()
@@ -312,9 +315,6 @@ class GameHud(Scene):
                 str(base.player.mana) + " / " + str(base.player.manaCap))
         else:
             self.playerManaCapLabel.setText(str(base.player.manaCap))
+
         self.enemyManaCapLabel.setText(str(base.enemy.manaCap))
-        if not base.hasMulliganed:
-            self.endPhaseLabel.setText("Mulligan")
-        else:
-            self.endPhaseLabel.setText(str(Phase.keys[base.phase]))
         self.turnLabel.setText("Your Turn" if base.active else "Enemy Turn")
