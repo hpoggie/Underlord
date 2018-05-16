@@ -6,6 +6,7 @@ from direct.gui.OnscreenText import OnscreenText
 from direct.gui.OnscreenImage import OnscreenImage
 
 from core.core import Phase
+from core.player import IllegalMoveError
 import factions.templars
 
 
@@ -237,14 +238,20 @@ class GameHud(Scene):
         base.mulligan()
 
     def onEndPhaseButton(self):
-        base.endPhase()
-        if base.activeDecision is not None:
-            base.acceptTarget(None)
-            base.mouseHandler.targeting = False
-            base.activeDecision = None
+        try:
+            base.endPhase()
+            if base.activeDecision is not None:
+                base.acceptTarget(None)
+                base.mouseHandler.targeting = False
+                base.activeDecision = None
+        except IllegalMoveError as e:
+            print(e)
 
     def onTemplarEndPhaseButton(self):
-        base.endPhase()
+        try:
+            base.endPhase()
+        except IllegalMoveError as e:
+            print(e)
 
     def hideBigMessage(self):
         if hasattr(self, 'winLabel') and self.winLabel is not None:
