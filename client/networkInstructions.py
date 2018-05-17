@@ -21,6 +21,9 @@ class NetworkInstructions(DirectObject):
     def updateEnemyFaction(self, index):
         base.enemyFaction = base.availableFactions[index]
 
+    def updateBothPlayersMulliganed(self):
+        base.bothPlayersMulliganed = True
+
     def moveCard(self, index, zone):
         playerZones = [base.player.facedowns,
                        base.player.faceups,

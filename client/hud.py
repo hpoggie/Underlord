@@ -234,6 +234,8 @@ class GameHud(Scene):
                 parent=self.endPhaseButton,
                 command=self.onTemplarEndPhaseButton)
 
+        self.redraw()
+
     def onMulliganButton(self):
         base.mulligan()
 
@@ -297,6 +299,14 @@ class GameHud(Scene):
             self.endPhaseLabel.setText(str(Phase.keys[base.phase]))
         else:
             self.endPhaseLabel.setText("Mulligan")
+
+        # Hide everything if we haven't mulliganed yet
+        if not base.bothPlayersMulliganed:
+            self.endPhaseButton.hide()
+            self.templarEndPhaseButton.hide()
+            self.playerManaCapLabel.setText("")
+            self.enemyManaCapLabel.setText("")
+            return
 
         if base.active:
             self.endPhaseButton.show()

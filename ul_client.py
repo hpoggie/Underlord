@@ -141,6 +141,7 @@ class App (ShowBase):
         self.player, self.enemy = self.game.players
         self.game.start()
         self.hasMulliganed = False
+        self.bothPlayersMulliganed = False
         self.toMulligan = []
 
         # Set up the game UI

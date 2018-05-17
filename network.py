@@ -88,6 +88,7 @@ class ClientNetworkManager (NetworkManager):
         'requestGoingFirstDecision',
         'updateNumPlayers',
         'updateEnemyFaction',
+        'updateBothPlayersMulliganed',
         'updatePlayerHand',
         'updateEnemyHand',
         'updatePlayerFacedowns',

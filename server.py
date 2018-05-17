@@ -181,6 +181,8 @@ class GameServer:
         pl.mulligan(*[pl.hand[index] for index in indices])
 
         if pl.opponent.hasMulliganed:
+            for addr, c in self.connections.items():
+                c.updateBothPlayersMulliganed()
             self.redraw()
         else:
             self.connections[addr].updatePlayerHand(
