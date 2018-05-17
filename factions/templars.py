@@ -148,7 +148,7 @@ def rightGrail():
         image="holy-grail.png",
         cost=2,
         taunt=True,
-        desc="""Taunt. Has rank 3 if your mana cap is even and rank 5 if your
+        desc="""Taunt. Has rank 3 if your mana cap is even and rank 2 if your
                 mana cap is odd.""",
     )
 
