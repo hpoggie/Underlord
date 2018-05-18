@@ -194,6 +194,8 @@ class ZoneMaker(DirectObject):
             # pointing to the same node
             card.copyTo(self.focusedCard)
             self.focusedCard.children[0].setPos(0, 0, 0)
+            # Don't try to play this
+            self.focusedCard.setPythonTag('card', None)
 
     def unfocusCard(self):
         # Stash the enlarged card image so it won't collide or be visible.
