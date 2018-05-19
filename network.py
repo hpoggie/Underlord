@@ -35,7 +35,8 @@ class ServerNetworkManager (NetworkManager):
             getattr(self.base, self.Opcodes.keys[opcode])(addr, *operands)
         except Decision as d:
             d.addr = addr
-            raise d
+            self.base.waitingOnDecision = d
+            # Client should send us a decision now
 
     def onClientConnected(self, conn):
         # Make it so each client opcode is a function

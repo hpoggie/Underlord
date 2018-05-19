@@ -284,9 +284,6 @@ class GameServer:
                 print(e)
             except IllegalMoveError as e:  # Client sent us an illegal move
                 print(e)
-            except Decision as d:
-                self.waitingOnDecision = d
-                # Client should send us a decision now
             except EndOfGame as e:
                 self.endGame(e.winner)
                 exit(0)
