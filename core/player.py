@@ -9,7 +9,7 @@ from copy import deepcopy
 from random import shuffle
 from core.decision import Decision
 
-from .core import Phase
+from core.game import Phase
 
 startHandSize = 5
 maxManaCap = 15

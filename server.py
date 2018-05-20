@@ -12,7 +12,7 @@ import time
 
 from network_manager import ConnectionClosed
 from network import ServerNetworkManager
-from core.core import Game, EndOfGame
+from core.game import Game, EndOfGame
 from core.player import IllegalMoveError
 from core.enums import numericEnum
 from core.decision import Decision

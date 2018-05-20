@@ -5,7 +5,7 @@ from direct.gui.DirectGui import DirectButton
 from direct.gui.OnscreenText import OnscreenText
 from direct.gui.OnscreenImage import OnscreenImage
 
-from core.core import Phase
+from core.game import Phase
 from core.player import IllegalMoveError
 import factions.templars
 

@@ -13,7 +13,7 @@ from direct.task import Task
 from network_manager import ConnectionClosed
 from network import ClientNetworkManager
 from server import Zone
-from core.core import Game, Phase, Turn, EndOfGame
+from core.game import Game, Phase, Turn, EndOfGame
 from core.player import IllegalMoveError
 from core.decision import Decision
 from factions import templars

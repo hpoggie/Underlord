@@ -1,5 +1,5 @@
 from . import base
-from core.core import destroy
+from core.game import destroy
 from core.card import Card
 from core.faction import Faction, deck
 from core.player import Player

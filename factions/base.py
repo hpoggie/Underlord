@@ -1,4 +1,4 @@
-from core.core import destroy
+from core.game import destroy
 from core.card import Card
 
 

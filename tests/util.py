@@ -1,6 +1,6 @@
 import collections
 
-from core.core import Game, Turn
+from core.game import Game, Turn
 from core.player import Player
 from core.faction import Faction
 
