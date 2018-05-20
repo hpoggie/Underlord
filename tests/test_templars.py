@@ -14,29 +14,20 @@ def testTemplarAbility():
     p0.mulligan()
     p1.mulligan()
 
-    try:
-        p0.endTurn()
-    except Decision as d:
-        d.execute(p0.hand[0])
+    p0.endTurn(p0.hand[0])
 
     assert len(p0.hand) == 4  # First player penalty
     assert p0.manaCap == 3
 
-    try:
-        p1.endTurn()
-    except Decision as d:
-        d.execute(None)
+    p1.endTurn(None)
 
     assert len(p1.hand) == 6
     assert p1.manaCap == 2
 
     # Try discarding something not in your hand
-    try:
-        p0.endTurn()
-    except Decision as d:
-        d.execute(p1.hand[0])
-        assert len(p1.hand) == 6
-        assert p0.manaCap == 4
+    p0.endTurn(p1.hand[0])
+    assert len(p1.hand) == 6
+    assert p0.manaCap == 4
 
 
 def testEquus():
@@ -63,18 +54,10 @@ def testHolyHandGrenade():
     p1.drawCard()
     p1.drawCard()
 
-    try:
-        p1.playFaceup(p1.hand[0])
-    except Decision as d:
-        d.execute(p0.facedowns[0])
-
+    p1.playFaceup(p1.hand[0], p0.facedowns[0])
     assert len(p0.facedowns) == 0
 
-    try:
-        p1.playFaceup(p1.hand[0])
-    except Decision as d:
-        d.execute(p0.faceups[0])
-
+    p1.playFaceup(p1.hand[0], p0.faceups[0])
     assert len(p0.facedowns) == 0
 
 
