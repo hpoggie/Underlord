@@ -246,15 +246,16 @@ class GameHud(Scene):
             print(e)
 
     def onTemplarEndPhaseButton(self):
-        base.mouseHandler.targeting = True
-
-        def callback(self, target):
+        def callback(target):
             try:
                 base.endPhase(target)
             except IllegalMoveError as e:
                 print(e)
 
         base.callback = callback
+        # TODO: grab desc from faction?
+        base.targetDesc = "Choose a card to discard."
+        base.mouseHandler.targeting = True
 
     def hideBigMessage(self):
         if hasattr(self, 'winLabel') and self.winLabel is not None:
@@ -273,7 +274,7 @@ class GameHud(Scene):
             self.targetingLabel.show()
             self.targetingGradient.show()
 
-        self.targetingLabel.setText(base.activeDecision.desc)
+        self.targetingLabel.setText(base.targetDesc)
 
     def hideTargeting(self):
         self.targetingLabel.hide()

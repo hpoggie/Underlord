@@ -65,9 +65,6 @@ class App (ShowBase):
         self.taskMgr.add(self.networkUpdateTask, "NetworkUpdateTask")
 
         self.availableFactions = [templars.Templars]
-        # Client chooses decisions before doing a thing
-        # and sends decision / other thing at once
-        self._activeDecision = None
 
     def onConnectedToServer(self):
         self.guiScene = hud.MainMenu()
@@ -90,15 +87,6 @@ class App (ShowBase):
         # TODO: change this
         if self.hasMulliganed:
             self.game.turn = Turn.p1 if value else Turn.p2
-
-    @property
-    def activeDecision(self):
-        return self._activeDecision
-
-    @activeDecision.setter
-    def activeDecision(self, value):
-        self._activeDecision = value
-        self.mouseHandler.targeting = value is not None
 
     @property
     def guiScene(self):
@@ -212,6 +200,7 @@ class App (ShowBase):
         self.callback = None
         self.activeDecision = None
         self.mouseHandler.targeting = False
+        self.guiScene.hideTargeting()
 
     def playCard(self, card, target=None):
         """
@@ -237,8 +226,6 @@ class App (ShowBase):
 
         try:
             self.player.revealFacedown(index)
-        except Decision as d:
-            self.activeDecision = d
         except EndOfGame:
             pass
 
