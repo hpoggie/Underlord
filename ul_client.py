@@ -210,10 +210,12 @@ class App (ShowBase):
         idx = self.playerHandNodes.index(card)
 
         if self.phase == Phase.reveal:
-            c = target.getPythonTag('card')
-            if c is not None:
+            try:
+                c = target.getPythonTag('card')
                 self.player.playFaceup(idx, c)
-            self.networkManager.playFaceup(idx, *self.findCard(target))
+                self.networkManager.playFaceup(idx, *self.findCard(target))
+            except AttributeError:
+                self.networkManager.playFaceup(idx)
         else:
             self.player.play(idx)
             self.networkManager.play(idx)
