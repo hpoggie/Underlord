@@ -174,7 +174,7 @@ class App (ShowBase):
         control it
         """
         if card is None:
-            return (-1, -1, False)
+            return (-1, -1, 0)
 
         enemy = True
         index = -1
@@ -205,19 +205,11 @@ class App (ShowBase):
         except ValueError:
             pass
 
-        return (zone, index, enemy)
+        return (zone, index, int(enemy))
 
     def acceptTarget(self, target):
-        """
-        Give the server the target for the currently active ability
-        """
-        targetZone, targetIndex, targetsEnemy = self.findCard(target)
-
-        self.networkManager.acceptTarget(
-            int(targetsEnemy),
-            targetZone,
-            targetIndex)
-
+        self.callback(target)
+        self.callback = None
         self.activeDecision = None
         self.mouseHandler.targeting = False
 
@@ -229,18 +221,13 @@ class App (ShowBase):
         idx = self.playerHandNodes.index(card)
 
         if self.phase == Phase.reveal:
-            try:
-                self.player.playFaceup(idx)
-            except Decision as d:
-                self.activeDecision = d
-
-            self.networkManager.playFaceup(idx)
+            c = target.getPythonTag('card')
+            if c is not None:
+                self.player.playFaceup(idx, c)
+            self.networkManager.playFaceup(idx, *self.findCard(target))
         else:
             self.player.play(idx)
             self.networkManager.play(idx)
-
-        if target and self.activeDecision:
-            self.acceptTarget(target)
 
         self.zoneMaker.makePlayerHand()
         self.zoneMaker.makeBoard()
@@ -272,15 +259,13 @@ class App (ShowBase):
         self.zoneMaker.makeBoard()
         self.zoneMaker.makeEnemyBoard()
 
-    def endPhase(self):
+    def endPhase(self, target):
         try:
-            self.player.endPhase()
-        except Decision as d:
-            self.activeDecision = d
+            self.player.endPhase(target)
         except EndOfGame:
             pass
 
-        self.networkManager.endPhase()
+        self.networkManager.endPhase(*self.findCard(target))
 
     def redraw(self):
         self.zoneMaker.redrawAll()

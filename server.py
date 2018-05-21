@@ -9,13 +9,13 @@ import copy
 import traceback
 import random
 import time
+import inspect
 
 from network_manager import ConnectionClosed
 from network import ServerNetworkManager
 from core.game import Game, EndOfGame
 from core.player import IllegalMoveError
 from core.enums import numericEnum
-from core.decision import Decision
 from factions.templars import Templar
 
 
@@ -114,14 +114,45 @@ def getCard(player, card):
             return i
 
 
+def acceptsTarget(func):
+    def converted(self, *args):
+        """
+        Convert the indices from the netcode to a card ref
+        """
+        target = None
+        addr = args[0]
+        pl = self.players[addr]
+
+        # Doesn't include self or target
+        nArgs = func.__code__.co_argcount - 2
+
+        try:
+            # Assumes the target arg comes last.
+            # Also assumes single target
+            # TODO: support multiple targets
+            targetIndices = args[nArgs:]
+            targetZone, targetIndex, targetsEnemy = targetIndices
+
+            if targetsEnemy:
+                target = pl.opponent.zones[targetZone][targetIndex]
+            else:
+                target = pl.zones[targetZone][targetIndex]
+        except ValueError:
+            pass
+        except IndexError:
+            pass
+
+        func(self, *args[:nArgs], target)
+
+    return converted
+
+
 class GameServer:
     def __init__(self, netman):
         self.networkManager = netman
         self.networkManager.base = self
         self.addrs = [c.addr for c in self.networkManager.connections]
         self.factions = [None, None]
-
-        self.waitingOnDecision = None
 
         for conn in self.networkManager.connections:
             conn.onEnteredGame()
@@ -192,14 +223,16 @@ class GameServer:
             self.connections[addr].updatePlayerHand(
                 *(getCard(pl, c) for c in pl.hand))
 
-    def revealFacedown(self, addr, index):
+    @acceptsTarget
+    def revealFacedown(self, addr, index, target):
         pl = self.players[addr]
-        pl.revealFacedown(pl.facedowns[index])
+        pl.revealFacedown(pl.facedowns[index], target)
         self.redraw()
 
-    def playFaceup(self, addr, index):
+    @acceptsTarget
+    def playFaceup(self, addr, index, target):
         pl = self.players[addr]
-        pl.playFaceup(pl.hand[index])
+        pl.playFaceup(pl.hand[index], target)
         self.redraw()
 
     def attack(self, addr, cardIndex, targetIndex, targetZone):
@@ -218,17 +251,8 @@ class GameServer:
         pl.play(pl.hand[index])
         self.redraw()
 
-    def acceptTarget(self, addr, targetsEnemy, targetZone, targetIndex):
-        pl = self.players[addr]
-
-        try:
-            if targetsEnemy:
-                target = pl.opponent.zones[targetZone][targetIndex]
-            else:
-                target = pl.zones[targetZone][targetIndex]
-        except IndexError:
-            target = None
-
+    @acceptsTarget
+    def acceptTarget(self, addr, target):
         if self.waitingOnDecision is not None:
             self.waitingOnDecision.execute(target)
             self.waitingOnDecision = None
@@ -236,8 +260,9 @@ class GameServer:
         else:
             print("No decision to execute.")
 
-    def endPhase(self, addr):
-        self.players[addr].endPhase()
+    @acceptsTarget
+    def endPhase(self, addr, target):
+        self.players[addr].endPhase(target)
         self.redraw()
 
     def requestTarget(self, addr):

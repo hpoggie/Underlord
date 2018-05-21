@@ -21,7 +21,6 @@ class ServerNetworkManager (NetworkManager):
         'playFaceup',
         'attack',
         'play',
-        'acceptTarget',
         'endPhase')
 
     def onGotPacket(self, packet, addr):
@@ -31,12 +30,8 @@ class ServerNetworkManager (NetworkManager):
         (opcode, operands) = (operands[0], operands[1:])
         if self.verbose:
             print("got opcode: ", self.Opcodes.keys[opcode])
-        try:
-            getattr(self.base, self.Opcodes.keys[opcode])(addr, *operands)
-        except Decision as d:
-            d.addr = addr
-            self.base.waitingOnDecision = d
-            # Client should send us a decision now
+
+        getattr(self.base, self.Opcodes.keys[opcode])(addr, *operands)
 
     def onClientConnected(self, conn):
         # Make it so each client opcode is a function

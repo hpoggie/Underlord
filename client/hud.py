@@ -241,19 +241,20 @@ class GameHud(Scene):
 
     def onEndPhaseButton(self):
         try:
-            base.endPhase()
-            if base.activeDecision is not None:
-                base.acceptTarget(None)
-                base.mouseHandler.targeting = False
-                base.activeDecision = None
+            base.endPhase(None)
         except IllegalMoveError as e:
             print(e)
 
     def onTemplarEndPhaseButton(self):
-        try:
-            base.endPhase()
-        except IllegalMoveError as e:
-            print(e)
+        base.mouseHandler.targeting = True
+
+        def callback(self, target):
+            try:
+                base.endPhase(target)
+            except IllegalMoveError as e:
+                print(e)
+
+        base.callback = callback
 
     def hideBigMessage(self):
         if hasattr(self, 'winLabel') and self.winLabel is not None:
