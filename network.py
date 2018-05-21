@@ -95,7 +95,6 @@ class ClientNetworkManager (NetworkManager):
         'updatePlayerMana',
         'updateEnemyManaCap',
         'updatePhase',
-        'requestTarget',
         'winGame',
         'loseGame',
         'setActive',

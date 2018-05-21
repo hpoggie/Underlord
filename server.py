@@ -252,21 +252,9 @@ class GameServer:
         self.redraw()
 
     @acceptsTarget
-    def acceptTarget(self, addr, target):
-        if self.waitingOnDecision is not None:
-            self.waitingOnDecision.execute(target)
-            self.waitingOnDecision = None
-            self.redraw()
-        else:
-            print("No decision to execute.")
-
-    @acceptsTarget
     def endPhase(self, addr, target):
         self.players[addr].endPhase(target)
         self.redraw()
-
-    def requestTarget(self, addr):
-        self.connections[addr].requestTarget()
 
     def redraw(self):
         for addr, pl in self.players.items():
