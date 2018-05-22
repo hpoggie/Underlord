@@ -4,6 +4,10 @@ import inspect
 from .decision import Decision
 
 
+def requiresTarget(ability):
+    return (hasattr(ability, 'requiresTarget') and ability.requiresTarget) or len(inspect.getargspec(ability)) > 1
+
+
 class Card:
     """
     A card has the following characteristics:
