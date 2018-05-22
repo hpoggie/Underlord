@@ -156,11 +156,11 @@ class ZoneMaker(DirectObject):
         posZ = 2.1
 
         def addEnemyFdCard(card):
-            if card is None:
-                cardModel = self.loadEnemyBlank()
-            else:
+            if card.visibleWhileFacedown:
                 cardModel = self.loadCard(card)
                 hideCard(cardModel)
+            else:
+                cardModel = self.loadEnemyBlank()
             cardModel.setPos(posX, 0, posZ)
             cardModel.setPythonTag('zone', base.enemy.facedowns)
             # Give this a card ref so we can see it

@@ -2,6 +2,8 @@ import copy
 
 from direct.showbase.DirectObject import DirectObject
 
+from core.card import Card
+
 
 class NetworkInstructions(DirectObject):
     """
@@ -55,7 +57,8 @@ class NetworkInstructions(DirectObject):
         base.enemy.facedowns = []
         for x in cardIds:
             if x == -1:
-                base.enemy.facedowns.append(None)
+                c = Card(name="mysterious card", owner=base.enemy)
+                c.zone = base.enemy.facedowns
             else:
                 self.moveCard(x, base.enemy.facedowns)
         base.redraw()

@@ -15,7 +15,6 @@ from network import ClientNetworkManager
 from server import Zone
 from core.game import Game, Phase, Turn, EndOfGame
 from core.player import IllegalMoveError
-from core.decision import Decision
 from factions import templars
 from client.mouse import MouseHandler
 from client.zoneMaker import ZoneMaker
@@ -223,15 +222,16 @@ class App (ShowBase):
         self.zoneMaker.makePlayerHand()
         self.zoneMaker.makeBoard()
 
-    def revealFacedown(self, card):
-        index = self.playerFacedownNodes.index(card)
+    def revealFacedown(self, card, target=None):
+        # TODO: horrible. use consistency
+        index = self.player.facedowns.index(card)
 
         try:
-            self.player.revealFacedown(index)
+            self.player.revealFacedown(index, target)
         except EndOfGame:
             pass
 
-        self.networkManager.revealFacedown(index)
+        self.networkManager.revealFacedown(index, *self.findCard(target))
         self.zoneMaker.makePlayerHand()
         self.zoneMaker.makeBoard()
 

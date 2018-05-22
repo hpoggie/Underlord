@@ -3,6 +3,7 @@ from direct.showbase.DirectObject import DirectObject
 
 from core.game import Phase
 from core.player import IllegalMoveError
+import core.card
 
 import client.zoneMaker as zoneMaker
 
@@ -89,8 +90,14 @@ class MouseHandler (DirectObject):
             elif zone is base.player.hand:
                 self.dragging = pickedObj
             elif zone is base.player.facedowns:
+                c = pickedObj.getPythonTag('card')
                 if self.activeCard:
                     self.activeCard = None
+                elif core.card.requiresTarget(c.onSpawn):
+                    self.targeting = True
+                    def callback(target):
+                        base.revealFacedown(c, target)
+                    base.callback = callback
                 else:
                     base.revealFacedown(pickedObj)
             elif zone is base.player.faceups and base.phase == Phase.play:
