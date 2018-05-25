@@ -58,6 +58,10 @@ class MouseHandler (DirectObject):
         else:
             base.guiScene.hideTargeting()
 
+    def startTargeting(self, targetDesc):
+        base.targetDesc = targetDesc
+        self.targeting = True
+
     def getObjectClickedOn(self):
         if base.mouseWatcherNode.hasMouse():
             mpos = base.mouseWatcherNode.getMouse()
@@ -94,9 +98,9 @@ class MouseHandler (DirectObject):
                 if self.activeCard:
                     self.activeCard = None
                 elif core.card.requiresTarget(c.onSpawn):
-                    self.targeting = True
+                    self.startTargeting(c.desc)
                     def callback(target):
-                        base.revealFacedown(c, target)
+                        base.revealFacedown(pickedObj, target)
                     base.callback = callback
                 else:
                     base.revealFacedown(pickedObj)
