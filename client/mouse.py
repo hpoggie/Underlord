@@ -150,7 +150,7 @@ class MouseHandler (DirectObject):
                     onSpawn = self.dragging.getPythonTag('card').onSpawn
                     if pickedObj is not None and pickedObj != self.dragging:
                         target = pickedObj
-                    elif hasattr(onSpawn, 'requiresTarget') and onSpawn.requiresTarget:
+                    elif core.card.requiresTarget(onSpawn):
                         # don't fizzle if no valid target
                         self.dragging = None
                         return
