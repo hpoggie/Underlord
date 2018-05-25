@@ -223,9 +223,8 @@ class App (ShowBase):
         self.zoneMaker.makeBoard()
 
     def revealFacedown(self, card, target=None):
+        index = self.playerFacedownNodes.index(card)
         card = card.getPythonTag('card')
-        # TODO: horrible. use consistency
-        index = self.player.facedowns.index(card)
 
         try:
             self.player.revealFacedown(index, target)
