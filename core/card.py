@@ -5,7 +5,7 @@ from .decision import Decision
 
 
 def requiresTarget(ability):
-    return (hasattr(ability, 'requiresTarget') and ability.requiresTarget) or len(inspect.getargspec(ability)) > 1
+    return hasattr(ability, 'requiresTarget') and ability.requiresTarget
 
 
 class Card:
