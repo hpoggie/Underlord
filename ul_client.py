@@ -15,6 +15,7 @@ from network import ClientNetworkManager
 from server import Zone
 from core.game import Game, Phase, Turn, EndOfGame
 from core.player import IllegalMoveError
+import core.card
 from factions import templars
 from client.mouse import MouseHandler
 from client.zoneMaker import ZoneMaker
@@ -209,11 +210,10 @@ class App (ShowBase):
         idx = self.playerHandNodes.index(card)
 
         if self.phase == Phase.reveal:
-            try:
-                c = target.getPythonTag('card')
-                self.player.playFaceup(idx, c)
+            if core.card.requiresTarget(card.getPythonTag('card').onSpawn):
+                self.player.playFaceup(idx, target.getPythonTag('card'))
                 self.networkManager.playFaceup(idx, *self.findCard(target))
-            except AttributeError:
+            else:
                 self.networkManager.playFaceup(idx)
         else:
             self.player.play(idx)

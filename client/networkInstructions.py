@@ -57,7 +57,9 @@ class NetworkInstructions(DirectObject):
         base.enemy.facedowns = []
         for x in cardIds:
             if x == -1:
-                c = Card(name="mysterious card", owner=base.enemy)
+                c = Card(name="mysterious card",
+                         owner=base.enemy,
+                         game=base.game)
                 c.zone = base.enemy.facedowns
             else:
                 self.moveCard(x, base.enemy.facedowns)
