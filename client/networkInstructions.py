@@ -36,7 +36,14 @@ class NetworkInstructions(DirectObject):
         c = copy.copy(base.faction.deck[index])
         c.game = base.player.game
         c.owner = base.player if zone in playerZones else base.enemy
-        c.zone = zone
+        # TODO: really hacky. Can't just set card.zone
+        # Because it will trigger onSpawn
+        try:
+            c.zone = zone
+        except Decision:
+            pass
+        except EndOfGame:
+            pass
 
     def updatePlayerHand(self, *cardIds):
         base.player.hand = []
