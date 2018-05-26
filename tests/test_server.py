@@ -1,11 +1,12 @@
 import types
 
 import network
-import server
+from lobbyServer import LobbyServer
+from gameServer import GameServer
 from client.networkInstructions import NetworkInstructions
 
 
-lobbyServer = server.LobbyServer("-v")
+lobbyServer = LobbyServer("-v")
 port = lobbyServer.networkManager.port
 netman0 = network.ClientNetworkManager(
     NetworkInstructions(), "localhost", port)
@@ -38,7 +39,7 @@ class FakeConnection:
 
 
 def testKickPlayer():
-    gs = server.GameServer(FakeNetworkManager())
+    gs = GameServer(FakeNetworkManager())
 
     def kick(self):
         self.kicked = True

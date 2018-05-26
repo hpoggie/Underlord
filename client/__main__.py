@@ -12,7 +12,7 @@ from direct.task import Task
 
 from network_manager import ConnectionClosed
 from network import ClientNetworkManager
-from server import Zone
+from gameServer import Zone
 from core.game import Game, Phase, Turn, EndOfGame
 from core.player import IllegalMoveError
 import core.card
