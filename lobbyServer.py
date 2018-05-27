@@ -7,6 +7,7 @@ import os
 import sys
 import copy
 import random
+import time
 
 from network_manager import ConnectionClosed
 from network import ServerNetworkManager
@@ -93,3 +94,4 @@ if __name__ == "__main__":
     lobby = LobbyServer(sys.argv)
     while 1:
         lobby.acceptConnections()
+        time.sleep(0.01)
