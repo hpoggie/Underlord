@@ -140,7 +140,7 @@ class MouseHandler (DirectObject):
         # If you drop the card outside the drop zone,
         # the action is cancelled
         pos = self._dragging.getPos()
-        inX = pos.x > 0 and pos.x < 8
+        inX = pos.x > -1 and pos.x < 9
         inZ = pos.z > -5 and pos.z < 6
         if inX and inZ:
             try:
