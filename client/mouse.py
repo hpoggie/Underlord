@@ -98,7 +98,7 @@ class MouseHandler (DirectObject):
                 if self.activeCard:
                     self.activeCard = None
                 elif core.card.requiresTarget(c.onSpawn):
-                    self.startTargeting(c.desc)
+                    self.startTargeting(c.targetDesc)
                     def callback(target):
                         base.revealFacedown(pickedObj, target)
                     base.callback = callback

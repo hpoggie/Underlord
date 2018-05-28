@@ -170,3 +170,14 @@ class Card:
 
         if self._zone == self.owner.faceups:
             self.onSpawn()
+
+    @property
+    def targetDesc(self):
+        if hasattr(self, '_targetDesc'):
+            return self._targetDesc
+        else:
+            return self.desc
+
+    @targetDesc.setter
+    def targetDesc(self, value):
+        self._targetDesc = value
