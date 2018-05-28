@@ -223,9 +223,9 @@ class ZoneMaker(DirectObject):
         textNodePath.setPos(0.08, -0.05, 1.125)
 
         desc = panda3d.core.TextNode('desc')
-        desc.setText(textwrap.fill(card.desc, width=40))
+        desc.setText(textwrap.fill(card.desc, width=25))
         textNodePath = cardBase.attachNewNode(desc)
-        textNodePath.setScale(0.045)
+        textNodePath.setScale(0.07)
         textNodePath.setPos(0.09, -0.05, 0.4)
 
         cardBase.setPythonTag('card', card)

@@ -67,9 +67,9 @@ def mindControlTrap():
         spell=True,
         onSpawn=mctAbility,
         onFight=mctOnFight,
-        desc="""
-            Draw a card.\nIf this is attacked while face-down,
-            gain control of the attacking unit.""")
+        desc="Draw a card. "
+             "If this is attacked while face-down, "
+             "gain control of the attacking unit.")
 
 
 deck = [sweep(), spellBlade(), mindControlTrap()]
