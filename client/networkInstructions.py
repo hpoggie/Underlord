@@ -80,7 +80,7 @@ class NetworkInstructions(DirectObject):
 
     def updateEnemyFaceups(self, *cardIds):
         base.enemy.faceups = []
-        for i, x in enumerate(cardIds):
+        for x in cardIds:
             self.moveCard(x, base.enemy.faceups)
         base.redraw()
 
