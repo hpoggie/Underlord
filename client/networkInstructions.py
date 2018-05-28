@@ -27,15 +27,17 @@ class NetworkInstructions(DirectObject):
         base.bothPlayersMulliganed = True
 
     def moveCard(self, index, zone):
-        playerZones = [base.player.facedowns,
-                       base.player.faceups,
-                       base.player.hand,
-                       base.player.deck]
+        # Compare ids because lists have == overloaded
+        playerZoneIds = [id(z) for z in [
+            base.player.facedowns,
+            base.player.faceups,
+            base.player.hand,
+            base.player.deck]]
 
         # TODO: hack. also enemy faction
         c = copy.copy(base.faction.deck[index])
         c.game = base.player.game
-        c.owner = base.player if zone in playerZones else base.enemy
+        c.owner = base.player if id(zone) in playerZoneIds else base.enemy
         # TODO: really hacky. Can't just set card.zone
         # Because it will trigger onSpawn
         try:
