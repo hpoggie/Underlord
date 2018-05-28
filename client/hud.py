@@ -264,7 +264,7 @@ class GameHud(Scene):
     def showTargeting(self):
         if not hasattr(self, 'targetingLabel'):
             self.targetingLabel = self.label(
-                pos=(0, -0.7, 0),
+                pos=(0, 0, 0),
                 mayChange=True)
             self.targetingGradient = self.image(
                 image="gradient.png",
