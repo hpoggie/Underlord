@@ -207,10 +207,11 @@ class App (ShowBase):
         If it's our reveal phase and the card is fast, play it face-up,
         otherwise play it face-down.
         """
-        idx = self.playerHandNodes.index(card)
+        c = card.getPythonTag('card')
+        idx = c.zone.index(c)
 
         if self.phase == Phase.reveal:
-            if core.card.requiresTarget(card.getPythonTag('card').onSpawn):
+            if core.card.requiresTarget(c.onSpawn):
                 self.player.playFaceup(idx, target.getPythonTag('card'))
                 self.networkManager.playFaceup(idx, *self.findCard(target))
             else:
@@ -223,8 +224,8 @@ class App (ShowBase):
         self.zoneMaker.makeBoard()
 
     def revealFacedown(self, card, target=None):
-        index = self.playerFacedownNodes.index(card)
         card = card.getPythonTag('card')
+        index = card.zone.index(card)
 
         try:
             self.player.revealFacedown(index, target)

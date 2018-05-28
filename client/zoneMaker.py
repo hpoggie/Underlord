@@ -29,12 +29,11 @@ class ZoneMaker(DirectObject):
         base.playerCardBack = base.faction.cardBack
         base.enemyCardBack = base.enemyFaction.cardBack
 
-        base.playerHandNodes = []
-        base.enemyHandNodes = []
-        base.playerFacedownNodes = []
-        base.enemyFacedownNodes = []
-        base.playerFaceupNodes = []
-        base.enemyFaceupNodes = []
+        for name in ['playerHand', 'enemyHand', 'playerBoard', 'enemyBoard']:
+            setattr(self, name, self.scene.attachNewNode(name))
+
+        self.playerBoard.setPos(0, 0, -2)
+        self.enemyBoard.setPos(0, 0, 2.1)
 
         self.makePlayerHand()
         self.makeEnemyHand()
@@ -52,13 +51,8 @@ class ZoneMaker(DirectObject):
         Redraw the player's hand.
         """
         # Destroy entire hand. This is slow and may need to be changed
-        for i in base.playerHandNodes:
+        for i in self.playerHand.children:
             i.detachNode()
-
-        base.playerHandNodes = []
-
-        if not hasattr(self, 'playerHand'):
-            self.playerHand = self.scene.attachNewNode('playerHand')
 
         def addHandCard(card, tr):
             cardModel = self.loadCard(card)
@@ -68,7 +62,6 @@ class ZoneMaker(DirectObject):
             cardModel.reparentTo(pivot)
             cardModel.setPos(-offset)
             cardModel.setPythonTag('zone', base.player.hand)
-            base.playerHandNodes.append(cardModel)
             pivot.reparentTo(self.playerHand)
 
         fan = fanHand(len(base.player.hand))
@@ -76,20 +69,15 @@ class ZoneMaker(DirectObject):
             addHandCard(base.player.hand[i], tr)
             if base.player.hand[i] in base.toMulligan:
                 tex = loader.loadTexture(base.playerIconPath + '/' + base.playerCardBack)
-                hideCard(base.playerHandNodes[i])
+                hideCard(self.playerHand.children[i].children[0])
             else:
-                showCard(base.playerHandNodes[i])
+                showCard(self.playerHand.children[i].children[0])
 
         self.playerHand.setPosHpr(2.5, 0, -2, 0, 45.0, 0)
 
     def makeEnemyHand(self):
-        for i in base.enemyHandNodes:
+        for i in self.enemyHand.children:
             i.detachNode()
-
-        base.enemyHandNodes = []
-
-        if not hasattr(self, 'enemyHand'):
-            self.enemyHand = self.scene.attachNewNode('enemyHand')
 
         def addEnemyHandCard(tr):
             cardModel = self.loadEnemyBlank()
@@ -99,7 +87,6 @@ class ZoneMaker(DirectObject):
             cardModel.reparentTo(pivot)
             cardModel.setPos(-offset)
             cardModel.setPythonTag('zone', base.enemy.hand)
-            base.enemyHandNodes.append(cardModel)
             pivot.reparentTo(self.enemyHand)
 
         fan = fanHand(len(base.enemy.hand))
@@ -112,30 +99,25 @@ class ZoneMaker(DirectObject):
         """
         Show the player's faceups and facedowns
         """
-        for i in base.playerFacedownNodes:
+        for i in self.playerBoard.children:
             i.detachNode()
-        base.playerFacedownNodes = []
-        for i in base.playerFaceupNodes:
-            i.detachNode()
-        base.playerFaceupNodes = []
 
         posX = 0.0
-        posZ = -2
 
         def addFaceupCard(card):
             cardModel = self.loadCard(card)
-            cardModel.setPos(posX, 0, posZ)
+            cardModel.reparentTo(self.playerBoard)
+            cardModel.setPos(posX, 0, 0)
             cardModel.setPythonTag('zone', base.player.faceups)
-            base.playerFaceupNodes.append(cardModel)
 
         def addFdCard(card):
             cardModel = self.loadCard(card)
             hideCard(cardModel)
-            cardModel.setPos(posX, 0, posZ)
+            cardModel.reparentTo(self.playerBoard)
+            cardModel.setPos(posX, 0, 0)
             cardModel.setPythonTag('zone', base.player.facedowns)
             # Give this a card ref so we can see it
             cardModel.setPythonTag('card', card)
-            base.playerFacedownNodes.append(cardModel)
 
         for c in base.player.faceups:
             addFaceupCard(c)
@@ -145,15 +127,10 @@ class ZoneMaker(DirectObject):
             posX += 1.1
 
     def makeEnemyBoard(self):
-        for i in base.enemyFacedownNodes:
+        for i in self.enemyBoard.children:
             i.detachNode()
-        base.enemyFacedownNodes = []
-        for i in base.enemyFaceupNodes:
-            i.detachNode()
-        base.enemyFaceupNodes = []
 
         posX = 0.0
-        posZ = 2.1
 
         def addEnemyFdCard(card):
             if card.visibleWhileFacedown:
@@ -161,17 +138,17 @@ class ZoneMaker(DirectObject):
                 hideCard(cardModel)
             else:
                 cardModel = self.loadEnemyBlank()
-            cardModel.setPos(posX, 0, posZ)
+            cardModel.reparentTo(self.enemyBoard)
+            cardModel.setPos(posX, 0, 0)
             cardModel.setPythonTag('zone', base.enemy.facedowns)
             # Give this a card ref so we can see it
             cardModel.setPythonTag('card', card)
-            base.enemyFacedownNodes.append(cardModel)
 
         def addEnemyFaceupCard(card):
             cardModel = self.loadCard(card)
-            cardModel.setPos(posX, 0, posZ)
+            cardModel.reparentTo(self.enemyBoard)
+            cardModel.setPos(posX, 0, 0)
             cardModel.setPythonTag('zone', base.enemy.faceups)
-            base.enemyFaceupNodes.append(cardModel)
 
         for c in base.enemy.faceups:
             addEnemyFaceupCard(c)
