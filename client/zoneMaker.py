@@ -52,7 +52,7 @@ class ZoneMaker(DirectObject):
         """
         # Destroy entire hand. This is slow and may need to be changed
         for i in self.playerHand.children:
-            i.detachNode()
+            i.removeNode()
 
         def addHandCard(card, tr):
             cardModel = self.loadCard(card)
@@ -77,7 +77,7 @@ class ZoneMaker(DirectObject):
 
     def makeEnemyHand(self):
         for i in self.enemyHand.children:
-            i.detachNode()
+            i.removeNode()
 
         def addEnemyHandCard(tr):
             cardModel = self.loadEnemyBlank()
@@ -100,7 +100,7 @@ class ZoneMaker(DirectObject):
         Show the player's faceups and facedowns
         """
         for i in self.playerBoard.children:
-            i.detachNode()
+            i.removeNode()
 
         posX = 0.0
 
@@ -128,7 +128,7 @@ class ZoneMaker(DirectObject):
 
     def makeEnemyBoard(self):
         for i in self.enemyBoard.children:
-            i.detachNode()
+            i.removeNode()
 
         posX = 0.0
 
@@ -166,7 +166,7 @@ class ZoneMaker(DirectObject):
         if card != self.focusedCard:
             self.focusedCard.unstash()
             if len(self.focusedCard.children) > 0:
-                self.focusedCard.children[0].detachNode()
+                self.focusedCard.children[0].removeNode()
             # Make a duplicate of the node. Actually a different node path
             # pointing to the same node
             card.copyTo(self.focusedCard)
@@ -280,4 +280,4 @@ class ZoneMaker(DirectObject):
         self.makeEnemyBoard()
 
     def unmake(self):
-        self.scene.detachNode()
+        self.scene.removeNode()
