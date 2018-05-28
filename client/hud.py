@@ -274,7 +274,7 @@ class GameHud(Scene):
             self.targetingLabel.show()
             self.targetingGradient.show()
 
-        self.targetingLabel.setText(base.targetDesc)
+        self.targetingLabel.setText(base.targetDesc.split('\n')[0])
 
     def hideTargeting(self):
         self.targetingLabel.hide()
