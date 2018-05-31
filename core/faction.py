@@ -24,5 +24,9 @@ class Faction:
 
         vars(self).update(kwargs.copy())
 
+        for c in self.deck:
+            if not hasattr(c, 'imagePath'):
+                c.imagePath = self.iconPath + "/" + c.image
+
     def __repr__(self):
         return "Faction " + self.name + " at 0x%x" %  id(self)

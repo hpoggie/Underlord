@@ -73,3 +73,6 @@ def mindControlTrap():
 
 
 deck = [sweep(), spellBlade(), mindControlTrap()]
+
+for c in deck:
+    c.imagePath = "base_icons/" + c.image

@@ -193,11 +193,7 @@ class ZoneMaker(DirectObject):
         cardFrame.setName('frame')
 
         cardImage = cardBase.attachNewNode(cm.generate())
-        if card.owner == base.player:
-            path = base.playerIconPath + "/" + card.image
-        else:
-            path = base.enemyIconPath + "/" + card.image
-        tex = loader.loadTexture(path)
+        tex = loader.loadTexture(card.imagePath)
         cardImage.setTexture(tex)
         cardImage.setScale(0.7)
         cardImage.setPos(0.15, -0.05, 0.5)
