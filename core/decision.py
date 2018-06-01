@@ -19,5 +19,5 @@ class Decision(BaseException):
     def __call__(self):
         raise self
 
-    def execute(self, *args):
-        self.func(*args)
+    def execute(self, *args, **kwargs):
+        self.func(*args, **kwargs)

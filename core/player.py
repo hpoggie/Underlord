@@ -132,7 +132,7 @@ class Player:
         card.zone = self.facedowns
         card.hasAttacked = False
 
-    def revealFacedown(self, card, *args):
+    def revealFacedown(self, card, *args, **kwargs):
         self.failIfInactive()
 
         # Overload
@@ -154,9 +154,9 @@ class Player:
         try:
             card.zone = self.faceups
         except Decision as d:
-            d.execute(*args)
+            d.execute(*args, **kwargs)
 
-    def playFaceup(self, card, *args):
+    def playFaceup(self, card, *args, **kwargs):
         self.failIfInactive()
 
         # Overload
@@ -181,7 +181,7 @@ class Player:
         try:
             card.zone = self.faceups
         except Decision as d:
-            d.execute(*args)
+            d.execute(*args, **kwargs)
 
     def attack(self, attacker, target):
         self.failIfInactive()
@@ -230,14 +230,14 @@ class Player:
 
         self.opponent.manaCap += attacker.rank
 
-    def endPhase(self, *args):
+    def endPhase(self, *args, **kwargs):
         self.failIfInactive()
         try:
             self.game.endPhase()
         except Decision as d:
-            d.execute(*args)
+            d.execute(*args, **kwargs)
 
-    def endTurn(self, *args):
+    def endTurn(self, *args, **kwargs):
         self.failIfInactive()
         while self.active:
-            self.endPhase(*args)
+            self.endPhase(*args, **kwargs)
