@@ -41,12 +41,6 @@ class Card:
                 id(self),
                 self.owner)
 
-    def beforeEvent(self, eventName, *args, **kwargs):
-        pass
-
-    def afterEvent(self, eventName, *args, **kwargs):
-        pass
-
     @property
     def cost(self):
         return self._cost

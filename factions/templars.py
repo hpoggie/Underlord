@@ -92,9 +92,8 @@ def miracle():
 
 def crystalElemental():
     class CrystalElemental(Card):
-        def beforeEvent(self, eventName, *args, **kwargs):
-            if eventName == "destroy" and args[0].owner != self.owner\
-                    and args[0].zone == args[0].owner.facedowns:
+        def beforeDestroy(self, card):
+            if card.owner != self.owner and card.zone == card.owner.facedowns:
                 self.owner.drawCard()
 
     return CrystalElemental(
@@ -245,8 +244,8 @@ class Templar(Player):
             card.zone = self.graveyard
             self.manaCap += 1
 
-    def afterEvent(self, name, *args, **kwargs):
-        if name == 'endTurn' and not self.active:
+    def afterEndTurn(self):
+        if not self.active:
             raise Decision(
                 self.templarAbility,
                 self,

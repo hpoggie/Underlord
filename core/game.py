@@ -14,18 +14,30 @@ class EndOfGame(BaseException):
 
 
 def event(func):
+    # Automatically generate function names for before and after events
+    # e.g. endPhase -> beforeEndPhase
+    upperName = func.__name__[0].upper() + func.__name__[1:]
+    beforeEventName = 'before' + upperName
+    afterEventName = 'after' + upperName
+
     def fooBeforeAfter(self, *args, **kwargs):
+        # Find the right function by name and call it
+        # If it doesn't exist, don't worry about it
+        def doTrigger(obj, name):
+            if hasattr(obj, name):
+                getattr(obj, name)(*args, **kwargs)
+
         for pl in self.players:
-            pl.beforeEvent(func.__name__, *args, **kwargs)
+            doTrigger(pl, beforeEventName)
             for c in pl.faceups[:]:
-                c.beforeEvent(func.__name__, *args, **kwargs)
+                doTrigger(c, beforeEventName)
 
         func(self, *args, **kwargs)
 
         for pl in self.players:
-            pl.afterEvent(func.__name__, *args, **kwargs)
+            doTrigger(pl, afterEventName)
             for c in pl.faceups[:]:
-                c.afterEvent(func.__name__, *args, **kwargs)
+                doTrigger(c, afterEventName)
 
     return fooBeforeAfter
 
