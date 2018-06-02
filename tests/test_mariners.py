@@ -43,3 +43,37 @@ def testFish():
         pass
     else:
         assert False
+
+
+def testAquatic():
+    game, p0, p1 = newGame([mariners.nuisanceFlooding(),
+                           mariners.kraken()])
+
+    for i in range(2):
+        p0.drawCard()
+        p1.drawCard()
+
+    game.start()
+    p0.manaCap = 7  # Make sure we have enough to play our stuff
+
+    p0.endPhase()
+    p0.play(0)
+    p0.endTurn()
+
+    p1.endTurn()
+
+    # We can't reveal aquatic cards
+    try:
+        p0.revealFacedown(0)
+    except IllegalMoveError:
+        pass
+    else:
+        assert False
+
+    # Cheat Nuisance Flooding into play
+    p0.hand[0].playsFaceUp = True
+    p0.hand[0].cost = 0
+    p0.playFaceup(0)
+
+    # Try revealing the kraken again
+    p0.revealFacedown(0)
