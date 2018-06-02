@@ -1,7 +1,8 @@
 from . import base
+from core.game import Phase
 from core.card import Card
 from core.faction import Faction, deck
-from core.player import Player
+from core.player import Player, IllegalMoveError
 
 
 def aquatic(func):
@@ -64,6 +65,7 @@ Mariners = Faction(
 class Mariner(Player):
     def __init__(self):
         super().__init__(Mariners)
+        self.fishing = False
 
     @property
     def game(self):
@@ -75,14 +77,43 @@ class Mariner(Player):
         if not hasattr(self.game, "flooded"):
             self.game.flooded = False
 
+    def fishReplace(self, cards):
+        """
+        Bottomdeck the 3 cards
+        """
+        if not self.fishing:
+            raise IllegalMoveError("Not fishing.")
+
+        if len(cards) != 3:
+            raise IllegalMoveError("Must replace exactly 3 cards.")
+
+        for card in cards:
+            if card is None or card.zone is not self.hand:
+                raise IllegalMoveError("Must choose a valid target.")
+            card.zone = card.owner.deck
+
+        self.fishing = False
+
     def fish(self):
-        for i in range(3):
-            drawCard()
+        # Draw 2 more cards
+        for i in range(2):
+            self.drawCard()
 
-        def fishDiscard(self, cards):
-            for card in cards:
-                self.deck.append(card)
+        # If you have <= 3 cards in hand, put all of them back
+        if len(self.hand) <= 3:
+            for card in self.hand:
                 card.zone = card.owner.deck
+        else:
+            self.fishing = True  # Can't do anything until calling fishReplace
 
-        disc = TargetedAbility(fishDiscard)
-        disc.execute()
+    def endPhase(self, fish=False):
+        super().endPhase(self)
+
+        if self.game.phase == Phase.play and fish:
+            self.fish()
+
+    def failIfInactive(self):
+        super().failIfInactive(self)
+
+        if self.fishing:
+            raise IllegalMoveError("Must complete fishing first.")
