@@ -138,7 +138,8 @@ class Player:
             Can only reveal facedowns during reveal phase.""")
 
         if self.mana < card.cost:
-            raise IllegalMoveError("Not enough mana.")
+            raise IllegalMoveError("Not enough mana. (cost %d; mana %d)"
+                                   % (card.cost, self.mana))
 
         if card.zone != self.facedowns:
             raise IllegalMoveError("Can't reveal a card that's not face-down.")
