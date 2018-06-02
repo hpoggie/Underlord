@@ -90,6 +90,25 @@ def ripCurrent():
              "and face-down cards.")
 
 
+def highTide():
+    def _onSpawn(self):
+        self.game.flooded = True
+
+    class HighTide(Card):
+        def beforeEndTurn(self):
+            self.game.flooded = False
+            destroy(self)
+
+    return HighTide(
+        name="High Tide",
+        image='lighthouse.png',
+        cost=0,
+        rank='s',
+        spell=True,
+        onSpawn=_onSpawn,
+        desc="Flood the battlefield until end of turn. Draw a card.")
+
+
 Mariners = Faction(
     name="Mariners",
     iconPath="mariner_icons",
@@ -98,7 +117,8 @@ Mariners = Faction(
               nuisanceFlooding, 3,
               voidstar,
               grandJelly, 2,
-              ripCurrent) + base.deck)
+              ripCurrent,
+              highTide, 3) + base.deck)
 
 
 class Mariner(Player):
