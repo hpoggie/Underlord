@@ -65,6 +65,10 @@ class Card:
     def taunt(self, value):
         self._taunt = value
 
+    def cast(self):
+        self.owner.mana -= self.cost
+        self.zone = self.owner.faceups
+
     def _onSpawn(self):
         if self.spell:
             self.zone = self.owner.graveyard

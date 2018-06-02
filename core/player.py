@@ -144,10 +144,8 @@ class Player:
         if card.zone != self.facedowns:
             raise IllegalMoveError("Can't reveal a card that's not face-down.")
 
-        self.mana -= card.cost
-
         try:
-            card.zone = self.faceups
+            card.cast()
         except Decision as d:
             d.execute(*args, **kwargs)
 
@@ -172,9 +170,8 @@ class Player:
         if self.mana < card.cost:
             raise IllegalMoveError("Not enough mana.")
 
-        self.mana -= card.cost
         try:
-            card.zone = self.faceups
+            card.cast()
         except Decision as d:
             d.execute(*args, **kwargs)
 
