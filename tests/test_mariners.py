@@ -77,3 +77,27 @@ def testAquatic():
 
     # Try revealing the kraken again
     p0.revealFacedown(0)
+
+
+def testRipCurrent():
+    game, p0, p1 = newGame([mariners.ripCurrent()],
+                           [mariners.kraken() for i in range(2)])
+    game.start()
+    game.flooded = True  # So we can play the cards
+
+    p0.endPhase()
+    p0.play(0)
+    p0.endTurn()
+    p0.manaCap = 9  # Cheat
+
+    p1.hand[0].cost = 0
+    p1.hand[0].playsFaceUp = True
+    p1.playFaceup(0)
+    p1.endPhase()
+    p1.play(0)
+    p1.endTurn()
+
+    p0.revealFacedown(0)
+
+    assert len(p1.faceups) == 0
+    assert len(p1.facedowns) == 0

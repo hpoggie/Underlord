@@ -1,5 +1,5 @@
 from . import base
-from core.game import Phase
+from core.game import Phase, destroy
 from core.card import Card
 from core.faction import Faction, deck
 from core.player import Player, IllegalMoveError
@@ -72,6 +72,23 @@ def grandJelly():
         desc="Aquatic. Taunt.")
 
 
+def ripCurrent():
+    def _onSpawn(self):
+        for c in self.owner.opponent.facedowns[:]:
+            destroy(c)
+        for c in self.owner.opponent.faceups[:]:
+            destroy(c)
+
+    return AquaticCard(
+        name="Rip Current",
+        image='water-bolt.png',
+        cost=9,
+        rank='s',
+        onSpawn=_onSpawn,
+        desc="Aquatic. Destroy all your opponent's face-up units "
+             "and face-down cards.")
+
+
 Mariners = Faction(
     name="Mariners",
     iconPath="mariner_icons",
@@ -79,7 +96,8 @@ Mariners = Faction(
     deck=deck(kraken,
               nuisanceFlooding, 3,
               voidstar,
-              grandJelly, 2) + base.deck)
+              grandJelly, 2,
+              ripCurrent) + base.deck)
 
 
 class Mariner(Player):
