@@ -40,6 +40,7 @@ def nuisanceFlooding():
         def beforeEndTurn(self):
             self.remainingTurns -= 1
             if self.remainingTurns <= 0:
+                self.game.flooded = False
                 self.game.destroy(self)
 
     return NuisanceFlooding(
