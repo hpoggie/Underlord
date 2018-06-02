@@ -62,13 +62,24 @@ def voidstar():
         desc="Aquatic. Fast.")
 
 
+def grandJelly():
+    return AquaticCard(
+        name="Grand Jelly",
+        image='jellyfish.png',
+        cost=4,
+        rank=4,
+        taunt=True,
+        desc="Aquatic. Taunt.")
+
+
 Mariners = Faction(
     name="Mariners",
     iconPath="mariner_icons",
     cardBack="nautilus-shell.png",
     deck=deck(kraken,
               nuisanceFlooding, 3,
-              voidstar) + base.deck)
+              voidstar,
+              grandJelly, 2) + base.deck)
 
 
 class Mariner(Player):
