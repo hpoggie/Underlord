@@ -52,12 +52,23 @@ def nuisanceFlooding():
         desc="Flood the battlefield for 4 turns.")
 
 
+def voidstar():
+    return AquaticCard(
+        name="Voidstar",
+        image='voidstar.png',
+        cost=5,
+        rank=5,
+        playsFaceUp=True,
+        desc="Aquatic. Fast.")
+
+
 Mariners = Faction(
     name="Mariners",
     iconPath="mariner_icons",
     cardBack="nautilus-shell.png",
     deck=deck(kraken,
-              nuisanceFlooding, 3) + base.deck)
+              nuisanceFlooding, 3,
+              voidstar) + base.deck)
 
 
 class Mariner(Player):
