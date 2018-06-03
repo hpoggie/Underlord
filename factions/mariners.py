@@ -1,3 +1,5 @@
+import random
+
 from . import base
 from core.game import Phase, destroy
 from core.card import Card
@@ -129,6 +131,21 @@ def unexpectedShark():
              "Can kill spells.")
 
 
+def braintwister():
+    def _onSpawn(self):
+        h = self.owner.opponent.hand
+        h[random.randint(0, len(h) - 1)].zone = self.owner.opponent.graveyard
+
+    return AquaticCard(
+        name="Braintwister",
+        image='braintwister.png',
+        cost=2,
+        rank=2,
+        onSpawn=_onSpawn,
+        desc="Aquatic. When this spawns, your opponent discards a random "
+             "card.")
+
+
 Mariners = Faction(
     name="Mariners",
     iconPath="mariner_icons",
@@ -139,7 +156,8 @@ Mariners = Faction(
               grandJelly, 2,
               ripCurrent,
               highTide, 3,
-              unexpectedShark, 3) + base.deck)
+              unexpectedShark, 3,
+              braintwister, 4) + base.deck)
 
 
 class Mariner(Player):
