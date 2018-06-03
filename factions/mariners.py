@@ -114,7 +114,7 @@ def highTide():
 def unexpectedShark():
     class UnexpectedShark(Card):
         def afterEndTurn(self):
-            if not self.flooded:
+            if not hasattr(self.game, 'flooded') or not self.game.flooded:
                 destroy(self)
 
         def onFight(self, target):

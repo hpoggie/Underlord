@@ -119,6 +119,10 @@ def testShark():
 
     assert len(p0.facedowns) == 0
 
+    p1.endTurn()
+
+    assert len(p1.faceups) == 0
+
 
 def testBraintwister():
     game, p0, p1 = newGame([mariners.braintwister()],
