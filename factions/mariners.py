@@ -231,3 +231,6 @@ class Mariner(Player):
 
         if self.fishing:
             raise IllegalMoveError("Must complete fishing first.")
+
+
+Mariners.player = Mariner

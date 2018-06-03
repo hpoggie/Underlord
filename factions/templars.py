@@ -250,3 +250,5 @@ class Templar(Player):
                 self.templarAbility,
                 self,
                 "Choose a card to discard.")
+
+Templars.player = Templar
