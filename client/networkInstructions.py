@@ -34,10 +34,14 @@ class NetworkInstructions(DirectObject):
             base.player.hand,
             base.player.deck]]
 
-        # TODO: hack. also enemy faction
-        c = copy.copy(base.faction.deck[index])
+        # TODO: hack.
+        if id(zone) in playerZoneIds:
+            c = copy.copy(base.faction.deck[index])
+            c.owner = base.player
+        else:
+            c = copy.copy(base.enemyFaction.deck[index])
+            c.owner = base.enemy
         c.game = base.player.game
-        c.owner = base.player if id(zone) in playerZoneIds else base.enemy
         # TODO: really hacky. Can't just set card.zone
         # Because it will trigger onSpawn
         try:
