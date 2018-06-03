@@ -135,3 +135,29 @@ def testBraintwister():
     p0.playFaceup(0)
 
     assert(len(p1.hand) == 4)
+
+
+def testSquid():
+    game, p0, p1 = newGame([mariners.grandJelly()],
+                           [mariners.humboldtSquid()])
+    game.start()
+    game.flooded = True
+
+    # play the elephant
+    p0.hand[0].playsFaceUp = True
+    p0.hand[0].cost = 0
+    p0.playFaceup(0)
+    p0.endTurn()
+
+    # Play and attack with the squid
+    squid = p1.hand[0]
+    squid.playsFaceUp = True
+    p1.playFaceup(squid)
+    p1.endPhase()
+    assert squid.rank == 1
+    assert len(p0.faceups) == 1
+    p1.attack(squid, p0.faceups[0])
+    assert len(p0.faceups) == 0
+
+    # The squid returns to rank 1 after it's finished fighting
+    assert squid.rank == 1

@@ -146,6 +146,26 @@ def braintwister():
              "card.")
 
 
+def humboldtSquid():
+    class HumboldtSquid(AquaticCard):
+        def beforeFight(self, target, attacker):
+            # TODO: black magic
+            # 2nd arg is always the attacker
+            # find cleaner way to do this
+            if attacker == self and isinstance(target, Card):
+                self.rank = 5
+
+        def afterFight(self, target, attacker):
+            self.rank = 1
+
+    return HumboldtSquid(
+        name="Humboldt Squid",
+        image='tentacle-strike.png',
+        cost=1,
+        rank=1,
+        desc="Aquatic. This has rank 5 while attacking a unit.")
+
+
 Mariners = Faction(
     name="Mariners",
     iconPath="mariner_icons",
@@ -157,7 +177,8 @@ Mariners = Faction(
               ripCurrent,
               highTide, 3,
               unexpectedShark, 3,
-              braintwister, 4) + base.deck)
+              braintwister, 4,
+              humboldtSquid, 5) + base.deck)
 
 
 class Mariner(Player):
