@@ -109,6 +109,26 @@ def highTide():
         desc="Flood the battlefield until end of turn. Draw a card.")
 
 
+def unexpectedShark():
+    class UnexpectedShark(Card):
+        def afterEndTurn(self):
+            if not self.flooded:
+                destroy(self)
+
+        def onFight(self, target):
+            if hasattr(target, 'spell') and target.spell:
+                destroy(target)
+
+    return UnexpectedShark(
+        name="Unexpected Shark",
+        image='shark-jaws.png',
+        cost=3,
+        rank=3,
+        playsFaceUp=True,
+        desc="Fast. Dies at end of turn if the battlefield isn't flooded. "
+             "Can kill spells.")
+
+
 Mariners = Faction(
     name="Mariners",
     iconPath="mariner_icons",
@@ -118,7 +138,8 @@ Mariners = Faction(
               voidstar,
               grandJelly, 2,
               ripCurrent,
-              highTide, 3) + base.deck)
+              highTide, 3,
+              unexpectedShark, 3) + base.deck)
 
 
 class Mariner(Player):

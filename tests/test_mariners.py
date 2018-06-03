@@ -101,3 +101,20 @@ def testRipCurrent():
 
     assert len(p1.faceups) == 0
     assert len(p1.facedowns) == 0
+
+
+def testShark():
+    game, p0, p1 = newGame([mariners.highTide()],
+                           [mariners.unexpectedShark()])
+    game.start()
+
+    p0.endPhase()
+    p0.play(0)
+    p0.endTurn()
+
+    p1.hand[0].cost = 0
+    p1.playFaceup(0)
+    p1.endPhase()
+    p1.attack(0, p0.facedowns[0])
+
+    assert len(p0.facedowns) == 0
