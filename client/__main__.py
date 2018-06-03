@@ -22,6 +22,7 @@ from client.zoneMaker import ZoneMaker
 import client.hud as hud
 from client.connectionManager import ConnectionManager
 import client.networkInstructions
+import client.templarHud as templarHud
 
 loadPrcFileData(
     "",
@@ -133,7 +134,10 @@ class App (ShowBase):
         self.toMulligan = []
 
         # Set up the game UI
-        self.guiScene = hud.GameHud()
+        if isinstance(self.player, templars.Templar):
+            self.guiScene = templarHud.TemplarHud()
+        elif isinstance(self.player, mariners.Mariner):
+            self.guiScene = hud.GameHud()
         self.zoneMaker = ZoneMaker()
 
     def decideWhetherToGoFirst(self):
@@ -252,7 +256,7 @@ class App (ShowBase):
         self.zoneMaker.makeBoard()
         self.zoneMaker.makeEnemyBoard()
 
-    def endPhase(self, target):
+    def endPhase(self, target=None):
         try:
             self.player.endPhase(target)
         except EndOfGame:

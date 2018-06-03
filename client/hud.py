@@ -7,7 +7,6 @@ from direct.gui.OnscreenImage import OnscreenImage
 
 from core.game import Phase
 from core.player import IllegalMoveError
-import factions.templars
 
 
 commit_hash = ''
@@ -226,14 +225,6 @@ class GameHud(Scene):
             pos=(0.7, 0, -0.85),
             command=self.onMulliganButton)
 
-        if isinstance(base.player, factions.templars.Templar):
-            self.templarEndPhaseButton = self.button(
-                text="Faction Ability",
-                scale=1,
-                pos=(0, 0, -1),
-                parent=self.endPhaseButton,
-                command=self.onTemplarEndPhaseButton)
-
         self.redraw()
 
     def onMulliganButton(self):
@@ -241,21 +232,9 @@ class GameHud(Scene):
 
     def onEndPhaseButton(self):
         try:
-            base.endPhase(None)
+            base.endPhase()
         except IllegalMoveError as e:
             print(e)
-
-    def onTemplarEndPhaseButton(self):
-        def callback(target):
-            try:
-                base.endPhase(target)
-            except IllegalMoveError as e:
-                print(e)
-
-        base.callback = callback
-        # TODO: grab desc from faction?
-        base.targetDesc = "Choose a card to discard."
-        base.mouseHandler.targeting = True
 
     def hideBigMessage(self):
         if hasattr(self, 'winLabel') and self.winLabel is not None:
@@ -305,7 +284,6 @@ class GameHud(Scene):
         # Hide everything if we haven't mulliganed yet
         if not base.bothPlayersMulliganed:
             self.endPhaseButton.hide()
-            self.templarEndPhaseButton.hide()
             self.playerManaCapLabel.setText("")
             self.enemyManaCapLabel.setText("")
             return
@@ -314,13 +292,6 @@ class GameHud(Scene):
             self.endPhaseButton.show()
         else:
             self.endPhaseButton.hide()
-
-        # If we're not Templars, don't worry about it
-        hasTemplarButton = hasattr(self, 'templarEndPhaseButton')
-        if base.phase == Phase.play and base.active and hasTemplarButton:
-            self.templarEndPhaseButton.show()
-        else:
-            self.templarEndPhaseButton.hide()
 
         if base.phase == Phase.reveal and base.active:
             self.playerManaCapLabel.setText(
