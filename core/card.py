@@ -166,7 +166,8 @@ class Card:
         self.visibleWhileFacedown = False
         self.hasAttacked = False
 
-        if self._zone == self.owner.faceups:
+        if (self._zone == self.owner.faceups or
+                self._zone == self.owner.opponent.faceups):
             self.onSpawn()
 
     @property
