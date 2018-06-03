@@ -139,7 +139,12 @@ class Mariner(Player):
         for card in cards:
             if card is None or card.zone is not self.hand:
                 raise IllegalMoveError("Must choose a valid target.")
-            card.zone = card.owner.deck
+
+        # append to front
+        self.deck = cards + self.deck
+        self.hand = [c for c in self.hand if c not in cards]
+        for card in cards:
+            card.zone = self.deck
 
         self.fishing = False
 
