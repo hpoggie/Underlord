@@ -125,7 +125,7 @@ class App (ShowBase):
 
     def onGameStarted(self):
         # Set up game state information
-        self.game = Game(templars.Templar, templars.Templar)
+        self.game = Game(self.faction.player, self.enemyFaction.player)
         self.player, self.enemy = self.game.players
         self.game.start()
         self.hasMulliganed = False
