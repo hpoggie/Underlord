@@ -170,15 +170,15 @@ Mariners = Faction(
     name="Mariners",
     iconPath="mariner_icons",
     cardBack="nautilus-shell.png",
-    deck=deck(kraken,
-              nuisanceFlooding, 3,
-              voidstar,
-              grandJelly, 2,
-              ripCurrent,
-              highTide, 3,
-              unexpectedShark, 3,
+    deck=deck(humboldtSquid, 5,
               braintwister, 4,
-              humboldtSquid, 5) + base.deck)
+              nuisanceFlooding, 3,
+              highTide, 3,
+              grandJelly, 2,
+              unexpectedShark, 3,
+              kraken,
+              voidstar,
+              ripCurrent) + base.deck)
 
 
 class Mariner(Player):
