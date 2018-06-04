@@ -120,8 +120,8 @@ class Player:
             Can only play facedowns during play phase.""")
 
         if card.zone != self.hand:
-            raise IllegalMoveError("""
-            Can't play a card that's not in your hand.""")
+            raise IllegalMoveError(
+                "Can't play %s because it's not in your hand." % repr(card))
 
         card.zone = self.facedowns
         card.hasAttacked = False
