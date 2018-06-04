@@ -202,9 +202,8 @@ class App (ShowBase):
 
         return (zone, index, int(enemy))
 
-    def acceptTarget(self, target):
-        self.callback(target)
-        self.callback = None
+    def finishTargeting(self):
+        self.targetCallback = None
         self.activeDecision = None
         self.mouseHandler.targeting = False
         self.guiScene.hideTargeting()

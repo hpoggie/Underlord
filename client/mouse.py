@@ -81,7 +81,7 @@ class MouseHandler (DirectObject):
             return
 
         if self.targeting and pickedObj is not None:
-            base.acceptTarget(pickedObj)
+            base.targetCallback(pickedObj)
         elif pickedObj and not pickedObj.isEmpty():
             zone = pickedObj.getPythonTag('zone')
             if zone is base.player.hand and not base.hasMulliganed:
@@ -101,7 +101,8 @@ class MouseHandler (DirectObject):
                     self.startTargeting(c.targetDesc)
                     def callback(target):
                         base.revealFacedown(pickedObj, target)
-                    base.callback = callback
+                        base.finishTargeting()
+                    base.targetCallback = callback
                 else:
                     base.revealFacedown(pickedObj)
             elif zone is base.player.faceups and base.phase == Phase.play:
@@ -177,7 +178,7 @@ class MouseHandler (DirectObject):
 
     def onMouse3Down(self):
         if self.targeting:
-            base.acceptTarget(None)
+            base.targetCallback(None)
 
         if self.dragging:
             self.dragging = None

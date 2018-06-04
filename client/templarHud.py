@@ -17,8 +17,10 @@ class TemplarHud(GameHud):
                 base.endPhase(target=target)
             except IllegalMoveError as e:
                 print(e)
+            else:
+                base.finishTargeting()
 
-        base.callback = callback
+        base.targetCallback = callback
         # TODO: grab desc from faction?
         base.targetDesc = "Choose a card to discard."
         base.mouseHandler.targeting = True
