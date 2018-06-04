@@ -59,7 +59,9 @@ def acceptsTarget(func):
             else:
                 target = pl.zones[targetZone][targetIndex]
         except ValueError:
-            pass
+            # Only got 1 arg.
+            func(self, *args)
+            return
         except IndexError:
             pass
 
@@ -145,13 +147,13 @@ class GameServer:
                 *(getCard(pl, c) for c in pl.hand))
 
     @acceptsTarget
-    def revealFacedown(self, addr, index, target):
+    def revealFacedown(self, addr, index, target=None):
         pl = self.players[addr]
         pl.revealFacedown(pl.facedowns[index], target)
         self.redraw()
 
     @acceptsTarget
-    def playFaceup(self, addr, index, target):
+    def playFaceup(self, addr, index, target=None):
         pl = self.players[addr]
         pl.playFaceup(pl.hand[index], target)
         self.redraw()
@@ -173,7 +175,7 @@ class GameServer:
         self.redraw()
 
     @acceptsTarget
-    def endPhase(self, addr, target):
+    def endPhase(self, addr, target=None):
         self.players[addr].endPhase(target)
         self.redraw()
 

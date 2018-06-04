@@ -7,14 +7,14 @@ from client.hud import GameHud
 class TemplarHud(GameHud):
     def onEndPhaseButton(self):
         try:
-            base.endPhase(target=None)
+            base.endPhase(card=None)
         except IllegalMoveError as e:
             print(e)
 
     def onTemplarEndPhaseButton(self):
         def callback(target):
             try:
-                base.endPhase(target=target)
+                base.endPhase(card=target)
             except IllegalMoveError as e:
                 print(e)
             else:

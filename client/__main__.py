@@ -255,13 +255,20 @@ class App (ShowBase):
         self.zoneMaker.makeBoard()
         self.zoneMaker.makeEnemyBoard()
 
-    def endPhase(self, target=None):
+    def endPhase(self, *args, **kwargs):
         try:
-            self.player.endPhase(target)
+            self.player.endPhase(*args, **kwargs)
         except EndOfGame:
             pass
 
-        self.networkManager.endPhase(*self.findCard(target))
+        # For each value in args, append the indices for that value
+        # For each value in kwargs, append it if it's a bool, otherwise
+        # assume it's a card and append the indices for it
+        args = [i for arg in args for i in findCard(arg)] +\
+               [i for arg in kwargs.values() for i in ([int(arg)]
+                if isinstance(arg, bool) else self.findCard(arg))]
+
+        self.networkManager.endPhase(*args)
 
     def redraw(self):
         self.zoneMaker.redrawAll()
