@@ -221,6 +221,9 @@ class Mariner(Player):
             self.fishing = True  # Can't do anything until calling fishReplace
 
     def endPhase(self, fish=False):
+        if self.hasFirstPlayerPenalty and fish:
+            raise IllegalMoveError("Can't fish if you're not drawing.")
+
         super().endPhase(self)
 
         if self.game.phase == Phase.play and fish:
