@@ -1,0 +1,52 @@
+from core.game import Phase
+from core.player import IllegalMoveError
+from client.hud import GameHud
+from client.zoneMaker import hideCard, showCard
+
+
+class MarinerHud(GameHud):
+    def onFishButton(self):
+        try:
+            base.endPhase(fish=True)
+        except IllegalMoveError:
+            return
+
+        targets = []
+
+        def callback(target):
+            if target is None:
+                return
+
+            if target in targets:
+                targets.remove(target)
+                showCard(target)
+            else:
+                targets.append(target)
+                hideCard(target)
+
+            if len(targets) == 3:
+                base.fishReplace(targets)
+                base.finishTargeting()
+
+        base.targetCallback = callback
+        base.targetDesc = "Choose 3 cards to put back."
+        base.mouseHandler.targeting = True
+
+    def redraw(self):
+        super().redraw()
+
+        if not hasattr(self, 'fishButton'):
+            self.fishButton = self.button(
+                text="Faction Ability",
+                scale=1,
+                pos=(0, 0, -1),
+                parent=self.endPhaseButton,
+                command=self.onFishButton)
+
+        # Hide everything if we haven't mulliganed yet
+        if not base.bothPlayersMulliganed:
+            self.fishButton.hide()
+        elif base.phase == Phase.reveal and base.active:
+            self.fishButton.show()
+        else:
+            self.fishButton.hide()

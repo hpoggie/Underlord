@@ -21,7 +21,8 @@ class ServerNetworkManager (NetworkManager):
         'playFaceup',
         'attack',
         'play',
-        'endPhase')
+        'endPhase',
+        'fishReplace')
 
     def onGotPacket(self, packet, addr):
         if packet == '':

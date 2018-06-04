@@ -23,6 +23,7 @@ import client.hud as hud
 from client.connectionManager import ConnectionManager
 import client.networkInstructions
 import client.templarHud as templarHud
+import client.marinerHud as marinerHud
 
 loadPrcFileData(
     "",
@@ -137,7 +138,7 @@ class App (ShowBase):
         if isinstance(self.player, templars.Templar):
             self.guiScene = templarHud.TemplarHud()
         elif isinstance(self.player, mariners.Mariner):
-            self.guiScene = hud.GameHud()
+            self.guiScene = marinerHud.MarinerHud()
         self.zoneMaker = ZoneMaker()
 
     def decideWhetherToGoFirst(self):
@@ -270,7 +271,13 @@ class App (ShowBase):
 
         self.networkManager.endPhase(*args)
 
+    def fishReplace(self, cards):
+        self.networkManager.fishReplace(
+            *[card.getPythonTag('zone').index(card.getPythonTag('card'))
+                for card in cards])
+
     def redraw(self):
+        self.player.fishing = False
         self.zoneMaker.redrawAll()
         self.guiScene.redraw()
 

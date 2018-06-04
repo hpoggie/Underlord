@@ -179,6 +179,12 @@ class GameServer:
         self.players[addr].endPhase(target)
         self.redraw()
 
+    # TODO: massive kludge
+    def fishReplace(self, addr, *cards):
+        pl = self.players[addr]
+        pl.fishReplace([pl.hand[i] for i in cards])
+        self.redraw()
+
     def redraw(self):
         for addr, pl in self.players.items():
             c = self.connections[addr]
