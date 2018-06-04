@@ -204,7 +204,7 @@ class Mariner(Player):
         self.deck = cards + self.deck
         self.hand = [c for c in self.hand if c not in cards]
         for card in cards:
-            card.zone = self.deck
+            card._zone = self.deck
 
         self.fishing = False
 
