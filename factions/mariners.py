@@ -198,9 +198,13 @@ class Mariner(Player):
             if card is None or card.zone is not self.hand:
                 raise IllegalMoveError("Must choose a valid target.")
 
-        # append to front
-        self.deck = cards + self.deck
-        self.hand = [c for c in self.hand if c not in cards]
+        # append to front in reverse order
+        # TODO: This is stupid. do something else
+        for card in cards[::-1]:
+            self.deck.insert(0, card)
+        for card in self.hand[:]:
+            if card in cards:
+                self.hand.remove(card)
         for card in cards:
             card._zone = self.deck
 
