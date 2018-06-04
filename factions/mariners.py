@@ -34,11 +34,11 @@ def kraken():
 
 
 def nuisanceFlooding():
-    def _onSpawn(self):
-        self.remainingTurns = 4
-        self.game.flooded = True
-
     class NuisanceFlooding(Card):
+        def onSpawn(self):
+            self.remainingTurns = 4
+            self.game.flooded = True
+
         def beforeEndTurn(self):
             self.remainingTurns -= 1
             if self.remainingTurns <= 0:
@@ -51,7 +51,6 @@ def nuisanceFlooding():
         cost=3,
         rank='s',
         spell=True,
-        onSpawn=_onSpawn,
         desc="Flood the battlefield for 4 turns.")
 
 
@@ -93,10 +92,10 @@ def ripCurrent():
 
 
 def highTide():
-    def _onSpawn(self):
-        self.game.flooded = True
-
     class HighTide(Card):
+        def onSpawn(self):
+            self.game.flooded = True
+
         def beforeEndTurn(self):
             self.game.flooded = False
             destroy(self)
@@ -107,7 +106,6 @@ def highTide():
         cost=0,
         rank='s',
         spell=True,
-        onSpawn=_onSpawn,
         desc="Flood the battlefield until end of turn. Draw a card.")
 
 
