@@ -3,6 +3,8 @@ import copy
 from direct.showbase.DirectObject import DirectObject
 
 from core.card import Card
+from core.decision import Decision
+from core.game import EndOfGame
 
 
 class NetworkInstructions(DirectObject):
