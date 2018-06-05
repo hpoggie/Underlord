@@ -109,8 +109,8 @@ class GameServer:
         self.game = Game(*self.factions)
         self.game.start()
         self.players = dict([
-            (self.addrs[firstPlayer], self.game.players[0]),
-            (self.addrs[secondPlayer], self.game.players[1])])
+            (self.addrs[firstPlayer], self.game.players[firstPlayer]),
+            (self.addrs[secondPlayer], self.game.players[secondPlayer])])
         # Make it easy to find connections by addr
         self.connections = dict([
             (addr, self.networkManager.connections[i])
