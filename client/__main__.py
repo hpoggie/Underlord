@@ -83,12 +83,16 @@ class App (ShowBase):
         if not self._started:
             self.onGameStarted()
             self._started = True
+            self._firstTurn = True
 
         # Ignore setting active before mulligans
         # b/c the opcode is False instead of None
         # TODO: change this
         if self.hasMulliganed:
             self.game.turn = Turn.p1 if value else Turn.p2
+            if self._firstTurn and value:
+                self.hasFirstPlayerPenalty = True
+            self._firstTurn = False
 
     @property
     def guiScene(self):

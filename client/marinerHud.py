@@ -43,10 +43,10 @@ class MarinerHud(GameHud):
                 parent=self.endPhaseButton,
                 command=self.onFishButton)
 
-        # Hide everything if we haven't mulliganed yet
-        if not base.bothPlayersMulliganed:
-            self.fishButton.hide()
-        elif base.phase == Phase.reveal and base.active:
+        if (base.phase == Phase.reveal and
+                base.active and
+                base.bothPlayersMulliganed and
+                not base.player.hasFirstPlayerPenalty):
             self.fishButton.show()
         else:
             self.fishButton.hide()
