@@ -60,7 +60,7 @@ class NetworkInstructions(DirectObject):
         base.redraw()
 
     def updateEnemyHand(self, size):
-        base.enemy.hand = [None] * size
+        base.enemy.hand = [Card(owner=base.player.opponent) for i in range(size)]
 
     def updatePlayerFacedowns(self, *cardIds):
         base.player.facedowns = []
