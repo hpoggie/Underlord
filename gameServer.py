@@ -96,6 +96,10 @@ class GameServer:
         conn.requestGoingFirstDecision()
 
     def decideWhetherToGoFirst(self, addr, value):
+        if self.addrs.index(addr) is not self.decidingPlayer:
+            print("That player doesn't get to decide who goes first.")
+            return
+
         if value:
             firstPlayer = self.decidingPlayer
         else:
