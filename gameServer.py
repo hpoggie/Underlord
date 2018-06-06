@@ -193,22 +193,25 @@ class GameServer:
     def redraw(self):
         for addr, pl in self.players.items():
             c = self.connections[addr]
+            enemyPlayer = pl.opponent
+
             c.setActive(int(pl.active))
-            c.updatePlayerHand(*(getCard(pl, c) for c in pl.hand))
-            c.updatePlayerFacedowns(*(getCard(pl, c) for c in pl.facedowns))
-            c.updatePlayerFaceups(*(getCard(pl, c) for c in pl.faceups))
-            c.updatePlayerManaCap(pl.manaCap)
-            c.updatePlayerMana(pl.mana)
             c.updatePhase(self.game.phase)
 
-            enemyPlayer = pl.opponent
+            c.updatePlayerFaceups(*(getCard(pl, c) for c in pl.faceups))
+            c.updateEnemyFaceups(
+                *(getCard(enemyPlayer, c) for c in enemyPlayer.faceups)
+            )
+
+            c.updatePlayerHand(*(getCard(pl, c) for c in pl.hand))
+            c.updatePlayerFacedowns(*(getCard(pl, c) for c in pl.facedowns))
+            c.updatePlayerManaCap(pl.manaCap)
+            c.updatePlayerMana(pl.mana)
+
             c.updateEnemyHand(len(enemyPlayer.hand))
             c.updateEnemyFacedowns(
                 *(getCard(enemyPlayer, c) if c.visibleWhileFacedown else -1
                     for c in enemyPlayer.facedowns)
-            )
-            c.updateEnemyFaceups(
-                *(getCard(enemyPlayer, c) for c in enemyPlayer.faceups)
             )
             c.updateEnemyManaCap(enemyPlayer.manaCap)
 
