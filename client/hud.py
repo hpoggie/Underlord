@@ -162,20 +162,14 @@ class GoingFirstDecision(Scene):
     def __init__(self):
         super().__init__()
 
-        def goFirst():
-            base.networkManager.decideWhetherToGoFirst(1)
-
-        def goSecond():
-            base.networkManager.decideWhetherToGoFirst(0)
-
         self.button(
             text="Go first",
             pos=(0, 0, 0.1),
-            command=goFirst)
+            command=base.goFirst)
         self.button(
             text="Go second",
             pos=(0, 0, -0.1),
-            command=goSecond)
+            command=base.goSecond)
 
 
 class GameHud(Scene):

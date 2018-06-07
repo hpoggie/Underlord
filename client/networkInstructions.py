@@ -25,6 +25,12 @@ class NetworkInstructions(DirectObject):
     def updateEnemyFaction(self, index):
         base.enemyFaction = base.availableFactions[index]
 
+    def enemyGoingFirst(self):
+        base.onGameStarted(goingFirst=False)
+
+    def enemyGoingSecond(self):
+        base.onGameStarted(goingFirst=True)
+
     def updateBothPlayersMulliganed(self):
         base.bothPlayersMulliganed = True
 

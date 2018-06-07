@@ -87,6 +87,12 @@ class GameServer:
         # If both players have selected their faction, start the game
         started = hasattr(self, 'game')
         if None not in self.factions and not started:
+            # TODO: kludge
+            for i in range(len(self.factions)):
+                self.networkManager.connections[
+                    (i + 1) % len(self.factions)].updateEnemyFaction(
+                    availableFactions.index(self.factions[i]))
+
             self.waitOnGoingFirstDecision()
 
     def waitOnGoingFirstDecision(self):
@@ -131,11 +137,11 @@ class GameServer:
                 pl.graveyard
             ]
 
-        # TODO: kludge
-        for i in range(len(self.factions)):
-            self.networkManager.connections[
-                (i + 1) % len(self.factions)].updateEnemyFaction(
-                availableFactions.index(self.factions[i]))
+        ndp = self.networkManager.connections[self.notDecidingPlayer]
+        if firstPlayer == self.decidingPlayer:
+            ndp.enemyGoingFirst()
+        else:
+            ndp.enemyGoingSecond()
 
         self.redraw()
 

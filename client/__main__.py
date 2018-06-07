@@ -13,7 +13,7 @@ from direct.task import Task
 from network_manager import ConnectionClosed
 from network import ClientNetworkManager
 from gameServer import Zone
-from core.game import Game, Phase, Turn, EndOfGame
+from core.game import Game, Phase, EndOfGame
 from core.player import IllegalMoveError
 import core.card
 from factions import templars, mariners
@@ -78,18 +78,15 @@ class App (ShowBase):
     @active.setter
     def active(self, value):
         """
-        Update whose turn it is. If we haven't started the game, start it.
+        Update whose turn it is.
         """
-        if not self._started:
-            self.onGameStarted()
-            self._started = True
-            self._firstTurn = True
-
         # Ignore setting active before mulligans
         # b/c the opcode is False instead of None
         # TODO: change this
         if self.hasMulliganed:
-            self.game.turn = Turn.p1 if value else Turn.p2
+            # (not value) gives us 0 for player 1 and 1 for player 2
+            self.game.turn = not value if (
+                self.player == self.game.players[0]) else value
             if self._firstTurn and value:
                 self.hasFirstPlayerPenalty = True
             self._firstTurn = False
@@ -129,10 +126,25 @@ class App (ShowBase):
         # Tell the user we're waiting for opponent
         self.guiScene.showWaitMessage()
 
-    def onGameStarted(self):
+    def goFirst(self):
+        base.networkManager.decideWhetherToGoFirst(1)
+        self.onGameStarted(goingFirst=True)
+
+    def goSecond(self):
+        base.networkManager.decideWhetherToGoFirst(0)
+        self.onGameStarted(goingFirst=False)
+
+    def onGameStarted(self, goingFirst=True):
+        self.isFirstPlayer = goingFirst
+
         # Set up game state information
-        self.game = Game(self.faction.player, self.enemyFaction.player)
-        self.player, self.enemy = self.game.players
+        if goingFirst:
+            self.game = Game(self.faction.player, self.enemyFaction.player)
+            self.player, self.enemy = self.game.players
+        else:
+            self.game = Game(self.enemyFaction.player, self.faction.player)
+            self.enemy, self.player = self.game.players
+
         self.game.start()
         self.hasMulliganed = False
         self.bothPlayersMulliganed = False
@@ -144,6 +156,8 @@ class App (ShowBase):
         elif isinstance(self.player, mariners.Mariner):
             self.guiScene = marinerHud.MarinerHud()
         self.zoneMaker = ZoneMaker()
+
+        self._firstTurn = True
 
     def decideWhetherToGoFirst(self):
         self.guiScene = hud.GoingFirstDecision()
