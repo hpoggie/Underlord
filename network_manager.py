@@ -60,7 +60,7 @@ class NetworkManager:
         self.isClient = True
         self.sock.setblocking(0)
 
-    def send(self, data, target):
+    def send(self, target, data):
         packet = bytes(str(data) + '\0', 'utf-8')
 
         if self.verbose:
@@ -73,7 +73,7 @@ class NetworkManager:
             tgt.conn.sendall(packet)
 
     def sendInts(self, target, *args):
-        self.send(":".join(str(x) for x in args), target)
+        self.send(target, ":".join(str(x) for x in args))
 
     def recv(self):
         readers, writers, errors = select.select(
