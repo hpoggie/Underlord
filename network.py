@@ -1,8 +1,19 @@
 import types
+import re
 
 from network_manager import NetworkManager
 from core.enums import numericEnum
 from core.decision import Decision
+
+
+def serialize(args):
+    return ''.join([{int: 'i', float: 'f'}[type(x)] +
+                    repr(x) for x in args])
+
+
+def deserialize(packet):
+    return [float(s[1:]) if s[0] == 'f' else int(s[1:])
+            for s in re.findall('[a-z][^a-z]*', packet)]
 
 
 class ServerNetworkManager (NetworkManager):
@@ -27,7 +38,7 @@ class ServerNetworkManager (NetworkManager):
     def onGotPacket(self, packet, addr):
         if packet == '':
             return
-        operands = [int(x) for x in packet.split(":")]
+        operands = deserialize(packet)
         (opcode, operands) = (operands[0], operands[1:])
         if self.verbose:
             print("got opcode: ", self.Opcodes.keys[opcode])
@@ -43,10 +54,9 @@ class ServerNetworkManager (NetworkManager):
                     self.opcode = opcode
 
                 def __call__(self, base, *args):
-                    self.manager.sendInts(
+                    self.manager.send(
                         base.addr,
-                        self.opcode,
-                        *args)
+                        serialize([self.opcode] + list(args)))
 
             # Bind the OpcodeFunc as a method to the class
             setattr(conn, key, types.MethodType(OpcodeFunc(self, i), conn))
@@ -72,10 +82,9 @@ class ClientNetworkManager (NetworkManager):
                     self.opcode = opcode
 
                 def __call__(self, base, *args):
-                    base.sendInts(
+                    base.send(
                         (base.ip, base.port),
-                        self.opcode,
-                        *args)
+                        serialize([self.opcode] + list(args)))
 
             # Bind the OpcodeFunc as a method to the class
             setattr(self, key, types.MethodType(OpcodeFunc(i), self))
@@ -106,7 +115,7 @@ class ClientNetworkManager (NetworkManager):
     def onGotPacket(self, packet, addr):
         if packet == '':
             return
-        operands = [int(x) for x in packet.split(":")]
+        operands = deserialize(packet)
         (opcode, operands) = (operands[0], operands[1:])
         if self.verbose:
             print("got opcode: ", self.Opcodes.keys[opcode])
