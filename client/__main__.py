@@ -87,9 +87,6 @@ class App (ShowBase):
             # (not value) gives us 0 for player 1 and 1 for player 2
             self.game.turn = not value if (
                 self.player == self.game.players[0]) else value
-            if self._firstTurn and value:
-                self.hasFirstPlayerPenalty = True
-            self._firstTurn = False
 
     @property
     def guiScene(self):
@@ -157,7 +154,7 @@ class App (ShowBase):
             self.guiScene = marinerHud.MarinerHud()
         self.zoneMaker = ZoneMaker()
 
-        self._firstTurn = True
+        self.hasFirstPlayerPenalty = goingFirst
 
     def decideWhetherToGoFirst(self):
         self.guiScene = hud.GoingFirstDecision()
@@ -276,6 +273,8 @@ class App (ShowBase):
                 if isinstance(arg, bool) else self.findCard(arg))]
 
         self.networkManager.endPhase(*args)
+
+        self.hasFirstPlayerPenalty = False
 
     def fishReplace(self, cards):
         self.networkManager.fishReplace(

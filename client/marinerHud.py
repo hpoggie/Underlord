@@ -46,7 +46,7 @@ class MarinerHud(GameHud):
         if (base.phase == Phase.reveal and
                 base.active and
                 base.bothPlayersMulliganed and
-                not base.player.hasFirstPlayerPenalty):
+                not base.hasFirstPlayerPenalty):
             self.fishButton.show()
         else:
             self.fishButton.hide()
