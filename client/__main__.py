@@ -223,12 +223,10 @@ class App (ShowBase):
 
         if self.phase == Phase.reveal:
             if core.card.requiresTarget(c.onSpawn):
-                self.player.playFaceup(idx, target.getPythonTag('card'))
                 self.networkManager.playFaceup(idx, *self.findCard(target))
             else:
                 self.networkManager.playFaceup(idx)
         else:
-            self.player.play(idx)
             self.networkManager.play(idx)
 
         self.zoneMaker.makePlayerHand()
@@ -237,11 +235,6 @@ class App (ShowBase):
     def revealFacedown(self, card, target=None):
         card = card.getPythonTag('card')
         index = card.zone.index(card)
-
-        try:
-            self.player.revealFacedown(index, target)
-        except EndOfGame:
-            pass
 
         self.networkManager.revealFacedown(index, *self.findCard(target))
         self.zoneMaker.makePlayerHand()
@@ -261,11 +254,6 @@ class App (ShowBase):
         self.zoneMaker.makeEnemyBoard()
 
     def endPhase(self, *args, **kwargs):
-        try:
-            self.player.endPhase(*args, **kwargs)
-        except EndOfGame:
-            pass
-
         # For each value in args, append the indices for that value
         # For each value in kwargs, append it if it's a bool, otherwise
         # assume it's a card and append the indices for it
