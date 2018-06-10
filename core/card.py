@@ -55,6 +55,7 @@ class Card:
 
     @rank.setter
     def rank(self, value):
+        self.spell = value == 's'
         self._rank = value
 
     @property

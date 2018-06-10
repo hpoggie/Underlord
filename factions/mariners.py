@@ -65,7 +65,6 @@ def nuisanceFlooding():
         image="at-sea.png",
         cost=3,
         rank='s',
-        spell=True,
         desc="Flood the battlefield for 4 turns.")
 
 
@@ -122,7 +121,6 @@ def highTide():
         image='lighthouse.png',
         cost=0,
         rank='s',
-        spell=True,
         desc="Flood the battlefield until end of turn. Draw a card.")
 
 

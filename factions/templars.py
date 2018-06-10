@@ -41,7 +41,7 @@ def holyHandGrenade():
         image="holy-hand-grenade.png",
         playsFaceUp=True,
         cost=4,
-        spell=True,
+        rank='s',
         onSpawn=_onSpawn,
         desc="Destroy target card."
     )
@@ -54,7 +54,7 @@ def wrathOfGod():
         name="Wrath of God",
         image="wind-hole.png",
         cost=5,
-        spell=True,
+        rank='s',
         playsFaceUp=True,
         onSpawn=base.sweepAbility,
         desc=base.sweep().desc
@@ -84,7 +84,7 @@ def miracle():
         name="Miracle",
         image="sundial.png",
         cost=8,
-        spell=True,
+        rank='s',
         onSpawn=_onSpawn,
         desc="Draw until you have 5 cards in hand."
     )
@@ -114,7 +114,7 @@ def invest():
         name="Invest",
         image="profit.png",
         cost=1,
-        spell=True,
+        rank='s',
         onSpawn=_onSpawn,
         desc="Add 1 to your mana cap. Draw a card."
     )
@@ -183,7 +183,6 @@ def crystalLance():
         image="ice-spear.png",
         cost=5,
         rank="s",
-        spell=True,
         onSpawn=_onSpawn,
         desc="Destroy target face-down card. "
              "If this is attacked while face-down, "
@@ -205,7 +204,6 @@ def crystalRain():
         image="crystal-bars.png",
         cost=5,
         rank="s",
-        spell=True,
         onSpawn=_onSpawn,
         desc="Destroy target face-down card. "
              "If this is attacked while face-down, "
