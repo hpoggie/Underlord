@@ -55,8 +55,10 @@ def nuisanceFlooding():
         def beforeEndTurn(self):
             self.remainingTurns -= 1
             if self.remainingTurns <= 0:
-                unflood(self.game)
                 self.game.destroy(self)
+
+        def onDeath(self):
+            unflood(self.game)
 
     return NuisanceFlooding(
         name="Nuisance Flooding",
@@ -110,8 +112,10 @@ def highTide():
             flood(self.game)
 
         def beforeEndTurn(self):
-            unflood(self.game)
             destroy(self)
+
+        def onDeath(self):
+            unflood(self.game)
 
     return HighTide(
         name="High Tide",
