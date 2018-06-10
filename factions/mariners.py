@@ -7,6 +7,19 @@ from core.faction import Faction, deck
 from core.player import Player, IllegalMoveError
 
 
+def flood(game):
+    if hasattr(game, 'flooded'):
+        game.flooded += 1
+    else:
+        game.flooded = 1
+
+
+def unflood(game):
+    game.flooded -= 1
+    if game.flooded < 0:
+        raise ValueError("Flood counter can't go below 0.")
+
+
 class AquaticCard(Card):
     @property
     def flooded(self):
@@ -37,12 +50,12 @@ def nuisanceFlooding():
     class NuisanceFlooding(Card):
         def onSpawn(self):
             self.remainingTurns = 4
-            self.game.flooded = True
+            flood(self.game)
 
         def beforeEndTurn(self):
             self.remainingTurns -= 1
             if self.remainingTurns <= 0:
-                self.game.flooded = False
+                unflood(self.game)
                 self.game.destroy(self)
 
     return NuisanceFlooding(
@@ -94,10 +107,10 @@ def ripCurrent():
 def highTide():
     class HighTide(Card):
         def onSpawn(self):
-            self.game.flooded = True
+            flood(self.game)
 
         def beforeEndTurn(self):
-            self.game.flooded = False
+            unflood(self.game)
             destroy(self)
 
     return HighTide(
