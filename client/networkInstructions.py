@@ -129,4 +129,4 @@ class NetworkInstructions(DirectObject):
         base.quitToMainMenu()
 
     def setActive(self, value):
-        base.active = bool(value)
+        base.active = value

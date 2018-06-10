@@ -7,12 +7,12 @@ from core.decision import Decision
 
 
 def serialize(args):
-    return ''.join([{int: 'i', float: 'f'}[type(x)] +
+    return ''.join([{int: 'i', float: 'f', bool: 'b'}[type(x)] +
                     repr(x) for x in args])
 
 
 def deserialize(packet):
-    return [float(s[1:]) if s[0] == 'f' else int(s[1:])
+    return [{'i': int, 'f': float, 'b': bool}[s[0]](s[1:])
             for s in re.findall('[a-z][^a-z]*', packet)]
 
 
