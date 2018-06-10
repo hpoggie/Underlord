@@ -149,7 +149,11 @@ def unexpectedShark():
 def braintwister():
     def _onSpawn(self):
         h = self.owner.opponent.hand
-        h[random.randint(0, len(h) - 1)].zone = self.owner.opponent.graveyard
+        try:
+            idx = random.randint(0, len(h) - 1)
+            h[idx].zone = self.owner.opponent.graveyard
+        except ValueError:  # Do nothing if they have no cards
+            pass
 
     return AquaticCard(
         name="Braintwister",

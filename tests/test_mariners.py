@@ -137,6 +137,19 @@ def testBraintwister():
     assert(len(p1.hand) == 4)
 
 
+def testBraintwisterEmptyHand():
+    game, p0, p1 = newGame([mariners.braintwister()],
+                           [])
+    game.start()
+    game.flooded = True
+
+    p0.hand[0].playsFaceUp = True
+    p0.hand[0].cost = 0
+    p0.playFaceup(0)
+
+    assert(len(p1.hand) == 0)
+
+
 def testSquid():
     game, p0, p1 = newGame([mariners.grandJelly()],
                            [mariners.humboldtSquid()])
