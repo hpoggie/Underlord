@@ -170,9 +170,6 @@ class App (ShowBase):
     def mulligan(self):
         if not self.hasMulliganed:
             indices = [self.player.hand.index(c) for c in self.toMulligan]
-            self.player.mulligan(*self.toMulligan)
-            # Don't know what their cards are but do this to trigger effects
-            self.enemy.mulligan()
             self.networkManager.mulligan(*indices)
             self.hasMulliganed = True
             self.toMulligan = []  # These get GC'd
