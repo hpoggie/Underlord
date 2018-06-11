@@ -21,23 +21,9 @@ def event(func):
     afterEventName = 'after' + upperName
 
     def fooBeforeAfter(self, *args, **kwargs):
-        # Find the right function by name and call it
-        # If it doesn't exist, don't worry about it
-        def doTrigger(obj, name):
-            if hasattr(obj, name):
-                getattr(obj, name)(*args, **kwargs)
-
-        for pl in self.players:
-            doTrigger(pl, beforeEventName)
-            for c in pl.faceups[:]:
-                doTrigger(c, beforeEventName)
-
+        self.doEventTriggers(beforeEventName, *args, **kwargs)
         func(self, *args, **kwargs)
-
-        for pl in self.players:
-            doTrigger(pl, afterEventName)
-            for c in pl.faceups[:]:
-                doTrigger(c, afterEventName)
+        self.doEventTriggers(afterEventName, *args, **kwargs)
 
     return fooBeforeAfter
 
@@ -72,10 +58,22 @@ class Game:
     def activePlayer(self):
         return None if self.turn is None else self.players[self.turn]
 
-    @event
+    def doEventTriggers(self, name, *args, **kwargs):
+        # Find the right function by name and call it
+        # If it doesn't exist, don't worry about it
+        def doTrigger(obj, name):
+            if hasattr(obj, name):
+                getattr(obj, name)(*args, **kwargs)
+
+        for pl in self.players:
+            doTrigger(pl, name)
+            for c in pl.faceups[:]:
+                doTrigger(c, name)
+
     def fight(self, c1, c2):
-        c1.onFight(c2)
-        c2.onFight(c1)
+        self.doEventTriggers('beforeAnyFight', c1, c2)
+        c1.beforeFight(c2)
+        c2.beforeFight(c1)
 
         if c1.zone == c1.owner.facedowns:
             c1.visibleWhileFacedown = True
@@ -92,6 +90,10 @@ class Game:
         elif c1.rank == c2.rank:
             self.destroy(c1)
             self.destroy(c2)
+
+        self.doEventTriggers('afterAnyFight', c1, c2)
+        c1.afterFight(c2)
+        c2.afterFight(c1)
 
     @event
     def destroy(self, card):

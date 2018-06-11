@@ -174,7 +174,7 @@ def crystalLance():
             destroy(target)
 
     class CrystalLance(Card):
-        def onFight(self, enemy):
+        def afterFight(self, enemy):
             destroy(enemy)
             self.owner.drawCard()
 
@@ -196,7 +196,7 @@ def crystalRain():
             destroy(target)
 
     class CrystalRain(Card):
-        def onFight(self, enemy):
+        def afterFight(self, enemy):
             base.sweepAbility(self)
 
     return CrystalRain(

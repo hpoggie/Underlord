@@ -130,7 +130,7 @@ def unexpectedShark():
             if not hasattr(self.game, 'flooded') or not self.game.flooded:
                 destroy(self)
 
-        def onFight(self, target):
+        def beforeFight(self, target):
             if hasattr(target, 'spell') and target.spell:
                 destroy(target)
 
@@ -165,14 +165,14 @@ def braintwister():
 
 def humboldtSquid():
     class HumboldtSquid(AquaticCard):
-        def beforeFight(self, target, attacker):
+        def beforeAnyFight(self, target, attacker):
             # TODO: black magic
             # 2nd arg is always the attacker
             # find cleaner way to do this
             if attacker == self and isinstance(target, Card):
                 self.rank = 5
 
-        def afterFight(self, target, attacker):
+        def afterFight(self, target):
             self.rank = 1
 
     return HumboldtSquid(
