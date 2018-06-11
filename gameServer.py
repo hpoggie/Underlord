@@ -248,7 +248,10 @@ class GameServer:
                     self.networkManager.connections.remove(c)
                 # If you DC, your opponent wins
                 if hasattr(self, 'players'):
-                    self.endGame(self.players[c.conn.addr].opponent)
+                    try:
+                        self.endGame(self.players[c.conn.addr].opponent)
+                    except BrokenPipeError:  # Opponent also DC'd
+                        pass
                 else:
                     self.kickEveryone()
                 exit(0)
