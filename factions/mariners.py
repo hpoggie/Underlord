@@ -37,8 +37,12 @@ class AquaticCard(Card):
             self.zone = self.owner.hand
 
 
+def aquaticCard(**kwargs):
+    return card(AquaticCard, **kwargs)
+
+
 def kraken():
-    return AquaticCard(
+    return aquaticCard(
         name="Kraken",
         image="squid.png",
         cost=7,
@@ -71,7 +75,7 @@ def nuisanceFlooding():
 
 
 def voidstar():
-    return AquaticCard(
+    return aquaticCard(
         name="Voidstar",
         image='voidstar.png',
         cost=5,
@@ -81,7 +85,7 @@ def voidstar():
 
 
 def grandJelly():
-    return AquaticCard(
+    return aquaticCard(
         name="Grand Jelly",
         image='jellyfish.png',
         cost=4,
@@ -97,7 +101,7 @@ def ripCurrent():
         for c in self.owner.opponent.faceups[:]:
             destroy(c)
 
-    return AquaticCard(
+    return aquaticCard(
         name="Rip Current",
         image='water-bolt.png',
         cost=9,
@@ -158,7 +162,7 @@ def braintwister():
         except ValueError:  # Do nothing if they have no cards
             pass
 
-    return AquaticCard(
+    return aquaticCard(
         name="Braintwister",
         image='braintwister.png',
         cost=2,

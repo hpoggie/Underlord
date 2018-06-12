@@ -1,6 +1,6 @@
 from . import base
 from core.game import destroy, Phase
-from core.card import Card, card
+from core.card import card
 from core.faction import Faction, deck
 from core.player import Player
 from core.decision import Decision
@@ -24,7 +24,7 @@ def equus():
 
 
 def archangel():
-    return Card(
+    return card(
         name="Archangel",
         image="angel-wings.png",
         cost=13,
@@ -36,7 +36,7 @@ def holyHandGrenade():
     def _onSpawn(self, target):
         destroy(target)
 
-    hhg = Card(
+    hhg = card(
         name="Holy Hand Grenade",
         image="holy-hand-grenade.png",
         playsFaceUp=True,
@@ -50,7 +50,7 @@ def holyHandGrenade():
 
 
 def wrathOfGod():
-    return Card(
+    return card(
         name="Wrath of God",
         image="wind-hole.png",
         cost=5,
@@ -65,7 +65,7 @@ def corvus():
     def _onSpawn(self):
         self.owner.manaCap += 1
 
-    return Card(
+    return card(
         name="Corvus",
         image="raven.png",
         cost=1,
@@ -80,7 +80,7 @@ def miracle():
         while(len(self.owner.hand) < 5 and len(self.owner.deck) > 0):
             self.owner.drawCard()
 
-    return Card(
+    return card(
         name="Miracle",
         image="sundial.png",
         cost=8,
@@ -110,7 +110,7 @@ def invest():
         self.owner.manaCap += 1
         self.owner.drawCard()
 
-    return Card(
+    return card(
         name="Invest",
         image="profit.png",
         cost=1,

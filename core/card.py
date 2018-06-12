@@ -8,20 +8,6 @@ def requiresTarget(ability):
     return hasattr(ability, 'requiresTarget') and ability.requiresTarget
 
 
-def card(**kwargs):
-    name = kwargs['name'].strip()
-    funcs = {}
-    others = {}
-
-    for key, val in kwargs.items():
-        if hasattr(val, '__call__') or isinstance(val, property):
-            funcs[key] = val
-        else:
-            others[key] = val
-
-    return type(name, (Card,), funcs)(**others)
-
-
 class Card:
     """
     A card has the following characteristics:
@@ -69,11 +55,11 @@ class Card:
         self.zone = self.owner.faceups
         self.onSpawn(*args, **kwargs)
 
-    def _onSpawn(self):
+    def onSpawn(self):
         if self.spell:
             self.zone = self.owner.graveyard
 
-    def _onDeath(self):
+    def onDeath(self):
         pass
 
     def beforeFight(self, target):
@@ -81,22 +67,6 @@ class Card:
 
     def afterFight(self, target):
         pass
-
-    @property
-    def onSpawn(self):
-        return self._onSpawn
-
-    @onSpawn.setter
-    def onSpawn(self, func):
-        self._onSpawn = types.MethodType(func, self)
-
-    @property
-    def onDeath(self):
-        return self._onDeath
-
-    @onDeath.setter
-    def onDeath(self, func):
-        self._onSpawn = types.MethodType(func, self)
 
     @property
     def zone(self):
@@ -124,3 +94,17 @@ class Card:
     @targetDesc.setter
     def targetDesc(self, value):
         self._targetDesc = value
+
+
+def card(t=Card, **kwargs):
+    name = kwargs['name'].strip()
+    funcs = {}
+    others = {}
+
+    for key, val in kwargs.items():
+        if hasattr(val, '__call__') or isinstance(val, property):
+            funcs[key] = val
+        else:
+            others[key] = val
+
+    return type(name, (t,), funcs)(**others)

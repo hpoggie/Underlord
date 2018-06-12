@@ -1,9 +1,9 @@
 from core.game import destroy
-from core.card import Card, card
+from core.card import card
 
 
 def elephant():
-    return Card(
+    return card(
         name="Elephant",
         image="elephant.png",
         cost=5,
@@ -18,7 +18,7 @@ def sweepAbility(self):
 
 
 def sweep():
-    sweep = Card(
+    sweep = card(
         name="Sweep",
         image="wind-slap.png",
         cost=4,
@@ -36,7 +36,7 @@ def spellBlade():
         if target in self.owner.opponent.facedowns:
             destroy(target)
 
-    spellBlade = Card(
+    spellBlade = card(
         name="Spell Blade",
         image="wave-strike.png",
         cost=3,
