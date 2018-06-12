@@ -7,8 +7,7 @@ def elephant():
         name="Elephant",
         image="elephant.png",
         cost=5,
-        rank=5
-    )
+        rank=5)
 
 
 def sweepAbility(self):
@@ -18,17 +17,14 @@ def sweepAbility(self):
 
 
 def sweep():
-    sweep = card(
+    return card(
         name="Sweep",
         image="wind-slap.png",
         cost=4,
         rank="s",
         spell=True,
         onSpawn=sweepAbility,
-        desc="Destroy all face-up units."
-    )
-
-    return sweep
+        desc="Destroy all face-up units.")
 
 
 def spellBlade():
@@ -36,7 +32,7 @@ def spellBlade():
         if target in self.owner.opponent.facedowns:
             destroy(target)
 
-    spellBlade = card(
+    return card(
         name="Spell Blade",
         image="wave-strike.png",
         cost=3,
@@ -44,10 +40,7 @@ def spellBlade():
         spell=True,
         playsFaceUp=True,
         onSpawn=spellBladeAbility,
-        desc="Destroy target face-down card."
-    )
-
-    return spellBlade
+        desc="Destroy target face-down card.")
 
 
 def mindControlTrap():

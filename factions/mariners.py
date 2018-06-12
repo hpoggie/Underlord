@@ -95,7 +95,7 @@ def grandJelly():
 
 
 def ripCurrent():
-    def _onSpawn(self):
+    def onSpawn(self):
         for c in self.owner.opponent.facedowns[:]:
             destroy(c)
         for c in self.owner.opponent.faceups[:]:
@@ -106,7 +106,7 @@ def ripCurrent():
         image='water-bolt.png',
         cost=9,
         rank='s',
-        onSpawn=_onSpawn,
+        onSpawn=onSpawn,
         desc="Aquatic. Destroy all your opponent's face-up units "
              "and face-down cards.")
 
@@ -154,7 +154,7 @@ def unexpectedShark():
 
 
 def braintwister():
-    def _onSpawn(self):
+    def onSpawn(self):
         h = self.owner.opponent.hand
         try:
             idx = random.randint(0, len(h) - 1)
@@ -167,7 +167,7 @@ def braintwister():
         image='braintwister.png',
         cost=2,
         rank=2,
-        onSpawn=_onSpawn,
+        onSpawn=onSpawn,
         desc="Aquatic. When this spawns, your opponent discards a random "
              "card.")
 

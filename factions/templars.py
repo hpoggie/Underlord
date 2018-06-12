@@ -11,16 +11,13 @@ def equus():
     def rank(self):
         return 2 if (self.owner.manaCap % 2 == 0) else 5
 
-    equus = card(
+    return card(
         name="Equus",
         image="horse-head.png",
         cost=3,
         rank=rank,
         desc="Has rank 2 if your mana cap is even and rank 5 if your mana cap "
-             "is odd."
-    )
-
-    return equus
+             "is odd.")
 
 
 def archangel():
@@ -28,25 +25,21 @@ def archangel():
         name="Archangel",
         image="angel-wings.png",
         cost=13,
-        rank=15
-    )
+        rank=15)
 
 
 def holyHandGrenade():
-    def _onSpawn(self, target):
+    def onSpawn(self, target):
         destroy(target)
 
-    hhg = card(
+    return card(
         name="Holy Hand Grenade",
         image="holy-hand-grenade.png",
         playsFaceUp=True,
         cost=4,
         rank='s',
-        onSpawn=_onSpawn,
-        desc="Destroy target card."
-    )
-
-    return hhg
+        onSpawn=onSpawn,
+        desc="Destroy target card.")
 
 
 def wrathOfGod():
@@ -57,12 +50,11 @@ def wrathOfGod():
         rank='s',
         playsFaceUp=True,
         onSpawn=base.sweepAbility,
-        desc=base.sweep().desc
-    )
+        desc=base.sweep().desc)
 
 
 def corvus():
-    def _onSpawn(self):
+    def onSpawn(self):
         self.owner.manaCap += 1
 
     return card(
@@ -70,13 +62,12 @@ def corvus():
         image="raven.png",
         cost=1,
         rank=1,
-        onSpawn=_onSpawn,
-        desc="When this spawns, add 1 to your mana cap."
-    )
+        onSpawn=onSpawn,
+        desc="When this spawns, add 1 to your mana cap.")
 
 
 def miracle():
-    def _onSpawn(self):
+    def onSpawn(self):
         while(len(self.owner.hand) < 5 and len(self.owner.deck) > 0):
             self.owner.drawCard()
 
@@ -85,9 +76,8 @@ def miracle():
         image="sundial.png",
         cost=8,
         rank='s',
-        onSpawn=_onSpawn,
-        desc="Draw until you have 5 cards in hand."
-    )
+        onSpawn=onSpawn,
+        desc="Draw until you have 5 cards in hand.")
 
 
 def crystalElemental():
@@ -101,12 +91,11 @@ def crystalElemental():
         cost=7,
         rank=4,
         beforeDestroy=beforeDestroy,
-        desc="Whenever you destroy an enemy face-down card, draw a card."
-    )
+        desc="Whenever you destroy an enemy face-down card, draw a card.")
 
 
 def invest():
-    def _onSpawn(self):
+    def onSpawn(self):
         self.owner.manaCap += 1
         self.owner.drawCard()
 
@@ -115,9 +104,8 @@ def invest():
         image="profit.png",
         cost=1,
         rank='s',
-        onSpawn=_onSpawn,
-        desc="Add 1 to your mana cap. Draw a card."
-    )
+        onSpawn=onSpawn,
+        desc="Add 1 to your mana cap. Draw a card.")
 
 
 def leftGrail():
@@ -132,8 +120,7 @@ def leftGrail():
         rank=rank,
         taunt=True,
         desc="Taunt. Has rank 2 if your mana cap is even and rank 3 if your "
-             "mana cap is odd.",
-    )
+             "mana cap is odd.",)
 
 
 def rightGrail():
@@ -148,8 +135,7 @@ def rightGrail():
         rank=rank,
         taunt=True,
         desc="Taunt. Has rank 3 if your mana cap is even and rank 2 if your "
-             "mana cap is odd.",
-    )
+             "mana cap is odd.",)
 
 
 def guardianAngel():
@@ -164,12 +150,11 @@ def guardianAngel():
         rank=rank,
         taunt=True,
         desc="Taunt. Has rank 5 if your mana cap is even and rank 3 if your "
-             "mana cap is odd.",
-    )
+             "mana cap is odd.",)
 
 
 def crystalLance():
-    def _onSpawn(self, target):
+    def onSpawn(self, target):
         if target in self.owner.opponent.facedowns:
             destroy(target)
 
@@ -181,8 +166,8 @@ def crystalLance():
         name="Crystal Lance",
         image="ice-spear.png",
         cost=5,
-        rank="s",
-        onSpawn=_onSpawn,
+        rank='s',
+        onSpawn=onSpawn,
         afterFight=afterFight,
         desc="Destroy target face-down card. "
              "If this is attacked while face-down, "
@@ -191,7 +176,7 @@ def crystalLance():
 
 
 def crystalRain():
-    def _onSpawn(self, target):
+    def onSpawn(self, target):
         if target in self.owner.opponent.facedowns:
             destroy(target)
 
@@ -202,8 +187,8 @@ def crystalRain():
         name="Crystal Rain",
         image="crystal-bars.png",
         cost=5,
-        rank="s",
-        onSpawn=_onSpawn,
+        rank='s',
+        onSpawn=onSpawn,
         afterFight=afterFight,
         desc="Destroy target face-down card. "
              "If this is attacked while face-down, "
