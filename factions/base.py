@@ -46,7 +46,6 @@ def spellBlade():
 def mindControlTrap():
     def onSpawn(self):
         self.owner.drawCard()
-        super().onSpawn()
 
     def beforeFight(self, enemy):
         enemy.owner.faceups.remove(enemy)

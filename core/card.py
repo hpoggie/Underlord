@@ -24,6 +24,7 @@ class Card:
         self.name = "Placeholder Name"
         self.image = "missing.png"
         self.spell = False
+        self.continuous = False  # If spell, do we stay out after spawn
         self.cost = 0
         self._rank = 0
         self.playsFaceUp = False
@@ -54,10 +55,11 @@ class Card:
         self.owner.mana -= self.cost
         self.zone = self.owner.faceups
         self.onSpawn(*args, **kwargs)
+        if self.spell and not self.continuous:
+            self.zone = self.owner.graveyard
 
     def onSpawn(self):
-        if self.spell:
-            self.zone = self.owner.graveyard
+        pass
 
     def onDeath(self):
         pass
