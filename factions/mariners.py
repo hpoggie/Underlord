@@ -251,7 +251,7 @@ class Mariner(Player):
         if self.hasFirstPlayerPenalty and fish:
             raise IllegalMoveError("Can't fish if you're not drawing.")
 
-        super().endPhase(self)
+        super().endPhase()
 
         if self.game.phase == Phase.play and fish:
             self.fish()

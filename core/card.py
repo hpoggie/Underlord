@@ -64,9 +64,10 @@ class Card:
         self.spell = value == 's'
         self._rank = value
 
-    def cast(self):
+    def cast(self, *args, **kwargs):
         self.owner.mana -= self.cost
         self.zone = self.owner.faceups
+        self.onSpawn(*args, **kwargs)
 
     def _onSpawn(self):
         if self.spell:
@@ -83,58 +84,11 @@ class Card:
 
     @property
     def onSpawn(self):
-        if hasattr(self._onSpawn, 'bind'):
-            self._onSpawn.bind(self)
         return self._onSpawn
 
     @onSpawn.setter
     def onSpawn(self, func):
-        class SpawnAbility:
-            """
-            Helps discard spells after abilities happen
-            """
-            def __init__(self, func):
-                self.baseFunc = func
-
-            def bind(self, source):
-                """
-                Bind the method to the source so we can invoke it
-                Done when the property is retrieved to prevent copying problems
-                """
-                if not hasattr(self, 'source'):
-                    self.func = types.MethodType(func, source)
-                    self.source = source
-
-            @property
-            def requiresTarget(self):
-                return len(inspect.getargspec(self.func).args) > 1
-
-            @property
-            def decision(self):
-                if hasattr(self.source, 'targetDesc'):
-                    desc = self.source.targetDesc
-                else:
-                    desc = self.source.desc
-
-                return Decision(self.execute, self, desc)
-
-            def __call__(self):
-                if self.requiresTarget:
-                    if hasattr(self.source, 'targetDesc'):
-                        desc = self.source.targetDesc
-                    else:
-                        desc = self.source.desc
-
-                    raise Decision(self.execute, self, desc)
-                else:
-                    self.execute()
-
-            def execute(self, *args):
-                self.func(*args)
-                if self.source.spell:
-                    self.source.zone = self.source.owner.graveyard
-
-        self._onSpawn = SpawnAbility(func)
+        self._onSpawn = types.MethodType(func, self)
 
     @property
     def onDeath(self):
@@ -159,10 +113,6 @@ class Card:
         self._zone.append(self)
         self.visibleWhileFacedown = False
         self.hasAttacked = False
-
-        if (self._zone == self.owner.faceups or
-                self._zone == self.owner.opponent.faceups):
-            self.onSpawn()
 
     @property
     def targetDesc(self):

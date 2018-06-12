@@ -1,5 +1,5 @@
 from . import base
-from core.game import destroy
+from core.game import destroy, Phase
 from core.card import Card, card
 from core.faction import Faction, deck
 from core.player import Player
@@ -242,11 +242,9 @@ class Templar(Player):
             card.zone = self.graveyard
             self.manaCap += 1
 
-    def afterEndTurn(self):
-        if not self.active:
-            raise Decision(
-                self.templarAbility,
-                self,
-                "Choose a card to discard.")
+    def endPhase(self, *args, **kwargs):
+        if self.game.phase == Phase.play:
+            self.templarAbility(*args, **kwargs)
+        super().endPhase()
 
 Templars.player = Templar

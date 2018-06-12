@@ -7,7 +7,6 @@ A player has the following characteristics:
 """
 from copy import deepcopy
 from random import shuffle
-from core.decision import Decision
 
 from core.game import Phase
 
@@ -144,10 +143,7 @@ class Player:
         if card.zone != self.facedowns:
             raise IllegalMoveError("Can't reveal a card that's not face-down.")
 
-        try:
-            card.cast()
-        except Decision as d:
-            d.execute(*args, **kwargs)
+        card.cast(*args, **kwargs)
 
     def playFaceup(self, card, *args, **kwargs):
         self.failIfInactive()
@@ -170,10 +166,7 @@ class Player:
         if self.mana < card.cost:
             raise IllegalMoveError("Not enough mana.")
 
-        try:
-            card.cast()
-        except Decision as d:
-            d.execute(*args, **kwargs)
+        card.cast(*args, **kwargs)
 
     def attack(self, attacker, target):
         self.failIfInactive()
@@ -224,10 +217,7 @@ class Player:
 
     def endPhase(self, *args, **kwargs):
         self.failIfInactive()
-        try:
-            self.game.endPhase()
-        except Decision as d:
-            d.execute(*args, **kwargs)
+        self.game.endPhase(*args, **kwargs)
 
     def endTurn(self, *args, **kwargs):
         self.failIfInactive()
