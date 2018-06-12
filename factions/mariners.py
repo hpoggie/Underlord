@@ -2,7 +2,7 @@ import random
 
 from . import base
 from core.game import Phase, destroy
-from core.card import Card
+from core.card import Card, card
 from core.faction import Faction, deck
 from core.player import Player, IllegalMoveError
 
@@ -47,24 +47,26 @@ def kraken():
 
 
 def nuisanceFlooding():
-    class NuisanceFlooding(Card):
-        def onSpawn(self):
-            self.remainingTurns = 4
-            flood(self.game)
+    def onSpawn(self):
+        self.remainingTurns = 4
+        flood(self.game)
 
-        def beforeEndTurn(self):
-            self.remainingTurns -= 1
-            if self.remainingTurns <= 0:
-                self.game.destroy(self)
+    def beforeEndTurn(self):
+        self.remainingTurns -= 1
+        if self.remainingTurns <= 0:
+            self.game.destroy(self)
 
-        def onDeath(self):
-            unflood(self.game)
+    def onDeath(self):
+        unflood(self.game)
 
-    return NuisanceFlooding(
+    return card(
         name="Nuisance Flooding",
         image="at-sea.png",
         cost=3,
         rank='s',
+        onSpawn=onSpawn,
+        beforeEndTurn=beforeEndTurn,
+        onDeath=onDeath,
         desc="Flood the battlefield for 4 turns.")
 
 
@@ -106,40 +108,43 @@ def ripCurrent():
 
 
 def highTide():
-    class HighTide(Card):
-        def onSpawn(self):
-            flood(self.game)
+    def onSpawn(self):
+        flood(self.game)
 
-        def beforeEndTurn(self):
-            destroy(self)
+    def beforeEndTurn(self):
+        destroy(self)
 
-        def onDeath(self):
-            unflood(self.game)
+    def onDeath(self):
+        unflood(self.game)
 
-    return HighTide(
+    return card(
         name="High Tide",
         image='lighthouse.png',
         cost=0,
         rank='s',
+        onSpawn=onSpawn,
+        beforeEndTurn=beforeEndTurn,
+        onDeath=onDeath,
         desc="Flood the battlefield until end of turn. Draw a card.")
 
 
 def unexpectedShark():
-    class UnexpectedShark(Card):
-        def afterEndTurn(self):
-            if not hasattr(self.game, 'flooded') or not self.game.flooded:
-                destroy(self)
+    def afterEndTurn(self):
+        if not hasattr(self.game, 'flooded') or not self.game.flooded:
+            destroy(self)
 
-        def beforeFight(self, target):
-            if hasattr(target, 'spell') and target.spell:
-                destroy(target)
+    def beforeFight(self, target):
+        if hasattr(target, 'spell') and target.spell:
+            destroy(target)
 
-    return UnexpectedShark(
+    return card(
         name="Unexpected Shark",
         image='shark-jaws.png',
         cost=3,
         rank=3,
         playsFaceUp=True,
+        afterEndTurn=afterEndTurn,
+        beforeFight=beforeFight,
         desc="Fast. Dies at end of turn if the battlefield isn't flooded. "
              "Can kill spells.")
 
@@ -164,22 +169,23 @@ def braintwister():
 
 
 def humboldtSquid():
-    class HumboldtSquid(AquaticCard):
-        def beforeAnyFight(self, target, attacker):
-            # TODO: black magic
-            # 2nd arg is always the attacker
-            # find cleaner way to do this
-            if attacker == self and isinstance(target, Card):
-                self.rank = 5
+    def beforeAnyFight(self, target, attacker):
+        # TODO: black magic
+        # 2nd arg is always the attacker
+        # find cleaner way to do this
+        if attacker == self and isinstance(target, Card):
+            self.rank = 5
 
-        def afterFight(self, target):
-            self.rank = 1
+    def afterFight(self, target):
+        self.rank = 1
 
-    return HumboldtSquid(
+    return card(
         name="Humboldt Squid",
         image='tentacle-strike.png',
         cost=1,
         rank=1,
+        beforeAnyFight=beforeAnyFight,
+        afterFight=afterFight,
         desc="Aquatic. This has rank 5 while attacking a unit.")
 
 

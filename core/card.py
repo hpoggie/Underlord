@@ -8,6 +8,20 @@ def requiresTarget(ability):
     return hasattr(ability, 'requiresTarget') and ability.requiresTarget
 
 
+def card(**kwargs):
+    name = kwargs['name'].strip()
+    funcs = {}
+    others = {}
+
+    for key, val in kwargs.items():
+        if hasattr(val, '__call__') or isinstance(val, property):
+            funcs[key] = val
+        else:
+            others[key] = val
+
+    return type(name, (Card,), funcs)(**others)
+
+
 class Card:
     """
     A card has the following characteristics:
@@ -24,10 +38,10 @@ class Card:
         self.name = "Placeholder Name"
         self.image = "missing.png"
         self.spell = False
-        self._cost = 0
+        self.cost = 0
         self._rank = 0
         self.playsFaceUp = False
-        self._taunt = False
+        self.taunt = False
         self.owner = None
         self._zone = None
         self.visibleWhileFacedown = False
@@ -42,14 +56,6 @@ class Card:
                 self.owner)
 
     @property
-    def cost(self):
-        return self._cost
-
-    @cost.setter
-    def cost(self, value):
-        self._cost = value
-
-    @property
     def rank(self):
         return self._rank
 
@@ -57,14 +63,6 @@ class Card:
     def rank(self, value):
         self.spell = value == 's'
         self._rank = value
-
-    @property
-    def taunt(self):
-        return self._taunt
-
-    @taunt.setter
-    def taunt(self, value):
-        self._taunt = value
 
     def cast(self):
         self.owner.mana -= self.cost

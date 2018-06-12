@@ -1,21 +1,21 @@
 from . import base
 from core.game import destroy
-from core.card import Card
+from core.card import Card, card
 from core.faction import Faction, deck
 from core.player import Player
 from core.decision import Decision
 
 
 def equus():
-    class Equus(Card):
-        @property
-        def rank(self):
-            return 2 if (self.owner.manaCap % 2 == 0) else 5
+    @property
+    def rank(self):
+        return 2 if (self.owner.manaCap % 2 == 0) else 5
 
-    equus = Equus(
+    equus = card(
         name="Equus",
         image="horse-head.png",
         cost=3,
+        rank=rank,
         desc="Has rank 2 if your mana cap is even and rank 5 if your mana cap "
              "is odd."
     )
@@ -91,16 +91,16 @@ def miracle():
 
 
 def crystalElemental():
-    class CrystalElemental(Card):
-        def beforeDestroy(self, card):
-            if card.owner != self.owner and card.zone == card.owner.facedowns:
-                self.owner.drawCard()
+    def beforeDestroy(self, card):
+        if card.owner != self.owner and card.zone == card.owner.facedowns:
+            self.owner.drawCard()
 
-    return CrystalElemental(
+    return card(
         name="Crystal Elemental",
         image="crystal-cluster.png",
         cost=7,
         rank=4,
+        beforeDestroy=beforeDestroy,
         desc="Whenever you destroy an enemy face-down card, draw a card."
     )
 
@@ -121,15 +121,15 @@ def invest():
 
 
 def leftGrail():
-    class LeftGrail(Card):
-        @property
-        def rank(self):
-            return 2 if (self.owner.manaCap % 2 == 0) else 3
+    @property
+    def rank(self):
+        return 2 if (self.owner.manaCap % 2 == 0) else 3
 
-    return LeftGrail(
+    return card(
         name="Left Grail",
         image="holy-grail.png",
         cost=2,
+        rank=rank,
         taunt=True,
         desc="Taunt. Has rank 2 if your mana cap is even and rank 3 if your "
              "mana cap is odd.",
@@ -137,15 +137,15 @@ def leftGrail():
 
 
 def rightGrail():
-    class RightGrail(Card):
-        @property
-        def rank(self):
-            return 3 if (self.owner.manaCap % 2 == 0) else 2
+    @property
+    def rank(self):
+        return 3 if (self.owner.manaCap % 2 == 0) else 2
 
-    return RightGrail(
+    return card(
         name="Right Grail",
         image="holy-grail.png",
         cost=2,
+        rank=rank,
         taunt=True,
         desc="Taunt. Has rank 3 if your mana cap is even and rank 2 if your "
              "mana cap is odd.",
@@ -153,15 +153,15 @@ def rightGrail():
 
 
 def guardianAngel():
-    class GuardianAngel(Card):
-        @property
-        def rank(self):
-            return 5 if (self.owner.manaCap % 2 == 0) else 3
+    @property
+    def rank(self):
+        return 5 if (self.owner.manaCap % 2 == 0) else 3
 
-    return GuardianAngel(
+    return card(
         name="Guardian Angel",
         image="winged-shield.png",
         cost=4,
+        rank=rank,
         taunt=True,
         desc="Taunt. Has rank 5 if your mana cap is even and rank 3 if your "
              "mana cap is odd.",
@@ -173,17 +173,17 @@ def crystalLance():
         if target in self.owner.opponent.facedowns:
             destroy(target)
 
-    class CrystalLance(Card):
-        def afterFight(self, enemy):
-            destroy(enemy)
-            self.owner.drawCard()
+    def afterFight(self, enemy):
+        destroy(enemy)
+        self.owner.drawCard()
 
-    return CrystalLance(
+    return card(
         name="Crystal Lance",
         image="ice-spear.png",
         cost=5,
         rank="s",
         onSpawn=_onSpawn,
+        afterFight=afterFight,
         desc="Destroy target face-down card. "
              "If this is attacked while face-down, "
              "destroy the attacking unit and draw a card.",
@@ -195,16 +195,16 @@ def crystalRain():
         if target in self.owner.opponent.facedowns:
             destroy(target)
 
-    class CrystalRain(Card):
-        def afterFight(self, enemy):
-            base.sweepAbility(self)
+    def afterFight(self, enemy):
+        base.sweepAbility(self)
 
-    return CrystalRain(
+    return card(
         name="Crystal Rain",
         image="crystal-bars.png",
         cost=5,
         rank="s",
         onSpawn=_onSpawn,
+        afterFight=afterFight,
         desc="Destroy target face-down card. "
              "If this is attacked while face-down, "
              "destroy all face-up units.",
