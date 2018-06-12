@@ -51,10 +51,19 @@ class Card:
         self.spell = value == 's'
         self._rank = value
 
+    @property
+    def requiresTarget(self):
+        return self.onSpawn.__code__.co_argcount > 1
+
     def cast(self, *args, **kwargs):
         self.owner.mana -= self.cost
         self.zone = self.owner.faceups
-        self.onSpawn(*args, **kwargs)
+        if self.requiresTarget:
+            print(args)
+            self.onSpawn(*args, **kwargs)
+        else:
+            self.onSpawn()
+
         if self.spell and not self.continuous:
             self.zone = self.owner.graveyard
 

@@ -3,6 +3,7 @@ from . import dummyCards
 import core.player
 from core.player import Player, IllegalMoveError
 from factions.templars import Templars
+import factions.base
 
 
 def deckContainsDuplicates(deck):
@@ -156,3 +157,8 @@ def testRepr():
     t = Player(Templars)
     print(repr(t.deck))
     print(repr(Templars))
+
+
+def testRequiresTarget():
+    assert factions.base.spellBlade().requiresTarget
+    assert not factions.base.sweep().requiresTarget
