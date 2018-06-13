@@ -66,7 +66,7 @@ class App (ShowBase):
         self.connectionManager.tryConnect()
         self.taskMgr.add(self.networkUpdateTask, "NetworkUpdateTask")
 
-        self.availableFactions = [templars.Templars, mariners.Mariners]
+        self.availableFactions = [templars.Templar, mariners.Mariner]
 
     def onConnectedToServer(self):
         self.guiScene = hud.MainMenu()
@@ -136,10 +136,10 @@ class App (ShowBase):
 
         # Set up game state information
         if goingFirst:
-            self.game = Game(self.faction.player, self.enemyFaction.player)
+            self.game = Game(self.faction, self.enemyFaction)
             self.player, self.enemy = self.game.players
         else:
-            self.game = Game(self.enemyFaction.player, self.faction.player)
+            self.game = Game(self.enemyFaction, self.faction)
             self.enemy, self.player = self.game.players
 
         self.game.start()

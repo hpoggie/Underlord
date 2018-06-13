@@ -24,10 +24,10 @@ class ZoneMaker(DirectObject):
         # Set up the root node
         self.scene = base.render.attachNewNode('empty')
 
-        base.playerIconPath = base.faction.iconPath
-        base.enemyIconPath = base.enemyFaction.iconPath
-        base.playerCardBack = base.faction.cardBack
-        base.enemyCardBack = base.enemyFaction.cardBack
+        base.playerIconPath = base.player.iconPath
+        base.enemyIconPath = base.enemy.iconPath
+        base.playerCardBack = base.player.cardBack
+        base.enemyCardBack = base.enemy.cardBack
 
         for name in ['playerHand', 'enemyHand', 'playerBoard', 'enemyBoard']:
             setattr(self, name, self.scene.attachNewNode(name))
