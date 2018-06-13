@@ -30,7 +30,7 @@ def getCard(player, card):
     """
     Convert card to index
     """
-    for i, tc in enumerate(player.faction.deck):
+    for i, tc in enumerate(player.baseDeck):
         if tc.name == card.name:
             return i
 
