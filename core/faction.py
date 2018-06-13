@@ -12,21 +12,3 @@ def deck(*args):
                 deck.append(arg())
 
     return deck
-
-
-class Faction:
-    def __init__(self, **kwargs):
-        self.name = "My Faction"
-        self.iconPath = "./my_faction_icons"
-        self.cardBack = "my-faction-back.png"
-        self.deck = []
-        self.player = player.Player
-
-        vars(self).update(kwargs.copy())
-
-        for c in self.deck:
-            if not hasattr(c, 'imagePath'):
-                c.imagePath = self.iconPath + "/" + c.image
-
-    def __repr__(self):
-        return "Faction " + self.name + " at 0x%x" %  id(self)

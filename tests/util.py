@@ -2,13 +2,12 @@ import collections
 
 from core.game import Game, Turn
 from core.player import Player
-from core.faction import Faction
 
 
 def dummyFactionPlayer(deck):
     class DFP(Player):
         def __init__(self):
-            super().__init__(Faction(name="Dummy Faction", deck=list(deck)))
+            super().__init__(name="Dummy Player", deck=list(deck))
 
     return DFP
 

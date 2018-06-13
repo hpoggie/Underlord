@@ -2,7 +2,7 @@ from . import util
 from . import dummyCards
 import core.player
 from core.player import Player, IllegalMoveError
-from factions.templars import Templars
+from factions.templars import Templar
 import factions.base
 
 
@@ -15,13 +15,13 @@ def deckContainsDuplicates(deck):
 
 
 def testForDuplicates():
-    player = Player(Templars)
+    player = Templar()
     assert not deckContainsDuplicates(player.deck)
 
 
 def testForDuplicatesBetweenPlayers():
-    player1 = Player(Templars)
-    player2 = Player(Templars)
+    player1 = Templar()
+    player2 = Templar()
 
     for card1 in player1.deck:
         for card2 in player2.deck:
@@ -154,9 +154,8 @@ def testRepr():
     """
     Make sure repr() isn't broken
     """
-    t = Player(Templars)
+    t = Templar()
     print(repr(t.deck))
-    print(repr(Templars))
 
 
 def testRequiresTarget():

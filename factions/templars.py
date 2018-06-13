@@ -1,7 +1,7 @@
 from . import base
 from core.game import destroy, Phase
 from core.card import card
-from core.faction import Faction, deck
+from core.faction import deck
 from core.player import Player
 from core.decision import Decision
 
@@ -196,31 +196,27 @@ def crystalRain():
         targetDesc="Destroy target face-down card.")
 
 
-Templars = Faction(
-    name="Templars",
-    iconPath="templar_icons",
-    cardBack="templar-shield.png",
-    deck=deck(
-        corvus, 5,
-        leftGrail, 2,
-        rightGrail, 2,
-        equus, 3,
-        guardianAngel, 2,
-        base.elephant,
-        holyHandGrenade,
-        wrathOfGod,
-        archangel,
-        miracle,
-        crystalLance,
-        crystalRain,
-        crystalElemental,
-        invest) + base.deck
-)
-
-
 class Templar(Player):
     def __init__(self):
-        super().__init__(Templars)
+        super().__init__(
+            name="Templars",
+            iconPath="templar_icons",
+            cardBack="templar-shield.png",
+            deck=deck(
+                corvus, 5,
+                leftGrail, 2,
+                rightGrail, 2,
+                equus, 3,
+                guardianAngel, 2,
+                base.elephant,
+                holyHandGrenade,
+                wrathOfGod,
+                archangel,
+                miracle,
+                crystalLance,
+                crystalRain,
+                crystalElemental,
+                invest) + base.deck)
 
     def templarAbility(self, card):
         if card and card in self.hand:
@@ -231,5 +227,3 @@ class Templar(Player):
         if self.game.phase == Phase.play:
             self.templarAbility(*args, **kwargs)
         super().endPhase()
-
-Templars.player = Templar

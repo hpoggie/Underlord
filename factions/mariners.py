@@ -3,7 +3,7 @@ import random
 from . import base
 from core.game import Phase, destroy
 from core.card import Card, card
-from core.faction import Faction, deck
+from core.faction import deck
 from core.player import Player, IllegalMoveError
 
 
@@ -195,25 +195,22 @@ def humboldtSquid():
         desc="Aquatic. This has rank 5 while attacking a unit.")
 
 
-Mariners = Faction(
-    name="Mariners",
-    iconPath="mariner_icons",
-    cardBack="nautilus-shell.png",
-    deck=deck(humboldtSquid, 5,
-              braintwister, 4,
-              nuisanceFlooding, 3,
-              highTide, 3,
-              grandJelly, 2,
-              unexpectedShark, 3,
-              kraken,
-              voidstar,
-              ripCurrent) + base.deck)
-
-
 class Mariner(Player):
     def __init__(self):
-        super().__init__(Mariners)
-        self.fishing = False
+        super().__init__(
+            name="Mariners",
+            iconPath="mariner_icons",
+            cardBack="nautilus-shell.png",
+            deck=deck(humboldtSquid, 5,
+                      braintwister, 4,
+                      nuisanceFlooding, 3,
+                      highTide, 3,
+                      grandJelly, 2,
+                      unexpectedShark, 3,
+                      kraken,
+                      voidstar,
+                      ripCurrent) + base.deck,
+            fishing=False)
 
     def fishReplace(self, cards):
         """
@@ -267,6 +264,3 @@ class Mariner(Player):
 
         if self.fishing:
             raise IllegalMoveError("Must complete fishing first.")
-
-
-Mariners.player = Mariner

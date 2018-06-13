@@ -19,25 +19,30 @@ class IllegalMoveError (Exception):
 
 
 class Player:
-    def __init__(self, faction):
+    def __init__(self, deck=[], **kwargs):
+        self.iconPath = "./my_faction_icons"
+        self.cardBack = "my-faction-back.png"
+
         self.hand = []
         self.facedowns = []
         self.faceups = []
         self.face = ["A human face."]  # Need to have a dummy zone to attack
-        self.faction = faction
-        self.deck = deepcopy(faction.deck)
-        for card in self.deck:
-            card.owner = self
-            card._zone = self.deck
+        self.deck = deepcopy(deck)
+
         self.graveyard = []
         self._manaCap = 1
         self.mana = 1
 
-        self.iconPath = faction.iconPath
-        self.cardBack = faction.cardBack
-
         self.hasMulliganed = False
         self.hasFirstPlayerPenalty = False
+
+        vars(self).update(kwargs.copy())
+
+        for card in self.deck:
+            card.owner = self
+            card._zone = self.deck
+            if not hasattr(card, 'imagePath'):
+                card.imagePath = self.iconPath + "/" + card.image
 
     def __repr__(self):
         if hasattr(self, 'game'):
