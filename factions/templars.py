@@ -3,7 +3,6 @@ from core.game import destroy, Phase
 from core.card import card
 from core.faction import deck
 from core.player import Player
-from core.decision import Decision
 
 
 def equus():

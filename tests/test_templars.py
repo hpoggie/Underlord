@@ -1,5 +1,4 @@
 from .util import newGame
-from core.decision import Decision
 from core.player import IllegalMoveError
 from core.game import Game, Turn, Phase
 import factions.templars as templars

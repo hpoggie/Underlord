@@ -3,7 +3,6 @@ import re
 
 from network_manager import NetworkManager
 from core.enums import numericEnum
-from core.decision import Decision
 
 
 def serialize(args):

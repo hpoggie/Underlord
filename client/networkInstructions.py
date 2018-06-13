@@ -3,7 +3,6 @@ import copy
 from direct.showbase.DirectObject import DirectObject
 
 from core.card import Card
-from core.decision import Decision
 from core.game import EndOfGame
 
 
@@ -54,8 +53,6 @@ class NetworkInstructions(DirectObject):
         # Because it will trigger onSpawn
         try:
             c.zone = zone
-        except Decision:
-            pass
         except EndOfGame:
             pass
 

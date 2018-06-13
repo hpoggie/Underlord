@@ -1,8 +1,6 @@
 import types
 import inspect
 
-from .decision import Decision
-
 
 class Card:
     """
