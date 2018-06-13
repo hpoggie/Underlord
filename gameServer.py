@@ -86,7 +86,9 @@ class GameServer:
         self.factions[self.addrs.index(addr)] = availableFactions[index]
         # If both players have selected their faction, start the game
         started = hasattr(self, 'game')
-        if None not in self.factions and not started:
+        if (None not in self.factions and
+                not started and
+                not hasattr(self, 'decidingPlayer')):
             # TODO: kludge
             for i in range(len(self.factions)):
                 self.networkManager.connections[
@@ -112,6 +114,8 @@ class GameServer:
             firstPlayer = self.notDecidingPlayer
 
         self.start(firstPlayer)
+        del self.decidingPlayer
+        del self.notDecidingPlayer
 
     def start(self, firstPlayer):
         secondPlayer = (firstPlayer + 1) % 2
