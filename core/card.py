@@ -55,7 +55,6 @@ class Card:
         self.owner.mana -= self.cost
         self.zone = self.owner.faceups
         if self.requiresTarget:
-            print(args)
             self.onSpawn(*args, **kwargs)
         else:
             self.onSpawn()
