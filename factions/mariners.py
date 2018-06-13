@@ -25,12 +25,12 @@ class AquaticCard(Card):
     def flooded(self):
         return hasattr(self.game, 'flooded') and self.game.flooded
 
-    def cast(self):
+    def cast(self, *args, **kwargs):
         if not self.flooded:
             raise IllegalMoveError("You can't cast aquatic spells unless the "
                                    "battlefield is flooded.")
 
-        super().cast()
+        super().cast(*args, **kwargs)
 
     def afterEndTurn(self):
         if not self.flooded:
