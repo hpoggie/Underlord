@@ -97,7 +97,7 @@ class MouseHandler (DirectObject):
                 c = pickedObj.getPythonTag('card')
                 if self.activeCard:
                     self.activeCard = None
-                elif core.card.requiresTarget(c.onSpawn):
+                elif c.requiresTarget:
                     self.startTargeting(c.targetDesc)
                     def callback(target):
                         base.revealFacedown(pickedObj, target)
@@ -148,10 +148,10 @@ class MouseHandler (DirectObject):
                 target = None
                 if base.phase == Phase.reveal:
                     pickedObj = self.getObjectClickedOn()
-                    onSpawn = self.dragging.getPythonTag('card').onSpawn
+                    c = self.dragging.getPythonTag('card')
                     if pickedObj is not None and pickedObj != self.dragging:
                         target = pickedObj
-                    elif core.card.requiresTarget(onSpawn):
+                    elif c.requiresTarget:
                         # don't fizzle if no valid target
                         self.dragging = None
                         return

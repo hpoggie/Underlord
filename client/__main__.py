@@ -230,7 +230,7 @@ class App (ShowBase):
         idx = c.zone.index(c)
 
         if self.phase == Phase.reveal:
-            if core.card.requiresTarget(c.onSpawn):
+            if c.requiresTarget:
                 self.networkManager.playFaceup(idx, *self.findCard(target))
             else:
                 self.networkManager.playFaceup(idx)
