@@ -5,11 +5,7 @@ from core.player import Player
 
 
 def dummyFactionPlayer(deck):
-    class DFP(Player):
-        def __init__(self):
-            super().__init__(name="Dummy Player", deck=list(deck))
-
-    return DFP
+    return type('DFP', (Player,), {'deck': list(deck)})
 
 
 def newGame(*args):

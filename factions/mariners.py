@@ -196,21 +196,21 @@ def humboldtSquid():
 
 
 class Mariner(Player):
+    iconPath = "mariner_icons"
+    cardBack = "nautilus-shell.png"
+    deck = deck(humboldtSquid, 5,
+              braintwister, 4,
+              nuisanceFlooding, 3,
+              highTide, 3,
+              grandJelly, 2,
+              unexpectedShark, 3,
+              kraken,
+              voidstar,
+              ripCurrent) + base.deck
+
     def __init__(self):
-        super().__init__(
-            name="Mariners",
-            iconPath="mariner_icons",
-            cardBack="nautilus-shell.png",
-            deck=deck(humboldtSquid, 5,
-                      braintwister, 4,
-                      nuisanceFlooding, 3,
-                      highTide, 3,
-                      grandJelly, 2,
-                      unexpectedShark, 3,
-                      kraken,
-                      voidstar,
-                      ripCurrent) + base.deck,
-            fishing=False)
+        super().__init__()
+        self.fishing = False
 
     def fishReplace(self, cards):
         """

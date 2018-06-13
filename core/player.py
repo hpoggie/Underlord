@@ -19,15 +19,15 @@ class IllegalMoveError (Exception):
 
 
 class Player:
-    def __init__(self, deck=[], **kwargs):
-        self.iconPath = "./my_faction_icons"
-        self.cardBack = "my-faction-back.png"
+    iconPath = "./my_faction_icons"
+    cardBack = "my-faction-back.png"
 
+    def __init__(self):
         self.hand = []
         self.facedowns = []
         self.faceups = []
         self.face = ["A human face."]  # Need to have a dummy zone to attack
-        self.deck = deepcopy(deck)
+        self.deck = deepcopy(self.deck)  # deck is initially a class var
 
         self.graveyard = []
         self._manaCap = 1
@@ -35,8 +35,6 @@ class Player:
 
         self.hasMulliganed = False
         self.hasFirstPlayerPenalty = False
-
-        vars(self).update(kwargs.copy())
 
         for card in self.deck:
             card.owner = self
@@ -49,6 +47,10 @@ class Player:
             return "Player %d" % self.game.players.index(self)
         else:
             return "Player at 0x%x" % id(self)
+
+    @property
+    def baseDeck(self):
+        return self.__class__.deck
 
     @property
     def manaCap(self):

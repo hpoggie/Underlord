@@ -197,26 +197,24 @@ def crystalRain():
 
 
 class Templar(Player):
-    def __init__(self):
-        super().__init__(
-            name="Templars",
-            iconPath="templar_icons",
-            cardBack="templar-shield.png",
-            deck=deck(
-                corvus, 5,
-                leftGrail, 2,
-                rightGrail, 2,
-                equus, 3,
-                guardianAngel, 2,
-                base.elephant,
-                holyHandGrenade,
-                wrathOfGod,
-                archangel,
-                miracle,
-                crystalLance,
-                crystalRain,
-                crystalElemental,
-                invest) + base.deck)
+    name = "Templars"
+    iconPath = "templar_icons"
+    cardBack = "templar-shield.png"
+    deck = deck(
+        corvus, 5,
+        leftGrail, 2,
+        rightGrail, 2,
+        equus, 3,
+        guardianAngel, 2,
+        base.elephant,
+        holyHandGrenade,
+        wrathOfGod,
+        archangel,
+        miracle,
+        crystalLance,
+        crystalRain,
+        crystalElemental,
+        invest) + base.deck
 
     def templarAbility(self, card):
         if card and card in self.hand:
