@@ -1,5 +1,13 @@
 from core.game import destroy
-from core.card import card
+import core.card
+
+
+def card(**kwargs):
+    """
+    Override the image path to use base_icons
+    """
+    return core.card.card(**{'imagePath': property(
+        lambda self: 'base_icons/' + self.image)}, **kwargs)
 
 
 def elephant():
@@ -66,6 +74,3 @@ def mindControlTrap():
 
 
 deck = [sweep(), spellBlade(), mindControlTrap()]
-
-for c in deck:
-    c.imagePath = "base_icons/" + c.image

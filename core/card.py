@@ -106,6 +106,10 @@ class Card:
     def targetDesc(self, value):
         self._targetDesc = value
 
+    @property
+    def imagePath(self):
+        return self.owner.iconPath + '/' + self.image
+
 
 def card(t=Card, **kwargs):
     name = kwargs['name'].strip()

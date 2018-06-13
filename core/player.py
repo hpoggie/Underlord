@@ -39,8 +39,6 @@ class Player:
         for card in self.deck:
             card.owner = self
             card._zone = self.deck
-            if not hasattr(card, 'imagePath'):
-                card.imagePath = self.iconPath + "/" + card.image
 
     def __repr__(self):
         if hasattr(self, 'game'):
