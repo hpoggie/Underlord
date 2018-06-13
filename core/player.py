@@ -6,7 +6,7 @@ A player has the following characteristics:
     Mana
 """
 from copy import deepcopy
-from random import shuffle
+from random import shuffle, randint
 
 from core.game import Phase
 
@@ -70,6 +70,13 @@ class Player:
     def drawCard(self):
         if len(self.deck) != 0:
             self.deck[-1].zone = self.hand
+
+    def discardRandom(self):
+        try:
+            idx = randint(0, len(self.hand) - 1)
+            self.hand[idx].zone = self.graveyard
+        except ValueError:  # Do nothing if you have no cards
+            pass
 
     @property
     def active(self):
