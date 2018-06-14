@@ -257,10 +257,14 @@ class GameServer:
                 if hasattr(self, 'players'):
                     try:
                         self.endGame(self.players[c.conn.addr].opponent)
-                    except BrokenPipeError:  # Opponent also DC'd
+                    except (BrokenPipeError, ConnectionClosed):
+                        # Opponent also DC'd
                         pass
                 else:
-                    self.kickEveryone()
+                    try:
+                        self.kickEveryone()
+                    except (BrokenPipeError, ConnectionClosed):
+                        pass
                 exit(0)
             except Exception as e:  # We died due to some other error
                 print(e)
