@@ -34,6 +34,10 @@ class ZoneMaker(DirectObject):
 
         self.playerBoard.setPos(0, 0, -2)
         self.enemyBoard.setPos(0, 0, 2.1)
+        self.playerGraveyard = self.scene.attachNewNode('player graveyard')
+        self.playerGraveyard.setPos(0, 0, -6.5)
+        self.enemyGraveyard = self.scene.attachNewNode('enemy graveyard')
+        self.enemyGraveyard.setPos(0, 0, 6.5)
 
         self.makePlayerHand()
         self.makeEnemyHand()
@@ -157,6 +161,21 @@ class ZoneMaker(DirectObject):
             addEnemyFdCard(c)
             posX += 1.1
 
+    def makePlayerGraveyard(self):
+        # Show only the top card for now
+        if len(base.player.graveyard) > 0:
+            for i in self.playerGraveyard.children:
+                i.removeNode()
+            self.loadCard(base.player.graveyard[-1]).reparentTo(
+                self.playerGraveyard)
+
+    def makeEnemyGraveyard(self):
+        if len(base.enemy.graveyard) > 0:
+            for i in self.enemyGraveyard.children:
+                i.removeNode()
+            self.loadCard(base.enemy.graveyard[-1]).reparentTo(
+                self.enemyGraveyard)
+
     def focusCard(self, card):
         """
         Draws a big version of the card so the player can read the text
@@ -274,6 +293,8 @@ class ZoneMaker(DirectObject):
         self.makeBoard()
         self.makeEnemyHand()
         self.makeEnemyBoard()
+        self.makePlayerGraveyard()
+        self.makeEnemyGraveyard()
 
     def unmake(self):
         self.scene.removeNode()

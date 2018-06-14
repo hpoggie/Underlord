@@ -102,6 +102,8 @@ class ClientNetworkManager (NetworkManager):
         'updateEnemyFacedowns',
         'updatePlayerFaceups',
         'updateEnemyFaceups',
+        'updatePlayerGraveyard',
+        'updateEnemyGraveyard',
         'updatePlayerManaCap',
         'updatePlayerMana',
         'updateEnemyManaCap',

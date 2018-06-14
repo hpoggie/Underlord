@@ -98,6 +98,18 @@ class NetworkInstructions(DirectObject):
             self.moveCard(x, base.enemy.faceups)
         base.redraw()
 
+    def updatePlayerGraveyard(self, *cardIds):
+        base.player.graveyard = []
+        for x in cardIds:
+            self.moveCard(x, base.player.graveyard)
+        base.redraw()
+
+    def updateEnemyGraveyard(self, *cardIds):
+        base.enemy.graveyard = []
+        for x in cardIds:
+            self.moveCard(x, base.enemy.graveyard)
+        base.redraw()
+
     def updatePlayerManaCap(self, manaCap):
         base.player.manaCap = manaCap
         base.redraw()
