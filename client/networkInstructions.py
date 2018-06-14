@@ -56,6 +56,8 @@ class NetworkInstructions(DirectObject):
         except EndOfGame:
             pass
 
+        return c
+
     def updatePlayerHand(self, *cardIds):
         base.player.hand = []
         for x in cardIds:
@@ -80,7 +82,8 @@ class NetworkInstructions(DirectObject):
                          game=base.game)
                 c.zone = base.enemy.facedowns
             else:
-                self.moveCard(x, base.enemy.facedowns)
+                card = self.moveCard(x, base.enemy.facedowns)
+                card.visibleWhileFacedown = True
         base.redraw()
 
     def updatePlayerFaceups(self, *cardIds):
