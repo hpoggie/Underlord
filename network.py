@@ -108,6 +108,8 @@ class ClientNetworkManager (NetworkManager):
         'updatePlayerMana',
         'updateEnemyManaCap',
         'updatePhase',
+        'updatePlayerCounter',
+        'updateEnemyCounter',
         'winGame',
         'loseGame',
         'setActive',

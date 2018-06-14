@@ -245,6 +245,13 @@ class ZoneMaker(DirectObject):
         textNodePath.setScale(0.07)
         textNodePath.setPos(0.09, -0.05, 0.4)
 
+        if hasattr(card, 'counter'):
+            counter = panda3d.core.TextNode('counter')
+            counter.setText(str(card.counter))
+            textNodePath = cardBase.attachNewNode(counter)
+            textNodePath.setScale(0.4)
+            textNodePath.setPos(0.7, -0.05, 0.1)
+
         cardBase.setPythonTag('card', card)
 
         return cardBase

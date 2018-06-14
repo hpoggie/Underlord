@@ -52,12 +52,12 @@ def kraken():
 
 def nuisanceFlooding():
     def onSpawn(self):
-        self.remainingTurns = 4
+        self.counter = 4
         flood(self.game)
 
     def beforeEndTurn(self):
-        self.remainingTurns -= 1
-        if self.remainingTurns <= 0:
+        self.counter -= 1
+        if self.counter <= 0:
             self.game.destroy(self)
 
     def onDeath(self):
