@@ -166,15 +166,17 @@ class ZoneMaker(DirectObject):
         if len(base.player.graveyard) > 0:
             for i in self.playerGraveyard.children:
                 i.removeNode()
-            self.loadCard(base.player.graveyard[-1]).reparentTo(
-                self.playerGraveyard)
+            c = self.loadCard(base.player.graveyard[-1])
+            c.reparentTo(self.playerGraveyard)
+            c.setPythonTag('zone', base.player.graveyard)
 
     def makeEnemyGraveyard(self):
         if len(base.enemy.graveyard) > 0:
             for i in self.enemyGraveyard.children:
                 i.removeNode()
-            self.loadCard(base.enemy.graveyard[-1]).reparentTo(
-                self.enemyGraveyard)
+            c = self.loadCard(base.enemy.graveyard[-1])
+            c.reparentTo(self.enemyGraveyard)
+            c.setPythonTag('zone', base.enemy.graveyard)
 
     def focusCard(self, card):
         """
