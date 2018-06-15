@@ -70,6 +70,8 @@ class Scene(DirectObject):
         """
         Put huge text on the screen that obscures stuff
         """
+        if hasattr(base, 'zoneMaker') and not base.hasMulliganed:
+            base.zoneMaker.playerHand.hide()
         self.label(
             text=message,
             scale=(0.5, 0.5, 0.5))
@@ -231,6 +233,7 @@ class GameHud(Scene):
             print(e)
 
     def hideBigMessage(self):
+        base.zoneMaker.playerHand.show()  # hidden by showBigMessage
         if hasattr(self, 'winLabel') and self.winLabel is not None:
             self.winLabel.detachNode()
 
