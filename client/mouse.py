@@ -210,11 +210,11 @@ class MouseHandler (DirectObject):
                     camera, self.pickerRay.getDirection())
                 # Drag in the XZ plane
                 self.dragging.setPos(PointAtY(.5, nearPoint, nearVec))
-            else:
+            elif base.hasMulliganed:
                 pickedObj = self.getObjectClickedOn()
                 if pickedObj:
                     card = pickedObj.getPythonTag('card')
-                    if card is not None and card not in base.toMulligan:
+                    if card is not None:
                         self._activeObj = pickedObj
                         if card.zone is base.player.facedowns or card.zone is base.enemy.facedowns:
                             zoneMaker.showCard(pickedObj)

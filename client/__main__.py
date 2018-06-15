@@ -68,6 +68,8 @@ class App (ShowBase):
 
         self.availableFactions = [templars.Templar, mariners.Mariner]
 
+        self.hasMulliganed = False
+
     def onConnectedToServer(self):
         self.guiScene = hud.MainMenu()
 

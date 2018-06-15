@@ -77,7 +77,12 @@ class ZoneMaker(DirectObject):
             else:
                 showCard(self.playerHand.children[i].children[0])
 
-        self.playerHand.setPosHpr(2.5, 0, -2, 0, 45.0, 0)
+        if base.hasMulliganed:
+            self.playerHand.reparentTo(self.scene)
+            self.playerHand.setPosHpr(2.5, 0, -2, 0, 45.0, 0)
+        else:
+            self.playerHand.reparentTo(base.camera)
+            self.playerHand.setPos(-1.5, 10, 1.5)
 
     def makeEnemyHand(self):
         for i in self.enemyHand.children:
@@ -306,4 +311,5 @@ class ZoneMaker(DirectObject):
         self.makeEnemyGraveyard()
 
     def unmake(self):
+        self.playerHand.removeNode()  # In case it's parented to the camera
         self.scene.removeNode()
