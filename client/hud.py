@@ -145,10 +145,13 @@ class FactionSelect(Scene):
             pos=(0, -0.7, 0),
             mayChange=True)
 
+        icons = self.root.attachNewNode('icons')
+        icons.setPos(-0.1 * len(base.availableFactions) / 2, 0, 0)
+
         for i, faction in enumerate(base.availableFactions):
             self.button(
                 image=faction.iconPath + '/' + faction.cardBack,
-                parent=self.root,
+                parent=icons,
                 pos=(i * 0.2, 0, 0),
                 relief=None,
                 command=base.pickFaction,
