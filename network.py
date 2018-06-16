@@ -7,7 +7,8 @@ from core.enums import numericEnum
 
 def serialize(args):
     return ''.join([{int: 'i', float: 'f', bool: 'b'}[type(x)] +
-                    repr(x) for x in args])
+                    (repr(int(x)) if isinstance(x, bool) else repr(x))
+                    for x in args])
 
 
 def deserialize(packet):

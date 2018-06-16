@@ -272,7 +272,7 @@ class App (ShowBase):
         # For each value in kwargs, append it if it's a bool, otherwise
         # assume it's a card and append the indices for it
         args = [i for arg in args for i in findCard(arg)] +\
-               [i for arg in kwargs.values() for i in ([int(arg)]
+               [i for arg in kwargs.values() for i in ([arg]
                 if isinstance(arg, bool) else self.findCard(arg))]
 
         self.networkManager.endPhase(*args)
