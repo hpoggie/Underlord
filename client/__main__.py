@@ -70,6 +70,8 @@ class App (ShowBase):
 
         self.hasMulliganed = False
 
+        self.ready = False
+
     def onConnectedToServer(self):
         self.guiScene = hud.MainMenu()
 
@@ -107,8 +109,10 @@ class App (ShowBase):
         """
         We are ready to play a game.
         """
-        self.networkManager.addPlayer()
-        self.guiScene.showWaitMessage()
+        if not self.ready:
+            self.networkManager.addPlayer()
+            self.guiScene.showWaitMessage()
+            self.ready = True
 
     def onEnteredGame(self):
         self.guiScene = hud.FactionSelect()
@@ -294,6 +298,7 @@ class App (ShowBase):
             self.zoneMaker.unmake()
         self.guiScene = hud.MainMenu()
         self.networkManager.requestNumPlayers()
+        self.ready = False
         return Task.done
 
     def inputTask(self, task):
