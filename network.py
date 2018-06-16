@@ -37,7 +37,13 @@ class ServerNetworkManager (NetworkManager):
     def onGotPacket(self, packet, addr):
         if packet == '':
             return
-        operands = deserialize(packet)
+
+        try:
+            operands = deserialize(packet)
+        except KeyError:
+            print("Got malformed packet: " + packet)
+            return
+
         (opcode, operands) = (operands[0], operands[1:])
         if self.verbose:
             print("got opcode: ", self.Opcodes.keys[opcode])
@@ -121,7 +127,13 @@ class ClientNetworkManager (NetworkManager):
     def onGotPacket(self, packet, addr):
         if packet == '':
             return
-        operands = deserialize(packet)
+
+        try:
+            operands = deserialize(packet)
+        except KeyError:
+            print("Got malformed packet: " + packet)
+            return
+
         (opcode, operands) = (operands[0], operands[1:])
         if self.verbose:
             print("got opcode: ", self.Opcodes.keys[opcode])
