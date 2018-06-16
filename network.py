@@ -42,7 +42,10 @@ class ServerNetworkManager (NetworkManager):
         if self.verbose:
             print("got opcode: ", self.Opcodes.keys[opcode])
 
-        getattr(self.base, self.Opcodes.keys[opcode])(addr, *operands)
+        try:
+            getattr(self.base, self.Opcodes.keys[opcode])(addr, *operands)
+        except AttributeError as e:
+            print(e)
 
     def onClientConnected(self, conn):
         # Make it so each client opcode is a function
@@ -122,4 +125,8 @@ class ClientNetworkManager (NetworkManager):
         (opcode, operands) = (operands[0], operands[1:])
         if self.verbose:
             print("got opcode: ", self.Opcodes.keys[opcode])
-        getattr(self.base, self.Opcodes.keys[opcode])(*operands)
+
+        try:
+            getattr(self.base, self.Opcodes.keys[opcode])(*operands)
+        except AttributeError as e:
+            print(e)
