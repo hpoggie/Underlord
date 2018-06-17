@@ -39,7 +39,8 @@ class NetworkInstructions(DirectObject):
             base.player.facedowns,
             base.player.faceups,
             base.player.hand,
-            base.player.deck]]
+            base.player.deck,
+            base.player.graveyard]]
 
         # TODO: hack.
         if id(zone) in playerZoneIds:
