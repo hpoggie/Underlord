@@ -1,3 +1,5 @@
+import textwrap
+
 from panda3d.core import TransparencyAttrib
 from panda3d.core import TextNode
 from direct.showbase.DirectObject import DirectObject
@@ -97,38 +99,72 @@ class MainMenu(Scene):
     def __init__(self):
         super().__init__()
 
+        main = self.root.attachNewNode('main')
+
         self.label(
             text="UNDERLORD",
             scale=0.3,
-            pos=(0, 0.4, 0))
+            pos=(0, 0.4, 0),
+            parent=main)
 
         self.label(
             text='latest commit: ' + commit_hash,
-            pos=(0, 0.3, 0))
+            pos=(0, 0.3, 0),
+            parent=main)
 
         base.numPlayersLabel = self.label(
             text="Getting server info...",
             pos=(0, 0.2, 0),
-            mayChange=True)
+            mayChange=True,
+            parent=main)
+
+        self.credits = self.root.attachNewNode('credits')
 
         def connect():
             base.connectionManager.startGame()
+
+        def showCredits():
+            if not hasattr(self, 'creditsLabel'):
+                with open('CREDITS.txt') as f:
+                    self.creditsLabel = self.label(
+                        text='\n'.join(  # Don't wrap line breaks
+                            textwrap.fill(line, width=45)
+                            for line in f.read().split('\n')),
+                        align=TextNode.ALeft,
+                        scale=0.07,
+                        pos=(-0.7, 0.5, 0),
+                        parent=self.credits)
+
+                self.button(
+                    text="Back",
+                    pos=(0, 0, -0.7),
+                    parent=self.credits,
+                    command=hideCredits)
+
+            main.hide()
+            self.credits.show()
+
+        def hideCredits():
+            main.show()
+            self.credits.hide()
 
         def quit():
             base.userExit()
 
         buttons = (
             ("Play", connect),
+            ("Credits", showCredits),
             ("Quit", quit))
         buttonPos = iter([
-            (0, 0, len(buttons) * 0.15 - i * 0.15 - 0.3)
+            (0, 0, len(buttons) * 0.15 - i * 0.15 - 0.5)
             for i in range(len(buttons))])
         for b in buttons:
             self.button(
                 text=b[0],
                 command=b[1],
                 pos=next(buttonPos),
-                frameSize=(-1.5, 1.5, -0.5, 1))
+                frameSize=(-2, 2, -0.5, 1),
+                parent=main)
 
     def showWaitMessage(self):
         self.label(
