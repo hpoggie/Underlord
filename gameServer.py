@@ -233,7 +233,8 @@ class GameServer:
             c.updateEnemyManaCap(enemyPlayer.manaCap)
 
             c.updatePlayerGraveyard(*(getCard(pl, c) for c in pl.graveyard))
-            c.updateEnemyGraveyard(*(getCard(pl, c) for c in pl.opponent.graveyard))
+            c.updateEnemyGraveyard(
+                *(getCard(pl.opponent, c) for c in pl.opponent.graveyard))
 
     def endGame(self, winner):
         for addr, pl in self.players.items():
