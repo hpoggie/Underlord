@@ -127,11 +127,9 @@ class NetworkInstructions(DirectObject):
 
     def updatePlayerCounter(self, index, value):
         base.player.faceups[index].counter = value
-        print(base.player.faceups[index].counter)
 
     def updateEnemyCounter(self, index, value):
         base.enemy.faceups[index].counter = value
-        print(base.enemy.faceups[index].counter)
 
     def requestTarget(self):
         pass
