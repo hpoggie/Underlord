@@ -4,9 +4,13 @@ setup(
     name="Underlord",
     options={
         'build_apps': {
+            'exclude_modules': [
+                'GitPython'
+            ],
             'include_patterns': [
                 '*.png',
                 '*.ttf',
+                'CREDITS.txt'
             ],
             'plugins': [
                 'pandagl',
