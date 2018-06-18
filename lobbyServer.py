@@ -31,6 +31,9 @@ class LobbyServer:
         for conn in self.networkManager.connections:
             conn.updateNumPlayers(len(self.networkManager.connections))
 
+    def updateNumPlayers(self):
+        self.requestNumPlayers(None)
+
     def addPlayer(self, addr):
         conn = next(
             conn for conn in self.networkManager.connections
@@ -48,6 +51,7 @@ class LobbyServer:
                 self.readyPlayers.remove(c.conn)
             except ValueError:
                 pass
+            self.updateNumPlayers()  # Tell everyone they DC'd
         except AttributeError as e:
             print("Client probably sending stuff it shouldn't: " + str(e))
 
