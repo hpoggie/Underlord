@@ -25,7 +25,7 @@ except:  # If it doesn't work, don't worry about it
 
 class Fonts(DirectObject):
     def __init__(self):
-        self.font = loader.loadFont("Ubuntu-Regular.ttf")
+        self.font = loader.loadFont("fonts/Ubuntu-Regular.ttf")
         self.font.setPixelsPerUnit(60)
 
 
