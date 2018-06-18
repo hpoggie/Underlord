@@ -25,13 +25,16 @@ except:  # If it doesn't work, don't worry about it
 
 class Fonts(DirectObject):
     def __init__(self):
-        self.font = loader.loadFont("fonts/Ubuntu-Regular.ttf")
-        self.font.setPixelsPerUnit(60)
+        self.titleFont = loader.loadFont("fonts/Cinzel-Regular.ttf")
+        self.bodyFont = loader.loadFont("fonts/Ubuntu-Regular.ttf")
+        self.titleFont.setPixelsPerUnit(120)
+        self.bodyFont.setPixelsPerUnit(60)
 
 
 class Scene(DirectObject):
     def __init__(self):
-        self.font = base.fonts.font
+        self.titleFont = base.fonts.titleFont
+        self.bodyFont = base.fonts.bodyFont
 
         # Put everything under one node to make it easy to destroy
         self.root = base.aspect2d.attachNewNode(name="GuiScene")
@@ -41,7 +44,7 @@ class Scene(DirectObject):
         # Attach the label to the root.
         # Note that this does not affect pos/scale for OnscreenText
         defaultArgs['parent'] = self.root
-        defaultArgs['font'] = self.font  # Use the default font
+        defaultArgs['font'] = self.bodyFont  # Use the default font
         defaultArgs['scale'] = 0.1
         kwargs = {**defaultArgs, **kwargs}  # Merge the 2 dicts; prefer kwargs
         return OnscreenText(**kwargs)
@@ -51,7 +54,7 @@ class Scene(DirectObject):
         # Attach the label to the root.
         # Note that this does not affect pos/scale for OnscreenText
         defaultArgs['parent'] = self.root
-        defaultArgs['text_font'] = self.font  # Use the default font
+        defaultArgs['text_font'] = self.bodyFont  # Use the default font
         defaultArgs['scale'] = 0.1
         kwargs = {**defaultArgs, **kwargs}  # Merge the 2 dicts; prefer kwargs
         return DirectButton(**kwargs)
@@ -103,6 +106,7 @@ class MainMenu(Scene):
 
         self.label(
             text="UNDERLORD",
+            font=self.titleFont,
             scale=0.3,
             pos=(0, 0.4, 0),
             parent=main)
