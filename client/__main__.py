@@ -243,16 +243,11 @@ class App (ShowBase):
         else:
             self.networkManager.play(idx)
 
-        self.zoneMaker.makePlayerHand()
-        self.zoneMaker.makeBoard()
-
     def revealFacedown(self, card, target=None):
         card = card.getPythonTag('card')
         index = card.zone.index(card)
 
         self.networkManager.revealFacedown(index, *self.findCard(target))
-        self.zoneMaker.makePlayerHand()
-        self.zoneMaker.makeBoard()
 
     def attack(self, card, target):
         try:
@@ -263,9 +258,6 @@ class App (ShowBase):
             return
 
         self.networkManager.attack(index, targetIndex, targetZone)
-
-        self.zoneMaker.makeBoard()
-        self.zoneMaker.makeEnemyBoard()
 
     def endPhase(self, *args, **kwargs):
         # For each value in args, append the indices for that value
