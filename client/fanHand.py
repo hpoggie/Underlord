@@ -34,7 +34,7 @@ def fanHand(n):
         transforms.append((posX, posY, posZ, 0, 0, rot))
         if n > 1:
             posX += (maxPosX - minPosX) / (n - 1)
-            posY += 0.001
+            posY -= 0.07
             rot += (maxRot - minRot) / (n - 1)
 
     return transforms
