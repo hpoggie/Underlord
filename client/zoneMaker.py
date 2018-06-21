@@ -76,7 +76,8 @@ class ZoneMaker(DirectObject):
             posX += 1.1
 
         self.playerHand.reparentTo(base.camera)
-        self.playerHand.setPosHpr(-2.25, 12, 0, 0, 0, 0)
+        self.playerHand.setPosHpr(
+            -1.1 * (len(base.player.hand) - 1) / 2, 12, 0, 0, 0, 0)
 
     def makePlayerHand(self):
         """
