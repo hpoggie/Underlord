@@ -90,7 +90,7 @@ class MouseHandler (DirectObject):
                     base.toMulligan.remove(c)
                 else:
                     base.toMulligan.append(c)
-                base.zoneMaker.makePlayerHand()
+                base.zoneMaker.makeMulliganHand()
             elif zone is base.player.hand:
                 self.dragging = pickedObj
             elif zone is base.player.facedowns:

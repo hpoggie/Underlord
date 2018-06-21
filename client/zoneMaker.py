@@ -47,6 +47,37 @@ class ZoneMaker(DirectObject):
         self.focusedCard = base.camera.attachNewNode('focused card')
         self.focusedCard.setPos(-0.5, 6, -0.3)
 
+    def addHandCard(self, card, tr):
+        cardModel = self.loadCard(card)
+        pivot = self.scene.attachNewNode('pivot')
+        offset = cardModel.getScale() / 2
+        pivot.setPosHpr(*tr)
+        cardModel.reparentTo(pivot)
+        cardModel.setPos(-offset)
+        cardModel.setPythonTag('zone', base.player.hand)
+        pivot.reparentTo(self.playerHand)
+
+    def makeMulliganHand(self):
+        """
+        Draw the player's hand for mulligan
+        """
+        for i in self.playerHand.children:
+            i.removeNode()
+
+        posX = 0
+        for i, c in enumerate(base.player.hand):
+            self.addHandCard(c, (posX, 0, 0, 0, 0, 0))
+            if c in base.toMulligan:
+                tex = loader.loadTexture(base.playerIconPath + '/' + base.playerCardBack)
+                hideCard(self.playerHand.children[i].children[0])
+            else:
+                showCard(self.playerHand.children[i].children[0])
+
+            posX += 1.1
+
+        self.playerHand.reparentTo(base.camera)
+        self.playerHand.setPosHpr(-2.25, 12, 0, 0, 0, 0)
+
     def makePlayerHand(self):
         """
         Redraw the player's hand.
@@ -55,31 +86,12 @@ class ZoneMaker(DirectObject):
         for i in self.playerHand.children:
             i.removeNode()
 
-        def addHandCard(card, tr):
-            cardModel = self.loadCard(card)
-            pivot = self.scene.attachNewNode('pivot')
-            offset = cardModel.getScale() / 2
-            pivot.setPosHpr(*tr)
-            cardModel.reparentTo(pivot)
-            cardModel.setPos(-offset)
-            cardModel.setPythonTag('zone', base.player.hand)
-            pivot.reparentTo(self.playerHand)
-
         fan = fanHand(len(base.player.hand))
         for i, tr in enumerate(fan):
-            addHandCard(base.player.hand[i], tr)
-            if base.player.hand[i] in base.toMulligan:
-                tex = loader.loadTexture(base.playerIconPath + '/' + base.playerCardBack)
-                hideCard(self.playerHand.children[i].children[0])
-            else:
-                showCard(self.playerHand.children[i].children[0])
+            self.addHandCard(base.player.hand[i], tr)
 
-        if base.hasMulliganed:
-            self.playerHand.reparentTo(self.scene)
-            self.playerHand.setPosHpr(2.5, 0, -2, 0, 45.0, 0)
-        else:
-            self.playerHand.reparentTo(base.camera)
-            self.playerHand.setPos(-1.5, 10, 1.5)
+        self.playerHand.reparentTo(self.scene)
+        self.playerHand.setPosHpr(2.5, 0, -2, 0, 45.0, 0)
 
     def makeEnemyHand(self):
         for i in self.enemyHand.children:
@@ -300,7 +312,10 @@ class ZoneMaker(DirectObject):
         base.enemyFaceNode = cardModel
 
     def redrawAll(self):
-        self.makePlayerHand()
+        if base.hasMulliganed:
+            self.makePlayerHand()
+        else:
+            self.makeMulliganHand()
         self.makeBoard()
         self.makeEnemyHand()
         self.makeEnemyBoard()
