@@ -232,7 +232,7 @@ class GameHud(Scene):
             mayChange=True)
         self.enemyManaCapLabel = self.label(
             text=str(base.enemy.manaCap),
-            pos=(-0.5, 0.77),
+            pos=(-0.5, 0.8),
             mayChange=True)
         self.cardNameLabel = self.label(
             text="",
