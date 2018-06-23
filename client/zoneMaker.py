@@ -199,22 +199,45 @@ class ZoneMaker(DirectObject):
         easily.
         """
         # If the node path is pointing to the right card, don't rebuild
-        if card != self.focusedCard:
+        if (card != self.focusedCard and
+                card.getPythonTag('_zone') is not
+                self.focusedCard.getTag('_zone')):
             self.focusedCard.unstash()
             if len(self.focusedCard.children) > 0:
                 self.focusedCard.children[0].removeNode()
+
+            oldCard = self.focusedCard.getPythonTag('oldCard')
+            if oldCard:
+                oldCard.show()
             # Make a duplicate of the node. Actually a different node path
             # pointing to the same node
-            card.copyTo(self.focusedCard)
-            self.focusedCard.children[0].setPos(0, 0, 0)
+            copy = card.copyTo(card.getParent())
+            if card.getPythonTag('zone') is base.player.hand:
+                pivot = card.parent.attachNewNode('a')
+                pivot.setPos(card, 0.5, 0, 0.55)
+                copy.reparentTo(pivot)
+                copy.setPos(-1, -0.15, -0.5)
+                pivot.setHpr(self.focusedCard, 0, 0, 0)
+                copy.setScale(2)
+                pivot.wrtReparentTo(self.focusedCard)
+                self.focusedCard.setPythonTag('oldCard', card)
+                card.hide()
+            else:
+                copy.reparentTo(self.focusedCard)
             # Don't try to play this
             self.focusedCard.setPythonTag('card', None)
+            # Keep track of the zone to know if it's changed
+            # _zone rather than zone so MouseHandler will grab the card under it
+            self.focusedCard.setPythonTag('_zone', card.getPythonTag('zone'))
 
     def unfocusCard(self):
         # Stash the enlarged card image so it won't collide or be visible.
         # This is different from using hide() because it also prevents
         # collision.
         self.focusedCard.stash()
+        c = self.focusedCard.getPythonTag('oldCard')
+        if c:
+            c.show()
 
     def loadCard(self, card):
         cardBase = self.scene.attachNewNode(card.name)
