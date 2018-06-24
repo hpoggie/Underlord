@@ -115,6 +115,7 @@ def ripCurrent():
 def highTide():
     def onSpawn(self):
         flood(self.game)
+        self.owner.drawCard()
 
     def beforeEndTurn(self):
         destroy(self)
