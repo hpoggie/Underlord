@@ -1,7 +1,7 @@
 import textwrap
 
 import panda3d.core
-from panda3d.core import CardMaker
+from panda3d.core import CardMaker, BitMask32
 from direct.showbase.DirectObject import DirectObject
 
 from .fanHand import fanHand
@@ -228,7 +228,7 @@ class ZoneMaker(DirectObject):
                 copy.setHpr(0, 0, 0)
                 copy.setScale(2.5)
             # Don't try to play this
-            self.focusedCard.setPythonTag('card', None)
+            self.focusedCard.setCollideMask(BitMask32(0x0))
             # Keep track of the zone to know if it's changed
             # _zone rather than zone so MouseHandler will grab the card under it
             self.focusedCard.setPythonTag('_zone', card.getPythonTag('zone'))
