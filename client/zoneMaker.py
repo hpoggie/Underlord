@@ -39,7 +39,6 @@ class ZoneMaker(DirectObject):
         self.enemyGraveyard = self.scene.attachNewNode('enemy graveyard')
         self.enemyGraveyard.setPos(0, 0, 6.5)
 
-        self.redrawAll()
         self.makePlayerFace()
         self.makeEnemyFace()
 
