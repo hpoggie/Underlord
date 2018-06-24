@@ -223,7 +223,10 @@ class ZoneMaker(DirectObject):
                 self.focusedCard.setPythonTag('oldCard', card)
                 card.hide()
             else:
-                copy.reparentTo(self.focusedCard)
+                copy.wrtReparentTo(self.focusedCard)
+                copy.setPos(copy, 1, 0, 1)
+                copy.setHpr(0, 0, 0)
+                copy.setScale(2)
             # Don't try to play this
             self.focusedCard.setPythonTag('card', None)
             # Keep track of the zone to know if it's changed
