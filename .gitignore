@@ -6,3 +6,4 @@ wheels/
 *.egg-info
 .cache/
 .coverage
+.pytest_cache
