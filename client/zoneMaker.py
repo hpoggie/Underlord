@@ -216,9 +216,9 @@ class ZoneMaker(DirectObject):
                 pivot = card.parent.attachNewNode('a')
                 pivot.setPos(card, 0.5, 0, 0.55)
                 copy.reparentTo(pivot)
-                copy.setPos(-1, -0.15, -0.5)
+                copy.setPos(-1, -0.15, 0)
                 pivot.setHpr(self.focusedCard, 0, 0, 0)
-                copy.setScale(2)
+                copy.setScale(2.5)
                 pivot.wrtReparentTo(self.focusedCard)
                 self.focusedCard.setPythonTag('oldCard', card)
                 card.hide()
@@ -226,7 +226,7 @@ class ZoneMaker(DirectObject):
                 copy.wrtReparentTo(self.focusedCard)
                 copy.setPos(copy, 1, 0, 1)
                 copy.setHpr(0, 0, 0)
-                copy.setScale(2)
+                copy.setScale(2.5)
             # Don't try to play this
             self.focusedCard.setPythonTag('card', None)
             # Keep track of the zone to know if it's changed
