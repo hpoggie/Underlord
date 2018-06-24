@@ -181,7 +181,7 @@ def humboldtSquid():
     def afterFight(self, target):
         self.rank = 1
 
-    return card(
+    return aquaticCard(
         name="Humboldt Squid",
         image='tentacle-strike.png',
         cost=1,
