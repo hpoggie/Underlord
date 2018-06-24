@@ -183,6 +183,19 @@ class MouseHandler (DirectObject):
         if self.dragging:
             self.dragging = None
 
+    def mouseToXZPlane(self):
+        mpos = base.mouseWatcherNode.getMouse()
+        # See the Panda3d chess example
+        self.pickerRay.setFromLens(
+            base.camNode, mpos.getX(), mpos.getY())
+        # Get a vector relative to the camera position
+        nearPoint = render.getRelativePoint(
+            camera, self.pickerRay.getOrigin())
+        nearVec = render.getRelativeVector(
+            camera, self.pickerRay.getDirection())
+
+        return PointAtY(.5, nearPoint, nearVec)
+
     def mouseOverTask(self):
         if base.mouseWatcherNode.hasMouse():
             if self.doubleClickTimer > 0:
@@ -198,18 +211,8 @@ class MouseHandler (DirectObject):
                 self._activeObj = None
 
             if self.dragging is not None:
-                mpos = base.mouseWatcherNode.getMouse()
-                # Drag the card
-                # See the Panda3d chess example
-                self.pickerRay.setFromLens(
-                    base.camNode, mpos.getX(), mpos.getY())
-                # Get a vector relative to the camera position
-                nearPoint = render.getRelativePoint(
-                    camera, self.pickerRay.getOrigin())
-                nearVec = render.getRelativeVector(
-                    camera, self.pickerRay.getDirection())
-                # Drag in the XZ plane
-                self.dragging.setPos(PointAtY(.5, nearPoint, nearVec))
+                # Drag the card in the XZ plane
+                self.dragging.setPos(self.mouseToXZPlane())
             elif base.hasMulliganed:
                 pickedObj = self.getObjectClickedOn()
                 if pickedObj:
