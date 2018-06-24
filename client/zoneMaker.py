@@ -216,7 +216,7 @@ class ZoneMaker(DirectObject):
                 pivot = card.parent.attachNewNode('a')
                 pivot.setPos(card, 0.5, 0, 0.55)
                 copy.reparentTo(pivot)
-                copy.setPos(-1, -0.15, 0)
+                copy.setPos(-1.25, -0.2, 0)
                 pivot.setHpr(self.focusedCard, 0, 0, 0)
                 copy.setScale(2.5)
                 pivot.wrtReparentTo(self.focusedCard)
