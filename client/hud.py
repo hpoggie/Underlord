@@ -228,7 +228,7 @@ class GameHud(Scene):
 
         self.playerManaCapLabel = self.label(
             text=str(base.player.manaCap),
-            pos=(-0.4, -0.44, 0),
+            pos=(-0.7, -0.44, 0),
             mayChange=True)
         self.enemyManaCapLabel = self.label(
             text=str(base.enemy.manaCap),
