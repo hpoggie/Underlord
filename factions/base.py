@@ -57,7 +57,6 @@ def mindControlTrap():
 
     def beforeFight(self, enemy):
         enemy.zone = self.owner.faceups
-        enemy.owner = self.owner
 
     return card(
         name="Mind Control Trap",
