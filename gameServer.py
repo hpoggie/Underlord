@@ -131,16 +131,6 @@ class GameServer:
             (addr, self.networkManager.connections[i])
             for i, addr in enumerate(self.addrs)])
 
-        # Add extra data so we can find zones by index
-        for pl in self.game.players:
-            pl.zones = [
-                pl.face,
-                pl.faceups,
-                pl.facedowns,
-                pl.hand,
-                pl.graveyard
-            ]
-
         ndp = self.networkManager.connections[self.notDecidingPlayer]
         if firstPlayer == self.decidingPlayer:
             ndp.enemyGoingFirst()

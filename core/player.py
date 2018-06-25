@@ -40,6 +40,15 @@ class Player:
             card.owner = self
             card._zone = self.deck
 
+        # Add extra data so we can find zones by index
+        self.zones = [
+            self.face,
+            self.faceups,
+            self.facedowns,
+            self.hand,
+            self.graveyard
+        ]
+
     def __repr__(self):
         if hasattr(self, 'game'):
             return "Player %d" % self.game.players.index(self)
