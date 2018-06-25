@@ -56,8 +56,7 @@ def mindControlTrap():
         self.owner.drawCard()
 
     def beforeFight(self, enemy):
-        enemy.owner.faceups.remove(enemy)
-        self.owner.faceups.append(enemy)
+        enemy.zone = self.owner.faceups
         enemy.owner = self.owner
 
     return card(
