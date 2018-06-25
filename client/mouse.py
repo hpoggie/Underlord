@@ -6,6 +6,7 @@ from core.player import IllegalMoveError
 import core.card
 
 import client.zoneMaker as zoneMaker
+import client.attackLine as attackLine
 
 
 # Adapted from the asteroids panda3d example
@@ -45,6 +46,8 @@ class MouseHandler (DirectObject):
         # Counts down between clicks to detect double click
         self.doubleClickTimer = -1.0
         self.doubleClickInterval = 1.0
+
+        self.line = attackLine.Line()
 
     @property
     def targeting(self):
@@ -223,3 +226,13 @@ class MouseHandler (DirectObject):
                             zoneMaker.showCard(pickedObj)
 
                         base.zoneMaker.focusCard(pickedObj)
+
+                if self.activeCard:
+                    basePos = (pickedObj.getPos(base.render)
+                        if pickedObj is not None
+                        else self.mouseToXZPlane()),
+                    self.line.draw(
+                        start=self.activeCard.getPos(base.render),
+                        end=basePos)
+                else:
+                    self.line.clear()
