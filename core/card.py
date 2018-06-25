@@ -89,6 +89,14 @@ class Card:
         self.hasAttacked = False
 
     @property
+    def controller(self):
+        for pl in self.game.players:
+            if self.zone in pl.zones:
+                return pl
+
+        return self.owner
+
+    @property
     def targetDesc(self):
         if hasattr(self, '_targetDesc'):
             return self._targetDesc

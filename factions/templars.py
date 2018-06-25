@@ -8,7 +8,7 @@ from core.player import Player
 def equus():
     @property
     def rank(self):
-        return 2 if (self.owner.manaCap % 2 == 0) else 5
+        return 2 if (self.controller.manaCap % 2 == 0) else 5
 
     return card(
         name="Equus",
@@ -81,8 +81,8 @@ def miracle():
 
 def crystalElemental():
     def beforeDestroy(self, card):
-        if card.owner != self.owner and card.zone == card.owner.facedowns:
-            self.owner.drawCard()
+        if card.owner != self.controller and card.zone == card.owner.facedowns:
+            self.controller.drawCard()
 
     return card(
         name="Crystal Elemental",
@@ -110,7 +110,7 @@ def invest():
 def leftGrail():
     @property
     def rank(self):
-        return 2 if (self.owner.manaCap % 2 == 0) else 3
+        return 2 if (self.controller.manaCap % 2 == 0) else 3
 
     return card(
         name="Left Grail",
@@ -125,7 +125,7 @@ def leftGrail():
 def rightGrail():
     @property
     def rank(self):
-        return 3 if (self.owner.manaCap % 2 == 0) else 2
+        return 3 if (self.controller.manaCap % 2 == 0) else 2
 
     return card(
         name="Right Grail",
@@ -140,7 +140,7 @@ def rightGrail():
 def guardianAngel():
     @property
     def rank(self):
-        return 5 if (self.owner.manaCap % 2 == 0) else 3
+        return 5 if (self.controller.manaCap % 2 == 0) else 3
 
     return card(
         name="Guardian Angel",
@@ -159,7 +159,7 @@ def crystalLance():
 
     def afterFight(self, enemy):
         destroy(enemy)
-        self.owner.drawCard()
+        self.controller.drawCard()
 
     return card(
         name="Crystal Lance",
