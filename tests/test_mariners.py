@@ -1,6 +1,7 @@
 from .util import newGame
 from core.player import IllegalMoveError
 import factions.mariners as mariners
+import factions.base as base
 
 
 def testFish():
@@ -174,3 +175,32 @@ def testSquid():
 
     # The squid returns to rank 1 after it's finished fighting
     assert squid.rank == 1
+
+
+def testAquaticMCT():
+    game, p0, p1 = newGame([mariners.highTide(), mariners.humboldtSquid()],
+                           [base.mindControlTrap()])
+    p0.drawCard()  # Make sure hand is in order
+    game.start()
+
+    p0.endPhase()
+
+    # Play the high tide & squid
+    squid, highTide = p0.hand
+    p0.play(highTide)
+    p0.play(squid)
+
+    p0.endTurn()
+
+    p1.endPhase()
+    p1.play(0)  # Play the MCT
+    p1.endTurn()
+
+    p0.revealFacedown(highTide)
+    p0.revealFacedown(squid)
+    p0.endPhase()
+    p0.attack(squid, p1.facedowns[0])
+
+    p0.endTurn()
+
+    assert squid.zone is p0.hand
