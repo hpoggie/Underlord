@@ -111,6 +111,7 @@ class ClientNetworkManager (NetworkManager):
         'updatePlayerFacedowns',
         'updateEnemyFacedowns',
         'updatePlayerFaceups',
+        'updateHasAttacked',
         'updateEnemyFaceups',
         'updatePlayerGraveyard',
         'updateEnemyGraveyard',
@@ -137,7 +138,8 @@ class ClientNetworkManager (NetworkManager):
 
         (opcode, operands) = (operands[0], operands[1:])
         if self.verbose:
-            print("got opcode: ", self.Opcodes.keys[opcode])
+            print("got opcode ", self.Opcodes.keys[opcode] +
+                  "with args " + str(operands))
 
         try:
             getattr(self.base, self.Opcodes.keys[opcode])(*operands)
