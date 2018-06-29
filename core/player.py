@@ -18,18 +18,40 @@ class IllegalMoveError (Exception):
     pass
 
 
+class Zone(list):
+    def __init__(self, lst=[]):
+        super().__init__(lst)
+        self.dirty = True
+
+    def __setitem__(self, key, value):
+        super().__setitem__(key, value)
+        self.dirty = True
+
+    def __delitem__(self, key):
+        super().__delitem__(key)
+        self.dirty = True
+
+    def append(self, card):
+        super().append(card)
+        self.dirty = True
+
+    def remove(self, card):
+        super().remove(card)
+        self.dirty = True
+
+
 class Player:
     iconPath = "./my_faction_icons"
     cardBack = "my-faction-back.png"
 
     def __init__(self):
-        self.hand = []
-        self.facedowns = []
-        self.faceups = []
-        self.face = ["A human face."]  # Need to have a dummy zone to attack
-        self.deck = deepcopy(self.deck)  # deck is initially a class var
+        self.hand = Zone()
+        self.facedowns = Zone()
+        self.faceups = Zone()
+        self.face = Zone(["A human face."])  # Need to have a dummy zone to attack
+        self.deck = Zone(deepcopy(self.deck))  # deck is initially a class var
 
-        self.graveyard = []
+        self.graveyard = Zone()
         self._manaCap = 1
         self.mana = 1
 

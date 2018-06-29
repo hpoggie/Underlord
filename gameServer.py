@@ -198,33 +198,48 @@ class GameServer:
             c.setActive(int(pl.active))
             c.updatePhase(self.game.phase)
 
-            c.updatePlayerFaceups(*(getCard(pl, c) for c in pl.faceups))
-            for i, card in enumerate(pl.faceups):
-                if hasattr(card, 'counter'):
-                    c.updatePlayerCounter(i, card.counter)
+            if pl.faceups.dirty:
+                c.updatePlayerFaceups(*(getCard(pl, c) for c in pl.faceups))
+                for i, card in enumerate(pl.faceups):
+                    if hasattr(card, 'counter'):
+                        c.updatePlayerCounter(i, card.counter)
 
-            c.updateEnemyFaceups(
-                *(getCard(enemyPlayer, c) for c in enemyPlayer.faceups)
-            )
-            for i, card in enumerate(pl.opponent.faceups):
-                if hasattr(card, 'counter'):
-                    c.updateEnemyCounter(i, card.counter)
+            if enemyPlayer.faceups.dirty:
+                c.updateEnemyFaceups(
+                    *(getCard(enemyPlayer, c) for c in enemyPlayer.faceups)
+                )
+                for i, card in enumerate(pl.opponent.faceups):
+                    if hasattr(card, 'counter'):
+                        c.updateEnemyCounter(i, card.counter)
 
-            c.updatePlayerHand(*(getCard(pl, c) for c in pl.hand))
-            c.updatePlayerFacedowns(*(getCard(pl, c) for c in pl.facedowns))
+            if pl.hand.dirty:
+                c.updatePlayerHand(*(getCard(pl, c) for c in pl.hand))
+            if pl.facedowns.dirty:
+                c.updatePlayerFacedowns(*(getCard(pl, c) for c in pl.facedowns))
+
             c.updatePlayerManaCap(pl.manaCap)
             c.updatePlayerMana(pl.mana)
 
-            c.updateEnemyHand(len(enemyPlayer.hand))
-            c.updateEnemyFacedowns(
-                *(getCard(enemyPlayer, c) if c.visibleWhileFacedown else -1
-                    for c in enemyPlayer.facedowns)
-            )
+            if enemyPlayer.hand.dirty:
+                c.updateEnemyHand(len(enemyPlayer.hand))
+            if enemyPlayer.facedowns.dirty:
+                c.updateEnemyFacedowns(
+                    *(getCard(enemyPlayer, c) if c.visibleWhileFacedown else -1
+                        for c in enemyPlayer.facedowns)
+                )
+
             c.updateEnemyManaCap(enemyPlayer.manaCap)
 
-            c.updatePlayerGraveyard(*(getCard(pl, c) for c in pl.graveyard))
-            c.updateEnemyGraveyard(
-                *(getCard(pl.opponent, c) for c in pl.opponent.graveyard))
+            if pl.graveyard.dirty:
+                c.updatePlayerGraveyard(*(getCard(pl, c) for c in pl.graveyard))
+            if enemyPlayer.graveyard.dirty:
+                c.updateEnemyGraveyard(
+                    *(getCard(pl.opponent, c) for c in pl.opponent.graveyard))
+
+        for pl in self.game.players:
+            for z in pl.zones:
+                z.dirty = False
+
 
     def endGame(self, winner):
         for addr, pl in self.players.items():
