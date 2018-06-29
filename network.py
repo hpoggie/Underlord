@@ -12,7 +12,7 @@ def serialize(args):
 
 
 def deserialize(packet):
-    return [{'i': int, 'f': float, 'b': bool}[s[0]](s[1:])
+    return [{'i': int, 'f': float, 'b': bool}[s[0]](int(s[1:]))
             for s in re.findall('[a-z][^a-z]*', packet)]
 
 
