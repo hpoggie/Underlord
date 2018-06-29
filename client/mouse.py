@@ -109,7 +109,9 @@ class MouseHandler (DirectObject):
                 else:
                     base.revealFacedown(pickedObj)
             elif zone is base.player.faceups and base.phase == Phase.play:
-                self.activeCard = pickedObj
+                c = pickedObj.getPythonTag('card')
+                if not c.hasAttacked:
+                    self.activeCard = pickedObj
             elif zone is base.enemy.facedowns and self.activeCard:
                 base.attack(self.activeCard, pickedObj)
                 self.activeCard = None

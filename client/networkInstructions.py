@@ -93,6 +93,10 @@ class NetworkInstructions(DirectObject):
             self.moveCard(x, base.player.faceups)
         base.redraw()
 
+    def updateHasAttacked(self, *values):
+        for i, c in enumerate(base.player.faceups):
+            c.hasAttacked = values[i]
+
     def updateEnemyFaceups(self, *cardIds):
         base.enemy.faceups = []
         for x in cardIds:

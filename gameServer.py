@@ -204,6 +204,8 @@ class GameServer:
                     if hasattr(card, 'counter'):
                         c.updatePlayerCounter(i, card.counter)
 
+            c.updateHasAttacked(*(c.hasAttacked for c in pl.faceups))
+
             if enemyPlayer.faceups.dirty:
                 c.updateEnemyFaceups(
                     *(getCard(enemyPlayer, c) for c in enemyPlayer.faceups)
