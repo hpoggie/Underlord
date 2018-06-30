@@ -1,15 +1,11 @@
 from core.game import Phase
-from core.player import IllegalMoveError
 from client.hud import GameHud
 from client.zoneMaker import hideCard, showCard
 
 
 class MarinerHud(GameHud):
     def onFishButton(self):
-        try:
-            base.endPhase(fish=True)
-        except IllegalMoveError:
-            return
+        base.endPhase(fish=True)
 
         targets = []
 
