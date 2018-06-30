@@ -200,9 +200,10 @@ class GameServer:
 
             if pl.faceups.dirty:
                 c.updatePlayerFaceups(*(getCard(pl, c) for c in pl.faceups))
-                for i, card in enumerate(pl.faceups):
-                    if hasattr(card, 'counter'):
-                        c.updatePlayerCounter(i, card.counter)
+
+            for i, card in enumerate(pl.faceups):
+                if hasattr(card, 'counter'):
+                    c.updatePlayerCounter(i, card.counter)
 
             c.updateHasAttacked(*(c.hasAttacked for c in pl.faceups))
 
@@ -210,9 +211,10 @@ class GameServer:
                 c.updateEnemyFaceups(
                     *(getCard(enemyPlayer, c) for c in enemyPlayer.faceups)
                 )
-                for i, card in enumerate(pl.opponent.faceups):
-                    if hasattr(card, 'counter'):
-                        c.updateEnemyCounter(i, card.counter)
+
+            for i, card in enumerate(pl.opponent.faceups):
+                if hasattr(card, 'counter'):
+                    c.updateEnemyCounter(i, card.counter)
 
             if pl.hand.dirty:
                 c.updatePlayerHand(*(getCard(pl, c) for c in pl.hand))
