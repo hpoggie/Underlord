@@ -111,10 +111,11 @@ class MainMenu(Scene):
             pos=(0, 0.4, 0),
             parent=main)
 
-        self.label(
-            text='latest commit: ' + commit_hash,
-            pos=(0, 0.3, 0),
-            parent=main)
+        if commit_hash != '':
+            self.label(
+                text='latest commit: ' + commit_hash,
+                pos=(0, 0.3, 0),
+                parent=main)
 
         base.numPlayersLabel = self.label(
             text="Getting server info...",
