@@ -7,26 +7,27 @@ class MarinerHud(GameHud):
     def onFishButton(self):
         base.endPhase(fish=True)
 
-        targets = []
+        if len(base.player.hand) > 0:
+            targets = []
 
-        def callback(target):
-            if target is None:
-                return
+            def callback(target):
+                if target is None:
+                    return
 
-            if target in targets:
-                targets.remove(target)
-                showCard(target)
-            else:
-                targets.append(target)
-                hideCard(target)
+                if target in targets:
+                    targets.remove(target)
+                    showCard(target)
+                else:
+                    targets.append(target)
+                    hideCard(target)
 
-            if len(targets) == 3:
-                base.fishReplace(targets)
-                base.finishTargeting()
+                if len(targets) == 3:
+                    base.fishReplace(targets)
+                    base.finishTargeting()
 
-        base.targetCallback = callback
-        base.targetDesc = "Choose 3 cards to put back."
-        base.mouseHandler.targeting = True
+            base.targetCallback = callback
+            base.targetDesc = "Choose 3 cards to put back."
+            base.mouseHandler.targeting = True
 
     def redraw(self):
         super().redraw()
