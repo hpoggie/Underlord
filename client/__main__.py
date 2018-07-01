@@ -3,7 +3,7 @@ This is the client script. It takes game data and draws it on the screen.
 It also takes user input and turns it into game actions.
 """
 
-import sys
+import argparse
 
 from direct.showbase.ShowBase import ShowBase
 from panda3d.core import CollisionTraverser, CollisionHandlerQueue
@@ -36,7 +36,7 @@ loadPrcFileData(
 
 
 class App (ShowBase):
-    def __init__(self, argv):
+    def __init__(self, ip, port, verbose=False):
         super().__init__()
 
         # Set up mouse input
@@ -51,18 +51,13 @@ class App (ShowBase):
         # View the cards at an angle
         self.camera.setPosHpr(4, -15, -15, 0, 45, 0)
 
-        # Connect to the default server if no argument provided
-        ip = argv[1] if len(argv) > 1 else "174.138.119.84"
-        port = 9099
-        self.serverAddr = (ip, port)
-
         # Set up the NetworkManager
         instr = client.networkInstructions.NetworkInstructions()
         self.networkManager = ClientNetworkManager(instr, ip, port)
-        self.networkManager.verbose = '-v' in argv
+        self.networkManager.verbose = verbose
 
         # Connect to the server
-        self.connectionManager = ConnectionManager(self.serverAddr, self)
+        self.connectionManager = ConnectionManager((ip, port), self)
         self.connectionManager.tryConnect()
         self.taskMgr.add(self.networkUpdateTask, "NetworkUpdateTask")
 
@@ -309,5 +304,12 @@ class App (ShowBase):
         return Task.cont
 
 
-app = App(sys.argv)
+# Parse command line arguments
+parser = argparse.ArgumentParser()
+parser.add_argument('-v', action='store_true')
+parser.add_argument('-a', type=str, default='174.138.119.84')
+parser.add_argument('-p', type=int, default=9099)
+args = parser.parse_args()
+
+app = App(args.a, args.p, args.v)
 app.run()
