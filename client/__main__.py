@@ -36,7 +36,7 @@ loadPrcFileData(
 
 
 class App (ShowBase):
-    def __init__(self, ip, port, verbose=False):
+    def __init__(self, ip, port, verbose=False, lagSimulation=0):
         super().__init__()
 
         # Set up mouse input
@@ -60,6 +60,9 @@ class App (ShowBase):
         self.connectionManager = ConnectionManager((ip, port), self)
         self.connectionManager.tryConnect()
         self.taskMgr.add(self.networkUpdateTask, "NetworkUpdateTask")
+
+        # Set up lag simulation
+        self.lagTimer = self.lagSimulation = lagSimulation
 
         self.availableFactions = [templars.Templar, mariners.Mariner]
 
@@ -297,10 +300,15 @@ class App (ShowBase):
         return Task.cont
 
     def networkUpdateTask(self, task):
-        try:
-            self.networkManager.recv()
-        except ConnectionClosed:
-            return Task.done
+        if self.lagTimer > 0:
+            self.lagTimer -= globalClock.getDt()
+        else:
+            try:
+                self.networkManager.recv()
+                self.lagTimer = self.lagSimulation
+            except ConnectionClosed:
+                return Task.done
+
         return Task.cont
 
 
@@ -309,7 +317,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-v', action='store_true')
 parser.add_argument('-a', type=str, default='174.138.119.84')
 parser.add_argument('-p', type=int, default=9099)
+parser.add_argument('-l', type=float, default=0)
 args = parser.parse_args()
 
-app = App(args.a, args.p, args.v)
+app = App(args.a, args.p, args.v, args.l)
 app.run()
