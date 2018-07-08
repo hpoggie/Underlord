@@ -20,6 +20,12 @@ def PointAtY(y, point, vec):
     return point + vec * ((y - point.getY()) / vec.getY())
 
 
+def inDropZone(pos):
+    inX = pos.x > -1 and pos.x < 9
+    inZ = pos.z > -5 and pos.z < 6
+    return inX and inZ
+
+
 class MouseHandler (DirectObject):
     def __init__(self):
         self.accept('mouse1', self.onMouse1Down, [])  # Left click
@@ -146,9 +152,7 @@ class MouseHandler (DirectObject):
         # If you drop the card outside the drop zone,
         # the action is cancelled
         pos = self._dragging.getPos()
-        inX = pos.x > -1 and pos.x < 9
-        inZ = pos.z > -5 and pos.z < 6
-        if inX and inZ:
+        if inDropZone(pos):
             try:
                 target = None
                 if base.phase == Phase.reveal:
