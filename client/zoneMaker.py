@@ -221,6 +221,12 @@ class ZoneMaker(DirectObject):
                 pivot.wrtReparentTo(self.focusedCard)
                 self.focusedCard.setPythonTag('oldCard', card)
                 card.hide()
+            elif card.getPythonTag('zone') is base.enemy.graveyard:
+                # Don't get cut off by top of screen
+                copy.wrtReparentTo(self.focusedCard)
+                copy.setPos(copy, 1, 0, -2)
+                copy.setHpr(0, 0, 0)
+                copy.setScale(2.5)
             else:
                 copy.wrtReparentTo(self.focusedCard)
                 copy.setPos(copy, 1, 0, 1)
