@@ -30,9 +30,7 @@ def getCard(player, card):
     """
     Convert card to index
     """
-    for i, tc in enumerate(player.baseDeck):
-        if tc.name == card.name:
-            return i
+    return card.cardId
 
 
 def acceptsTarget(func):

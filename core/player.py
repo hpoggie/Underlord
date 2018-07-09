@@ -58,9 +58,10 @@ class Player:
         self.hasMulliganed = False
         self.hasFirstPlayerPenalty = False
 
-        for card in self.deck:
+        for i, card in enumerate(self.deck):
             card.owner = self
             card._zone = self.deck
+            card.cardId = i
 
         # Add extra data so we can find zones by index
         self.zones = [
