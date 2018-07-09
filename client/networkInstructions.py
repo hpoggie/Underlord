@@ -35,17 +35,8 @@ class NetworkInstructions(DirectObject):
         base.bothPlayersMulliganed = True
 
     def moveCard(self, index, zone):
-        # Compare ids because lists have == overloaded
-        playerZoneIds = [id(z) for z in [
-            base.player.facedowns,
-            base.player.faceups,
-            base.player.hand,
-            base.player.deck,
-            base.player.graveyard]]
-
-        # TODO: hack.
-        if id(zone) in playerZoneIds:
-            c = base.player.deck[index]
+        if zone in base.player.zones:
+            c = copy.copy(base.faction.deck[index])
             c.owner = base.player
         else:
             c = base.enemy.deck[index]
