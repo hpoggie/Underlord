@@ -37,7 +37,9 @@ def sweep():
 
 def spellBlade():
     def spellBladeAbility(self, target):
-        if target in self.owner.opponent.facedowns:
+        if target.zone in [
+                self.owner.facedowns,
+                self.owner.opponent.facedowns]:
             destroy(target)
 
     return card(
