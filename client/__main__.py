@@ -16,7 +16,7 @@ from gameServer import Zone
 from core.game import Game, Phase, EndOfGame
 from core.player import IllegalMoveError
 import core.card
-from factions import templars, mariners
+from factions import templars, mariners, thieves
 from client.mouse import MouseHandler
 from client.zoneMaker import ZoneMaker
 import client.hud as hud
@@ -24,6 +24,7 @@ from client.connectionManager import ConnectionManager
 import client.networkInstructions
 import client.templarHud as templarHud
 import client.marinerHud as marinerHud
+import client.thiefHud as thiefHud
 
 loadPrcFileData(
     "",
@@ -64,7 +65,10 @@ class App (ShowBase):
         # Set up lag simulation
         self.lagTimer = self.lagSimulation = lagSimulation
 
-        self.availableFactions = [templars.Templar, mariners.Mariner]
+        self.availableFactions = [
+            templars.Templar,
+            mariners.Mariner,
+            thieves.Thief]
 
         self.hasMulliganed = False
 
@@ -155,6 +159,8 @@ class App (ShowBase):
             self.guiScene = templarHud.TemplarHud()
         elif isinstance(self.player, mariners.Mariner):
             self.guiScene = marinerHud.MarinerHud()
+        elif isinstance(self.player, thieves.Thief):
+            self.guiScene = thiefHud.ThiefHud()
         self.zoneMaker = ZoneMaker()
 
         self.hasFirstPlayerPenalty = goingFirst
