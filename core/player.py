@@ -72,6 +72,9 @@ class Player:
             self.graveyard
         ]
 
+        # Counter for "Take an extra turn after this one" effects
+        self.extraTurns = 0
+
     def __repr__(self):
         if hasattr(self, 'game'):
             return "Player %d" % self.game.players.index(self)
@@ -267,3 +270,6 @@ class Player:
         self.failIfInactive()
         while self.active:
             self.endPhase(*args, **kwargs)
+
+    def takeExtraTurn(self):
+        self.extraTurns += 1

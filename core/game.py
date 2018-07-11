@@ -124,7 +124,12 @@ class Game:
         if player.manaCap > 15:
             player.opponent.win()
         player.opponent.mana = player.opponent.manaCap
-        self.turn = Turn.p2 if self.turn == Turn.p1 else Turn.p1
+
+        if player.extraTurns > 0:
+            player.extraTurns -= 1
+        else:
+            self.turn = Turn.p2 if self.turn == Turn.p1 else Turn.p1
+
         self.phase = Phase.reveal
 
     def end(self, winner):
