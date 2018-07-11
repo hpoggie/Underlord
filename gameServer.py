@@ -180,7 +180,10 @@ class GameServer:
 
     @acceptsTarget
     def endPhase(self, addr, target=None):
-        self.players[addr].endPhase(target)
+        if target is None:
+            self.players[addr].endPhase()
+        else:
+            self.players[addr].endPhase(target)
         self.redraw()
 
     # TODO: massive kludge
