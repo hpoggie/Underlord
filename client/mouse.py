@@ -65,9 +65,11 @@ class MouseHandler (DirectObject):
         else:
             base.guiScene.hideTargeting()
 
-    def startTargeting(self, targetDesc):
+    def startTargeting(self, targetDesc, callback=None):
         base.targetDesc = targetDesc
         self.targeting = True
+        if callback is not None:
+            base.targetCallback = callback
 
     def getObjectClickedOn(self):
         if base.mouseWatcherNode.hasMouse():

@@ -25,9 +25,9 @@ class MarinerHud(GameHud):
                     base.fishReplace(targets)
                     base.finishTargeting()
 
-            base.targetCallback = callback
-            base.targetDesc = "Choose 3 cards to put back."
-            base.mouseHandler.targeting = True
+            base.mouseHandler.startTargeting(
+                "Choose 3 cards to put back.",
+                callback)
 
     def redraw(self):
         super().redraw()

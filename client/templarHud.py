@@ -20,10 +20,11 @@ class TemplarHud(GameHud):
             else:
                 base.finishTargeting()
 
-        base.targetCallback = callback
         # TODO: grab desc from faction?
-        base.targetDesc = "Choose a card to discard."
-        base.mouseHandler.targeting = True
+        base.mouseHandler.startTargeting(
+            "Choose a card to discard.",
+            callback)
+
 
     def redraw(self):
         super().redraw()
