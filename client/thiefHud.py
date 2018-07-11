@@ -5,6 +5,8 @@ from direct.gui.DirectGui import OnscreenText
 # https://www.panda3d.org/manual/index.php/DirectEntry
 from direct.gui.DirectGui import DirectEntry
 
+from client.zoneMaker import hideCard
+
 
 class ThiefHud(GameHud):
     def __init__(self):
@@ -20,20 +22,32 @@ class ThiefHud(GameHud):
             command=self.useThiefAbility,
             focusInCommand=lambda: self.entry.enterText(''))
 
+        self.entry.hide()
+
+        self.thiefAbilityButton = self.button(
+            text="Faction Ability",
+            scale=1,
+            pos=(0, 0, -1),
+            parent=self.endPhaseButton,
+            command=self.onThiefAbilityButton)
+
     def useThiefAbility(self, cardname):
         cardId = next(c for c in base.enemy.deck if c.name == cardname).cardId
         base.networkManager.useThiefAbility(0, cardId, 0)
+        self.entry.hide()
 
     def onThiefAbilityButton(self):
-        pass
+        def chooseTarget(target):
+            self.toSteal = target
+            self.entry.show()
 
-    def redraw(self):
-        super().redraw()
+        def chooseDiscard(target):
+            self.toDiscard = target
+            hideCard(target)
+            base.mouseHandler.startTargeting(
+                "Choose a target.",
+                chooseTarget)
 
-        if not hasattr(self, 'thiefAbilityButton'):
-            self.thiefAbilityButton = self.button(
-                text="Faction Ability",
-                scale=1,
-                pos=(0, 0, -1),
-                parent=self.endPhaseButton,
-                command=self.onThiefAbilityButton)
+        base.mouseHandler.startTargeting(
+            "Choose a card to discard.",
+            chooseDiscard)
