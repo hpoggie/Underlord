@@ -33,7 +33,8 @@ class ServerNetworkManager (NetworkManager):
         'attack',
         'play',
         'endPhase',
-        'fishReplace')
+        'fishReplace',
+        'useThiefAbility')
 
     def onGotPacket(self, packet, addr):
         if packet == '':

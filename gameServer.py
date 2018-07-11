@@ -192,6 +192,13 @@ class GameServer:
         pl.fishReplace([pl.hand[i] for i in cards])
         self.redraw()
 
+    def useThiefAbility(self, addr, discardIndex, guessId, targetIndex):
+        pl = self.players[addr]
+        pl.thiefAbility(
+            pl.hand[discardIndex],
+            pl.opponent.__class__.deck[guessId].name,
+            pl.opponent.facedowns[targetIndex])
+
     def redraw(self):
         for addr, pl in self.players.items():
             c = self.connections[addr]
