@@ -16,3 +16,5 @@ class Thief(Player):
 
         if target.name == name:
             target.zone = self.faceups
+        else:
+            target.visibleWhileFacedown = True
