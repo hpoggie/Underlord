@@ -45,12 +45,23 @@ def spellScalpel():
         desc="Destroy target card. Draw a card.")
 
 
+def fog():
+    return card(
+        name="Fog",
+        image='frog.png',
+        cost=1,
+        rank=1,
+        isValidTarget=False,
+        desc="This can't be the target of spells or abilities.")
+
+
 class Thief(Player):
     name = "Thieves"
     iconPath = "thief_icons"
     cardBack = "dagger-rose.png"
     deck = deck(
         base.elephant,
+        fog, 5,
         spectralCrab, 4,
         timeBeing,
         spellScalpel) + base.deck
