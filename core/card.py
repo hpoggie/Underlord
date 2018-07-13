@@ -23,6 +23,7 @@ class Card:
         self._rank = 0
         self.playsFaceUp = False
         self.taunt = False
+        self.isValidTarget = True
         self.owner = None
         self._zone = None
         self.visibleWhileFacedown = False
@@ -49,11 +50,12 @@ class Card:
     def requiresTarget(self):
         return self.onSpawn.__code__.co_argcount > 1
 
-    def cast(self, *args, **kwargs):
+    def cast(self, target=None):
         self.owner.mana -= self.cost
         self.zone = self.owner.faceups
         if self.requiresTarget:
-            self.onSpawn(*args, **kwargs)
+            if target is not None and target.isValidTarget:
+                self.onSpawn(target)
         else:
             self.onSpawn()
 
