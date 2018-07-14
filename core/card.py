@@ -79,6 +79,9 @@ class Card:
     def onDeath(self):
         pass
 
+    def onDiscard(self):
+        pass
+
     def beforeFight(self, target):
         pass
 
@@ -93,6 +96,8 @@ class Card:
     def zone(self, value):
         if self._zone == self.owner.faceups and value == self.owner.graveyard:
             self.onDeath()
+        elif self._zone == self.owner.hand and value == self.owner.graveyard:
+            self.onDiscard()
 
         if self._zone is not None:
             self._zone.remove(self)
