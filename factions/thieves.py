@@ -150,6 +150,25 @@ def roseEmblem():
         desc="Draw 2 cards. When you discard this from your hand, draw a card.")
 
 
+def spellHound():
+    def onSpawn(self):
+        for c in self.controller.opponent.hand:
+            c.visible = True
+
+    def afterEndPhase(self):
+        for c in self.controller.opponent.hand:
+            c.visible = False
+
+    return card(
+        name="Spell Hound",
+        image='wolf-howl.png',
+        cost=3,
+        rank=2,
+        onSpawn=onSpawn,
+        afterEndPhase=afterEndPhase,
+        desc="When this spawns, look at your opponent's hand.")
+
+
 def daggerEmblem():
     def onSpawn(self, target):
         if (target.zone in
@@ -179,6 +198,7 @@ class Thief(Player):
         base.elephant,
         fog, 5,
         spectralCrab, 4,
+        spellHound, 3,
         doubleDragon, 2,
         headLightning, 2,
         roseEmblem,
