@@ -96,6 +96,16 @@ def hydra():
         desc="Can attack up to 3 different targets per turn.")
 
 
+def doubleDragon():
+    return multiattackCard(
+        name="Double Dragon",
+        image='double-dragon.png',
+        cost=4,
+        rank=2,
+        nAttacks=2,
+        desc="Can attack up to 2 different targets per turn.")
+
+
 class Thief(Player):
     name = "Thieves"
     iconPath = "thief_icons"
@@ -104,6 +114,7 @@ class Thief(Player):
         base.elephant,
         fog, 5,
         spectralCrab, 4,
+        doubleDragon, 2,
         hydra,
         timeBeing,
         spellScalpel) + base.deck
