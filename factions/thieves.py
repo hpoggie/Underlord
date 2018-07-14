@@ -1,8 +1,39 @@
 from . import base
 from core.player import Player, IllegalMoveError
-from core.card import card
+from core.card import Card, card
 from core.game import destroy
 from core.faction import deck
+
+
+class MultiattackCard(Card):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self._attackedTargets = []
+
+    def onSpawn(self):
+        self._attackedTargets = []
+
+    def afterEndTurn(self):
+        self._attackedTargets = []
+
+    def attack(self, target):
+        if target in self._attackedTargets:
+            raise IllegalMoveError("Can't attack the same target twice.")
+
+        super().attack(target)
+        self._attackedTargets.append(target)
+
+    @property
+    def hasAttacked(self):
+        return len(self._attackedTargets) == self.nAttacks
+
+    @hasAttacked.setter
+    def hasAttacked(self, value):
+        pass
+
+
+def multiattackCard(**kwargs):
+    return card(MultiattackCard, **kwargs)
 
 
 def spectralCrab():
