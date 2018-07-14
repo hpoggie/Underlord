@@ -86,6 +86,16 @@ def fog():
         desc="This can't be the target of spells or abilities.")
 
 
+def hydra():
+    return multiattackCard(
+        name="Hydra",
+        image='hydra.png',
+        cost=6,
+        rank=3,
+        nAttacks=3,
+        desc="Can attack up to 3 different targets per turn.")
+
+
 class Thief(Player):
     name = "Thieves"
     iconPath = "thief_icons"
@@ -94,6 +104,7 @@ class Thief(Player):
         base.elephant,
         fog, 5,
         spectralCrab, 4,
+        hydra,
         timeBeing,
         spellScalpel) + base.deck
 

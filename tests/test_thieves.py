@@ -36,3 +36,27 @@ def testFog():
     p1.mana = 3
     p1.playFaceup(0, p0.facedowns[0])
     assert len(p0.facedowns) == 1
+
+
+def testHydra():
+    game, p0, p1 = newGame(
+        [thieves.hydra()],
+        [thieves.fog() for i in range(4)])
+    game.start()
+
+    hydra = p0.hand[0]
+    hydra.zone = p0.faceups
+    for c in p1.hand[:]:
+        c.zone = p1.faceups
+
+    p0.endPhase()
+    for i in range(3):
+        p0.attack(hydra, p1.faceups[0])
+
+    assert len(p1.faceups) == 1
+    try:
+        p0.attack(hydra, p1.faceups[0])
+    except IllegalMoveError:
+        pass
+    else:
+        assert False
