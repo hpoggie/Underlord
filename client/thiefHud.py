@@ -5,7 +5,7 @@ from direct.gui.DirectGui import OnscreenText
 # https://www.panda3d.org/manual/index.php/DirectEntry
 from direct.gui.DirectGui import DirectEntry
 
-from client.zoneMaker import hideCard
+from client.zoneMaker import hideCard, showCard
 
 
 class ThiefHud(GameHud):
