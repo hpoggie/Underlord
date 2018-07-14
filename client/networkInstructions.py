@@ -62,26 +62,31 @@ class NetworkInstructions(DirectObject):
             self.moveCard(x, base.player.hand)
         base.redraw()
 
-    def updateEnemyHand(self, size):
-        base.enemy.hand = [Card(owner=base.player.opponent) for i in range(size)]
-
-    def updatePlayerFacedowns(self, *cardIds):
-        base.player.facedowns = []
-        for x in cardIds:
-            self.moveCard(x, base.player.facedowns)
-        base.redraw()
-
-    def updateEnemyFacedowns(self, *cardIds):
-        base.enemy.facedowns = []
+    def updatePossiblyInvisibleZone(self, cardIds, zone):
         for x in cardIds:
             if x == -1:
                 c = Card(name="mysterious card",
                          owner=base.enemy,
                          game=base.game)
-                c.zone = base.enemy.facedowns
+                c.zone = zone
             else:
-                card = self.moveCard(x, base.enemy.facedowns)
+                card = self.moveCard(x, zone)
                 card.visible = True
+
+    def updateEnemyHand(self, *cardIds):
+        base.enemy.hand = Zone()
+        self.updatePossiblyInvisibleZone(cardIds, base.enemy.hand)
+        base.redraw()
+
+    def updatePlayerFacedowns(self, *cardIds):
+        base.player.facedowns = Zone()
+        for x in cardIds:
+            self.moveCard(x, base.player.facedowns)
+        base.redraw()
+
+    def updateEnemyFacedowns(self, *cardIds):
+        base.enemy.facedowns = Zone()
+        self.updatePossiblyInvisibleZone(cardIds, base.enemy.facedowns)
         base.redraw()
 
     def updatePlayerFaceups(self, *cardIds):

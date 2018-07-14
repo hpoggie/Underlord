@@ -97,8 +97,11 @@ class ZoneMaker(DirectObject):
         for i in self.enemyHand.children:
             i.removeNode()
 
-        def addEnemyHandCard(tr):
-            cardModel = self.loadEnemyBlank()
+        def addEnemyHandCard(card, tr):
+            if card.visible:
+                cardModel = self.loadCard(card)
+            else:
+                cardModel = self.loadEnemyBlank()
             pivot = self.scene.attachNewNode('pivot')
             offset = cardModel.getScale() / 2
             pivot.setPosHpr(*tr)
@@ -108,8 +111,8 @@ class ZoneMaker(DirectObject):
             pivot.reparentTo(self.enemyHand)
 
         fan = fanHand(len(base.enemy.hand))
-        for tr in fan:
-            addEnemyHandCard(tr)
+        for i, tr in enumerate(fan):
+            addEnemyHandCard(base.enemy.hand[i], tr)
 
         self.enemyHand.setPosHpr(2.5, -1.0, 7.1, 0, 45.0, 0)
 

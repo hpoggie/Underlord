@@ -234,7 +234,9 @@ class GameServer:
             c.updatePlayerMana(pl.mana)
 
             if enemyPlayer.hand.dirty:
-                c.updateEnemyHand(len(enemyPlayer.hand))
+                c.updateEnemyHand(
+                    *(getCard(enemyPlayer, c) if c.visible else -1
+                        for c in enemyPlayer.hand))
             if enemyPlayer.facedowns.dirty:
                 c.updateEnemyFacedowns(
                     *(getCard(enemyPlayer, c) if c.visible else -1
