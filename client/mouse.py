@@ -228,7 +228,11 @@ class MouseHandler (DirectObject):
                     card = pickedObj.getPythonTag('card')
                     if card is not None:
                         self._activeObj = pickedObj
-                        zoneMaker.showCard(pickedObj)
+                        if card.zone in (
+                                base.enemy.hand,
+                                base.player.facedowns,
+                                base.enemy.facedowns):
+                            zoneMaker.showCard(pickedObj)
                         base.zoneMaker.focusCard(pickedObj)
 
                 if self.activeCard:
