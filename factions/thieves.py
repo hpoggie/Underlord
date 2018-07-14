@@ -132,6 +132,24 @@ def headLightning():
              "your deck.")
 
 
+def roseEmblem():
+    def onSpawn(self):
+        for i in range(2):
+            self.owner.drawCard()
+
+    def onDiscard(self):
+        self.owner.drawCard()
+
+    return card(
+        name="Rose Emblem",
+        image='rose.png',
+        cost=3,
+        rank='s',
+        onSpawn=onSpawn,
+        onDiscard=onDiscard,
+        desc="Draw 2 cards. When you discard this from your hand, draw a card.")
+
+
 class Thief(Player):
     name = "Thieves"
     iconPath = "thief_icons"
@@ -142,6 +160,7 @@ class Thief(Player):
         spectralCrab, 4,
         doubleDragon, 2,
         headLightning, 2,
+        roseEmblem,
         hydra,
         timeBeing,
         spellScalpel) + base.deck

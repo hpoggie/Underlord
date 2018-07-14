@@ -74,3 +74,12 @@ def testHeadLightning():
     assert len(p0.hand) == oldHandSize + 2  # Play 1, draw 3
     p0.replace([p0.hand[0], p0.hand[1]])
     assert len(p0.hand) == oldHandSize
+
+
+def testEmblem():
+    game, p0, p1 = newGame([thieves.roseEmblem() for i in range(2)])
+
+    emblem = p0.deck[0]
+    emblem.zone = p0.hand
+    emblem.zone = p0.graveyard
+    assert len(p0.hand) == 1
