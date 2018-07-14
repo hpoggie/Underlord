@@ -187,7 +187,7 @@ def daggerEmblem():
         onSpawn=onSpawn,
         onDiscard=onDiscard,
         desc="Destroy target face-up unit. When you discard this from your"
-             "hand, draw a card.")
+             " hand, draw a card.")
 
 
 def heavyLightning():
@@ -210,8 +210,8 @@ def heavyLightning():
         rank='s',
         onSpawn=onSpawn,
         desc="Destroy all your opponent's face-up units and face-down"
-             "cards. Draw 3 cards. When this is attacked, its cost"
-             "becomes 5.")
+             " cards. Draw 3 cards. When this is attacked, its cost"
+             " becomes 5.")
 
 
 class Thief(Player):
