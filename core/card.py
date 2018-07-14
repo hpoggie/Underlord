@@ -26,7 +26,7 @@ class Card:
         self.isValidTarget = True
         self.owner = None
         self._zone = None
-        self.visible = False
+        self._visible = False
         self.desc = ""
 
         for (key, value) in kwargs.items():
@@ -36,6 +36,15 @@ class Card:
         return "%s at 0x%x owned by %s" % (self.name,
                 id(self),
                 self.owner)
+
+    @property
+    def visible(self):
+        return self._visible
+
+    @visible.setter
+    def visible(self, value):
+        self._visible = value
+        self.zone.dirty = True
 
     @property
     def rank(self):
