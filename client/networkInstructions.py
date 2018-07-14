@@ -4,6 +4,7 @@ from direct.showbase.DirectObject import DirectObject
 
 from core.card import Card
 from core.game import EndOfGame
+from core.player import Zone
 
 
 class NetworkInstructions(DirectObject):
@@ -56,7 +57,7 @@ class NetworkInstructions(DirectObject):
         return c
 
     def updatePlayerHand(self, *cardIds):
-        base.player.hand = []
+        base.player.hand = Zone()
         for x in cardIds:
             self.moveCard(x, base.player.hand)
         base.redraw()
@@ -84,7 +85,7 @@ class NetworkInstructions(DirectObject):
         base.redraw()
 
     def updatePlayerFaceups(self, *cardIds):
-        base.player.faceups = []
+        base.player.faceups = Zone()
         for x in cardIds:
             self.moveCard(x, base.player.faceups)
         base.redraw()
@@ -94,19 +95,19 @@ class NetworkInstructions(DirectObject):
             c.hasAttacked = values[i]
 
     def updateEnemyFaceups(self, *cardIds):
-        base.enemy.faceups = []
+        base.enemy.faceups = Zone()
         for x in cardIds:
             self.moveCard(x, base.enemy.faceups)
         base.redraw()
 
     def updatePlayerGraveyard(self, *cardIds):
-        base.player.graveyard = []
+        base.player.graveyard = Zone()
         for x in cardIds:
             self.moveCard(x, base.player.graveyard)
         base.redraw()
 
     def updateEnemyGraveyard(self, *cardIds):
-        base.enemy.graveyard = []
+        base.enemy.graveyard = Zone()
         for x in cardIds:
             self.moveCard(x, base.enemy.graveyard)
         base.redraw()
