@@ -150,6 +150,27 @@ def roseEmblem():
         desc="Draw 2 cards. When you discard this from your hand, draw a card.")
 
 
+def daggerEmblem():
+    def onSpawn(self, target):
+        if (target.zone in
+                [self.owner.faceups, self.owner.opponent.faceups] and
+                not target.spell):
+            destroy(target)
+
+    def onDiscard(self):
+        self.owner.drawCard()
+
+    return card(
+        name="Dagger Emblem",
+        image='stiletto.png',
+        cost=2,
+        rank='s',
+        onSpawn=onSpawn,
+        onDiscard=onDiscard,
+        desc="Destroy target face-up unit. When you discard this from your"
+             "hand, draw a card.")
+
+
 class Thief(Player):
     name = "Thieves"
     iconPath = "thief_icons"
@@ -161,6 +182,7 @@ class Thief(Player):
         doubleDragon, 2,
         headLightning, 2,
         roseEmblem,
+        daggerEmblem,
         hydra,
         timeBeing,
         spellScalpel) + base.deck
