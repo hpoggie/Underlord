@@ -60,3 +60,17 @@ def testHydra():
         pass
     else:
         assert False
+
+
+def testHeadLightning():
+    game, p0, p1 = newGame(thieves.Thief)
+
+    hl = next(c for c in p0.deck if c.name == "Head Lightning")
+    hl.zone = p0.hand
+    hl.playsFaceUp = True
+
+    oldHandSize = len(p0.hand)
+    p0.playFaceup(hl)
+    assert len(p0.hand) == oldHandSize + 2  # Play 1, draw 3
+    p0.replace(p0.hand[0], p0.hand[1])
+    assert len(p0.hand) == oldHandSize

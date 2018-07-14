@@ -1,3 +1,4 @@
+import types
 from . import base
 from core.player import Player, IllegalMoveError
 from core.card import Card, card
@@ -106,6 +107,31 @@ def doubleDragon():
         desc="Can attack up to 2 different targets per turn.")
 
 
+def headLightning():
+    def onSpawn(self):
+        for i in range(3):
+            self.owner.drawCard()
+
+        self.owner.requireReplace(self)
+
+    def replace(self, c1, c2):
+        # Guaranteed to be our cards because we drew them from our deck
+        self.owner.hand.remove(c1)
+        self.owner.hand.remove(c2)
+        self.owner.deck[:] = [c1, c2] + self.owner.deck
+        c1._zone = c2._zone = self.owner.deck
+
+    return card(
+        name="Head Lightning",
+        image='brainstorm.png',
+        cost=1,
+        rank='s',
+        onSpawn=onSpawn,
+        replace=replace,
+        desc="Draw 3 cards, then put 2 cards from your hand on top of"
+             "your deck.")
+
+
 class Thief(Player):
     name = "Thieves"
     iconPath = "thief_icons"
@@ -115,9 +141,14 @@ class Thief(Player):
         fog, 5,
         spectralCrab, 4,
         doubleDragon, 2,
+        headLightning, 2,
         hydra,
         timeBeing,
         spellScalpel) + base.deck
+
+    def __init__(self):
+        super().__init__()
+        self.replace = None
 
     def thiefAbility(self, discard, name, target):
         self.failIfInactive()
@@ -129,3 +160,17 @@ class Thief(Player):
             target.zone = self.faceups
         else:
             target.visibleWhileFacedown = True
+
+    def failIfInactive(self):
+        super().failIfInactive()
+
+        if self.replace is not None:
+            raise IllegalMoveError(
+                "Must replace cards from head lightning first.")
+
+    def requireReplace(self, card):
+        def replace(c1, c2):
+            card.replace(c1, c2)
+            self.replace = None
+
+        self.replace = replace
