@@ -1,7 +1,3 @@
-import types
-import inspect
-
-
 class Card:
     """
     A card has the following characteristics:
@@ -33,9 +29,10 @@ class Card:
             setattr(self, key, value)
 
     def __repr__(self):
-        return "%s at 0x%x owned by %s" % (self.name,
-                id(self),
-                self.owner)
+        return "%s at 0x%x owned by %s" % (
+            self.name,
+            id(self),
+            self.owner)
 
     @property
     def visible(self):

@@ -1,6 +1,3 @@
-from . import player
-
-
 def deck(*args):
     deck = []
 

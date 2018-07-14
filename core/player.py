@@ -48,7 +48,8 @@ class Player:
         self.hand = Zone()
         self.facedowns = Zone()
         self.faceups = Zone()
-        self.face = Zone(["A human face."])  # Need to have a dummy zone to attack
+        # Need to have a dummy zone to attack
+        self.face = Zone(["A human face."])
         self.deck = Zone(deepcopy(self.deck))  # deck is initially a class var
 
         self.graveyard = Zone()
