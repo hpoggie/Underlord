@@ -51,3 +51,25 @@ class ThiefHud(GameHud):
         base.mouseHandler.startTargeting(
             "Choose a card to discard.",
             chooseDiscard)
+
+    def startReplacing(self):
+        targets = []
+
+        def callback(target):
+            if target is None:
+                return
+
+            if target in targets:
+                targets.remove(target)
+                showCard(target)
+            else:
+                targets.append(target)
+                hideCard(target)
+
+            if len(targets) == 2:
+                base.replace(targets)
+                base.finishTargeting()
+
+        base.mouseHandler.startTargeting(
+            "Choose 2 cards to topdeck.",
+            callback)

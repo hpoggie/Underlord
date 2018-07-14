@@ -249,6 +249,9 @@ class GameServer:
                 c.updateEnemyGraveyard(
                     *(getCard(pl.opponent, c) for c in pl.opponent.graveyard))
 
+            if isinstance(pl, Thief) and pl.replace is not None:
+                c.requestReplace()
+
         for pl in self.game.players:
             for z in pl.zones:
                 z.dirty = False

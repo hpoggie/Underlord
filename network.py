@@ -122,6 +122,7 @@ class ClientNetworkManager (NetworkManager):
         'updatePhase',
         'updatePlayerCounter',
         'updateEnemyCounter',
+        'requestReplace',
         'winGame',
         'loseGame',
         'setActive',
