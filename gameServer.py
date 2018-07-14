@@ -187,9 +187,9 @@ class GameServer:
         self.redraw()
 
     # TODO: massive kludge
-    def fishReplace(self, addr, *cards):
+    def replace(self, addr, *cards):
         pl = self.players[addr]
-        pl.fishReplace([pl.hand[i] for i in cards])
+        pl.replace([pl.hand[i] for i in cards])
         self.redraw()
 
     def useThiefAbility(self, addr, discardIndex, guessId, targetIndex):

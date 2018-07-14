@@ -22,7 +22,7 @@ class MarinerHud(GameHud):
                     hideCard(target)
 
                 if len(targets) == 3:
-                    base.fishReplace(targets)
+                    base.replace(targets)
                     base.finishTargeting()
 
             base.mouseHandler.startTargeting(

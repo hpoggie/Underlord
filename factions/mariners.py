@@ -208,7 +208,7 @@ class Mariner(Player):
         super().__init__()
         self.fishing = False
 
-    def fishReplace(self, cards):
+    def replace(self, cards):
         """
         Bottomdeck the 3 cards
         """
@@ -242,7 +242,7 @@ class Mariner(Player):
             for card in self.hand:
                 card.zone = card.owner.deck
         else:
-            self.fishing = True  # Can't do anything until calling fishReplace
+            self.fishing = True  # Can't do anything until calling replace
 
     def endPhase(self, fish=False):
         if self.hasFirstPlayerPenalty and fish:

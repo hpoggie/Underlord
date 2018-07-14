@@ -274,8 +274,8 @@ class App (ShowBase):
 
         self.hasFirstPlayerPenalty = False
 
-    def fishReplace(self, cards):
-        self.networkManager.fishReplace(
+    def replace(self, cards):
+        self.networkManager.replace(
             *[card.getPythonTag('zone').index(card.getPythonTag('card'))
                 for card in cards])
 
