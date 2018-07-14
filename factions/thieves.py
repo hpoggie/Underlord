@@ -190,6 +190,30 @@ def daggerEmblem():
              "hand, draw a card.")
 
 
+def heavyLightning():
+    def afterFight(self, c2):
+        self.cost = 5
+
+    def onSpawn(self):
+        for c in self.controller.opponent.facedowns[:]:
+            destroy(c)
+        for c in self.controller.opponent.faceups[:]:
+            destroy(c)
+
+        for i in range(3):
+            self.controller.drawCard()
+
+    return card(
+        name="Heavy Lightning",
+        image='heavy-lightning.png',
+        cost=11,
+        rank='s',
+        onSpawn=onSpawn,
+        desc="Destroy all your opponent's face-up units and face-down"
+             "cards. Draw 3 cards. When this is attacked, its cost"
+             "becomes 5.")
+
+
 class Thief(Player):
     name = "Thieves"
     iconPath = "thief_icons"
@@ -205,6 +229,7 @@ class Thief(Player):
         daggerEmblem,
         hydra,
         timeBeing,
+        heavyLightning,
         spellScalpel) + base.deck
 
     def __init__(self):

@@ -83,3 +83,29 @@ def testEmblem():
     emblem.zone = p0.hand
     emblem.zone = p0.graveyard
     assert len(p0.hand) == 1
+
+
+def testHeavyLightning():
+    game, p0, p1 = newGame([thieves.heavyLightning()],
+            [thieves.fog() for i in range(5)])
+    game.start()
+
+    p0.deck[:] = [thieves.fog() for i in range(5)]
+    for c in p0.deck:
+        c.owner = p0
+        c._zone = p0.deck
+
+    for c in p1.hand[:2]:
+        c.zone = p1.faceups
+
+    for c in p1.hand[:]:
+        c.zone = p1.facedowns
+
+    ltng = p0.hand[0]
+    p0.mana = 11
+    ltng.playsFaceUp = True
+    p0.playFaceup(ltng)
+
+    assert len(p1.faceups) == 0
+    assert len(p1.facedowns) == 0
+    assert len(p0.hand) == 3
