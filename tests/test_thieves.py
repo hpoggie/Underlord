@@ -72,5 +72,5 @@ def testHeadLightning():
     oldHandSize = len(p0.hand)
     p0.playFaceup(hl)
     assert len(p0.hand) == oldHandSize + 2  # Play 1, draw 3
-    p0.replace(p0.hand[0], p0.hand[1])
+    p0.replace([p0.hand[0], p0.hand[1]])
     assert len(p0.hand) == oldHandSize

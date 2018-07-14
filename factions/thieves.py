@@ -169,8 +169,8 @@ class Thief(Player):
                 "Must replace cards from head lightning first.")
 
     def requireReplace(self, card):
-        def replace(c1, c2):
-            card.replace(c1, c2)
+        def replace(cards):
+            card.replace(*cards)
             self.replace = None
 
         self.replace = replace
