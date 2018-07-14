@@ -200,7 +200,7 @@ class Thief(Player):
         if target.name == name:
             target.zone = self.faceups
         else:
-            target.visibleWhileFacedown = True
+            target.visible = True
 
     def failIfInactive(self):
         super().failIfInactive()

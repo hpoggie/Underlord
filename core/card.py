@@ -26,7 +26,7 @@ class Card:
         self.isValidTarget = True
         self.owner = None
         self._zone = None
-        self.visibleWhileFacedown = False
+        self.visible = False
         self.desc = ""
 
         for (key, value) in kwargs.items():
@@ -103,7 +103,7 @@ class Card:
             self._zone.remove(self)
         self._zone = value
         self._zone.append(self)
-        self.visibleWhileFacedown = False
+        self.visible = False
         self.hasAttacked = False
 
     @property

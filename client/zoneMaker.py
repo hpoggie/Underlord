@@ -151,7 +151,7 @@ class ZoneMaker(DirectObject):
         posX = 0.0
 
         def addEnemyFdCard(card):
-            if card.visibleWhileFacedown:
+            if card.visible:
                 cardModel = self.loadCard(card)
                 hideCard(cardModel)
             else:

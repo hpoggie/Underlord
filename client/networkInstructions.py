@@ -80,7 +80,7 @@ class NetworkInstructions(DirectObject):
                 c.zone = base.enemy.facedowns
             else:
                 card = self.moveCard(x, base.enemy.facedowns)
-                card.visibleWhileFacedown = True
+                card.visible = True
         base.redraw()
 
     def updatePlayerFaceups(self, *cardIds):
