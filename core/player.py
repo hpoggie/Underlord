@@ -240,12 +240,7 @@ class Player:
             raise IllegalMoveError(
                 "Can only attack face-up / face-down targets or a player.")
 
-        attacker.hasAttacked = True
-
-        if target == self.face:
-            self.attackFace(attacker)
-        else:
-            self.game.fight(target, attacker)
+        attacker.attack(target)
 
     def attackFacedown(self, attacker, targetIndex):
         self.attack(attacker, self.opponent.facedowns[targetIndex])
@@ -254,13 +249,7 @@ class Player:
         self.attack(attacker, self.opponent.faceups[targetIndex])
 
     def attackFace(self, attacker):
-        self.failIfInactive()
-
-        # Overload
-        if isinstance(attacker, int):
-            attacker = self.faceups[attacker]
-
-        self.opponent.manaCap += attacker.rank
+        self.attack(attacker, self.opponent.face)
 
     def endPhase(self, *args, **kwargs):
         self.failIfInactive()

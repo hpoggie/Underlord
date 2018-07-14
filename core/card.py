@@ -62,6 +62,17 @@ class Card:
         if self.spell and not self.continuous:
             self.zone = self.owner.graveyard
 
+    def attack(self, target):
+        self.hasAttacked = True
+
+        if target is self.owner.opponent.face:
+            self.attackFace()
+        else:
+            self.game.fight(target, self)
+
+    def attackFace(self):
+        self.owner.opponent.manaCap += self.rank
+
     def onSpawn(self):
         pass
 
