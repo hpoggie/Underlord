@@ -49,7 +49,7 @@ def testPlay():
 
 def testPlayFaceup():
     newCard = dummyCards.one()
-    newCard.playsFaceUp = True
+    newCard.fast = True
     newCard.cost = 0
     game, player, _ = util.newGame(newCard)
     player.drawCard()
@@ -60,7 +60,7 @@ def testPlayFaceup():
 
 def testAttackFace():
     newCard = dummyCards.one()
-    newCard.playsFaceUp = True
+    newCard.fast = True
     newCard.cost = 0
     game, player, _ = util.newGame(newCard)
     player.drawCard()
@@ -72,7 +72,7 @@ def testAttackFace():
 
 def testAttackFacedown():
     newCard = dummyCards.one()
-    newCard.playsFaceUp = True
+    newCard.fast = True
     newCard.cost = 0
     game, p0, p1 = util.newGame(newCard)
     game.start()
@@ -90,7 +90,7 @@ def testAttackFacedown():
 
 def testAttackFaceup():
     newCard = dummyCards.one()
-    newCard.playsFaceUp = True
+    newCard.fast = True
     newCard.cost = 0
     game, p0, p1 = util.newGame(newCard)
     game.start()
@@ -134,7 +134,7 @@ def testActionsWithIndices():
     game.start()
 
     print(p0.hand)
-    p0.hand[0].playsFaceUp = True  # Cheat
+    p0.hand[0].fast = True  # Cheat
     p0.playFaceup(0)
     p0.endPhase()
     p0.play(0)

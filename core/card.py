@@ -17,7 +17,7 @@ class Card:
         self.continuous = False  # If spell, do we stay out after spawn
         self.cost = 0
         self._rank = 0
-        self.playsFaceUp = False
+        self.fast = False
         self.taunt = False
         self.isValidTarget = True
         self.owner = None

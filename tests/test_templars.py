@@ -44,7 +44,7 @@ def testHolyHandGrenade():
         [templars.holyHandGrenade(), templars.holyHandGrenade()])
     p0.mana = 5
     p0.drawCard()
-    p0.hand[0].playsFaceUp = True
+    p0.hand[0].fast = True
     p0.playFaceup(p0.hand[0])
     p0.endPhase()
     p0.play(p0.hand[0])
@@ -66,9 +66,9 @@ def testWrathOfGod():
         [templars.wrathOfGod()])
     p0.drawCard()
     p0.drawCard()
-    p0.hand[0].playsFaceUp = True
+    p0.hand[0].fast = True
     p0.hand[0].cost = 0
-    p0.hand[1].playsFaceUp = True
+    p0.hand[1].fast = True
     p0.hand[1].cost = 0
     p0.playFaceup(p0.hand[0])
     p0.playFaceup(p0.hand[0])
@@ -84,7 +84,7 @@ def testMiracle():
         [templars.corvus() for i in range(6)] + [templars.miracle()])
     p0.drawCard()
     assert len(p0.hand) == 1
-    p0.hand[0].playsFaceUp = True
+    p0.hand[0].fast = True
     p0.hand[0].cost = 0
     p0.playFaceup(p0.hand[0])
     assert len(p0.hand) == 5
@@ -98,7 +98,7 @@ def testMiracleNotEnoughCards():
     )
     p0.drawCard()
     assert len(p0.hand) == 1
-    p0.hand[0].playsFaceUp = True
+    p0.hand[0].fast = True
     p0.hand[0].cost = 0
     p0.playFaceup(p0.hand[0])
     assert len(p0.hand) == 2
@@ -130,7 +130,7 @@ def testCrystalElemental():
 
     # Cheat the elemental into play
     p0.drawCard()
-    p0.hand[0].playsFaceUp = True
+    p0.hand[0].fast = True
     p0.mana = templars.crystalElemental().cost
     p0.playFaceup(p0.hand[0])
     p0.endTurn()

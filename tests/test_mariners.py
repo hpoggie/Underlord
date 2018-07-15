@@ -72,7 +72,7 @@ def testAquatic():
         assert False
 
     # Cheat Nuisance Flooding into play
-    p0.hand[0].playsFaceUp = True
+    p0.hand[0].fast = True
     p0.hand[0].cost = 0
     p0.playFaceup(0)
 
@@ -92,7 +92,7 @@ def testRipCurrent():
     p0.manaCap = 9  # Cheat
 
     p1.hand[0].cost = 0
-    p1.hand[0].playsFaceUp = True
+    p1.hand[0].fast = True
     p1.playFaceup(0)
     p1.endPhase()
     p1.play(0)
@@ -131,7 +131,7 @@ def testBraintwister():
     game.start()
     game.flooded = True
 
-    p0.hand[0].playsFaceUp = True
+    p0.hand[0].fast = True
     p0.hand[0].cost = 0
     p0.playFaceup(0)
 
@@ -144,7 +144,7 @@ def testBraintwisterEmptyHand():
     game.start()
     game.flooded = True
 
-    p0.hand[0].playsFaceUp = True
+    p0.hand[0].fast = True
     p0.hand[0].cost = 0
     p0.playFaceup(0)
 
@@ -158,14 +158,14 @@ def testSquid():
     game.flooded = True
 
     # play the elephant
-    p0.hand[0].playsFaceUp = True
+    p0.hand[0].fast = True
     p0.hand[0].cost = 0
     p0.playFaceup(0)
     p0.endTurn()
 
     # Play and attack with the squid
     squid = p1.hand[0]
-    squid.playsFaceUp = True
+    squid.fast = True
     p1.playFaceup(squid)
     p1.endPhase()
     assert squid.rank == 1

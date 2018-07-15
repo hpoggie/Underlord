@@ -34,7 +34,7 @@ def holyHandGrenade():
     return card(
         name="Holy Hand Grenade",
         image="holy-hand-grenade.png",
-        playsFaceUp=True,
+        fast=True,
         cost=4,
         rank='s',
         onSpawn=onSpawn,
@@ -47,7 +47,7 @@ def wrathOfGod():
         image="wind-hole.png",
         cost=5,
         rank='s',
-        playsFaceUp=True,
+        fast=True,
         onSpawn=base.sweepAbility,
         desc=base.sweep().desc)
 

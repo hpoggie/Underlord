@@ -209,8 +209,8 @@ class Player:
             raise IllegalMoveError("""
                     Can't play a card face-up that's not in hand.""")
 
-        if not card.playsFaceUp:
-            raise IllegalMoveError("That card does not play face-up.")
+        if not card.fast:
+            raise IllegalMoveError("That card can't be played face-up.")
 
         if self.mana < card.cost:
             raise IllegalMoveError("Not enough mana.")

@@ -81,7 +81,7 @@ def voidstar():
         image='voidstar.png',
         cost=5,
         rank=5,
-        playsFaceUp=True,
+        fast=True,
         desc="Aquatic. Fast.")
 
 
@@ -149,7 +149,7 @@ def unexpectedShark():
         image='shark-jaws.png',
         cost=3,
         rank=3,
-        playsFaceUp=True,
+        fast=True,
         afterEndTurn=afterEndTurn,
         beforeFight=beforeFight,
         desc="Fast. Dies at end of turn if the battlefield isn't flooded. "

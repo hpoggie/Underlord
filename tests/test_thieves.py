@@ -67,7 +67,7 @@ def testHeadLightning():
 
     hl = next(c for c in p0.deck if c.name == "Head Lightning")
     hl.zone = p0.hand
-    hl.playsFaceUp = True
+    hl.fast = True
 
     oldHandSize = len(p0.hand)
     p0.playFaceup(hl)
@@ -103,7 +103,7 @@ def testHeavyLightning():
 
     ltng = p0.hand[0]
     p0.mana = 11
-    ltng.playsFaceUp = True
+    ltng.fast = True
     p0.playFaceup(ltng)
 
     assert len(p1.faceups) == 0

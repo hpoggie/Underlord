@@ -48,7 +48,7 @@ def spellBlade():
         cost=3,
         rank="s",
         spell=True,
-        playsFaceUp=True,
+        fast=True,
         onSpawn=spellBladeAbility,
         desc="Destroy target face-down card.")
 
