@@ -4,7 +4,7 @@ from direct.showbase.DirectObject import DirectObject
 
 from core.card import Card
 from core.game import EndOfGame
-from core.player import Zone
+from core.zone import Zone
 
 
 class NetworkInstructions(DirectObject):
