@@ -222,14 +222,7 @@ class Mariner(Player):
             if card is None or card.zone is not self.hand:
                 raise IllegalMoveError("Must choose a valid target.")
 
-        self.deck[:len(cards)], self.deck[len(cards):] =\
-            cards, self.deck[:]
-
-        self.hand[:] = [x for x in self.hand if x not in cards]
-
-        for card in cards:
-            card._zone = self.deck
-
+        self.bottomdeck(cards)
         self.fishing = False
 
     def fish(self):

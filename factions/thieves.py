@@ -115,11 +115,7 @@ def headLightning():
         self.owner.requireReplace(self)
 
     def replace(self, c1, c2):
-        # Guaranteed to be our cards because we drew them from our deck
-        self.owner.hand.remove(c1)
-        self.owner.hand.remove(c2)
-        self.owner.deck[:] = [c1, c2] + self.owner.deck
-        c1._zone = c2._zone = self.owner.deck
+        self.owner.topdeck([c1, c2])
 
     return card(
         name="Head Lightning",

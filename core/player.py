@@ -86,6 +86,28 @@ class Player:
         if len(self.deck) != 0:
             self.deck[-1].zone = self.hand
 
+    def topdeck(self, cards):
+        """
+        Put the cards on top of the player's deck.
+        The first one in the list will be drawn last.
+        """
+        for card in cards:
+            card._zone.remove(card)
+            card._zone = self.deck
+
+        self.deck[:] = self.deck + cards
+
+    def bottomdeck(self, cards):
+        """
+        Put the cards on the bottom of the player's deck.
+        The first one in the list will be drawn last.
+        """
+        for card in cards:
+            card._zone.remove(card)
+            card._zone = self.deck
+
+        self.deck[:len(cards)], self.deck[len(cards):] = cards, self.deck[:]
+
     def discardRandom(self):
         try:
             idx = randint(0, len(self.hand) - 1)
