@@ -204,28 +204,22 @@ class Mariner(Player):
               voidstar,
               ripCurrent) + base.deck
 
-    def __init__(self):
-        super().__init__()
-        self.fishing = False
-
-    def replace(self, cards):
-        """
-        Bottomdeck the 3 cards
-        """
-        if not self.fishing:
-            raise IllegalMoveError("Not fishing.")
-
-        if len(cards) != 3:
-            raise IllegalMoveError("Must replace exactly 3 cards.")
-
-        for card in cards:
-            if card is None or card.zone is not self.hand:
-                raise IllegalMoveError("Must choose a valid target.")
-
-        self.bottomdeck(cards)
-        self.fishing = False
-
     def fish(self):
+        def replace(cards):
+            """
+            Bottomdeck the 3 cards
+            """
+            if len(cards) != 3:
+                raise IllegalMoveError("Must replace exactly 3 cards.")
+
+            for card in cards:
+                if card is None or card.zone is not self.hand:
+                    raise IllegalMoveError("Must choose a valid target.")
+
+            self.bottomdeck(cards)
+
+            self.replaceCallback = None
+
         self.drawCards(2)
 
         # If you have <= 3 cards in hand, put all of them back
@@ -233,7 +227,8 @@ class Mariner(Player):
             for card in self.hand:
                 card.zone = card.owner.deck
         else:
-            self.fishing = True  # Can't do anything until calling replace
+            # Can't do anything until calling replace
+            self.replaceCallback = replace
 
     def endPhase(self, fish=False):
         if self.hasFirstPlayerPenalty and fish:
@@ -243,9 +238,3 @@ class Mariner(Player):
 
         if self.game.phase == Phase.play and fish:
             self.fish()
-
-    def failIfInactive(self):
-        super().failIfInactive(self)
-
-        if self.fishing:
-            raise IllegalMoveError("Must complete fishing first.")

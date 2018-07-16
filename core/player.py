@@ -55,6 +55,9 @@ class Player:
         # Counter for "Take an extra turn after this one" effects
         self.extraTurns = 0
 
+        # Callback for effects that require replacing cards
+        self.replaceCallback = None
+
     def __repr__(self):
         if hasattr(self, 'game'):
             return "Player %d" % self.game.players.index(self)
@@ -138,6 +141,19 @@ class Player:
     def win(self):
         self.game.end(winner=self)
 
+    def requireReplace(self, card):
+        def replace(cards):
+            card.replace(*cards)
+            self.replace = None
+
+        self.replaceCallback = replace
+
+    def replace(self, cards):
+        if self.replaceCallback is None:
+            raise IllegalMoveError("No effect to replace for.")
+        else:
+            self.replaceCallback(cards)
+
     # Actions
 
     def mulligan(self, *cards):
@@ -163,6 +179,10 @@ class Player:
     def failIfInactive(self, *args):
         if not self.active:
             raise IllegalMoveError("It is not your turn.")
+
+        if self.replaceCallback is not None:
+            raise IllegalMoveError(
+                "Must replace cards from effect first.")
 
     def play(self, card):
         self.failIfInactive()

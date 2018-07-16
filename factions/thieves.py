@@ -224,10 +224,6 @@ class Thief(Player):
         heavyLightning,
         spellScalpel) + base.deck
 
-    def __init__(self):
-        super().__init__()
-        self.replace = None
-
     def thiefAbility(self, discard, name, target):
         self.failIfInactive()
 
@@ -238,17 +234,3 @@ class Thief(Player):
             target.zone = self.faceups
         else:
             target.visible = True
-
-    def failIfInactive(self):
-        super().failIfInactive()
-
-        if self.replace is not None:
-            raise IllegalMoveError(
-                "Must replace cards from head lightning first.")
-
-    def requireReplace(self, card):
-        def replace(cards):
-            card.replace(*cards)
-            self.replace = None
-
-        self.replace = replace
