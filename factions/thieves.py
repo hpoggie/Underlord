@@ -186,11 +186,8 @@ def heavyLightning():
         self.cost = 5
 
     def onSpawn(self):
-        for c in self.controller.opponent.facedowns[:]:
-            destroy(c)
-        for c in self.controller.opponent.faceups[:]:
-            destroy(c)
-
+        self.controller.opponent.facedowns.destroyAll()
+        self.controller.opponent.faceups.destroyAll()
         self.controller.drawCards(3)
 
     return card(

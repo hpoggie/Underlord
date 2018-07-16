@@ -1,5 +1,8 @@
+from core.game import destroy
+
+
 class Zone(list):
-    def __init__(self, lst=[]):
+    def __init__(self, controller, lst=[]):
         super().__init__(lst)
         self.dirty = True
 
@@ -18,3 +21,7 @@ class Zone(list):
     def remove(self, card):
         super().remove(card)
         self.dirty = True
+
+    def destroyAll(self):
+        for c in self[:]:
+            destroy(c)

@@ -20,8 +20,7 @@ def elephant():
 
 def sweepAbility(self):
     for player in self.game.players:
-        for c in player.faceups[:]:
-            destroy(c)
+        player.faceups.destroyAll()
 
 
 def sweep():

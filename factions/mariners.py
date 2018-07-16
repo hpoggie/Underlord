@@ -97,10 +97,8 @@ def grandJelly():
 
 def ripCurrent():
     def onSpawn(self):
-        for c in self.controller.opponent.facedowns[:]:
-            destroy(c)
-        for c in self.controller.opponent.faceups[:]:
-            destroy(c)
+        self.controller.opponent.facedowns.destroyAll()
+        self.controller.opponent.faceups.destroyAll()
 
     return aquaticCard(
         name="Rip Current",
