@@ -40,7 +40,7 @@ def multiattackCard(**kwargs):
 def spectralCrab():
     @property
     def rank(self):
-        return 4 if self.zone is self.controller.facedowns else 2
+        return 4 if self.facedown else 2
 
     return card(
         name="Spectral Crab",
@@ -164,9 +164,7 @@ def spellHound():
 
 def daggerEmblem():
     def onSpawn(self, target):
-        if (target.zone in
-                [self.controller.faceups, self.controller.opponent.faceups] and
-                not target.spell):
+        if (target.faceup and not target.spell):
             destroy(target)
 
     def onDiscard(self):

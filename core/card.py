@@ -114,6 +114,14 @@ class Card:
         self.hasAttacked = False
 
     @property
+    def faceup(self):
+        return self.zone is self.controller.faceups
+
+    @property
+    def facedown(self):
+        return self.zone is self.controller.facedowns
+
+    @property
     def controller(self):
         # TODO: hack
         if self.game is None:
