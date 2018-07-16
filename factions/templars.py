@@ -154,7 +154,7 @@ def guardianAngel():
 
 def crystalLance():
     def onSpawn(self, target):
-        if target in self.controller.opponent.facedowns:
+        if target.facedown:
             destroy(target)
 
     def afterFight(self, enemy):
@@ -176,7 +176,7 @@ def crystalLance():
 
 def crystalRain():
     def onSpawn(self, target):
-        if target in self.controller.opponent.facedowns:
+        if target.facedown:
             destroy(target)
 
     def afterFight(self, enemy):
