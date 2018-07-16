@@ -90,6 +90,10 @@ class Player:
         for i in range(n):
             self.drawCard()
 
+    def drawTo(self, n):
+        while len(self.hand) < n  and len(self.deck) > 0:
+            self.drawCard()
+
     def topdeck(self, cards):
         """
         Put the cards on top of the player's deck.

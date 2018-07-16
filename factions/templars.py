@@ -67,8 +67,7 @@ def corvus():
 
 def miracle():
     def onSpawn(self):
-        while(len(self.owner.hand) < 5 and len(self.owner.deck) > 0):
-            self.owner.drawCard()
+        self.owner.drawTo(5)
 
     return card(
         name="Miracle",
