@@ -57,6 +57,10 @@ class Card:
     def requiresTarget(self):
         return self.onSpawn.__code__.co_argcount > 1
 
+    @property
+    def isUnit(self):
+        return not self.spell
+
     def cast(self, target=None):
         self.controller.mana -= self.cost
         self.zone = self.controller.faceups
