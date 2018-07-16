@@ -54,7 +54,7 @@ def wrathOfGod():
 
 def corvus():
     def onSpawn(self):
-        self.owner.manaCap += 1
+        self.controller.manaCap += 1
 
     return card(
         name="Corvus",
@@ -67,7 +67,7 @@ def corvus():
 
 def miracle():
     def onSpawn(self):
-        self.owner.drawTo(5)
+        self.controller.drawTo(5)
 
     return card(
         name="Miracle",
@@ -80,7 +80,8 @@ def miracle():
 
 def crystalElemental():
     def beforeDestroy(self, card):
-        if card.owner != self.controller and card.zone == card.owner.facedowns:
+        if (card.controller != self.controller and
+                card.zone == card.controller.facedowns):
             self.controller.drawCard()
 
     return card(
@@ -94,8 +95,8 @@ def crystalElemental():
 
 def invest():
     def onSpawn(self):
-        self.owner.manaCap += 1
-        self.owner.drawCard()
+        self.controller.manaCap += 1
+        self.controller.drawCard()
 
     return card(
         name="Invest",
@@ -153,7 +154,7 @@ def guardianAngel():
 
 def crystalLance():
     def onSpawn(self, target):
-        if target in self.owner.opponent.facedowns:
+        if target in self.controller.opponent.facedowns:
             destroy(target)
 
     def afterFight(self, enemy):
@@ -175,7 +176,7 @@ def crystalLance():
 
 def crystalRain():
     def onSpawn(self, target):
-        if target in self.owner.opponent.facedowns:
+        if target in self.controller.opponent.facedowns:
             destroy(target)
 
     def afterFight(self, enemy):

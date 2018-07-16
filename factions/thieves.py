@@ -109,11 +109,11 @@ def doubleDragon():
 
 def headLightning():
     def onSpawn(self):
-        self.owner.drawCards(3)
-        self.owner.requireReplace(self)
+        self.controller.drawCards(3)
+        self.controller.requireReplace(self)
 
     def replace(self, c1, c2):
-        self.owner.topdeck([c1, c2])
+        self.controller.topdeck([c1, c2])
 
     return card(
         name="Head Lightning",
@@ -128,10 +128,10 @@ def headLightning():
 
 def roseEmblem():
     def onSpawn(self):
-        self.owner.drawCards(2)
+        self.controller.drawCards(2)
 
     def onDiscard(self):
-        self.owner.drawCard()
+        self.controller.drawCard()
 
     return card(
         name="Rose Emblem",
@@ -165,12 +165,12 @@ def spellHound():
 def daggerEmblem():
     def onSpawn(self, target):
         if (target.zone in
-                [self.owner.faceups, self.owner.opponent.faceups] and
+                [self.controller.faceups, self.controller.opponent.faceups] and
                 not target.spell):
             destroy(target)
 
     def onDiscard(self):
-        self.owner.drawCard()
+        self.controller.drawCard()
 
     return card(
         name="Dagger Emblem",

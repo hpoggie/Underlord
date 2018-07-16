@@ -75,9 +75,9 @@ class Game:
         c1.beforeFight(c2)
         c2.beforeFight(c1)
 
-        if c1.zone == c1.owner.facedowns:
+        if c1.zone == c1.controller.facedowns:
             c1.visible = True
-        if c2.zone == c2.owner.facedowns:
+        if c2.zone == c2.controller.facedowns:
             c2.visible = True
 
         if c1.spell or c2.spell:

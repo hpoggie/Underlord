@@ -97,9 +97,9 @@ def grandJelly():
 
 def ripCurrent():
     def onSpawn(self):
-        for c in self.owner.opponent.facedowns[:]:
+        for c in self.controller.opponent.facedowns[:]:
             destroy(c)
-        for c in self.owner.opponent.faceups[:]:
+        for c in self.controller.opponent.faceups[:]:
             destroy(c)
 
     return aquaticCard(
@@ -115,7 +115,7 @@ def ripCurrent():
 def highTide():
     def onSpawn(self):
         flood(self.game)
-        self.owner.drawCard()
+        self.controller.drawCard()
 
     def beforeEndTurn(self):
         destroy(self)
@@ -158,7 +158,7 @@ def unexpectedShark():
 
 def braintwister():
     def onSpawn(self):
-        self.owner.opponent.discardRandom()
+        self.controller.opponent.discardRandom()
 
     return aquaticCard(
         name="Braintwister",

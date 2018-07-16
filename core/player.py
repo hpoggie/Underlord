@@ -246,7 +246,7 @@ class Player:
             raise IllegalMoveError("Must attack units with taunt first.")
 
         if target != self.opponent.face and target.zone not in [
-                target.owner.faceups, target.owner.facedowns]:
+                target.controller.faceups, target.controller.facedowns]:
             raise IllegalMoveError(
                 "Can only attack face-up / face-down targets or a player.")
 

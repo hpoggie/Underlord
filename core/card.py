@@ -21,6 +21,7 @@ class Card:
         self.taunt = False
         self.isValidTarget = True
         self.owner = None
+        self.game = None
         self._zone = None
         self._visible = False
         self.desc = ""
@@ -57,8 +58,8 @@ class Card:
         return self.onSpawn.__code__.co_argcount > 1
 
     def cast(self, target=None):
-        self.owner.mana -= self.cost
-        self.zone = self.owner.faceups
+        self.controller.mana -= self.cost
+        self.zone = self.controller.faceups
         if self.requiresTarget:
             if target is not None and target.isValidTarget:
                 self.onSpawn(target)
@@ -71,13 +72,13 @@ class Card:
     def attack(self, target):
         self.hasAttacked = True
 
-        if target is self.owner.opponent.face:
+        if target is self.controller.opponent.face:
             self.attackFace()
         else:
             self.game.fight(target, self)
 
     def attackFace(self):
-        self.owner.opponent.manaCap += self.rank
+        self.controller.opponent.manaCap += self.rank
 
     def onSpawn(self):
         pass
@@ -100,9 +101,9 @@ class Card:
 
     @zone.setter
     def zone(self, value):
-        if self._zone == self.owner.faceups and value == self.owner.graveyard:
+        if self._zone == self.controller.faceups and value == self.owner.graveyard:
             self.onDeath()
-        elif self._zone == self.owner.hand and value == self.owner.graveyard:
+        elif self._zone == self.controller.hand and value == self.owner.graveyard:
             self.onDiscard()
 
         if self._zone is not None:
@@ -114,6 +115,10 @@ class Card:
 
     @property
     def controller(self):
+        # TODO: hack
+        if self.game is None:
+            return self.owner
+
         for pl in self.game.players:
             if self.zone in pl.zones:
                 return pl

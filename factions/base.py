@@ -38,8 +38,8 @@ def sweep():
 def spellBlade():
     def spellBladeAbility(self, target):
         if target.zone in [
-                self.owner.facedowns,
-                self.owner.opponent.facedowns]:
+                self.controller.facedowns,
+                self.controller.opponent.facedowns]:
             destroy(target)
 
     return card(
@@ -55,10 +55,10 @@ def spellBlade():
 
 def mindControlTrap():
     def onSpawn(self):
-        self.owner.drawCard()
+        self.controller.drawCard()
 
     def beforeFight(self, enemy):
-        enemy.zone = self.owner.faceups
+        enemy.zone = self.controller.faceups
 
     return card(
         name="Mind Control Trap",
