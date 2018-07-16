@@ -187,7 +187,7 @@ def heavyLightning():
 
     def onSpawn(self):
         self.controller.opponent.facedowns.destroyAll()
-        self.controller.opponent.faceups.destroyAll()
+        self.controller.opponent.faceups.destroyAllUnits()
         self.controller.drawCards(3)
 
     return card(

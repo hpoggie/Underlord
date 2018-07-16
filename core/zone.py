@@ -22,6 +22,9 @@ class Zone(list):
         super().remove(card)
         self.dirty = True
 
-    def destroyAll(self):
-        for c in self[:]:
-            destroy(c)
+    def destroyAll(self, fltr=lambda c: True):
+        for card in [c for c in self if fltr(c)]:
+            destroy(card)
+
+    def destroyAllUnits(self):
+        self.destroyAll(lambda c: c.isUnit)
