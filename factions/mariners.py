@@ -226,9 +226,7 @@ class Mariner(Player):
         self.fishing = False
 
     def fish(self):
-        # Draw 2 more cards
-        for i in range(2):
-            self.drawCard()
+        self.drawCards(2)
 
         # If you have <= 3 cards in hand, put all of them back
         if len(self.hand) <= 3:

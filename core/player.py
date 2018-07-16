@@ -86,6 +86,10 @@ class Player:
         if len(self.deck) != 0:
             self.deck[-1].zone = self.hand
 
+    def drawCards(self, n):
+        for i in range(n):
+            self.drawCard()
+
     def topdeck(self, cards):
         """
         Put the cards on top of the player's deck.

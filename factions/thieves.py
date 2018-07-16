@@ -109,9 +109,7 @@ def doubleDragon():
 
 def headLightning():
     def onSpawn(self):
-        for i in range(3):
-            self.owner.drawCard()
-
+        self.owner.drawCards(3)
         self.owner.requireReplace(self)
 
     def replace(self, c1, c2):
@@ -130,8 +128,7 @@ def headLightning():
 
 def roseEmblem():
     def onSpawn(self):
-        for i in range(2):
-            self.owner.drawCard()
+        self.owner.drawCards(2)
 
     def onDiscard(self):
         self.owner.drawCard()
@@ -196,8 +193,7 @@ def heavyLightning():
         for c in self.controller.opponent.faceups[:]:
             destroy(c)
 
-        for i in range(3):
-            self.controller.drawCard()
+        self.controller.drawCards(3)
 
     return card(
         name="Heavy Lightning",
