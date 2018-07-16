@@ -80,8 +80,7 @@ def miracle():
 
 def crystalElemental():
     def beforeDestroy(self, card):
-        if (card.controller != self.controller and
-                card.zone == card.controller.facedowns):
+        if card.zone is self.controller.opponent.facedowns:
             self.controller.drawCard()
 
     return card(
