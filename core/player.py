@@ -6,7 +6,7 @@ A player has the following characteristics:
     Mana
 """
 from copy import deepcopy
-from random import shuffle, randint
+from random import randint
 
 from core.game import Phase
 from core.zone import Zone
@@ -79,7 +79,7 @@ class Player:
             self.opponent.win()
 
     def shuffle(self):
-        shuffle(self.deck)
+        self.deck.shuffle()
 
     def drawOpeningHand(self):
         for i in range(0, startHandSize):

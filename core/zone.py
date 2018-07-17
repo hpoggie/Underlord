@@ -1,3 +1,4 @@
+import random
 from core.game import destroy
 
 
@@ -28,3 +29,6 @@ class Zone(list):
 
     def destroyAllUnits(self):
         self.destroyAll(lambda c: c.isUnit)
+
+    def shuffle(self):
+        random.shuffle(self)
