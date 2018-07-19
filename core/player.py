@@ -281,9 +281,9 @@ class Player:
     def attackFace(self, attacker):
         self.attack(attacker, self.opponent.face)
 
-    def endPhase(self, *args, **kwargs):
+    def endPhase(self):
         self.failIfInactive()
-        self.game.endPhase(*args, **kwargs)
+        self.game.endPhase()
 
     def endTurn(self, *args, **kwargs):
         self.failIfInactive()

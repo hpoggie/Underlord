@@ -180,10 +180,11 @@ class GameServer:
 
     @acceptsTarget
     def endPhase(self, addr, target=None):
-        if target is None:
-            self.players[addr].endPhase()
+        pl = self.players[addr]
+        if pl.endPhase.__code__.co_argcount > 1:
+            pl.endPhase(target)
         else:
-            self.players[addr].endPhase(target)
+            pl.endPhase()
         self.redraw()
 
     # TODO: massive kludge
