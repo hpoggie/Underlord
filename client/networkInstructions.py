@@ -48,7 +48,7 @@ class NetworkInstructions(DirectObject):
         return c
 
     def updatePlayerHand(self, *cardIds):
-        base.player.hand = Zone()
+        base.player.hand[:] = []
         for x in cardIds:
             self.moveCard(x, base.player.hand)
         base.redraw()
@@ -65,23 +65,23 @@ class NetworkInstructions(DirectObject):
                 card.visible = True
 
     def updateEnemyHand(self, *cardIds):
-        base.enemy.hand = Zone()
+        base.enemy.hand[:] = []
         self.updatePossiblyInvisibleZone(cardIds, base.enemy.hand)
         base.redraw()
 
     def updatePlayerFacedowns(self, *cardIds):
-        base.player.facedowns = Zone()
+        base.player.facedowns[:] = []
         for x in cardIds:
             self.moveCard(x, base.player.facedowns)
         base.redraw()
 
     def updateEnemyFacedowns(self, *cardIds):
-        base.enemy.facedowns = Zone()
+        base.enemy.facedowns[:] = []
         self.updatePossiblyInvisibleZone(cardIds, base.enemy.facedowns)
         base.redraw()
 
     def updatePlayerFaceups(self, *cardIds):
-        base.player.faceups = Zone()
+        base.player.faceups[:] = []
         for x in cardIds:
             self.moveCard(x, base.player.faceups)
         base.redraw()
@@ -91,19 +91,19 @@ class NetworkInstructions(DirectObject):
             c.hasAttacked = values[i]
 
     def updateEnemyFaceups(self, *cardIds):
-        base.enemy.faceups = Zone()
+        base.enemy.faceups[:] = []
         for x in cardIds:
             self.moveCard(x, base.enemy.faceups)
         base.redraw()
 
     def updatePlayerGraveyard(self, *cardIds):
-        base.player.graveyard = Zone()
+        base.player.graveyard[:] = []
         for x in cardIds:
             self.moveCard(x, base.player.graveyard)
         base.redraw()
 
     def updateEnemyGraveyard(self, *cardIds):
-        base.enemy.graveyard = Zone()
+        base.enemy.graveyard[:] = []
         for x in cardIds:
             self.moveCard(x, base.enemy.graveyard)
         base.redraw()
