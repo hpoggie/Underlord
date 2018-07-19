@@ -9,6 +9,35 @@ class Card:
 
     It is owned by a player.
     """
+    nodsl = False
+
+    def __init_subclass__(cls, **kwargs):
+        """
+        Evil metaclass-ish hacking to make an internal domain-specific
+        language.
+        https://docs.python.org/3/reference/datamodel.html#object.__init_subclass__
+        This method is called when a subclass of Card is created. It takes the
+        class variables of that card and makes them into instance variables.
+        Look at the faction files for examples of how to use this.
+        """
+        super().__init_subclass__(**kwargs)  # Maintain compatibility
+
+        newAttrs = dict(
+            (key, val) for key, val in cls.__dict__.items()
+            if not key.startswith('__') and
+            not hasattr(val, '__call__') and
+            not isinstance(val, property))
+
+        for key in newAttrs.keys():
+            delattr(cls, key)
+
+        oldInit = cls.__init__
+
+        def __init__(self, **kwargs):
+            kwargs.update(newAttrs)
+            oldInit(self, **kwargs)
+
+        cls.__init__ = __init__
 
     def __init__(self, **kwargs):
         self.name = "Placeholder Name"
