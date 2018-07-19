@@ -180,17 +180,3 @@ class Card:
     @property
     def imagePath(self):
         return self.owner.iconPath + '/' + self.image
-
-
-def card(t=Card, **kwargs):
-    name = kwargs['name'].strip()
-    funcs = {}
-    others = {}
-
-    for key, val in kwargs.items():
-        if hasattr(val, '__call__') or isinstance(val, property):
-            funcs[key] = val
-        else:
-            others[key] = val
-
-    return type(name, (t,), funcs)(**others)

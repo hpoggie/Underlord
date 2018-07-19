@@ -2,7 +2,7 @@ import random
 
 from . import base
 from core.game import Phase, destroy
-from core.card import Card, card
+from core.card import Card
 from core.faction import deck
 from core.player import Player, IllegalMoveError
 
@@ -37,20 +37,22 @@ class AquaticCard(Card):
             self.zone = self.owner.hand
 
 
-def aquaticCard(**kwargs):
-    return card(AquaticCard, **kwargs)
+class kraken(AquaticCard):
+    name = "Kraken"
+    image = "squid.png"
+    cost = 7
+    rank = 8
+    desc = "Aquatic."
 
 
-def kraken():
-    return aquaticCard(
-        name="Kraken",
-        image="squid.png",
-        cost=7,
-        rank=8,
-        desc="Aquatic.")
+class nuisanceFlooding(Card):
+    name = "Nuisance Flooding"
+    image = "at-sea.png"
+    cost = 3
+    rank = 's'
+    continuous = True
+    desc = "Flood the battlefield for 4 turns."
 
-
-def nuisanceFlooding():
     def onSpawn(self):
         self.counter = 4
         flood(self.game)
@@ -63,54 +65,46 @@ def nuisanceFlooding():
     def onDeath(self):
         unflood(self.game)
 
-    return card(
-        name="Nuisance Flooding",
-        image="at-sea.png",
-        cost=3,
-        rank='s',
-        continuous=True,
-        onSpawn=onSpawn,
-        beforeEndTurn=beforeEndTurn,
-        onDeath=onDeath,
-        desc="Flood the battlefield for 4 turns.")
+
+class voidstar(AquaticCard):
+    name = "Voidstar"
+    image = 'voidstar.png'
+    cost = 5
+    rank = 5
+    fast = True
+    desc = "Aquatic. Fast."
 
 
-def voidstar():
-    return aquaticCard(
-        name="Voidstar",
-        image='voidstar.png',
-        cost=5,
-        rank=5,
-        fast=True,
-        desc="Aquatic. Fast.")
+class grandJelly(AquaticCard):
+    name = "Grand Jelly"
+    image = 'jellyfish.png'
+    cost = 4
+    rank = 4
+    taunt = True
+    desc = "Aquatic. Taunt."
 
 
-def grandJelly():
-    return aquaticCard(
-        name="Grand Jelly",
-        image='jellyfish.png',
-        cost=4,
-        rank=4,
-        taunt=True,
-        desc="Aquatic. Taunt.")
+class ripCurrent(AquaticCard):
+    name = "Rip Current"
+    image = 'water-bolt.png'
+    cost = 9
+    rank = 's'
+    desc = ("Aquatic. Destroy all your opponent's face-up units "
+            "and face-down cards.")
 
-
-def ripCurrent():
     def onSpawn(self):
         self.controller.opponent.facedowns.destroyAll()
         self.controller.opponent.faceups.destroyAllUnits()
 
-    return aquaticCard(
-        name="Rip Current",
-        image='water-bolt.png',
-        cost=9,
-        rank='s',
-        onSpawn=onSpawn,
-        desc="Aquatic. Destroy all your opponent's face-up units "
-             "and face-down cards.")
 
+class highTide(Card):
+    name = "High Tide"
+    image = 'lighthouse.png'
+    cost = 0
+    rank = 's'
+    continuous = True
+    desc = "Flood the battlefield until end of turn. Draw a card."
 
-def highTide():
     def onSpawn(self):
         flood(self.game)
         self.controller.drawCard()
@@ -121,19 +115,16 @@ def highTide():
     def onDeath(self):
         unflood(self.game)
 
-    return card(
-        name="High Tide",
-        image='lighthouse.png',
-        cost=0,
-        rank='s',
-        continuous=True,
-        onSpawn=onSpawn,
-        beforeEndTurn=beforeEndTurn,
-        onDeath=onDeath,
-        desc="Flood the battlefield until end of turn. Draw a card.")
 
+class unexpectedShark(Card):
+    name = "Unexpected Shark"
+    image = 'shark-jaws.png'
+    cost = 3
+    rank = 3
+    fast = True
+    desc = ("Fast. Dies at end of turn if the battlefield isn't flooded. "
+            "Can kill spells.")
 
-def unexpectedShark():
     def afterEndTurn(self):
         if not hasattr(self.game, 'flooded') or not self.game.flooded:
             destroy(self)
@@ -142,33 +133,26 @@ def unexpectedShark():
         if hasattr(target, 'spell') and target.spell:
             destroy(target)
 
-    return card(
-        name="Unexpected Shark",
-        image='shark-jaws.png',
-        cost=3,
-        rank=3,
-        fast=True,
-        afterEndTurn=afterEndTurn,
-        beforeFight=beforeFight,
-        desc="Fast. Dies at end of turn if the battlefield isn't flooded. "
-             "Can kill spells.")
 
+class braintwister(AquaticCard):
+    name = "Braintwister"
+    image = 'braintwister.png'
+    cost = 2
+    rank = 2
+    desc = ("Aquatic. When this spawns, your opponent discards a random "
+            "card.")
 
-def braintwister():
     def onSpawn(self):
         self.controller.opponent.discardRandom()
 
-    return aquaticCard(
-        name="Braintwister",
-        image='braintwister.png',
-        cost=2,
-        rank=2,
-        onSpawn=onSpawn,
-        desc="Aquatic. When this spawns, your opponent discards a random "
-             "card.")
 
+class humboldtSquid(AquaticCard):
+    name = "Humboldt Squid"
+    image = 'tentacle-strike.png'
+    cost = 1
+    rank = 1
+    desc = "Aquatic. This has rank 5 while attacking a unit."
 
-def humboldtSquid():
     def beforeAnyFight(self, target, attacker):
         # TODO: black magic
         # 2nd arg is always the attacker
@@ -178,15 +162,6 @@ def humboldtSquid():
 
     def afterFight(self, target):
         self.rank = 1
-
-    return aquaticCard(
-        name="Humboldt Squid",
-        image='tentacle-strike.png',
-        cost=1,
-        rank=1,
-        beforeAnyFight=beforeAnyFight,
-        afterFight=afterFight,
-        desc="Aquatic. This has rank 5 while attacking a unit.")
 
 
 class Mariner(Player):

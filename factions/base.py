@@ -2,72 +2,64 @@ from core.game import destroy
 import core.card
 
 
-def card(**kwargs):
+class Card(core.card.Card):
     """
     Override the image path to use base_icons
     """
-    return core.card.card(**{'imagePath': property(
-        lambda self: 'base_icons/' + self.image)}, **kwargs)
+    @property
+    def imagePath(self):
+        return 'base_icons/' + self.image
 
 
-def elephant():
-    return card(
-        name="Elephant",
-        image="elephant.png",
-        cost=5,
-        rank=5)
+class elephant(Card):
+    name = "Elephant"
+    image = "elephant.png"
+    cost = 5
+    rank = 5
 
 
-def sweepAbility(self):
-    for player in self.game.players:
-        player.faceups.destroyAllUnits()
+class sweep(Card):
+    name = "Sweep"
+    image = "wind-slap.png"
+    cost = 4
+    rank = "s"
+    spell = True
+    desc = "Destroy all face-up units."
+
+    def onSpawn(self):
+        for player in self.game.players:
+            player.faceups.destroyAllUnits()
 
 
-def sweep():
-    return card(
-        name="Sweep",
-        image="wind-slap.png",
-        cost=4,
-        rank="s",
-        spell=True,
-        onSpawn=sweepAbility,
-        desc="Destroy all face-up units.")
+class spellBlade(Card):
+    name = "Spell Blade"
+    image = "wave-strike.png"
+    cost = 3
+    rank = "s"
+    spell = True
+    fast = True
+    desc = "Destroy target face-down card."
 
-
-def spellBlade():
-    def spellBladeAbility(self, target):
+    def onSpawn(self, target):
         if target.facedown:
             destroy(target)
 
-    return card(
-        name="Spell Blade",
-        image="wave-strike.png",
-        cost=3,
-        rank="s",
-        spell=True,
-        fast=True,
-        onSpawn=spellBladeAbility,
-        desc="Destroy target face-down card.")
 
+class mindControlTrap(Card):
+    name = "Mind Control Trap"
+    image = "magic-swirl.png"
+    cost = 2
+    rank = "s"
+    spell = True
+    desc = ("Draw a card. "
+            "If this is attacked while face-down, "
+            "gain control of the attacking unit.")
 
-def mindControlTrap():
     def onSpawn(self):
         self.controller.drawCard()
 
     def beforeFight(self, enemy):
         enemy.zone = self.controller.faceups
-
-    return card(
-        name="Mind Control Trap",
-        image="magic-swirl.png",
-        cost=2,
-        rank="s",
-        spell=True,
-        onSpawn=onSpawn,
-        beforeFight=beforeFight,
-        desc="Draw a card. "
-             "If this is attacked while face-down, "
-             "gain control of the attacking unit.")
 
 
 deck = [sweep(), spellBlade(), mindControlTrap()]

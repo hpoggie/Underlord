@@ -1,7 +1,7 @@
 import types
 from . import base
 from core.player import Player, IllegalMoveError
-from core.card import Card, card
+from core.card import Card
 from core.game import destroy
 from core.faction import deck
 
@@ -33,81 +33,75 @@ class MultiattackCard(Card):
         pass
 
 
-def multiattackCard(**kwargs):
-    return card(MultiattackCard, **kwargs)
+class spectralCrab(Card):
+    name = "Spectral Crab"
+    image = 'crab.png'
+    cost = 2
+    desc = "Has rank 4 while face-down."
 
-
-def spectralCrab():
     @property
     def rank(self):
         return 4 if self.facedown else 2
 
-    return card(
-        name="Spectral Crab",
-        image='crab.png',
-        cost=2,
-        rank=rank,
-        desc="Has rank 4 while face-down.")
 
+class timeBeing(Card):
+    name = "Time Being"
+    image = 'dead-eye.png'
+    cost = 12
+    rank = 3
+    desc = "When this spawns, take an extra turn after this one."
 
-def timeBeing():
     def onSpawn(self):
         self.controller.takeExtraTurn()
 
-    return card(
-        name="Time Being",
-        image='dead-eye.png',
-        cost=12,
-        rank=3,
-        onSpawn=onSpawn,
-        desc="When this spawns, take an extra turn after this one.")
 
+class spellScalpel(Card):
+    name = "Spell Scalpel"
+    image = 'scalpel-strike.png'
+    cost = 5
+    rank = 's'
+    desc = "Destroy target card. Draw a card."
 
-def spellScalpel():
     def onSpawn(self, target):
         destroy(target)
         self.controller.drawCard()
 
-    return card(
-        name="Spell Scalpel",
-        image='scalpel-strike.png',
-        cost=5,
-        rank='s',
-        onSpawn=onSpawn,
-        desc="Destroy target card. Draw a card.")
+
+class fog(Card):
+    name = "Fog"
+    image = 'frog.png'
+    cost = 1
+    rank = 1
+    isValidTarget = False
+    desc = "This can't be the target of spells or abilities."
 
 
-def fog():
-    return card(
-        name="Fog",
-        image='frog.png',
-        cost=1,
-        rank=1,
-        isValidTarget=False,
-        desc="This can't be the target of spells or abilities.")
+class hydra(MultiattackCard):
+    name = "Hydra"
+    image = 'hydra.png'
+    cost = 6
+    rank = 3
+    nAttacks = 3
+    desc = "Can attack up to 3 different targets per turn."
 
 
-def hydra():
-    return multiattackCard(
-        name="Hydra",
-        image='hydra.png',
-        cost=6,
-        rank=3,
-        nAttacks=3,
-        desc="Can attack up to 3 different targets per turn.")
+class doubleDragon(MultiattackCard):
+    name = "Double Dragon"
+    image = 'double-dragon.png'
+    cost = 4
+    rank = 2
+    nAttacks = 2
+    desc = "Can attack up to 2 different targets per turn."
 
 
-def doubleDragon():
-    return multiattackCard(
-        name="Double Dragon",
-        image='double-dragon.png',
-        cost=4,
-        rank=2,
-        nAttacks=2,
-        desc="Can attack up to 2 different targets per turn.")
+class headLightning(Card):
+    name = "Head Lightning"
+    image = 'brainstorm.png'
+    cost = 1
+    rank = 's'
+    desc = ("Draw 3 cards, then put 2 cards from your hand on top of"
+            "your deck.")
 
-
-def headLightning():
     def onSpawn(self):
         self.controller.drawCards(3)
         self.controller.requireReplace(self)
@@ -115,35 +109,28 @@ def headLightning():
     def replace(self, c1, c2):
         self.controller.topdeck([c1, c2])
 
-    return card(
-        name="Head Lightning",
-        image='brainstorm.png',
-        cost=1,
-        rank='s',
-        onSpawn=onSpawn,
-        replace=replace,
-        desc="Draw 3 cards, then put 2 cards from your hand on top of"
-             "your deck.")
 
+class roseEmblem(Card):
+    name = "Rose Emblem"
+    image = 'rose.png'
+    cost = 3
+    rank = 's'
+    desc = "Draw 2 cards. When you discard this from your hand, draw a card."
 
-def roseEmblem():
     def onSpawn(self):
         self.controller.drawCards(2)
 
     def onDiscard(self):
         self.controller.drawCard()
 
-    return card(
-        name="Rose Emblem",
-        image='rose.png',
-        cost=3,
-        rank='s',
-        onSpawn=onSpawn,
-        onDiscard=onDiscard,
-        desc="Draw 2 cards. When you discard this from your hand, draw a card.")
 
+class spellHound(Card):
+    name = "Spell Hound"
+    image = 'wolf-howl.png'
+    cost = 3
+    rank = 2
+    desc = "When this spawns, look at your opponent's hand."
 
-def spellHound():
     def onSpawn(self):
         for c in self.controller.opponent.hand:
             c.visible = True
@@ -152,17 +139,15 @@ def spellHound():
         for c in self.controller.opponent.hand:
             c.visible = False
 
-    return card(
-        name="Spell Hound",
-        image='wolf-howl.png',
-        cost=3,
-        rank=2,
-        onSpawn=onSpawn,
-        afterEndPhase=afterEndPhase,
-        desc="When this spawns, look at your opponent's hand.")
 
+class daggerEmblem(Card):
+    name = "Dagger Emblem"
+    image = 'stiletto.png'
+    cost = 2
+    rank = 's'
+    desc = ("Destroy target face-up unit. When you discard this from your"
+            " hand, draw a card.")
 
-def daggerEmblem():
     def onSpawn(self, target):
         if (target.faceup and not target.spell):
             destroy(target)
@@ -170,18 +155,16 @@ def daggerEmblem():
     def onDiscard(self):
         self.controller.drawCard()
 
-    return card(
-        name="Dagger Emblem",
-        image='stiletto.png',
-        cost=2,
-        rank='s',
-        onSpawn=onSpawn,
-        onDiscard=onDiscard,
-        desc="Destroy target face-up unit. When you discard this from your"
-             " hand, draw a card.")
 
+class heavyLightning(Card):
+    name = "Heavy Lightning"
+    image = 'heavy-lightning.png'
+    cost = 11
+    rank = 's'
+    desc = ("Destroy all your opponent's face-up units and face-down"
+            " cards. Draw 3 cards. When this is attacked, its cost"
+            " becomes 5.")
 
-def heavyLightning():
     def afterFight(self, c2):
         self.cost = 5
 
@@ -189,16 +172,6 @@ def heavyLightning():
         self.controller.opponent.facedowns.destroyAll()
         self.controller.opponent.faceups.destroyAllUnits()
         self.controller.drawCards(3)
-
-    return card(
-        name="Heavy Lightning",
-        image='heavy-lightning.png',
-        cost=11,
-        rank='s',
-        onSpawn=onSpawn,
-        desc="Destroy all your opponent's face-up units and face-down"
-             " cards. Draw 3 cards. When this is attacked, its cost"
-             " becomes 5.")
 
 
 class Thief(Player):
