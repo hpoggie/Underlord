@@ -7,6 +7,8 @@ from direct.gui.DirectGui import DirectEntry
 
 from client.zoneMaker import hideCard, showCard
 
+from core.game import Phase
+
 
 class ThiefHud(GameHud):
     def __init__(self):
@@ -83,3 +85,13 @@ class ThiefHud(GameHud):
         base.mouseHandler.startTargeting(
             "Choose 2 cards to topdeck.",
             callback)
+
+    def redraw(self):
+        super().redraw()
+
+        # TODO: kludge
+        if hasattr(self, 'thiefAbilityButton'):
+            if base.game.phase == Phase.startOfTurn:
+                self.thiefAbilityButton.show()
+            else:
+                self.thiefAbilityButton.hide()
