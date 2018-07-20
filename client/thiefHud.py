@@ -34,6 +34,7 @@ class ThiefHud(GameHud):
     def useThiefAbility(self, cardname):
         cardId = next(c for c in base.enemy.deck if c.name == cardname).cardId
         base.networkManager.useThiefAbility(0, cardId, 0)
+        base.mouseHandler.targeting = False
         self.entry.hide()
 
     def onThiefAbilityButton(self):
