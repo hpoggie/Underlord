@@ -202,3 +202,5 @@ class Thief(Player):
             target.zone = self.faceups
         else:
             target.visible = True
+
+        discard.zone = discard.owner.graveyard
