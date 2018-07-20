@@ -34,7 +34,7 @@ class MarinerHud(GameHud):
 
         if not hasattr(self, 'fishButton'):
             self.fishButton = self.button(
-                text="Faction Ability",
+                text="End and Fish",
                 scale=1,
                 pos=(0, 0, -1),
                 parent=self.endPhaseButton,
