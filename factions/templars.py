@@ -196,7 +196,7 @@ class Templar(Player):
             card.zone = self.graveyard
             self.manaCap += 1
 
-    def endPhase(self, target):
+    def endPhase(self, target=None):
         if self.game.phase == Phase.play:
             self.templarAbility(target)
         super().endPhase()

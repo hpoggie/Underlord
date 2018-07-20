@@ -85,6 +85,9 @@ class Player:
         for i in range(0, startHandSize):
             self.drawCard()
 
+    def onStartOfTurn(self):
+        self.endPhase()
+
     def drawCard(self):
         if len(self.deck) != 0:
             self.deck[-1].zone = self.hand

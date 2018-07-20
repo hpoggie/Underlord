@@ -1,7 +1,7 @@
 from . import enums
 
 Turn = enums.numericEnum('p1', 'p2')
-Phase = enums.numericEnum('reveal', 'play')
+Phase = enums.numericEnum('startOfTurn', 'reveal', 'play')
 
 
 def destroy(card):
@@ -130,7 +130,8 @@ class Game:
         else:
             self.turn = Turn.p2 if self.turn == Turn.p1 else Turn.p1
 
-        self.phase = Phase.reveal
+        self.phase = Phase.startOfTurn
+        self.activePlayer.onStartOfTurn()
 
     def end(self, winner):
         raise EndOfGame(winner)
