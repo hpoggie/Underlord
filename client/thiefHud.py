@@ -37,7 +37,12 @@ class ThiefHud(GameHud):
         except StopIteration:
             print("That is not the name of an enemy card.")
         else:
-            base.networkManager.useThiefAbility(0, cardId, 0)
+            toDiscardIndex = base.player.hand.index(
+                self.toDiscard.getPythonTag('card'))
+            toStealIndex = base.enemy.facedowns.index(
+                self.toSteal.getPythonTag('card'))
+            base.networkManager.useThiefAbility(
+                toDiscardIndex, cardId, toStealIndex)
             base.mouseHandler.targeting = False
             self.entry.hide()
 
