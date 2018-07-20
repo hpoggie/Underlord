@@ -10,6 +10,7 @@ def testThiefAbility():
 
     p0.endTurn()
     p1.endPhase()
+    p1.endPhase()
     c = next(c for c in p1.deck + p1.hand if c.name == 'Sweep')
     c.zone = p1.facedowns
 
@@ -24,6 +25,25 @@ def testThiefAbility():
     else:
         assert False
 
+def testThiefAbilityWrongPhase():
+    game, p0, p1 = newGame(thieves.Thief)
+    game.start()
+
+    p0.endTurn()
+    p1.endPhase()
+    p1.endPhase()
+    c = next(c for c in p1.deck + p1.hand if c.name == 'Sweep')
+    c.zone = p1.facedowns
+
+    p1.endTurn()
+    p0.endPhase()
+
+    try:
+        p0.thiefAbility(p0.hand[0], 'Sweep', c)
+    except IllegalMoveError:
+        pass
+    else:
+        assert False
 
 def testFog():
     game, p0, p1 = newGame([thieves.fog()], [base.spellBlade()])

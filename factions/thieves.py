@@ -2,7 +2,7 @@ import types
 from . import base
 from core.player import Player, IllegalMoveError
 from core.card import Card
-from core.game import destroy
+from core.game import destroy, Phase
 from core.faction import deck
 
 
@@ -192,8 +192,14 @@ class Thief(Player):
         heavyLightning,
         spellScalpel) + base.deck
 
+    def onStartOfTurn(self):
+        pass
+
     def thiefAbility(self, discard, name, target):
         self.failIfInactive()
+
+        if self.game.phase != Phase.startOfTurn:
+            raise IllegalMoveError("Can only try to steal at start of turn.")
 
         if target.zone is not self.opponent.facedowns:
             raise IllegalMoveError("Invalid target.")
@@ -204,3 +210,5 @@ class Thief(Player):
             target.visible = True
 
         discard.zone = discard.owner.graveyard
+
+        self.endPhase()
