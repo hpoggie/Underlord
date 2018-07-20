@@ -199,6 +199,7 @@ class GameServer:
             pl.hand[discardIndex],
             pl.opponent.__class__.deck[guessId].name,
             pl.opponent.facedowns[targetIndex])
+        self.redraw()
 
     def redraw(self):
         for addr, pl in self.players.items():
