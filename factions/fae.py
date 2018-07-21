@@ -29,8 +29,22 @@ class oberonsGuard(Card):
         target.zone = target.owner.hand
 
 
+class titaniasGuard(Card):
+    name = "Titania's Guard"
+    icon = 'batwing-emblem.png'
+    cost = 4
+    rank = 4
+    desc = "When this spawns, turn target face-up unit face-down."
+
+    def onSpawn(self, target):
+        if not target.faceup or target.spell:
+            raise InvalidTargetError()
+
+        target.zone = target.controller.facedowns
+
+
 class Faerie(Player):
-    deck = deck(faerieMoth, 5, oberonsGuard, 4) + base.deck
+    deck = deck(faerieMoth, 5, oberonsGuard, 4, titaniasGuard, 2) + base.deck
 
     def endPhase(self, card=None):
         self.failIfInactive()
