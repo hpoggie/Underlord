@@ -4,7 +4,8 @@ from . import base
 from core.game import Phase, destroy
 from core.card import Card
 from core.faction import deck
-from core.player import Player, IllegalMoveError
+from core.player import Player
+from core.exceptions import IllegalMoveError, InvalidTargetError
 
 
 def flood(game):
@@ -187,7 +188,7 @@ class Mariner(Player):
 
             for card in cards:
                 if card is None or card.zone is not self.hand:
-                    raise IllegalMoveError("Must choose a valid target.")
+                    raise InvalidTargetError()
 
             self.bottomdeck(cards)
 

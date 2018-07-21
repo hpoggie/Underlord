@@ -1,5 +1,5 @@
 from .util import newGame
-from core.player import IllegalMoveError
+from core.exceptions import IllegalMoveError
 from core.game import Game, Turn, Phase
 import factions.templars as templars
 

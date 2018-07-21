@@ -1,7 +1,7 @@
 from .util import newGame
 import factions.base as base
 import factions.thieves as thieves
-from core.player import IllegalMoveError
+from core.exceptions import IllegalMoveError
 
 
 def testThiefAbility():

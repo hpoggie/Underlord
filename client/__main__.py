@@ -14,7 +14,7 @@ from network_manager import ConnectionClosed
 from network import ClientNetworkManager
 from gameServer import Zone
 from core.game import Game, Phase, EndOfGame
-from core.player import IllegalMoveError
+from core.exceptions import IllegalMoveError
 import core.card
 from factions import templars, mariners, thieves
 from client.mouse import MouseHandler

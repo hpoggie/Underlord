@@ -1,5 +1,5 @@
 from .util import newGame
-from core.player import IllegalMoveError
+from core.exceptions import IllegalMoveError
 import factions.mariners as mariners
 import factions.base as base
 

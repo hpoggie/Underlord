@@ -1,5 +1,5 @@
 from core.game import Phase
-from core.player import IllegalMoveError
+from core.exceptions import IllegalMoveError
 import factions.templars
 from client.hud import GameHud
 

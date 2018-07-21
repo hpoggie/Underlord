@@ -10,13 +10,10 @@ from random import randint
 
 from core.game import Phase
 from core.zone import Zone
+from core.exceptions import IllegalMoveError
 
 startHandSize = 5
 maxManaCap = 15
-
-
-class IllegalMoveError (Exception):
-    pass
 
 
 class Player:

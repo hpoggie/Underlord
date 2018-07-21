@@ -1,6 +1,7 @@
 import types
 from . import base
-from core.player import Player, IllegalMoveError
+from core.player import Player
+from core.exceptions import IllegalMoveError, InvalidTargetError
 from core.card import Card
 from core.game import destroy, Phase
 from core.faction import deck
@@ -202,7 +203,7 @@ class Thief(Player):
             raise IllegalMoveError("Can only try to steal at start of turn.")
 
         if target.zone is not self.opponent.facedowns:
-            raise IllegalMoveError("Invalid target.")
+            raise InvalidTargetError()
 
         if target.name == name:
             target.zone = self.faceups

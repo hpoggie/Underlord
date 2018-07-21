@@ -2,7 +2,7 @@ from panda3d.core import CollisionNode, GeomNode, CollisionRay
 from direct.showbase.DirectObject import DirectObject
 
 from core.game import Phase
-from core.player import IllegalMoveError
+from core.exceptions import IllegalMoveError
 import core.card
 
 import client.zoneMaker as zoneMaker

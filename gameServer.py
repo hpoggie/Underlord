@@ -10,7 +10,7 @@ import inspect
 
 from network_manager import ConnectionClosed
 from core.game import Game, EndOfGame
-from core.player import IllegalMoveError
+from core.exceptions import IllegalMoveError
 from core.enums import numericEnum
 from factions.templars import Templar
 from factions.mariners import Mariner
