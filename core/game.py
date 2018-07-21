@@ -100,10 +100,11 @@ class Game:
         card.zone = card.owner.graveyard
 
     @event
-    def endPhase(self):
+    def endPhase(self, keepFacedown=[]):
         if self.phase == Phase.reveal:
             for c in self.activePlayer.facedowns[:]:
-                c.zone = c.owner.graveyard
+                if c not in keepFacedown:
+                    c.zone = c.owner.graveyard
             if self.activePlayer.hasFirstPlayerPenalty:
                 self.activePlayer.hasFirstPlayerPenalty = False
             else:
