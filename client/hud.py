@@ -133,10 +133,10 @@ class MainMenu(Scene):
                 with open('CREDITS.txt') as f:
                     self.creditsLabel = self.label(
                         text='\n'.join(  # Don't wrap line breaks
-                            textwrap.fill(line, width=45)
+                            textwrap.fill(line, width=60)
                             for line in f.read().split('\n')),
                         align=TextNode.ALeft,
-                        scale=0.07,
+                        scale=0.05,
                         pos=(-0.7, 0.5, 0),
                         parent=self.credits)
 
