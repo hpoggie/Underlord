@@ -1,12 +1,10 @@
 from core.card import Card
 
 
-def one():
+class one(Card):
     """
     Dummy card for testing
     """
-    return Card(
-        name="One",
-        cost=1,
-        rank=1
-    )
+    name = "One"
+    cost = 1
+    rank = 1
