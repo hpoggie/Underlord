@@ -1,5 +1,6 @@
 from core.card import Card
 from core.game import destroy
+from core.exceptions import InvalidTargetError
 import factions.fae as fae
 from .util import newGame
 from . import dummyCards
@@ -53,3 +54,21 @@ def test_faerie_dragon():
     destroy(fd)
 
     assert fd.zone is p0.hand
+
+
+def test_mesmerism():
+    game, p0, p1 = newGame()
+
+    c1 = dummyCards.one(owner=p1, game=game, zone=p1.faceups)
+    c2 = dummyCards.one(owner=p1, game=game, zone=p1.faceups)
+    c3 = dummyCards.one(owner=p1, game=game, zone=p1.faceups)
+
+    mes = fae.mesmerism(owner=p0, game=game, zone=p0.facedowns)
+    p0.mana = 2
+    p0.revealFacedown(mes)
+    try:
+        p0.replaceCallback((c1, c2, c3))
+    except InvalidTargetError:
+        pass
+
+    p0.replaceCallback((c1, c2))

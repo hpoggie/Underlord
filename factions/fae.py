@@ -2,6 +2,7 @@ from core.player import Player
 from core.exceptions import InvalidTargetError
 from core.faction import deck
 from core.card import Card
+from core.game import destroy
 import factions.base as base
 
 
@@ -75,12 +76,35 @@ class faerieDragon(Card):
             super().moveToZone(zone)
 
 
+class mesmerism(Card):
+    name = "Mesmerism"
+    icon = 'night-vision.png'
+    cost = 2
+    rank = 'il'
+    desc = "Destroy up to two target face-up units."
+
+    def onSpawn(self):
+        def mesmerize(targets):
+            if len(targets) > 2:
+                raise InvalidTargetError("Too many targets.")
+
+            for target in targets:
+                if not target.faceup or target.spell:
+                    raise InvalidTargetError()
+
+            for target in targets:
+                destroy(target)
+
+        self.controller.replaceCallback = mesmerize
+
+
 class Faerie(Player):
     deck = deck(
         faerieMoth, 5,
         oberonsGuard, 4,
         titaniasGuard, 2,
-        preciseDiscard, 2) + base.deck
+        preciseDiscard, 2,
+        mesmerism, 1) + base.deck
 
     def endPhase(self, card=None):
         self.failIfInactive()
