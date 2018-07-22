@@ -1,4 +1,5 @@
 from core.card import Card
+from core.game import destroy
 import factions.fae as fae
 from .util import newGame
 from . import dummyCards
@@ -43,3 +44,12 @@ def test_precise_discard():
     p0.revealFacedown(pd)
     p0.replaceCallback(one)
     assert one.zone is p1.graveyard
+
+
+def test_faerie_dragon():
+    game, p0, p1 = newGame()
+
+    fd = fae.faerieDragon(owner=p0, game=game, zone=p0.faceups)
+    destroy(fd)
+
+    assert fd.zone is p0.hand

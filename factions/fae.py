@@ -60,6 +60,21 @@ class preciseDiscard(Card):
         self.controller.replaceCallback = discard
 
 
+class faerieDragon(Card):
+    name = "Faerie Dragon"
+    icon = ''
+    cost = 5
+    rank = 4
+    desc = ("If this would be destroyed while face-up, return it to its "
+            "owner's hand instead.")
+
+    def moveToZone(self, zone):
+        if self.faceup and zone is self.owner.graveyard:
+            super().moveToZone(self.owner.hand)
+        else:
+            super().moveToZone(zone)
+
+
 class Faerie(Player):
     deck = deck(
         faerieMoth, 5,
