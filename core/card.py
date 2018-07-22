@@ -44,6 +44,7 @@ class Card:
         self.image = "missing.png"
         self.spell = False
         self.continuous = False  # If spell, do we stay out after spawn
+        self.illusion = False  # If spell, do we die to attacks
         self.cost = 0
         self._rank = 0
         self.fast = False
@@ -79,7 +80,8 @@ class Card:
 
     @rank.setter
     def rank(self, value):
-        self.spell = value == 's'
+        self.spell = (value == 's' or value == 'il')
+        self.illusion = value == 'il'
         self._rank = value
 
     @property

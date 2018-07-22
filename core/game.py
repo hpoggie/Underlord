@@ -81,7 +81,10 @@ class Game:
             c2.visible = True
 
         if c1.spell or c2.spell:
-            return
+            if c1.illusion:
+                self.destroy(c1)
+            if c2.illusion:
+                self.destroy(c2)
         else:
             if c1.rank < c2.rank:
                 self.destroy(c1)
