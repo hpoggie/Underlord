@@ -98,13 +98,36 @@ class mesmerism(Card):
         self.controller.replaceCallback = mesmerize
 
 
+class returnToSender(Card):
+    name = "Return to Sender"
+    icon = 'return-arrow.png'
+    cost = 3
+    rank = 'il'
+    desc = "Return up to 3 target face-down cards to their owners' hands."
+
+    def onSpawn(self):
+        def returnFds(targets):
+            if len(targets) > 3:
+                raise InvalidTargetError("Too many targets.")
+
+            for target in targets:
+                if not target.facedown:
+                    raise InvalidTargetError()
+
+            for target in targets:
+                target.zone = target.owner.hand
+
+        self.controller.replaceCallback = returnFds
+
+
 class Faerie(Player):
     deck = deck(
         faerieMoth, 5,
         oberonsGuard, 4,
         titaniasGuard, 2,
         preciseDiscard, 2,
-        mesmerism, 1) + base.deck
+        mesmerism, 1,
+        returnToSender, 1) + base.deck
 
     def endPhase(self, card=None):
         self.failIfInactive()

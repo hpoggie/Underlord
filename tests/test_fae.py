@@ -72,3 +72,18 @@ def test_mesmerism():
         pass
 
     p0.replaceCallback((c1, c2))
+
+
+def test_return_to_sender():
+    game, p0, p1 = newGame()
+
+    for i in range(3):
+        dummyCards.one(owner=p1, game=game, zone=p1.facedowns)
+
+    rts = fae.returnToSender(owner=p0, game=game, zone=p0.facedowns)
+    p0.mana = 3
+    p0.revealFacedown(rts)
+    p0.replaceCallback(p1.facedowns[:])
+
+    assert len(p1.facedowns) == 0
+    assert len(p1.hand) == 3
