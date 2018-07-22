@@ -120,6 +120,21 @@ class returnToSender(Card):
         self.controller.replaceCallback = returnFds
 
 
+class enchantersTrap(Card):
+    name = "Enchanter's Trap"
+    icon = 'portal.png'
+    cost = 16
+    rank = 15
+    desc = "Can't be face-up."
+
+    def moveToZone(self, zone):
+        if (zone is self.game.players[0].faceups or
+                zone is self.game.players[1].faceups):
+            return
+
+        super().moveToZone(zone)
+
+
 class Faerie(Player):
     deck = deck(
         faerieMoth, 5,
@@ -127,7 +142,8 @@ class Faerie(Player):
         titaniasGuard, 2,
         preciseDiscard, 2,
         mesmerism, 1,
-        returnToSender, 1) + base.deck
+        returnToSender, 1,
+        enchantersTrap, 2) + base.deck
 
     def endPhase(self, card=None):
         self.failIfInactive()

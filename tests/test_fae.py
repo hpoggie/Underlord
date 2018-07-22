@@ -87,3 +87,12 @@ def test_return_to_sender():
 
     assert len(p1.facedowns) == 0
     assert len(p1.hand) == 3
+
+
+def test_enchanters_trap():
+    game, p0, p1 = newGame()
+
+    et = fae.enchantersTrap(owner=p0, game=game, zone=p0.facedowns)
+    assert et.zone is p0.facedowns
+    et.zone = p0.faceups
+    assert et.zone is p0.facedowns
