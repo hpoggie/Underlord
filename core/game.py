@@ -82,14 +82,14 @@ class Game:
 
         if c1.spell or c2.spell:
             return
-
-        if c1.rank < c2.rank:
-            self.destroy(c1)
-        if c1.rank > c2.rank:
-            self.destroy(c2)
-        elif c1.rank == c2.rank:
-            self.destroy(c1)
-            self.destroy(c2)
+        else:
+            if c1.rank < c2.rank:
+                self.destroy(c1)
+            if c1.rank > c2.rank:
+                self.destroy(c2)
+            elif c1.rank == c2.rank:
+                self.destroy(c1)
+                self.destroy(c2)
 
         self.doEventTriggers('afterAnyFight', c1, c2)
         c1.afterFight(c2)
