@@ -31,3 +31,15 @@ def test_illusions():
     p0.attack(one, di)
 
     assert di.zone == p1.graveyard
+
+
+def test_precise_discard():
+    game, p0, p1 = newGame()
+
+    pd = fae.preciseDiscard(owner=p0, game=game, zone=p0.facedowns)
+    one = dummyCards.one(owner=p1, game=game, zone=p1.hand)
+
+    p0.mana = 2
+    p0.revealFacedown(pd)
+    p0.replaceCallback(one)
+    assert one.zone is p1.graveyard

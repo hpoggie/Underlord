@@ -43,8 +43,29 @@ class titaniasGuard(Card):
         target.zone = target.controller.facedowns
 
 
+class preciseDiscard(Card):
+    name = "Precise Discard"
+    icon = 'card-pick.png'
+    cost = 2
+    rank = 'il'
+    desc = "Look at your opponent's hand and discard a card from it."
+
+    def onSpawn(self):
+        def discard(card):
+            if card.zone is not self.controller.opponent.hand:
+                raise InvalidTargetError()
+
+            card.zone = card.owner.graveyard
+
+        self.controller.replaceCallback = discard
+
+
 class Faerie(Player):
-    deck = deck(faerieMoth, 5, oberonsGuard, 4, titaniasGuard, 2) + base.deck
+    deck = deck(
+        faerieMoth, 5,
+        oberonsGuard, 4,
+        titaniasGuard, 2,
+        preciseDiscard, 2) + base.deck
 
     def endPhase(self, card=None):
         self.failIfInactive()
