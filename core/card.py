@@ -136,14 +136,17 @@ class Card:
 
     @zone.setter
     def zone(self, value):
-        if self._zone == self.controller.faceups and value == self.owner.graveyard:
+        self.moveToZone(value)
+
+    def moveToZone(self, zone):
+        if self._zone == self.controller.faceups and zone == self.owner.graveyard:
             self.onDeath()
-        elif self._zone == self.controller.hand and value == self.owner.graveyard:
+        elif self._zone == self.controller.hand and zone == self.owner.graveyard:
             self.onDiscard()
 
         if self._zone is not None:
             self._zone.remove(self)
-        self._zone = value
+        self._zone = zone
         self._zone.append(self)
         self.visible = False
         self.hasAttacked = False
