@@ -103,6 +103,10 @@ class Game:
         card.zone = card.owner.graveyard
 
     @event
+    def dealDamage(self, player, amount):
+        player.manaCap += amount
+
+    @event
     def endPhase(self, keepFacedown=[]):
         if self.phase == Phase.reveal:
             for c in self.activePlayer.facedowns[:]:

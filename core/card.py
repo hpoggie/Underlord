@@ -113,7 +113,7 @@ class Card:
             self.game.fight(target, self)
 
     def attackFace(self):
-        self.controller.opponent.manaCap += self.rank
+        self.game.dealDamage(self.controller.opponent, self.rank)
 
     def onSpawn(self):
         pass
