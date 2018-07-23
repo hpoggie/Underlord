@@ -112,3 +112,19 @@ def test_radiance():
     p0.attack(one, p1.face)
     assert p1.manaCap == 2
     assert len(p1.hand) == 1
+
+
+def test_fire_dust():
+    game, p0, p1 = newGame()
+
+    one = dummyCards.one(owner=p0, game=game, zone=p0.faceups)
+    two = dummyCards.one(owner=p1, game=game, zone=p1.faceups)
+    two.rank = 2
+    fae.fireDust(owner=p0, game=game, zone=p0.faceups)
+    assert one.rank == 1
+    assert two.rank == 2
+
+    p0.endPhase()
+    p0.attack(one, two)
+    assert one.zone is p0.graveyard
+    assert two.zone is p1.graveyard

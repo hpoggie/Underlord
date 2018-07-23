@@ -153,6 +153,23 @@ class radiance(Card):
         destroy(self)
 
 
+class fireDust(Card):
+    name = "Fire Dust"
+    icon = 'hot-spices.png'
+    cost = 3
+    rank = 'il'
+    continuous = True
+    desc = "Your units have +1 rank while attacking."
+
+    def beforeAnyFight(self, c1, c2):
+        if c2.controller is self.controller:
+            c2.rank += 1
+
+    def afterAnyFight(self, c1, c2):
+        if c2.controller is self.controller:
+            c2.rank -= 1
+
+
 class Faerie(Player):
     deck = deck(
         faerieMoth, 5,
@@ -162,7 +179,8 @@ class Faerie(Player):
         mesmerism, 1,
         returnToSender, 1,
         enchantersTrap, 2,
-        radiance, 2) + base.deck
+        radiance, 2,
+        fireDust, 3) + base.deck
 
     def endPhase(self, card=None):
         self.failIfInactive()
