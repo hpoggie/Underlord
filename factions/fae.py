@@ -135,6 +135,24 @@ class enchantersTrap(Card):
         super().moveToZone(zone)
 
 
+class radiance(Card):
+    name = "Radiance"
+    icon = 'sun.png'
+    cost = 4
+    rank = 'il'
+    continuous = True
+    desc = ("Until end of turn, for every 1 damage you deal to your opponent,"
+            "they must discard a random card.")
+
+    def afterDealDamage(self, player, amount):
+        if player is self.controller.opponent:
+            for i in range(amount):
+                player.discardRandom()
+
+    def beforeEndTurn(self):
+        destroy(self)
+
+
 class Faerie(Player):
     deck = deck(
         faerieMoth, 5,
@@ -143,7 +161,8 @@ class Faerie(Player):
         preciseDiscard, 2,
         mesmerism, 1,
         returnToSender, 1,
-        enchantersTrap, 2) + base.deck
+        enchantersTrap, 2,
+        radiance, 2) + base.deck
 
     def endPhase(self, card=None):
         self.failIfInactive()

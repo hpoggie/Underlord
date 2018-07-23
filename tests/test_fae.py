@@ -96,3 +96,19 @@ def test_enchanters_trap():
     assert et.zone is p0.facedowns
     et.zone = p0.faceups
     assert et.zone is p0.facedowns
+
+
+def test_radiance():
+    game, p0, p1 = newGame()
+
+    rad = fae.radiance(owner=p0, game=game, zone=p0.facedowns)
+    one = dummyCards.one(owner=p0, game=game, zone=p0.faceups)
+    dummyCards.one(owner=p1, game=game, zone=p1.hand)
+    dummyCards.one(owner=p1, game=game, zone=p1.hand)
+    assert len(p1.hand) == 2
+    p0.mana = 4
+    p0.revealFacedown(rad)
+    p0.endPhase()
+    p0.attack(one, p1.face)
+    assert p1.manaCap == 2
+    assert len(p1.hand) == 1
