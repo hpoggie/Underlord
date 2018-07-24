@@ -15,6 +15,7 @@ from core.enums import numericEnum
 from factions.templars import Templar
 from factions.mariners import Mariner
 from factions.thieves import Thief
+from factions.fae import Faerie
 
 
 class ServerError(BaseException):
@@ -24,7 +25,7 @@ class ServerError(BaseException):
 Zone = numericEnum('face', 'faceup', 'facedown', 'hand', 'graveyard')
 
 
-availableFactions = [Templar, Mariner, Thief]
+availableFactions = [Templar, Mariner, Thief, Faerie]
 
 
 def getCard(player, card):

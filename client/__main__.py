@@ -16,7 +16,7 @@ from gameServer import Zone
 from core.game import Game, Phase, EndOfGame
 from core.exceptions import IllegalMoveError
 import core.card
-from factions import templars, mariners, thieves
+from factions import templars, mariners, thieves, fae
 from client.mouse import MouseHandler
 from client.zoneMaker import ZoneMaker
 import client.hud as hud
@@ -68,7 +68,8 @@ class App (ShowBase):
         self.availableFactions = [
             templars.Templar,
             mariners.Mariner,
-            thieves.Thief]
+            thieves.Thief,
+            fae.Faerie]
 
         self.hasMulliganed = False
 
