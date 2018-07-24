@@ -37,11 +37,14 @@ class titaniasGuard(Card):
     rank = 4
     desc = "When this spawns, turn target face-up unit face-down."
 
-    def onSpawn(self, target):
-        if not target.faceup or target.spell:
-            raise InvalidTargetError()
+    def onSpawn(self):
+        def turnFacedown(target):
+            if target is None or not target.faceup or target.spell:
+                raise InvalidTargetError()
 
-        target.zone = target.controller.facedowns
+            target.zone = target.controller.facedowns
+
+        self.controller.replaceCallback = turnFacedown
 
 
 class preciseDiscard(Card):

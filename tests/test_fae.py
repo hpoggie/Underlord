@@ -1,6 +1,6 @@
 from core.card import Card
 from core.game import destroy
-from core.exceptions import InvalidTargetError
+from core.exceptions import InvalidTargetError, IllegalMoveError
 import factions.fae as fae
 from .util import newGame
 from . import dummyCards
@@ -128,3 +128,22 @@ def test_fire_dust():
     p0.attack(one, two)
     assert one.zone is p0.graveyard
     assert two.zone is p1.graveyard
+
+
+def test_titanias_guard():
+    game, p0, p1 = newGame()
+
+    tg = fae.titaniasGuard(owner=p0, game=game, zone=p0.facedowns)
+
+    p0.mana = 4
+    p0.revealFacedown(tg)
+
+    try:
+        p0.replaceCallback(None)
+    except InvalidTargetError:
+        pass
+
+    try:
+        p0.endPhase()
+    except IllegalMoveError:
+        pass
