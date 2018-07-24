@@ -66,7 +66,7 @@ class preciseDiscard(Card):
 
 class faerieDragon(Card):
     name = "Faerie Dragon"
-    icon = ''
+    icon = 'chameleon-glyph.png'
     cost = 5
     rank = 4
     desc = ("If this would be destroyed while face-up, return it to its "
