@@ -263,7 +263,10 @@ class ZoneMaker(DirectObject):
         cardFrame.setName('frame')
 
         cardImage = cardBase.attachNewNode(cm.generate())
-        tex = loader.loadTexture(card.imagePath)
+        try:
+            tex = loader.loadTexture(card.imagePath)
+        except IOError:
+            tex = loader.loadTexture('base_icons/missing.png')
         cardImage.setTexture(tex)
         cardImage.setScale(0.7)
         cardImage.setPos(0.15, -0.05, 0.5)
