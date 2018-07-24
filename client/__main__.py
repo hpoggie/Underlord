@@ -161,6 +161,8 @@ class App (ShowBase):
             self.guiScene = marinerHud.MarinerHud()
         elif isinstance(self.player, thieves.Thief):
             self.guiScene = thiefHud.ThiefHud()
+        else:
+            self.guiScene = hud.GameHud()
         self.zoneMaker = ZoneMaker()
 
         self.hasFirstPlayerPenalty = goingFirst
