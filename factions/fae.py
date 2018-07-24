@@ -8,7 +8,7 @@ import factions.base as base
 
 class faerieMoth(Card):
     name = "Faerie Moth"
-    icon = 'butterfly.png'
+    image = 'butterfly.png'
     cost = 1
     rank = 1
     fast = True
@@ -17,7 +17,7 @@ class faerieMoth(Card):
 
 class oberonsGuard(Card):
     name = "Oberon's Guard"
-    icon = 'elf-helmet.png'
+    image = 'elf-helmet.png'
     cost = 2
     rank = 2
     desc = ("When this spawns, you may return target face-down card you "
@@ -32,7 +32,7 @@ class oberonsGuard(Card):
 
 class titaniasGuard(Card):
     name = "Titania's Guard"
-    icon = 'batwing-emblem.png'
+    image = 'batwing-emblem.png'
     cost = 4
     rank = 4
     desc = "When this spawns, turn target face-up unit face-down."
@@ -49,7 +49,7 @@ class titaniasGuard(Card):
 
 class preciseDiscard(Card):
     name = "Precise Discard"
-    icon = 'card-pick.png'
+    image = 'card-pick.png'
     cost = 2
     rank = 'il'
     desc = "Look at your opponent's hand and discard a card from it."
@@ -66,7 +66,7 @@ class preciseDiscard(Card):
 
 class faerieDragon(Card):
     name = "Faerie Dragon"
-    icon = 'chameleon-glyph.png'
+    image = 'chameleon-glyph.png'
     cost = 5
     rank = 4
     desc = ("If this would be destroyed while face-up, return it to its "
@@ -81,7 +81,7 @@ class faerieDragon(Card):
 
 class mesmerism(Card):
     name = "Mesmerism"
-    icon = 'night-vision.png'
+    image = 'night-vision.png'
     cost = 2
     rank = 'il'
     desc = "Destroy up to two target face-up units."
@@ -103,7 +103,7 @@ class mesmerism(Card):
 
 class returnToSender(Card):
     name = "Return to Sender"
-    icon = 'return-arrow.png'
+    image = 'return-arrow.png'
     cost = 3
     rank = 'il'
     desc = "Return up to 3 target face-down cards to their owners' hands."
@@ -125,7 +125,7 @@ class returnToSender(Card):
 
 class enchantersTrap(Card):
     name = "Enchanter's Trap"
-    icon = 'portal.png'
+    image = 'portal.png'
     cost = 16
     rank = 15
     desc = "Can't be face-up."
@@ -140,7 +140,7 @@ class enchantersTrap(Card):
 
 class radiance(Card):
     name = "Radiance"
-    icon = 'sun.png'
+    image = 'sun.png'
     cost = 4
     rank = 'il'
     continuous = True
@@ -158,7 +158,7 @@ class radiance(Card):
 
 class fireDust(Card):
     name = "Fire Dust"
-    icon = 'hot-spices.png'
+    image = 'hot-spices.png'
     cost = 3
     rank = 'il'
     continuous = True
