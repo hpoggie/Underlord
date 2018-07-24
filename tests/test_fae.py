@@ -147,3 +147,11 @@ def test_titanias_guard():
         p0.endPhase()
     except IllegalMoveError:
         pass
+
+
+def test_oberons_guard():
+    game, p0, p1 = newGame()
+
+    og = fae.oberonsGuard(owner=p0, game=game, zone=p0.facedowns)
+    p0.mana = 2
+    p0.revealFacedown(og, None)
