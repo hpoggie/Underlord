@@ -174,6 +174,9 @@ class fireDust(Card):
 
 
 class Faerie(Player):
+    name = "Fae"
+    iconPath = "fae_icons"
+    cardBack = "fairy.png"
     deck = deck(
         faerieMoth, 5,
         oberonsGuard, 4,
