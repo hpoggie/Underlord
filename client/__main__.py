@@ -279,8 +279,7 @@ class App (ShowBase):
 
     def replace(self, cards):
         self.networkManager.replace(
-            *[card.getPythonTag('zone').index(card.getPythonTag('card'))
-                for card in cards])
+            *[card.getPythonTag('card').cardId for card in cards])
 
     def redraw(self):
         self.player.fishing = False

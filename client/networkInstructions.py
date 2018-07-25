@@ -41,6 +41,7 @@ class NetworkInstructions(DirectObject):
         else:
             c = base.enemy.deck[index]
             c.owner = base.enemy
+        c.cardId = index
         c.game = base.player.game
         c._zone = zone
         zone.append(c)

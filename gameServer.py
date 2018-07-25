@@ -191,7 +191,7 @@ class GameServer:
     # TODO: massive kludge
     def replace(self, addr, *cards):
         pl = self.players[addr]
-        pl.replace([pl.hand[i] for i in cards])
+        pl.replace([pl.referenceDeck[i] for i in cards])
         self.redraw()
 
     def useThiefAbility(self, addr, discardIndex, guessId, targetIndex):
@@ -254,7 +254,7 @@ class GameServer:
                 c.updateEnemyGraveyard(
                     *(getCard(pl.opponent, c) for c in pl.opponent.graveyard))
 
-            if isinstance(pl, Thief) and pl.replaceCallback is not None:
+            if pl.replaceCallback is not None:
                 c.requestReplace()
 
         for pl in self.game.players:

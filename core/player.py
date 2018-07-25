@@ -35,6 +35,7 @@ class Player:
         self.hasMulliganed = False
         self.hasFirstPlayerPenalty = False
 
+        self.referenceDeck = self.deck[:]
         for i, card in enumerate(self.deck):
             card.owner = self
             card._zone = self.deck
