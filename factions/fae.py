@@ -52,13 +52,21 @@ class preciseDiscard(Card):
     desc = "Look at your opponent's hand and discard a card from it."
 
     def onSpawn(self):
-        def discard(card):
+        for c in self.controller.opponent.hand:
+            c.visible = True
+
+        def discard(cards):
+            card = cards[0]  # TODO: hack
+
             if card.zone is not self.controller.opponent.hand:
                 raise InvalidTargetError()
 
             card.zone = card.owner.graveyard
 
             self.controller.replaceCallback = None
+
+            for c in self.controller.opponent.hand:
+                c.visible = False
 
         self.controller.replaceCallback = discard
 
