@@ -15,6 +15,9 @@ class Zone(list):
         super().__delitem__(key)
         self.dirty = True
 
+    def __eq__(self, other):
+        return self is other
+
     def append(self, card):
         super().append(card)
         self.dirty = True

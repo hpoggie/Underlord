@@ -161,3 +161,10 @@ def testRepr():
 def testRequiresTarget():
     assert factions.base.spellBlade().requiresTarget
     assert not factions.base.sweep().requiresTarget
+
+
+def testZoneLists():
+    game, p0, p1 = util.newGame()
+
+    for z in p0.zones:
+        assert z not in p1.zones
