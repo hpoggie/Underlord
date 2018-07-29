@@ -190,8 +190,13 @@ class GameServer:
 
     # TODO: massive kludge
     def replace(self, addr, *cards):
+        idAndEnemy = zip(cards[::2], cards[1::2])
         pl = self.players[addr]
-        pl.replace([pl.referenceDeck[i] for i in cards])
+        enemy = pl.opponent
+        cards = [enemy.referenceDeck[cardId] if targetsEnemy
+                    else pl.referenceDeck[cardId]
+                    for cardId, targetsEnemy in idAndEnemy]
+        pl.replace(cards)
         self.redraw()
 
     def useThiefAbility(self, addr, discardIndex, guessId, targetIndex):
