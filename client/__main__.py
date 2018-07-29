@@ -25,6 +25,7 @@ import client.networkInstructions
 import client.templarHud as templarHud
 import client.marinerHud as marinerHud
 import client.thiefHud as thiefHud
+import client.faerieHud as faerieHud
 
 loadPrcFileData(
     "",
@@ -162,6 +163,8 @@ class App (ShowBase):
             self.guiScene = marinerHud.MarinerHud()
         elif isinstance(self.player, thieves.Thief):
             self.guiScene = thiefHud.ThiefHud()
+        elif isinstance(self.player, fae.Faerie):
+            self.guiScene = faerieHud.FaerieHud()
         else:
             self.guiScene = hud.GameHud()
         self.zoneMaker = ZoneMaker()
