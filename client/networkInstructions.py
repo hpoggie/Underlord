@@ -133,8 +133,8 @@ class NetworkInstructions(DirectObject):
     def requestTarget(self):
         pass
 
-    def requestReplace(self):
-        base.guiScene.startReplacing()
+    def requestReplace(self, nArgs):
+        base.guiScene.startReplacing(nArgs)
 
     def winGame(self):
         base.guiScene.showBigMessage("Victory")

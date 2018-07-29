@@ -260,7 +260,7 @@ class GameServer:
                     *(getCard(pl.opponent, c) for c in pl.opponent.graveyard))
 
             if pl.replaceCallback is not None:
-                c.requestReplace()
+                c.requestReplace(pl.replaceCallback.__code__.co_argcount)
 
         for pl in self.game.players:
             for z in pl.zones:
