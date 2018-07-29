@@ -79,7 +79,6 @@ def test_return_to_sender():
     rts = fae.returnToSender(owner=p0, game=game, zone=p0.facedowns)
     p0.mana = 3
     p0.revealFacedown(rts)
-    p0.replaceCallback(p1.facedowns[:])
 
     assert len(p1.facedowns) == 0
     assert len(p1.hand) == 3

@@ -94,21 +94,12 @@ class returnToSender(Card):
     image = 'return-arrow.png'
     cost = 3
     rank = 'il'
-    desc = "Return up to 3 target face-down cards to their owners' hands."
+    desc = "Return all face-down cards to their owners' hands."
 
     def onSpawn(self):
-        def returnFds(targets):
-            if len(targets) > 3:
-                raise InvalidTargetError("Too many targets.")
-
-            for target in targets:
-                if not target.facedown:
-                    raise InvalidTargetError()
-
-            for target in targets:
-                target.zone = target.owner.hand
-
-        self.controller.replaceCallback = returnFds
+        for pl in self.game.players:
+            for fd in pl.facedowns[:]:
+                fd.zone = fd.owner.hand
 
 
 class enchantersTrap(Card):
