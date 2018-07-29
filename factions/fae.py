@@ -81,21 +81,10 @@ class mesmerism(Card):
     image = 'night-vision.png'
     cost = 2
     rank = 'il'
-    desc = "Destroy up to two target face-up units."
+    desc = "Destroy all your opponent's face-up units."
 
     def onSpawn(self):
-        def mesmerize(targets):
-            if len(targets) > 2:
-                raise InvalidTargetError("Too many targets.")
-
-            for target in targets:
-                if not target.faceup or target.spell:
-                    raise InvalidTargetError()
-
-            for target in targets:
-                destroy(target)
-
-        self.controller.replaceCallback = mesmerize
+        self.controller.opponent.faceups.destroyAllUnits()
 
 
 class returnToSender(Card):

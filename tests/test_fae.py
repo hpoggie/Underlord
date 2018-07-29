@@ -66,12 +66,8 @@ def test_mesmerism():
     mes = fae.mesmerism(owner=p0, game=game, zone=p0.facedowns)
     p0.mana = 2
     p0.revealFacedown(mes)
-    try:
-        p0.replaceCallback((c1, c2, c3))
-    except InvalidTargetError:
-        pass
 
-    p0.replaceCallback((c1, c2))
+    assert len(p1.faceups) == 0
 
 
 def test_return_to_sender():
