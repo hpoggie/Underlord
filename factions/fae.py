@@ -58,6 +58,8 @@ class preciseDiscard(Card):
 
             card.zone = card.owner.graveyard
 
+            self.controller.replaceCallback = None
+
         self.controller.replaceCallback = discard
 
 
