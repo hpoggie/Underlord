@@ -136,16 +136,10 @@ def test_titanias_guard():
     tg = fae.titaniasGuard(owner=p0, game=game, zone=p0.facedowns)
 
     p0.mana = 4
-    p0.revealFacedown(tg)
 
     try:
-        p0.replaceCallback(None)
+        p0.revealFacedown(tg, None)
     except InvalidTargetError:
-        pass
-
-    try:
-        p0.endPhase()
-    except IllegalMoveError:
         pass
 
 
