@@ -36,13 +36,13 @@ class NetworkInstructions(DirectObject):
 
     def moveCard(self, index, zone):
         if zone in base.player.zones:
-            c = copy.copy(base.faction.deck[index])
-            c.owner = base.player
+            c = base.player.referenceDeck[index]
         else:
-            c = base.enemy.deck[index]
-            c.owner = base.enemy
-        c.cardId = index
-        c.game = base.player.game
+            c = base.enemy.referenceDeck[index]
+
+        # fake moveToZone
+        if c in c._zone:
+            c._zone.remove(c)
         c._zone = zone
         zone.append(c)
 
