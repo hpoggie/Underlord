@@ -142,18 +142,11 @@ class Player:
     def win(self):
         self.game.end(winner=self)
 
-    def requireReplace(self, card):
-        def replace(cards):
-            card.replace(*cards)
-            self.replace = None
-
-        self.replaceCallback = replace
-
-    def replace(self, cards):
+    def replace(self, *cards):
         if self.replaceCallback is None:
             raise IllegalMoveError("No effect to replace for.")
         else:
-            self.replaceCallback(cards)
+            self.replaceCallback(*cards)
 
     # Actions
 

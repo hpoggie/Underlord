@@ -203,7 +203,7 @@ class GameServer:
         cards = [enemy.referenceDeck[cardId] if targetsEnemy
                     else pl.referenceDeck[cardId]
                     for cardId, targetsEnemy in idAndEnemy]
-        pl.replace(cards)
+        pl.replace(*cards)
         self.redraw()
 
     def useThiefAbility(self, addr, discardIndex, guessId, targetIndex):

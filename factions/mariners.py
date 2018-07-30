@@ -179,12 +179,11 @@ class Mariner(Player):
               ripCurrent) + base.deck
 
     def fish(self):
-        def replace(cards):
+        def replace(c1, c2, c3):
             """
             Bottomdeck the 3 cards
             """
-            if len(cards) != 3:
-                raise IllegalMoveError("Must replace exactly 3 cards.")
+            cards = (c1, c2, c3)
 
             for card in cards:
                 if card is None or card.zone is not self.hand:

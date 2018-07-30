@@ -105,10 +105,12 @@ class headLightning(Card):
 
     def onSpawn(self):
         self.controller.drawCards(3)
-        self.controller.requireReplace(self)
 
-    def replace(self, c1, c2):
-        self.controller.topdeck([c1, c2])
+        def replace(c1, c2):
+            self.controller.topdeck([c1, c2])
+            self.controller.replaceCallback = None
+
+        self.controller.replaceCallback = replace
 
 
 class roseEmblem(Card):

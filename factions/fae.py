@@ -55,9 +55,7 @@ class preciseDiscard(Card):
         for c in self.controller.opponent.hand:
             c.visible = True
 
-        def discard(cards):
-            card = cards[0]  # TODO: hack
-
+        def discard(card):
             if card.zone is not self.controller.opponent.hand:
                 raise InvalidTargetError()
 
