@@ -10,6 +10,8 @@ from direct.gui.OnscreenImage import OnscreenImage
 from core.game import Phase
 from core.exceptions import IllegalMoveError
 
+from client.zoneMaker import hideCard, showCard
+
 
 commit_hash = ''
 
@@ -342,3 +344,21 @@ class GameHud(Scene):
 
         self.enemyManaCapLabel.setText(str(base.enemy.manaCap))
         self.turnLabel.setText("Your Turn" if base.active else "Enemy Turn")
+
+    def startReplacing(self, nTargets):
+        targets = []
+
+        def callback(target):
+            if target in targets:
+                targets.remove(target)
+                showCard(target)
+            else:
+                targets.append(target)
+                hideCard(target)
+
+            if len(targets) == nTargets:
+                base.replace(targets)
+                base.finishTargeting()
+
+        # TODO: base on desc for effect
+        base.mouseHandler.startTargeting("Select targets", callback)
