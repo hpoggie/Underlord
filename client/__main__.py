@@ -272,7 +272,7 @@ class App (ShowBase):
         # For each value in args, append the indices for that value
         # For each value in kwargs, append it if it's a bool, otherwise
         # assume it's a card and append the indices for it
-        args = [i for arg in args for i in findCard(arg)] +\
+        args = [i for arg in args for i in self.findCard(arg)] +\
                [i for arg in kwargs.values() for i in ([arg]
                 if isinstance(arg, bool) else self.findCard(arg))]
 
