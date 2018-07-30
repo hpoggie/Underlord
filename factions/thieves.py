@@ -208,7 +208,7 @@ class Thief(Player):
             raise InvalidTargetError()
 
         if target.name == name:
-            target.zone = self.faceups
+            target.spawn(target=None, newController=self)
         else:
             target.visible = True
 

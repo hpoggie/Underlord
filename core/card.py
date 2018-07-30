@@ -94,7 +94,13 @@ class Card:
 
     def cast(self, target=None):
         self.controller.mana -= self.cost
-        self.zone = self.controller.faceups
+        self.spawn(target)
+
+    def spawn(self, target=None, newController=None):
+        if newController is None:
+            newController = self.controller
+
+        self.zone = newController.faceups
         if self.requiresTarget:
             if target is not None and target.isValidTarget:
                 self.onSpawn(target)

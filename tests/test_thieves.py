@@ -11,15 +11,15 @@ def testThiefAbility():
     p0.endTurn()
     p1.endPhase()
     p1.endPhase()
-    c = next(c for c in p1.deck + p1.hand if c.name == 'Sweep')
+    c = next(c for c in p1.deck + p1.hand if c.name == 'Elephant')
     c.zone = p1.facedowns
 
     p1.endTurn()
-    p0.thiefAbility(p0.hand[0], 'Sweep', c)
+    p0.thiefAbility(p0.hand[0], 'Elephant', c)
     assert c.zone is p0.faceups
 
     try:
-        p0.thiefAbility(p0.hand[0], 'Sweep', c)
+        p0.thiefAbility(p0.hand[0], 'Elephant', c)
     except IllegalMoveError:
         pass
     else:
