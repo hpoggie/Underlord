@@ -34,14 +34,25 @@ class NetworkInstructions(DirectObject):
     def updateBothPlayersMulliganed(self):
         base.bothPlayersMulliganed = True
 
-    def moveCard(self, index, zone):
-        if zone in base.player.zones:
-            c = base.player.referenceDeck[index]
-        else:
-            c = base.enemy.referenceDeck[index]
+    def idsToCards(self, cardIds):
+        idAndEnemy = zip(cardIds[::2], cardIds[1::2])
+        cards = []
+        for cardId, ownedByEnemy in idAndEnemy:
+            if cardId == -1:
+                cards.append(Card(name="mysterious card",
+                             owner=base.enemy,
+                             game=base.game))
+            else:
+                c = (base.enemy.referenceDeck[cardId] if ownedByEnemy
+                     else base.player.referenceDeck[cardId])
+                c.visible = True
+                cards.append(c)
 
+        return cards
+
+    def moveCard(self, c, zone):
         # fake moveToZone
-        if c in c._zone:
+        if c._zone is not None and c in c._zone:
             c._zone.remove(c)
         c._zone = zone
         zone.append(c)
@@ -50,40 +61,31 @@ class NetworkInstructions(DirectObject):
 
     def updatePlayerHand(self, *cardIds):
         base.player.hand[:] = []
-        for x in cardIds:
+        for x in self.idsToCards(cardIds):
             self.moveCard(x, base.player.hand)
         base.redraw()
 
-    def updatePossiblyInvisibleZone(self, cardIds, zone):
-        for x in cardIds:
-            if x == -1:
-                c = Card(name="mysterious card",
-                         owner=base.enemy,
-                         game=base.game)
-                c.zone = zone
-            else:
-                card = self.moveCard(x, zone)
-                card.visible = True
-
     def updateEnemyHand(self, *cardIds):
         base.enemy.hand[:] = []
-        self.updatePossiblyInvisibleZone(cardIds, base.enemy.hand)
+        for x in self.idsToCards(cardIds):
+            self.moveCard(x, base.enemy.hand)
         base.redraw()
 
     def updatePlayerFacedowns(self, *cardIds):
         base.player.facedowns[:] = []
-        for x in cardIds:
+        for x in self.idsToCards(cardIds):
             self.moveCard(x, base.player.facedowns)
         base.redraw()
 
     def updateEnemyFacedowns(self, *cardIds):
         base.enemy.facedowns[:] = []
-        self.updatePossiblyInvisibleZone(cardIds, base.enemy.facedowns)
+        for x in self.idsToCards(cardIds):
+            self.moveCard(x, base.enemy.facedowns)
         base.redraw()
 
     def updatePlayerFaceups(self, *cardIds):
         base.player.faceups[:] = []
-        for x in cardIds:
+        for x in self.idsToCards(cardIds):
             self.moveCard(x, base.player.faceups)
         base.redraw()
 
@@ -93,19 +95,19 @@ class NetworkInstructions(DirectObject):
 
     def updateEnemyFaceups(self, *cardIds):
         base.enemy.faceups[:] = []
-        for x in cardIds:
+        for x in self.idsToCards(cardIds):
             self.moveCard(x, base.enemy.faceups)
         base.redraw()
 
     def updatePlayerGraveyard(self, *cardIds):
         base.player.graveyard[:] = []
-        for x in cardIds:
+        for x in self.idsToCards(cardIds):
             self.moveCard(x, base.player.graveyard)
         base.redraw()
 
     def updateEnemyGraveyard(self, *cardIds):
         base.enemy.graveyard[:] = []
-        for x in cardIds:
+        for x in self.idsToCards(cardIds):
             self.moveCard(x, base.enemy.graveyard)
         base.redraw()
 

@@ -32,7 +32,15 @@ def getCard(player, card):
     """
     Convert card to index
     """
-    return card.cardId
+    def isVisible(c):
+        return (c.zone not in (c.controller.hand, c.controller.facedowns)
+                or c.visible or c.controller is player)
+
+    return ((card.cardId if isVisible(card) else -1), card.owner is not player)
+
+
+def getZone(player, zone):
+    return [i for c in zone for i in getCard(player, c)]
 
 
 def acceptsTarget(func):
@@ -148,8 +156,7 @@ class GameServer:
                 c.updateBothPlayersMulliganed()
             self.redraw()
         else:
-            self.connections[addr].updatePlayerHand(
-                *(getCard(pl, c) for c in pl.hand))
+            self.connections[addr].updatePlayerHand(*getZone(pl, pl.hand))
 
     @acceptsTarget
     def revealFacedown(self, addr, index, target=None):
@@ -216,7 +223,7 @@ class GameServer:
             c.updatePhase(self.game.phase)
 
             if pl.faceups.dirty:
-                c.updatePlayerFaceups(*(getCard(pl, c) for c in pl.faceups))
+                c.updatePlayerFaceups(*getZone(pl, pl.faceups))
 
             for i, card in enumerate(pl.faceups):
                 if hasattr(card, 'counter'):
@@ -226,38 +233,33 @@ class GameServer:
 
             if enemyPlayer.faceups.dirty:
                 c.updateEnemyFaceups(
-                    *(getCard(enemyPlayer, c) for c in enemyPlayer.faceups)
-                )
+                    *getZone(pl, enemyPlayer.faceups))
 
             for i, card in enumerate(pl.opponent.faceups):
                 if hasattr(card, 'counter'):
                     c.updateEnemyCounter(i, card.counter)
 
             if pl.hand.dirty:
-                c.updatePlayerHand(*(getCard(pl, c) for c in pl.hand))
+                c.updatePlayerHand(*getZone(pl, pl.hand))
             if pl.facedowns.dirty:
-                c.updatePlayerFacedowns(*(getCard(pl, c) for c in pl.facedowns))
+                c.updatePlayerFacedowns(*getZone(pl, pl.facedowns))
 
             c.updatePlayerManaCap(pl.manaCap)
             c.updatePlayerMana(pl.mana)
 
             if enemyPlayer.hand.dirty:
-                c.updateEnemyHand(
-                    *(getCard(enemyPlayer, c) if c.visible else -1
-                        for c in enemyPlayer.hand))
+                c.updateEnemyHand(*getZone(pl, enemyPlayer.hand))
             if enemyPlayer.facedowns.dirty:
                 c.updateEnemyFacedowns(
-                    *(getCard(enemyPlayer, c) if c.visible else -1
-                        for c in enemyPlayer.facedowns)
-                )
+                    *getZone(pl, enemyPlayer.facedowns))
 
             c.updateEnemyManaCap(enemyPlayer.manaCap)
 
             if pl.graveyard.dirty:
-                c.updatePlayerGraveyard(*(getCard(pl, c) for c in pl.graveyard))
+                c.updatePlayerGraveyard(*getZone(pl, pl.graveyard))
             if enemyPlayer.graveyard.dirty:
                 c.updateEnemyGraveyard(
-                    *(getCard(pl.opponent, c) for c in pl.opponent.graveyard))
+                    *getZone(pl, pl.opponent.graveyard))
 
             if pl.replaceCallback is not None:
                 c.requestReplace(pl.replaceCallback.__code__.co_argcount)
