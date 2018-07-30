@@ -280,6 +280,16 @@ class App (ShowBase):
 
         self.hasFirstPlayerPenalty = False
 
+    def endPhaseWithCard(self, card):
+        """
+        Hack to pass a card rather than card node to endPhase
+        """
+        self.networkManager.endPhase(
+            card.owner.zones.index(card.zone), card.zone.index(card),
+            card.controller is self.enemy)
+
+        self.hasFirstPlayerPenalty = False
+
     def replace(self, cards):
         args = []
         for card in cards:
