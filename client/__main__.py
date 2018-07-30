@@ -301,6 +301,8 @@ class App (ShowBase):
     def redraw(self):
         self.player.fishing = False
         self.zoneMaker.redrawAll()
+        if self.mouseHandler.targeting:
+            self.mouseHandler.targeting = False
         self.guiScene.redraw()
 
     def quitToMainMenu(self):
