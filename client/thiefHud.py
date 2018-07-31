@@ -5,7 +5,7 @@ from direct.gui.DirectGui import OnscreenText
 # https://www.panda3d.org/manual/index.php/DirectEntry
 from direct.gui.DirectGui import DirectEntry
 
-from client.zoneMaker import hideCard
+from client.zoneMaker import hideCard, showCard
 
 from core.game import Phase
 
@@ -50,10 +50,21 @@ class ThiefHud(GameHud):
 
     def onThiefAbilityButton(self):
         def chooseTarget(target):
+            if target is None:
+                base.mouseHandler.targeting = False
+                showCard(self.toDiscard)
+                return
+            elif target.getPythonTag('zone') is not base.enemy.facedowns:
+                return
             self.toSteal = target
             self.entry.show()
 
         def chooseDiscard(target):
+            if target is None:
+                base.mouseHandler.targeting = False
+                return
+            elif target.getPythonTag('zone') is not base.player.hand:
+                return
             self.toDiscard = target
             hideCard(target)
             base.mouseHandler.startTargeting(
