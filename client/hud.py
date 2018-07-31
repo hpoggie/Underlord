@@ -189,7 +189,7 @@ class FactionSelect(Scene):
             mayChange=True)
 
         icons = self.root.attachNewNode('icons')
-        icons.setPos(-0.1 * len(base.availableFactions) / 2, 0, 0)
+        icons.setPos(-0.15 * len(base.availableFactions) / 2, 0, 0)
 
         for i, faction in enumerate(base.availableFactions):
             self.button(
