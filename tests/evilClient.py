@@ -14,7 +14,9 @@ nm.verbose = True
 nm.connect(('localhost', 9099))
 while True:
     s = input().split(' ')
-    if s[0] != '':
+    if s[0] == 'die':
+        raise Exception
+    elif s[0] != '':
         getattr(nm, s[0])(*[eval(x) for x in s[1:]])
 
     nm.recv()
