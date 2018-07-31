@@ -11,12 +11,17 @@ class DummyClient:
 
 nm = network.ClientNetworkManager(DummyClient(), 'localhost', 9099)
 nm.verbose = True
-nm.connect(('localhost', 9099))
+addr = ('localhost', 9099)
+nm.connect(addr)
 while True:
     s = input().split(' ')
     if s[0] == 'die':
         raise Exception
     elif s[0] != '':
-        getattr(nm, s[0])(*[eval(x) for x in s[1:]])
+        try:
+            nm.send(addr, network.serialize((int(i) for i in s)))
+        except ValueError:
+            # If we don't have an int, try sending a real opcode
+            getattr(nm, s[0])(*[eval(x) for x in s[1:]])
 
     nm.recv()
