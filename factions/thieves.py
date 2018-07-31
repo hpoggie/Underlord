@@ -109,7 +109,7 @@ class headLightning(Card):
         def replace(c1, c2):
             self.controller.topdeck([c1, c2])
 
-        self.controller.replaceCallback = replace
+        self.controller.pushAction(replace)
 
 
 class roseEmblem(Card):
@@ -206,11 +206,20 @@ class Thief(Player):
         if target.zone is not self.opponent.facedowns:
             raise InvalidTargetError()
 
+        self.pushAction(lambda: self.endPhase())
+
         if target.name == name:
-            target.spawn(target=None, newController=self)
+            if target.requiresTarget:  # Can choose the target of the ability
+                def callback(abilityTarget):
+                    target.spawn(target=abilityTarget, newController=self)
+                    discard.zone = discard.owner.graveyard
+
+                self.pushAction(callback)
+            else:
+                target.spawn(target=None, newController=self)
         else:
             target.visible = True
 
         discard.zone = discard.owner.graveyard
 
-        self.endPhase()
+        self.popAction()

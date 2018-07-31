@@ -56,6 +56,9 @@ class Player:
         # Callback for effects that require replacing cards
         self.replaceCallback = None
 
+        # Stack for forced actions (see push() and pop())
+        self.actionStack = []
+
     def __repr__(self):
         if hasattr(self, 'game'):
             return "Player %d" % self.game.players.index(self)
@@ -148,6 +151,30 @@ class Player:
         else:
             self.replaceCallback(*cards)
             self.replaceCallback = None
+            self.popAction()
+
+    def pushAction(self, func):
+        """
+        Push an action onto the stack
+        This is useful for requiring things to happen after targetCallback
+        is called
+        """
+        self.actionStack.append(func)
+
+    def popAction(self):
+        """
+        Pop actions off the stack until we get a decision or it's empty
+        """
+        try:
+            func = self.actionStack.pop()
+        except IndexError:
+            pass
+        else:
+            if func.__code__.co_argcount > 0:
+                self.replaceCallback = func
+            else:
+                func()
+                self.popAction()
 
     # Actions
 

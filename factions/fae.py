@@ -64,7 +64,7 @@ class preciseDiscard(Card):
             for c in self.controller.opponent.hand:
                 c.visible = False
 
-        self.controller.replaceCallback = discard
+        self.controller.pushAction(discard)
 
 
 class faerieDragon(Card):
