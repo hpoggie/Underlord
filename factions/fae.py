@@ -61,8 +61,6 @@ class preciseDiscard(Card):
 
             card.zone = card.owner.graveyard
 
-            self.controller.replaceCallback = None
-
             for c in self.controller.opponent.hand:
                 c.visible = False
 

@@ -147,6 +147,7 @@ class Player:
             raise IllegalMoveError("No effect to replace for.")
         else:
             self.replaceCallback(*cards)
+            self.replaceCallback = None
 
     # Actions
 

@@ -43,7 +43,7 @@ def test_precise_discard():
 
     p0.mana = 2
     p0.revealFacedown(pd)
-    p0.replaceCallback(one)
+    p0.replace(one)
     assert one.zone is p1.graveyard
 
 

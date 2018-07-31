@@ -108,7 +108,6 @@ class headLightning(Card):
 
         def replace(c1, c2):
             self.controller.topdeck([c1, c2])
-            self.controller.replaceCallback = None
 
         self.controller.replaceCallback = replace
 

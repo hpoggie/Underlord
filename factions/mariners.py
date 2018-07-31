@@ -191,8 +191,6 @@ class Mariner(Player):
 
             self.bottomdeck(cards)
 
-            self.replaceCallback = None
-
         self.drawCards(2)
 
         # If you have <= 3 cards in hand, put all of them back
