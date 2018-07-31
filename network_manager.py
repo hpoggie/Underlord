@@ -86,11 +86,9 @@ class NetworkManager:
                 newData = c.conn.recv(self.bufsize).decode()
             except ConnectionResetError:
                 raise ConnectionClosed(c)
-                continue
 
             if newData == "":
                 raise ConnectionClosed(c)
-                continue
 
             c.buffer += newData
             data = c.buffer.split('\0')
