@@ -291,11 +291,7 @@ class App (ShowBase):
         self.hasFirstPlayerPenalty = False
 
     def replace(self, cards):
-        args = []
-        for card in cards:
-            c = card.getPythonTag('card')
-            args.append(c.cardId)
-            args.append(c.controller is not self.player)
+        args = [i for card in cards for i in self.findCard(card)]
         self.networkManager.replace(*args)
 
     def redraw(self):
