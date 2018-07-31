@@ -351,10 +351,12 @@ class GameHud(Scene):
         def callback(target):
             if target in targets:
                 targets.remove(target)
-                showCard(target)
+                if target is not None:
+                    showCard(target)
             else:
                 targets.append(target)
-                hideCard(target)
+                if target is not None:
+                    hideCard(target)
 
             if len(targets) == nTargets:
                 base.replace(targets)
