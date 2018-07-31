@@ -203,6 +203,9 @@ class Thief(Player):
         if self.game.phase != Phase.startOfTurn:
             raise IllegalMoveError("Can only try to steal at start of turn.")
 
+        if discard.zone is not self.hand:
+            raise IllegalMoveError("That card is not in your hand.")
+
         if target.zone is not self.opponent.facedowns:
             raise InvalidTargetError()
 
