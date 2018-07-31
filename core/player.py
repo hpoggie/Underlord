@@ -243,6 +243,7 @@ class Player:
             raise IllegalMoveError("Can't reveal a card that's not face-down.")
 
         card.cast(*args, **kwargs)
+        self.popAction()  # Get any replace effects that we might have pushed
 
     def playFaceup(self, card, *args, **kwargs):
         self.failIfInactive()
@@ -266,6 +267,7 @@ class Player:
             raise IllegalMoveError("Not enough mana.")
 
         card.cast(*args, **kwargs)
+        self.popAction()
 
     def attack(self, attacker, target):
         self.failIfInactive()
