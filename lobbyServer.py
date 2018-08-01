@@ -8,6 +8,7 @@ import sys
 import copy
 import random
 import time
+import network
 
 from network_manager import ConnectionClosed
 from network import ServerNetworkManager
@@ -45,6 +46,8 @@ class LobbyServer:
         self.networkManager.accept()
         try:
             self.networkManager.recv()
+        except network.OpcodeError as e:
+            print(e)
         except ConnectionClosed as c:
             self.networkManager.connections.remove(c.conn)
             try:

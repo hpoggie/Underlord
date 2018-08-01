@@ -5,6 +5,10 @@ from network_manager import NetworkManager
 from core.enums import numericEnum
 
 
+class OpcodeError(Exception):
+    pass
+
+
 def serialize(args):
     return ''.join([{int: 'i', float: 'f', bool: 'b'}[type(x)] +
                     (repr(int(x)) if isinstance(x, bool) else repr(x))
@@ -16,7 +20,21 @@ def deserialize(packet):
             for s in re.findall('[a-z][^a-z]*', packet)]
 
 
-class ServerNetworkManager (NetworkManager):
+class ULNetworkManager(NetworkManager):
+    def tryCall(self, key, args):
+        if not hasattr(self.base, key):
+            raise OpcodeError("Opcode not found: " + key)
+
+        getattr(self.base, key)(*args)
+
+    def tryFindKey(self, opcode):
+        try:
+            return self.Opcodes.keys[opcode]
+        except IndexError:
+            raise OpcodeError("Invalid index: " + str(opcode))
+
+
+class ServerNetworkManager (ULNetworkManager):
     def __init__(self, base):
         super().__init__()
         self.startServer()
@@ -47,10 +65,13 @@ class ServerNetworkManager (NetworkManager):
             return
 
         (opcode, operands) = (operands[0], operands[1:])
-        if self.verbose:
-            print("got opcode: ", self.Opcodes.keys[opcode])
 
-        getattr(self.base, self.Opcodes.keys[opcode])(addr, *operands)
+        key = self.tryFindKey(opcode)
+
+        if self.verbose:
+            print("got opcode: ", key)
+
+        self.tryCall(key, [addr] + operands)
 
     def onClientConnected(self, conn):
         # Make it so each client opcode is a function
@@ -71,7 +92,7 @@ class ServerNetworkManager (NetworkManager):
         self.base.onClientConnected(conn)
 
 
-class ClientNetworkManager (NetworkManager):
+class ClientNetworkManager (ULNetworkManager):
     """
     The ClientNetworkManager takes incoming network opcodes and turns them into
     calls to the client.
@@ -136,8 +157,10 @@ class ClientNetworkManager (NetworkManager):
             return
 
         (opcode, operands) = (operands[0], operands[1:])
-        if self.verbose:
-            print("got opcode ", self.Opcodes.keys[opcode] +
-                  " with args " + str(operands))
 
-        getattr(self.base, self.Opcodes.keys[opcode])(*operands)
+        key = self.tryFindKey(opcode)
+
+        if self.verbose:
+            print("got opcode ", key + " with args " + str(operands))
+
+        self.tryCall(key, operands)
