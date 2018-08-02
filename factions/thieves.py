@@ -137,10 +137,6 @@ class spellHound(Card):
         for c in self.controller.opponent.hand:
             c.visible = True
 
-    def afterEndPhase(self):
-        for c in self.controller.opponent.hand:
-            c.visible = False
-
 
 class daggerEmblem(Card):
     name = "Dagger Emblem"

@@ -127,6 +127,11 @@ class Game:
 
     @event
     def endTurn(self):
+        # Make hand cards invisible so you can't easily see what's played
+        for pl in self.players:
+            for c in pl.hand:
+                c.visible = False
+
         player = self.activePlayer
         player.manaCap += 1
         if player.manaCap > 15:
