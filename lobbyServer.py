@@ -30,7 +30,11 @@ class LobbyServer:
 
     def requestNumPlayers(self, addr):
         for conn in self.networkManager.connections:
-            conn.updateNumPlayers(len(self.networkManager.connections))
+            try:
+                conn.updateNumPlayers(len(self.networkManager.connections))
+            except (ConnectionResetError, BrokenPipeError):
+                print("connection reset")
+                pass  # If they dc'd, don't worry about it
 
     def updateNumPlayers(self):
         self.requestNumPlayers(None)
