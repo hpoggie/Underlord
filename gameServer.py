@@ -157,6 +157,7 @@ class GameServer:
             self.redraw()
         else:
             self.connections[addr].updatePlayerHand(*getZone(pl, pl.hand))
+            self.connections[addr].endRedraw()
 
     @acceptsTarget
     def revealFacedown(self, addr, index, target=None):
@@ -268,6 +269,8 @@ class GameServer:
 
             if pl.replaceCallback is not None:
                 c.requestReplace(pl.replaceCallback.__code__.co_argcount)
+
+            c.endRedraw()
 
         for pl in self.game.players:
             for z in pl.zones:

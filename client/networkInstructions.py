@@ -63,31 +63,26 @@ class NetworkInstructions(DirectObject):
         base.player.hand[:] = []
         for x in self.idsToCards(cardIds):
             self.moveCard(x, base.player.hand)
-        base.redraw()
 
     def updateEnemyHand(self, *cardIds):
         base.enemy.hand[:] = []
         for x in self.idsToCards(cardIds):
             self.moveCard(x, base.enemy.hand)
-        base.redraw()
 
     def updatePlayerFacedowns(self, *cardIds):
         base.player.facedowns[:] = []
         for x in self.idsToCards(cardIds):
             self.moveCard(x, base.player.facedowns)
-        base.redraw()
 
     def updateEnemyFacedowns(self, *cardIds):
         base.enemy.facedowns[:] = []
         for x in self.idsToCards(cardIds):
             self.moveCard(x, base.enemy.facedowns)
-        base.redraw()
 
     def updatePlayerFaceups(self, *cardIds):
         base.player.faceups[:] = []
         for x in self.idsToCards(cardIds):
             self.moveCard(x, base.player.faceups)
-        base.redraw()
 
     def updateHasAttacked(self, *values):
         for i, c in enumerate(base.player.faceups):
@@ -97,31 +92,25 @@ class NetworkInstructions(DirectObject):
         base.enemy.faceups[:] = []
         for x in self.idsToCards(cardIds):
             self.moveCard(x, base.enemy.faceups)
-        base.redraw()
 
     def updatePlayerGraveyard(self, *cardIds):
         base.player.graveyard[:] = []
         for x in self.idsToCards(cardIds):
             self.moveCard(x, base.player.graveyard)
-        base.redraw()
 
     def updateEnemyGraveyard(self, *cardIds):
         base.enemy.graveyard[:] = []
         for x in self.idsToCards(cardIds):
             self.moveCard(x, base.enemy.graveyard)
-        base.redraw()
 
     def updatePlayerManaCap(self, manaCap):
         base.player.manaCap = manaCap
-        base.redraw()
 
     def updatePlayerMana(self, mana):
         base.player.mana = mana
-        base.redraw()
 
     def updateEnemyManaCap(self, manaCap):
         base.enemy.manaCap = manaCap
-        base.redraw()
 
     def updatePhase(self, phase):
         base.phase = phase
@@ -152,3 +141,6 @@ class NetworkInstructions(DirectObject):
 
     def setActive(self, value):
         base.active = value
+
+    def endRedraw(self):
+        base.redraw()
