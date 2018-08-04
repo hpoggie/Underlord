@@ -19,6 +19,13 @@ def showCard(card):
             ch.show()
 
 
+def cleanup(parent):
+    for i in parent.children:
+        c = i.getPythonTag('card')
+        if c is None or c.cardId == -1:
+            i.removeNode()
+
+
 class ZoneMaker(DirectObject):
     def __init__(self):
         # Set up the root node
@@ -60,9 +67,7 @@ class ZoneMaker(DirectObject):
         """
         Draw the player's hand for mulligan
         """
-        for i in self.playerHand.children:
-            if i.getPythonTag('card') is None:
-                i.removeNode()
+        cleanup(self.playerHand)
 
         posX = 0
         for c in base.player.hand:
@@ -83,9 +88,7 @@ class ZoneMaker(DirectObject):
         Redraw the player's hand.
         """
         # Destroy entire hand. This is slow and may need to be changed
-        for i in self.playerHand.children:
-            if i.getPythonTag('card') is None:
-                i.removeNode()
+        cleanup(self.playerHand)
 
         fan = fanHand(len(base.player.hand))
         for i, tr in enumerate(fan):
@@ -95,9 +98,7 @@ class ZoneMaker(DirectObject):
         self.playerHand.setPosHpr(2.5, 0, -2, 0, 45.0, 0)
 
     def makeEnemyHand(self):
-        for i in self.enemyHand.children:
-            if i.getPythonTag('card') is None:
-                i.removeNode()
+        cleanup(self.enemyHand)
 
         def addEnemyHandCard(card, tr):
             if card.visible:
@@ -122,9 +123,7 @@ class ZoneMaker(DirectObject):
         """
         Show the player's faceups and facedowns
         """
-        for i in self.playerBoard.children:
-            if i.getPythonTag('card') is None:
-                i.removeNode()
+        cleanup(self.playerBoard)
 
         posX = 0.0
 
@@ -151,9 +150,7 @@ class ZoneMaker(DirectObject):
             posX += 1.1
 
     def makeEnemyBoard(self):
-        for i in self.enemyBoard.children:
-            if i.getPythonTag('card') is None:
-                i.removeNode()
+        cleanup(self.enemyBoard)
 
         posX = 0.0
 
@@ -185,8 +182,7 @@ class ZoneMaker(DirectObject):
     def makePlayerGraveyard(self):
         # Show only the top card for now
         if len(base.player.graveyard) > 0:
-            for i in self.playerGraveyard.children:
-                i.removeNode()
+            cleanup(self.playerGraveyard)
             c = self.loadCard(base.player.graveyard[-1])
             showCard(c)
             c.reparentTo(self.playerGraveyard)
@@ -194,8 +190,7 @@ class ZoneMaker(DirectObject):
 
     def makeEnemyGraveyard(self):
         if len(base.enemy.graveyard) > 0:
-            for i in self.enemyGraveyard.children:
-                i.removeNode()
+            cleanup(self.enemyGraveyard)
             c = self.loadCard(base.enemy.graveyard[-1])
             showCard(c)
             c.reparentTo(self.enemyGraveyard)

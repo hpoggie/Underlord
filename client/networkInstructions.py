@@ -41,7 +41,8 @@ class NetworkInstructions(DirectObject):
             if cardId == -1:
                 cards.append(Card(name="mysterious card",
                              owner=base.enemy,
-                             game=base.game))
+                             game=base.game,
+                             cardId=-1))
             else:
                 c = (base.enemy.referenceDeck[cardId] if ownedByEnemy
                      else base.player.referenceDeck[cardId])
