@@ -139,8 +139,6 @@ class ZoneMaker(DirectObject):
             cardModel.reparentTo(self.playerBoard)
             cardModel.setPos(posX, 0, 0)
             cardModel.setPythonTag('zone', base.player.facedowns)
-            # Give this a card ref so we can see it
-            cardModel.setPythonTag('card', card)
 
         for c in base.player.faceups:
             addFaceupCard(c)
@@ -163,8 +161,6 @@ class ZoneMaker(DirectObject):
             cardModel.reparentTo(self.enemyBoard)
             cardModel.setPos(posX, 0, 0)
             cardModel.setPythonTag('zone', base.enemy.facedowns)
-            # Give this a card ref so we can see it
-            cardModel.setPythonTag('card', card)
 
         def addEnemyFaceupCard(card):
             cardModel = self.loadCard(card)
@@ -188,6 +184,10 @@ class ZoneMaker(DirectObject):
             c.reparentTo(self.playerGraveyard)
             c.setPythonTag('zone', base.player.graveyard)
 
+            for c1 in base.player.graveyard[:-1]:
+                c1.pandaNode.removeNode()
+                c1.pandaNode = None
+
     def makeEnemyGraveyard(self):
         if len(base.enemy.graveyard) > 0:
             cleanup(self.enemyGraveyard)
@@ -195,6 +195,10 @@ class ZoneMaker(DirectObject):
             showCard(c)
             c.reparentTo(self.enemyGraveyard)
             c.setPythonTag('zone', base.enemy.graveyard)
+
+            for c1 in base.enemy.graveyard[:-1]:
+                c1.pandaNode.removeNode()
+                c1.pandaNode = None
 
     def focusCard(self, card):
         """
@@ -263,6 +267,8 @@ class ZoneMaker(DirectObject):
 
     def loadCard(self, card):
         if hasattr(card, 'pandaNode'):
+            showCard(card.pandaNode)
+            card.pandaNode.setPos(0, 0, 0)
             return card.pandaNode
 
         cardBase = self.scene.attachNewNode(card.name)
