@@ -5,6 +5,7 @@ from panda3d.core import CardMaker, BitMask32
 from direct.showbase.DirectObject import DirectObject
 
 from .fanHand import fanHand
+from . import animations
 
 
 def hideCard(card):
@@ -52,6 +53,9 @@ class ZoneMaker(DirectObject):
         # For showing a big version of a card on mouse over
         self.focusedCard = base.camera.attachNewNode('focused card')
         self.focusedCard.setPos(-0.5, 6, -0.3)
+
+        for c in base.player.referenceDeck + base.enemy.referenceDeck:
+            c.pandaNode = None
 
     def addHandCard(self, card, tr):
         cardModel = self.loadCard(card)
@@ -181,11 +185,12 @@ class ZoneMaker(DirectObject):
             cleanup(self.playerGraveyard)
             c = self.loadCard(base.player.graveyard[-1])
             showCard(c)
-            c.reparentTo(self.playerGraveyard)
+            animations.animateMove(c, self.playerGraveyard, 0.3)
             c.setPythonTag('zone', base.player.graveyard)
 
             for c1 in base.player.graveyard[:-1]:
-                c1.pandaNode.removeNode()
+                if c1.pandaNode is not None:
+                    c1.pandaNode.removeNode()
                 c1.pandaNode = None
 
     def makeEnemyGraveyard(self):
@@ -193,11 +198,12 @@ class ZoneMaker(DirectObject):
             cleanup(self.enemyGraveyard)
             c = self.loadCard(base.enemy.graveyard[-1])
             showCard(c)
-            c.reparentTo(self.enemyGraveyard)
+            animations.animateMove(c, self.enemyGraveyard, 0.3)
             c.setPythonTag('zone', base.enemy.graveyard)
 
             for c1 in base.enemy.graveyard[:-1]:
-                c1.pandaNode.removeNode()
+                if c1.pandaNode is not None:
+                    c1.pandaNode.removeNode()
                 c1.pandaNode = None
 
     def focusCard(self, card):
@@ -266,7 +272,7 @@ class ZoneMaker(DirectObject):
             c.show()
 
     def loadCard(self, card):
-        if hasattr(card, 'pandaNode'):
+        if card.pandaNode is not None:
             showCard(card.pandaNode)
             card.pandaNode.setPos(0, 0, 0)
             return card.pandaNode
