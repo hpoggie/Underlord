@@ -139,14 +139,14 @@ class ZoneMaker(DirectObject):
         def addFaceupCard(card):
             cardModel = self.loadCard(card)
             cardModel.reparentTo(self.playerBoard)
-            cardModel.setPos(posX, 0, 0)
+            cardModel.setPosHpr(posX, 0, 0, 0, 0, 0)
             cardModel.setPythonTag('zone', base.player.faceups)
 
         def addFdCard(card):
             cardModel = self.loadCard(card)
             hideCard(cardModel)
             cardModel.reparentTo(self.playerBoard)
-            cardModel.setPos(posX, 0, 0)
+            cardModel.setPosHpr(posX, 0, 0, 0, 0, 0)
             cardModel.setPythonTag('zone', base.player.facedowns)
 
         for c in base.player.faceups:
