@@ -2,7 +2,6 @@ from direct.interval.IntervalGlobal import Sequence, Func
 
 
 def animateMove(card, zone, duration):
-    card.wrtReparentTo(card.get_top())
-    Sequence(
-        card.posInterval(duration / 2, zone.getPos(card.get_top())),
-        Func(lambda: card.wrtReparentTo(zone))).start()
+    card.wrtReparentTo(zone)
+    card.setHpr(0, 0, 0)
+    Sequence(card.posInterval(duration / 2, (0, 0, 0))).start()
