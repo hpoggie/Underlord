@@ -64,6 +64,7 @@ class ZoneMaker(DirectObject):
         pivot.setPosHpr(*tr)
         cardModel.reparentTo(pivot)
         cardModel.setPos(-offset)
+        cardModel.setHpr(0, 0, 0)
         cardModel.setPythonTag('zone', base.player.hand)
         pivot.reparentTo(self.playerHand)
 
@@ -92,7 +93,11 @@ class ZoneMaker(DirectObject):
         Redraw the player's hand.
         """
         # Destroy entire hand. This is slow and may need to be changed
-        cleanup(self.playerHand)
+        # cleanup(self.playerHand)
+        for pivot in self.playerHand.children:
+            for c in pivot.children:
+                c.wrtReparentTo(self.scene)
+            pivot.removeNode()
 
         fan = fanHand(len(base.player.hand))
         for i, tr in enumerate(fan):
@@ -274,7 +279,6 @@ class ZoneMaker(DirectObject):
     def loadCard(self, card):
         if card.pandaNode is not None:
             showCard(card.pandaNode)
-            card.pandaNode.setPos(0, 0, 0)
             return card.pandaNode
 
         cardBase = self.scene.attachNewNode(card.name)
