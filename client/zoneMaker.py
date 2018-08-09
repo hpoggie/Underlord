@@ -7,7 +7,6 @@ from direct.showbase.DirectObject import DirectObject
 from .fanHand import fanHand
 from . import animations
 
-
 def hideCard(card):
     for ch in card.children:
         if ch.name != 'frame':
@@ -25,6 +24,13 @@ def cleanup(parent):
         c = i.getPythonTag('card')
         if c is None or c.cardId == -1:
             i.removeNode()
+
+
+def updateCardNode(card):
+    card.costNode.setText(str(card.cost))
+    card.rankNode.setText(str(card.rank))
+    if hasattr(card, 'counter'):
+        card.counterNode.setText(str(card.counter))
 
 
 class ZoneMaker(DirectObject):
@@ -279,6 +285,7 @@ class ZoneMaker(DirectObject):
     def loadCard(self, card):
         if card.pandaNode is not None:
             showCard(card.pandaNode)
+            updateCardNode(card)
             return card.pandaNode
 
         cardBase = self.scene.attachNewNode(card.name)
@@ -314,12 +321,14 @@ class ZoneMaker(DirectObject):
         textNodePath = cardBase.attachNewNode(cost)
         textNodePath.setScale(0.1)
         textNodePath.setPos(0.08, -0.05, 1.275)
+        card.costNode = cost
 
         rank = panda3d.core.TextNode('rank')
         rank.setText(str(card.rank))
         textNodePath = cardBase.attachNewNode(rank)
         textNodePath.setScale(0.1)
         textNodePath.setPos(0.08, -0.05, 1.125)
+        card.rankNode = rank
 
         desc = panda3d.core.TextNode('desc')
         desc.setText(textwrap.fill(card.desc, width=25))
@@ -327,12 +336,14 @@ class ZoneMaker(DirectObject):
         textNodePath.setScale(0.07)
         textNodePath.setPos(0.09, -0.05, 0.4)
 
+        counter = panda3d.core.TextNode('counter')
+        textNodePath = cardBase.attachNewNode(counter)
+        textNodePath.setScale(0.4)
+        textNodePath.setPos(0.7, -0.05, 0.1)
+        card.counterNode = counter
+
         if hasattr(card, 'counter'):
-            counter = panda3d.core.TextNode('counter')
             counter.setText(str(card.counter))
-            textNodePath = cardBase.attachNewNode(counter)
-            textNodePath.setScale(0.4)
-            textNodePath.setPos(0.7, -0.05, 0.1)
 
         cardBase.setPythonTag('card', card)
         card.pandaNode = cardBase
