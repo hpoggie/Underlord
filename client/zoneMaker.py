@@ -43,9 +43,13 @@ class ZoneMaker(DirectObject):
         base.playerCardBack = base.player.cardBack
         base.enemyCardBack = base.enemy.cardBack
 
-        for name in ['playerHand', 'enemyHand', 'playerBoard', 'enemyBoard']:
+        for name in ['playerHand', 'mulliganHand', 'enemyHand',
+                     'playerBoard', 'enemyBoard']:
             setattr(self, name, self.scene.attachNewNode(name))
 
+        self.playerHand.reparentTo(self.scene)
+        self.playerHand.setPosHpr(2.5, 0, -2, 0, 45.0, 0)
+        self.mulliganHand.reparentTo(base.camera)
         self.playerBoard.setPos(0, 0, -2)
         self.enemyBoard.setPos(0, 0, 2.1)
         self.playerGraveyard = self.scene.attachNewNode('player graveyard')
@@ -63,7 +67,10 @@ class ZoneMaker(DirectObject):
         for c in base.player.referenceDeck + base.enemy.referenceDeck:
             c.pandaNode = None
 
-    def addHandCard(self, card, tr):
+    def addHandCard(self, card, tr, parent=None):
+        if parent is None:
+            parent = self.playerHand
+
         cardModel = self.loadCard(card)
         pivot = self.scene.attachNewNode('pivot')
         offset = cardModel.getScale() / 2
@@ -72,17 +79,17 @@ class ZoneMaker(DirectObject):
         cardModel.setPos(-offset)
         cardModel.setHpr(0, 0, 0)
         cardModel.setPythonTag('zone', base.player.hand)
-        pivot.reparentTo(self.playerHand)
+        pivot.reparentTo(parent)
 
     def makeMulliganHand(self):
         """
         Draw the player's hand for mulligan
         """
-        cleanup(self.playerHand)
+        cleanup(self.mulliganHand)
 
         posX = 0
         for c in base.player.hand:
-            self.addHandCard(c, (posX, 0, 0, 0, 0, 0))
+            self.addHandCard(c, (posX, 0, 0, 0, 0, 0), self.mulliganHand)
             if c in base.toMulligan:
                 hideCard(c.pandaNode)
             else:
@@ -90,14 +97,14 @@ class ZoneMaker(DirectObject):
 
             posX += 1.1
 
-        self.playerHand.reparentTo(base.camera)
-        self.playerHand.setPosHpr(
+        self.mulliganHand.setPosHpr(
             -1.1 * (len(base.player.hand) - 1) / 2, 12, 0, 0, 0, 0)
 
     def makePlayerHand(self):
         """
         Redraw the player's hand.
         """
+        self.mulliganHand.removeNode()
         # Destroy entire hand. This is slow and may need to be changed
         # cleanup(self.playerHand)
         for pivot in self.playerHand.children:
@@ -108,9 +115,6 @@ class ZoneMaker(DirectObject):
         fan = fanHand(len(base.player.hand))
         for i, tr in enumerate(fan):
             self.addHandCard(base.player.hand[i], tr)
-
-        self.playerHand.reparentTo(self.scene)
-        self.playerHand.setPosHpr(2.5, 0, -2, 0, 45.0, 0)
 
     def makeEnemyHand(self):
         cleanup(self.enemyHand)
