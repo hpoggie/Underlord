@@ -123,7 +123,7 @@ class ZoneMaker(DirectObject):
             if card.visible:
                 cardModel = self.loadCard(card)
             else:
-                cardModel = self.loadEnemyBlank()
+                cardModel = self.loadEnemyBlank(card)
             pivot = self.scene.attachNewNode('pivot')
             offset = cardModel.getScale() / 2
             pivot.setPosHpr(*tr)
@@ -176,7 +176,7 @@ class ZoneMaker(DirectObject):
                 cardModel = self.loadCard(card)
                 hideCard(cardModel)
             else:
-                cardModel = self.loadEnemyBlank()
+                cardModel = self.loadEnemyBlank(card)
             cardModel.reparentTo(self.enemyBoard)
             cardModel.setPos(posX, 0, 0)
             cardModel.setPythonTag('zone', base.enemy.facedowns)
@@ -354,7 +354,7 @@ class ZoneMaker(DirectObject):
 
         return cardBase
 
-    def loadBlank(self, path):
+    def loadBlank(self, path, card):
         cardBase = self.scene.attachNewNode('mysterious card')
 
         cm = CardMaker('mysterious card')
@@ -365,15 +365,16 @@ class ZoneMaker(DirectObject):
         cardFrame.setScale(1, 1, 509 / 364)
         cardFrame.setTransparency(True)
         cardFrame.setName('frame')
+        cardBase.setPythonTag('card', card)
         return cardBase
 
-    def loadPlayerBlank(self):
+    def loadPlayerBlank(self, card):
         path = base.playerIconPath + "/" + base.playerCardBack
-        return self.loadBlank(path)
+        return self.loadBlank(path, card)
 
-    def loadEnemyBlank(self):
+    def loadEnemyBlank(self, card):
         path = base.enemyIconPath + "/" + base.enemyCardBack
-        return self.loadBlank(path)
+        return self.loadBlank(path, card)
 
     def makePlayerFace(self):
         cm = CardMaker("face")
