@@ -44,7 +44,7 @@ class ZoneMaker(DirectObject):
         base.enemyCardBack = base.enemy.cardBack
 
         for name in ['playerHand', 'mulliganHand', 'enemyHand',
-                     'playerBoard', 'enemyBoard']:
+                     'playerBoard', 'enemyBoard', 'orphan']:
             setattr(self, name, self.scene.attachNewNode(name))
 
         self.playerHand.reparentTo(self.scene)
@@ -168,6 +168,8 @@ class ZoneMaker(DirectObject):
 
     def makeEnemyBoard(self):
         cleanup(self.enemyBoard)
+        for n in self.enemyBoard.children:
+            n.reparentTo(self.orphan)
 
         posX = 0.0
 
@@ -406,6 +408,9 @@ class ZoneMaker(DirectObject):
         self.makeEnemyBoard()
         self.makePlayerGraveyard()
         self.makeEnemyGraveyard()
+
+        for n in self.orphan.children:
+            n.removeNode()
 
     def unmake(self):
         self.playerHand.removeNode()  # In case it's parented to the camera
