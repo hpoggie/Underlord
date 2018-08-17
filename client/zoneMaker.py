@@ -409,4 +409,5 @@ class ZoneMaker(DirectObject):
 
     def unmake(self):
         self.playerHand.removeNode()  # In case it's parented to the camera
+        self.mulliganHand.removeNode()
         self.scene.removeNode()
