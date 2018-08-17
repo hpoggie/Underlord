@@ -294,6 +294,13 @@ class App (ShowBase):
         args = [i for card in cards for i in self.findCard(card)]
         self.networkManager.replace(*args)
 
+        for card in cards:
+            # Do getParent.getParent because of pivots
+            # TODO: make this cleaner
+            # NEVER COMPARE NODE PATHS w/ is. It seems to always return False
+            if card.getParent().getParent() == self.zoneMaker.playerHand:
+                card.removeNode()
+
     def redraw(self):
         self.player.fishing = False
         self.zoneMaker.redrawAll()
