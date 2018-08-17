@@ -267,10 +267,10 @@ class GameServer:
                 c.updateEnemyGraveyard(
                     *getZone(pl, pl.opponent.graveyard))
 
+            c.endRedraw()
+
             if pl.replaceCallback is not None:
                 c.requestReplace(pl.replaceCallback.__code__.co_argcount)
-
-            c.endRedraw()
 
         for pl in self.game.players:
             for z in pl.zones:
