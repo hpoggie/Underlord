@@ -216,6 +216,8 @@ class App (ShowBase):
         elif card.getPythonTag('zone') is self.player.hand:
             zone = Zone.hand
             enemy = False
+        elif card.getPythonTag('zone') is self.enemy.hand:
+            zone = Zone.hand
         elif card.getPythonTag('zone') is self.player.face:
             zone = Zone.face
             enemy = False
