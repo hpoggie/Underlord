@@ -300,7 +300,8 @@ class App (ShowBase):
             # Do getParent.getParent because of pivots
             # TODO: make this cleaner
             # NEVER COMPARE NODE PATHS w/ is. It seems to always return False
-            if card.getParent().getParent() == self.zoneMaker.playerHand:
+            if (card is not None and
+                    card.getParent().getParent() == self.zoneMaker.playerHand):
                 card.removeNode()
 
     def redraw(self):
