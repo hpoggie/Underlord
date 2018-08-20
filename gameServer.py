@@ -43,6 +43,18 @@ def getZone(player, zone):
     return [i for c in zone for i in getCard(player, c)]
 
 
+def ZIEToCard(pl, targetZone, targetIndex, targetsEnemy):
+    if targetZone == -1:
+        return None
+
+    if targetsEnemy:
+        target = pl.opponent.zones[targetZone][targetIndex]
+    else:
+        target = pl.zones[targetZone][targetIndex]
+
+    return target
+
+
 def acceptsTarget(func):
     def converted(self, *args):
         """
@@ -62,10 +74,7 @@ def acceptsTarget(func):
             targetIndices = args[nArgs:]
             targetZone, targetIndex, targetsEnemy = targetIndices
 
-            if targetsEnemy:
-                target = pl.opponent.zones[targetZone][targetIndex]
-            else:
-                target = pl.zones[targetZone][targetIndex]
+            target = ZIEToCard(pl, targetZone, targetIndex, targetsEnemy)
         except ValueError:
             # Only got 1 arg.
             func(self, *args)
